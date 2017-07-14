@@ -1,0 +1,51 @@
+﻿html, body{font-family:"宋体,微软雅黑";font-size:14px;margin:0;height:100%;background-color:#0d1d3e}
+*{padding:0px;margin:0px;}
+
+#body_center{height:600px;width:100%;text-align: center;background-image:url(../images/bg_tile.png);background-repeat:no-repeat;background-position:center center;margin:0px auto;+position:absolute}
+#body_center_float{top: 105px; visibility: visible; position: absolute; z-index:1000; left: 50%; display: block; width:620px; height:370px; background-image:url(../images/bg_center.png);margin-left:-305px}
+#body_center_content{height:300px; margin:0px 12px 5px 10px;}
+#left_logo{width:215px;float:left}
+#login_form_div{width:355px;float:right}
+#login_form_title{font-family:"黑体";color:#2f5e95;font-size:30px;font-weight:bold;text-align:center;line-height:50px;height:50px;}
+#login_form_title span{padding-left:10px;font-family:Arial;font-size:12px}
+#error_hint{padding-bottom:6px;color:#333;height:17px !important}
+#body_bottom{}
+#captchaImg{float:left;border:1px solid #2f5e95;width:100px;height:35;cursor:pointer;}
+#refreshImg{float:left;width:24px;height:37px;cursor:pointer;}
+
+.login_input{
+	margin-bottom: 10px;
+	padding-left: 33px;
+	width:227px;
+	border:1px solid #D2D2D2;
+	*border:1px solid #D2D2D2;
+	border-radius: 1px 1px 1px 1px; 
+	font-family: "微软雅黑";
+	height: 30px;
+	line-height:30px;
+	ime-mode:disabled;
+	color:#aaa;
+}
+
+#validateCode{padding-left:5px;margin-top:3px;width:118px;float:left;margin-left:11px;}
+#loginId {
+	background:rgb(255, 255, 255) url("../images/form_login.gif") 0 0 no-repeat !important;
+	box-shadow: 1px 1px 1px 0 #EAEAEA inset !important;
+}
+#userPsw, #userPswHint {
+	background:rgb(255, 255, 255) url('../images/form_login.gif') 0 -50px no-repeat !important;
+	box-shadow: 1px 1px 1px 0 #EAEAEA inset !important;
+}
+
+.login_row_div{padding-left: 30px;height:38px;}
+.btnLogin{margin:2px 5px 2px 0px;float:left;}
+
+.login_select_zone{
+	font-size:13px !important;
+	line-height: 22px;
+	height: 25px;
+}
+
+.login_select{vertical-align:text-bottom;}
+.login_select_zone label{padding:0px 4px;}
+

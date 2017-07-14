@@ -1,0 +1,47 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+	xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
+	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
+	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
+	xmlns:cc="urn:import:org.ccframe.client.components"
+	xmlns:grid="urn:import:com.sencha.gxt.widget.core.client.grid"
+	xmlns:article="urn:import:org.ccframe.client.module.article"
+	xmlns:tree="urn:import:com.sencha.gxt.widget.core.client.tree"
+>
+
+	<ui:with type="com.sencha.gxt.data.shared.TreeStore" field="treeStore" />
+	<ui:with type="com.sencha.gxt.core.client.ValueProvider" field="valueProvider" />
+
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="topMargins">
+		<ui:attributes top="4" right="0" bottom="0" left="4" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="centerMargins">
+		<ui:attributes top="4" right="0" bottom="4" left="4" />
+	</ui:with>
+
+	<ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="toolRow">
+		<ui:attributes width="1" height="45" margins="{topMargins}" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="treeRow">
+		<ui:attributes width="1" height="1.0d" margins="{centerMargins}" />
+	</ui:with>
+
+	<container:VerticalLayoutContainer>
+		<container:child layoutData="{toolRow}">
+			<toolbar:ToolBar borders="true">
+				<g:Label text="文章分类"/>
+				<button:TextButton text="增" ui:field="addButton" />
+				<button:TextButton text="改" ui:field="editButton" />
+				<button:TextButton text="删" ui:field="deleteButton" />
+			</toolbar:ToolBar>
+		</container:child>
+		<container:child layoutData="{treeRow}">
+			<tree:Tree ui:field="tree" valueProvider="{valueProvider}" store="{treeStore}" borders="true"/>
+		</container:child>
+
+	</container:VerticalLayoutContainer>
+
+</ui:UiBinder> 

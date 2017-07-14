@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <!-- session超时定义,单位为分钟 -->
+    <session-config>
+        <session-timeout>120</session-timeout>
+    </session-config>
+
+    <mime-mapping>
+        <extension>ico</extension>
+        <mime-type>image/x-icon</mime-type>
+    </mime-mapping>
+
+    <!-- 默认首页定义 -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+ 
+    <!-- JSTL i18n定义-->
+    <context-param>
+        <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+        <param-value>i18n/messages</param-value>
+    </context-param>
+	<context-param>   
+		<param-name>webAppRootKey</param-name>   
+		<param-value>webApp.root</param-value>
+	</context-param>
+
+	<!-- sdk标签 -->
+	<jsp-config>
+		<taglib>
+			<taglib-uri>http://www.ccframe.org/sdk</taglib-uri>
+			<taglib-location>/WEB-INF/sdk.tld</taglib-location>
+		</taglib>
+	</jsp-config>
+
+	<!-- 配合context-param生成环境参数，供log4j输出日志到WEB-INF使用 -->
+	<listener>
+		<listener-class>org.springframework.web.util.WebAppRootListener</listener-class>   
+	</listener>
+	
+	<!-- Configuration for encoder -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+    <filter>
+        <filter-name>WebContextFilter</filter-name>
+        <filter-class>org.ccframe.commons.filter.WebContextFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>WebContextFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>WebContextFilter</filter-name>
+        <url-pattern>*.json</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>WebContextFilter</filter-name>
+        <url-pattern>*.bin</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>WebContextFilter</filter-name>
+        <url-pattern>*.jsp</url-pattern>
+    </filter-mapping>
+
+	<!-- 系统后台登录 -->
+    <filter>
+        <filter-name>AdminLoginFilter</filter-name>
+        <filter-class>org.ccframe.commons.filter.AdminLoginFilter</filter-class>
+        <init-param>
+            <description>加载的URL</description>
+            <param-name>includeUrls</param-name>
+            <param-value>/admin/*</param-value>
+        </init-param>
+        <init-param>
+            <description>过滤的URL</description>
+            <param-name>excludeUrls</param-name>
+            <param-value>
+                /admin/mainFrame/doLogin.json
+            </param-value>
+        </init-param>
+        <init-param>
+            <description>后台登录页面的URL</description>
+            <param-name>backendLoginUri</param-name>
+            <param-value>ccframe/login.jsp</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdminLoginFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
+
+	<!-- 系统前台登录 -->
+    <filter>
+        <filter-name>MemberLoginFilter</filter-name>
+        <filter-class>org.ccframe.commons.filter.MemberLoginFilter</filter-class>
+        <init-param>
+            <description>加载的URL</description>
+            <param-name>includeUrls</param-name>
+            <param-value>/member/*/*.json</param-value>
+        </init-param>
+        <init-param>
+            <description>过滤的URL</description>
+            <param-name>excludeUrls</param-name>
+            <param-value>
+                 /member/login/login.json
+            </param-value>
+        </init-param>
+        <init-param>
+            <description>后台登录页面的URL</description>
+            <param-name>backendLoginUri</param-name>
+            <param-value>member/login.jsp</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>MemberLoginFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
+
+    <servlet>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>ContextConfigLocation</param-name>
+            <param-value>classpath:spring/*.xml</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>*.json</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>*.bin</url-pattern>
+    </servlet-mapping>
+
+    <!-- 配置 Druid 监控信息显示页面 -->
+    <servlet>
+        <servlet-name>DruidStatView</servlet-name>
+        <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+        <init-param>
+            <!-- 允许清空统计数据 -->
+            <param-name>resetEnable</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <!-- 用户名 -->
+            <param-name>loginUsername</param-name>
+            <param-value>druid</param-value>
+        </init-param>
+        <init-param>
+            <!-- 密码 -->
+            <param-name>loginPassword</param-name>
+            <param-value>ccframe</param-value>
+        </init-param>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DruidStatView</servlet-name>
+        <url-pattern>/druid/*</url-pattern>
+    </servlet-mapping>
+
+	<!-- 验证码 -->
+	<servlet>
+		<servlet-name>CaptchaServlet</servlet-name>
+		<servlet-class>org.ccframe.commons.servlet.CaptchaServlet</servlet-class>
+        <init-param>
+            <param-name>avaiableChars</param-name>
+            <param-value>bcdefghkmnprtuvwxy34678</param-value>
+        </init-param>
+        <init-param>
+            <param-name>colorConfig</param-name>
+            <param-value>47,94,149|60,108,128|51,51,51</param-value>
+        </init-param>
+        <init-param>
+            <param-name>font</param-name>
+            <param-value>Times New Roman</param-value><!-- 如果不填默认用Arial -->
+        </init-param>
+        <init-param>
+            <param-name>thickness</param-name>
+            <param-value>1.8</param-value><!-- 1.2~2.0 -->
+        </init-param>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>CaptchaServlet</servlet-name>
+		<url-pattern>/captchaImg</url-pattern>
+	</servlet-mapping>    
+</web-app>
+

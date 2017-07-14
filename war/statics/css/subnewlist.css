@@ -1,0 +1,49 @@
+
+
+.subPage { width:1300px; height: 860px; margin-left: 50px; margin-top: 15px;}
+
+/*左侧栏*/
+.subPage .subLeft { font-weight: bold; min-height: 860px; background-color: white; width:290px; float: left; border-right: 5px solid #FFBB33; }
+
+.subPage .subLeft ul li { font-family: "微软雅黑"; text-align: center; line-height: 60px; border-left: 5px solid #fff; height: 59px; border-bottom: 1px solid #ddd; color:#FFFFFF;}
+.subPage .subLeft ul li a { color: #404040;}
+.subPage .subLeft ul li:hover a { color: #FFFFFF;}
+.subPage .subLeft .subNav:hover { cursor: pointer; background-color: #26A8FF; border-bottom: 1px solid #26A8FF; border-left: 5px solid #FFBB33; height: 60px; }
+.subPage .subLeft .subTitle { height: 60px; border-left: 5px solid #404040; height: 60px; background-color: #404040; border-bottom: 1px solid #404040; }
+
+.subPage .subLeft .lock { border-bottom: 1px solid #26A8FF; border-left: 5px solid #FFBB33; background-color: #26A8FF; }
+.subPage .subLeft .lock a { color: #FFFFFF;}
+
+
+/*右侧栏*/
+.subPage .subRight { background-color: white; width:985px; height: 860px; margin-left: 15px; float:right; }
+
+/*右侧栏标题*/
+.subPage .subRight .pageTitle { width:905px; height:60px; font-weight: bold; font-size: 18px; font-family: "微软雅黑"; color: #404040; margin: 0px auto; padding-left: 25px; border-bottom: 3px solid #404040; line-height: 75px; }
+.subPage .subRight .pageTitle div { float: left; }
+.subPage .subRight .pageTitle .newTtileImg { margin-left: 4px; margin-top: 2px;}
+
+
+/*右侧栏列表*/
+.subPage .subRight .newContent { width:880px; height:735px; clear: both; margin-top:10px; margin: 0px auto;}
+
+.subPage .subRight .newContent .newHeight .newDate { float: right; color: #6A6A6A; font-size: 12px; margin-right: 5px; }
+
+.subPage .subRight .newContent .newHeight .newTietle { margin-left: 5px; float: left; font-size:14px; }
+
+.subPage .subRight .newContent .newHeight  p { display: inline; margin-left: 5px;}
+.subPage .subRight .newContent .newHeight  a { color: #404040; }
+.subPage .subRight .newContent .newHeight  a:hover { color: #26A8FF; text-decoration: underline;}
+.subPage .subRight .newContent .newHeight { height: 48px; border-bottom: 1px solid #DDDDDD; line-height: 49px; }
+.subPage .subRight .newContent .newHeight:hover { background-color: #f7f7f7;}
+
+
+/*页码*/
+
+.subPage .newPage { text-align: center; margin:0px auto;  height: 45px; line-height: 45px; }
+
+.subPage .newPage a { margin-left: 10px; padding:4px 10px; border: 1px solid #999999; color:#999; line-height: 50px; font-size: 13px; }
+.subPage .newPage .pager { width: 60px; margin-left: 0px; }
+.subPage .newPage .pagerspace {margin-left: 10px; }
+.subPage .newPage a:hover { color: #FFFFFF; border:1px solid #26A8FF; background: #26A8FF;}
+.subPage .newPage .lock { color: #FFFFFF; border:1px solid #26A8FF; background: #26A8FF;}

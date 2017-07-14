@@ -1,0 +1,31 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../config/ehcache.xsd">
+	<!--
+	Subdirectories can be specified below the property e.g. java.io.tmpdir/one
+	-->
+	<diskStore path="java.io.tmpdir"/>
+
+	<!--
+	Mandatory Default Cache configuration. These settings will be applied to caches
+	created programmtically using CacheManager.add(String cacheName)
+	-->
+	<!-- transactionalMode模式：xa=1阶段提交 xa_strict=2阶段提交，默认为off无事务模式，该配置在cacheManaer.addCache(String cacheName)时使用 -->
+	<defaultCache
+		 maxElementsInMemory="10000"
+		 eternal="false"
+		 timeToIdleSeconds="120"
+		 timeToLiveSeconds="120"
+		 overflowToDisk="true"
+		 maxElementsOnDisk="10000000"
+		 diskPersistent="false"
+		 diskExpiryThreadIntervalSeconds="120"
+		 memoryStoreEvictionPolicy="LRU"
+		 transactionalMode="local"
+	/>
+	<cache name="auto" 
+           maxElementsInMemory="100"
+           eternal="false" 
+		   timeToIdleSeconds="120"
+		   timeToLiveSeconds="120"
+		   overflowToDisk="false" />
+
+</ehcache>

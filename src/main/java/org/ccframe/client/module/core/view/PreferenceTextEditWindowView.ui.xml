@@ -1,0 +1,43 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+	xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
+	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
+	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
+	xmlns:cc="urn:import:org.ccframe.client.components"
+	xmlns:grid="urn:import:com.sencha.gxt.widget.core.client.grid"
+>
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="topMargins">
+		<ui:attributes top="4" right="0" bottom="0" left="4" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="rowMargins">
+		<ui:attributes top="5" right="5" bottom="0" left="5" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.core.client.util.Padding" field="vBoxPaddings">
+		<ui:attributes top="5" right="15" bottom="5" left="15" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="vBoxLayoutData">
+		<ui:attributes margins="{rowMargins}"/>
+	</ui:with>
+
+	<gxt:Window ui:field="window" width="500" modal="true" headingText="编辑预设文本" focusWidget="{closeButton}" buttonAlign="CENTER" bodyStyle="background-color: 0xFFF; padding-top:10px;">
+		<cc:CcVBoxLayoutContainer ui:field="vBoxLayoutContainer" vBoxLayoutAlign="STRETCH">
+			<cc:child>
+				<toolbar:ToolBar>
+					<button:TextButton text="添加" ui:field="addButton" />
+					<button:TextButton text="修改" ui:field="editButton" />
+					<button:TextButton text="删除" ui:field="deleteButton" />
+				</toolbar:ToolBar>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<gxt:ListView height="200" ui:field="textList" borders="true"/>
+			</cc:child>
+		</cc:CcVBoxLayoutContainer>
+		<gxt:button>
+			<button:TextButton ui:field="closeButton" text="关闭"/>
+		</gxt:button>
+	</gxt:Window>
+
+</ui:UiBinder> 

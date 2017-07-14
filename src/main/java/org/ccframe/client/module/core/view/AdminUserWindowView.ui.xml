@@ -1,0 +1,89 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+	xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
+	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
+	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
+	xmlns:cc="urn:import:org.ccframe.client.components"
+	xmlns:grid="urn:import:com.sencha.gxt.widget.core.client.grid"
+>
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="rowMargins">
+		<ui:attributes top="5" right="5" bottom="0" left="5" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.core.client.util.Padding" field="vBoxPaddings">
+		<ui:attributes top="5" right="15" bottom="5" left="15" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="vBoxLayoutData">
+		<ui:attributes margins="{rowMargins}"/>
+	</ui:with>
+
+	<gxt:Window ui:field="window" width="500" modal="true" headingText="用户编辑" focusWidget="{closeButton}" buttonAlign="CENTER" resizable="false">
+		<cc:CcVBoxLayoutContainer ui:field="vBoxLayoutContainer" padding="{vBoxPaddings}">
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="登录ID">
+					<form:widget>
+						<cc:CcTextField ui:field="loginId" allowBlank="false" width="340" maxLength="32"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="用户姓名">
+					<form:widget>
+						<cc:CcTextField ui:field="userNm" allowBlank="false" width="340" maxLength="32"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="手机号码">
+					<form:widget>
+						<cc:CcMobileField ui:field="userMobile" allowBlank="true" width="130"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="用户邮箱">
+					<form:widget>
+						<cc:CcEmailField ui:field="userEmail" allowBlank="true" width="340"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="用户密码">
+					<form:widget>
+						<cc:CcPasswordField ui:field="userPsw" allowBlank="false" width="340" maxLength="32"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="是否管理员">
+					<form:widget>
+						<cc:CcBoolRadioField ui:field="ifAdmin" defaultValue="NO"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="是否冻结">
+					<form:widget>
+						<cc:CcBoolRadioField ui:field="ifFreeze" defaultValue="NO"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="注册时间">
+					<form:widget>
+						<form:TextField ui:field="createDateStr" readOnly="true" width="160" />
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+		</cc:CcVBoxLayoutContainer>
+		<gxt:button>
+			<button:TextButton ui:field="saveButton" text="保存"/>
+		</gxt:button>
+		<gxt:button>
+			<button:TextButton ui:field="closeButton" text="退出"/>
+		</gxt:button>
+	</gxt:Window>
+
+</ui:UiBinder> 

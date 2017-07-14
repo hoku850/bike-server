@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:elasticsearch="http://www.springframework.org/schema/data/elasticsearch"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-4.3.xsd
+         http://www.springframework.org/schema/task
+         http://www.springframework.org/schema/task/spring-task-4.3.xsd
+         http://www.springframework.org/schema/mvc
+         http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+         http://www.springframework.org/schema/tx
+         http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+         http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+         http://www.springframework.org/schema/data/jpa
+         http://www.springframework.org/schema/data/jpa/spring-jpa-1.8.xsd
+         http://www.springframework.org/schema/data/elasticsearch
+         http://www.springframework.org/schema/data/elasticsearch/spring-elasticsearch-1.0.xsd
+         http://www.springframework.org/schema/cache
+         http://www.springframework.org/schema/cache/spring-cache-4.3.xsd
+       "
+       default-autowire="byName" default-lazy-init="false">
+
+    <mvc:resources mapping="/upload/**" location="/upload/"/>
+    <mvc:resources mapping="/temp/**" location="/temp/"/>
+    <mvc:resources mapping="/commons/**" location="/commons/"/>
+    <mvc:resources mapping="/ccframe/**" location="/ccframe/"/>
+    <mvc:resources mapping="/images/**" location="/images/"/>
+    <mvc:resources mapping="/statics/**" location="/statics/"/>
+    <mvc:resources mapping="/client/**" location="/client/"/><!-- client全部放过，否则client资源里的html无法读取 -->
+
+    <!-- 国际化,并且可以批定文件编码,可以使用classpath: 或者WEB-INF/ 前缀 -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+    	<property name="basenames">
+    		<list>
+    			<value>classpath:i18n/messages</value>
+    			<value>classpath:ValidationMessages</value>
+    		</list>
+    	</property>
+    	<property name="defaultEncoding" value="UTF-8"/>
+    	<property name="cacheSeconds" value="60"/>
+    </bean>
+
+    <!-- 属性文件读入,使用rapid中的JdbcPlaceholderConfigurer则可以从数据库读取配置信息 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath*:appConfig.local.properties</value>
+            </list>
+        </property>
+    </bean>
+
+	<aop:aspectj-autoproxy/>
+
+    <bean id="dataSource" class="net.sf.log4jdbc.sql.jdbcapi.DataSourceSpy">  
+        <constructor-arg ref="dataSourceSpied" />  
+    </bean>
+
+    <bean id="dataSourceSpied" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <!-- 数据库基本信息配置 -->
+        <property name="driverClassName" value="${app.dataSource.driver}" />
+        <property name="url" value="${app.dataSource.driverUrl}" />
+        <property name="username" value="${app.dataSource.username}" />
+        <property name="password" value="${app.dataSource.password}" />
+        <!-- 初始化连接数量 -->
+        <property name="initialSize" value="${app.dataSource.minConnectionCount}" />
+        <!-- 最大并发连接数 -->
+        <property name="maxActive" value="${app.dataSource.maxConnectionCount}" />
+        <!-- 最小空闲连接数 -->
+        <property name="minIdle" value="${app.dataSource.minConnectionCount}" />
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="${app.dataSource.maxWait:60000}" />
+        <!-- 超过时间限制是否回收 -->
+        <property name="removeAbandoned" value="${app.dataSource.removeAbandoned:true}" />
+        <!-- 超过时间限制多长； -->
+        <property name="removeAbandonedTimeout" value="${app.dataSource.removeAbandonedTimeout:240}" />
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="${app.dataSource.timeBetweenEvictionRunsMillis:60000}" />
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="${app.dataSource.minEvictableIdleTimeMillis:300000}" />
+        <!-- 用来检测连接是否有效的sql，要求是一个查询语句-->
+        <property name="validationQuery" value="${app.dataSource.validationQuery:SELECT 1}" /><!-- TODO 根据数据库方言自动找检查语句 -->
+        <!-- 申请连接的时候检测 -->
+        <property name="testWhileIdle" value="${app.dataSource.testWhileIdle:true}" />
+        <!-- 申请连接时执行validationQuery检测连接是否有效，配置为true会降低性能 -->
+        <property name="testOnBorrow" value="${app.dataSource.testOnBorrow:false}" />
+        <!-- 归还连接时执行validationQuery检测连接是否有效，配置为true会降低性能  -->
+        <property name="testOnReturn" value="${app.dataSource.testOnReturn:false}" />
+        <!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+        <property name="poolPreparedStatements" value="${app.dataSource.poolPreparedStatements:true}" />
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="${app.dataSource.maxPoolPreparedStatementPerConnectionSize:50}" />
+        <!--属性类型是字符串，通过别名的方式配置扩展插件，常用的插件有：
+                监控统计用的filter:stat
+                日志用的filter:log4j
+               防御SQL注入的filter:wall -->
+        <property name="filters" value="${app.dataSource.filters:stat}" />
+    </bean>
+	
+	<!-- spring-data的缓存系统 start -->
+	<!-- cacheManager, 指定ehcache.xml的位置 -->
+	<bean id="cacheManager" class="org.ccframe.commons.cache.SpringEhCacheCacheManager" ><!-- org.springframework.cache.ehcache.EhCacheCacheManager有事务BUG，新类已修正 -->
+		<property name="cacheManager" ref="ehcache"/>
+		<property name="transactionAware" value="true"/>
+	</bean>
+	<bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" >
+		<property name="configLocation" value="classpath:ehcache.xml"/>
+        <property name="shared" value="true"/>
+    </bean>
+    <cache:annotation-driven cache-manager="cacheManager" key-generator="cacheKeyGenerator"/>
+    <bean id="cacheKeyGenerator" class="org.ccframe.commons.cache.CacheKeyGenerator"/>
+    <bean id="ehCacheResolver" class="org.ccframe.commons.cache.EhCacheResolver"/>
+	<!-- spring-data的缓存系统 end -->
+
+	<!-- org.springframework.orm.hibernate5.HibernateTransactionManager JTA事务导致的问题 -->
+	<bean id="entityManagerFactory"	class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="org.ccframe.subsys.*.domain" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<!-- <property name="generateDdl" value="true"/> JPA不支持drop-create -->
+				<property name="databasePlatform" value="${app.dataSource.hibernateDialect}" />
+				<property name="showSql" value="${app.hibernate.show_sql:false}" />
+			</bean>
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">#{
+				systemProperties['app.initMode'] == null ? 
+				('${app.initMode:none}' == 'create-once' ? 'create' : '${app.initMode:none}'):
+				systemProperties['app.initMode']
+				}</prop>
+			</props>
+		</property>
+		<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml"></property>
+	</bean>
+	
+	<!-- 把jps事务和cache事务及索引事务串起来 -->
+	<bean id="transactionManager" class="org.ccframe.commons.cache.CcframeTransactionManager">
+		<property name="ehcache" ref="ehcache"/>
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+	<!-- 以 @Transactional 标注来定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+	<!-- spring-data dao -->
+	<jpa:repositories base-package="org.**.repository" entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager" />
+ 
+	<!-- component-scan自动搜索@Component , @Controller , @Service , @Repository等标注的类 -->
+    <context:component-scan base-package="org.**.aop"/>
+	<context:component-scan base-package="org.**.helper" />
+    <context:component-scan base-package="org.**.service"/>
+    <context:component-scan base-package="org.**.processor"/>
+	<context:component-scan base-package="org.**.controller" />
+	<mvc:annotation-driven/>
+
+    <task:executor id="executor" pool-size="${app.thread.executor.poolsize:2}" /><!-- 处理@Async的  -->
+    <task:scheduler id="scheduler" pool-size="${app.thread.scheduler.poolsize:2}" /><!-- 处理@Scheduled的  -->
+    <task:annotation-driven executor="executor" scheduler="scheduler" />
+
+	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<property name="defaultContentType" value="text/html" />
+		<property name="mediaTypes">
+			<map>
+				<entry key="json" value="application/json" />
+				<entry key="xml" value="application/xml" />
+				<entry key="do" value="text/html" />
+			</map>
+		</property>
+	</bean>
+
+    <!-- 根据客户端的不同的请求决定不同的view进行响应, 如 /blog/1.json /blog/1.xml -->
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="contentNegotiationManager" ref="contentNegotiationManager"/>
+        <property name="viewResolvers">
+            <list>
+                <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+                <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+                    <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+                </bean>
+            </list>
+        </property>
+        <property name="defaultViews">
+            <list>
+                <!-- for application/json -->
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+            </list>
+        </property>
+	</bean>
+
+    <!-- Mapping exception to the handler view -->
+    <bean id="exceptionResolver" class="org.ccframe.commons.util.BusinessExceptionResolver"/>
+
+	<bean id="replacementMap" class="org.springframework.beans.factory.config.MapFactoryBean">
+		<property name="sourceMap">
+			<map>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- one of the properties available; the maximum file size in bytes -->
+		<property name="maxUploadSize">
+			<value>52428800</value>  <!--50M-->
+		</property>
+	</bean>
+
+	<!-- spring-data的ElasticSearch集成 -->
+	<elasticsearch:repositories base-package="org.**.search" />
+	
+	<!-- 远程机器
+	<elasticsearch:transport-client id="client" cluster-nodes="${app.elasticsearch.address:localhost:9300,localhost:9300}" cluster-name="elasticsearch" /> -->
+	
+	<!-- embed模式client，数据采用UUID的方式每运行一次重置一次数据，对应data目录需要手动清空 -->
+	<elasticsearch:node-client id="client" local="true" 
+	cluster-name="#{T(java.util.UUID).randomUUID().toString()}" 
+    http-enabled="false"
+    path-data="#{
+    	T(org.ccframe.commons.util.WebContextHolder).getWarPath() + T(java.io.File).separator + 'WEB-INF' + T(java.io.File).separator
+    	+ 'eshome' + T(java.io.File).separator + 'esdata'
+    }"
+    path-home="#{
+    	T(org.ccframe.commons.util.WebContextHolder).getWarPath() + T(java.io.File).separator + 'WEB-INF' + T(java.io.File).separator
+    	+ 'eshome'
+    }"
+    />
+
+    <bean name="elasticsearchTemplate" class="org.springframework.data.elasticsearch.core.ElasticsearchTemplate">
+        <constructor-arg name="client" ref="client"/>
+    </bean>
+
+</beans>

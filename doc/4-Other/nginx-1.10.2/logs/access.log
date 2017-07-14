@@ -1,0 +1,6 @@
+127.0.0.1 - - [07/Jun/2017:22:46:57 +0800] "GET /app/ HTTP/1.1" 200 811 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
+127.0.0.1 - - [07/Jun/2017:22:46:57 +0800] "GET /app/app.js HTTP/1.1" 200 1707369 "http://localhost/app/" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
+127.0.0.1 - - [07/Jun/2017:22:46:58 +0800] "GET /favicon.ico HTTP/1.1" 200 4286 "http://localhost/app/" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
+127.0.0.1 - - [07/Jun/2017:22:47:27 +0800] "GET /app/studentHome.93633.min.js HTTP/1.1" 200 5133 "http://localhost/app/" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
+127.0.0.1 - - [07/Jun/2017:22:47:27 +0800] "GET /app/img/logo.png HTTP/1.1" 200 753 "http://localhost/app/" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
+127.0.0.1 - - [07/Jun/2017:22:47:27 +0800] "GET /app/img/logo.png HTTP/1.1" 304 0 "http://localhost/app/" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"

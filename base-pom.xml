@@ -1,0 +1,127 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<!-- 主配置pom，包括项目开发各类基础参数 -->
+	<!-- 继承子pom参数说明：product.warName=项目名，打包的war名称 -->
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>cn.higtek</groupId>
+	<artifactId>bike</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>bike</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<repositories>
+		<repository><!-- 标准阿里镜像 -->
+			<id>aliyun-repository</id>
+			<url>http://maven.aliyun.com/nexus/content/groups/public</url>
+		</repository>
+		<repository><!-- 自建仓库 -->
+			<id>higtek-online-repository</id>
+			<url>http://svn.higtek.cn/nexus/content/groups/public/</url>
+		</repository>
+	</repositories>
+	<build>
+		<finalName>${product.warName}</finalName>
+		<outputDirectory>war/WEB-INF/classes</outputDirectory>
+		<plugins>
+			<!-- Compile plugin --><!-- GWT编译Profile必须覆盖 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+
+			<!-- Test plugin: run test -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.20</version>
+				<configuration>
+					<reportFormat>brief</reportFormat>
+					<useFile>false</useFile>
+					<forkMode>never</forkMode> <!-- don't use fork mode lest save memory -->
+					<argLine>-Xms1024m -Xmx1792m -XX:MaxNewSize=256m -XX:PermSize=256M -XX:MaxPermSize=256m -XX:+UseParallelGC</argLine>
+					<includes>
+						<include>**/*Test.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+
+			<!-- Clean plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.4.1</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-scm-plugin</artifactId>
+				<version>1.9.5</version>
+				<configuration>
+					<connectionType>connection</connectionType>
+				</configuration>
+			</plugin>
+
+			<!-- War plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<warSourceDirectory>war</warSourceDirectory>
+					<webXml>war/WEB-INF/web.xml</webXml>
+					<archive>
+						<manifestEntries>
+							<Product-Name>${product.warName}</Product-Name>
+							<Build-Number>${env.BUILD_NUMBER}</Build-Number>
+							<Svn-Version>${env.SVN_REVISION}</Svn-Version>
+							<Build-Time>${BUILD_ID}</Build-Time>
+						</manifestEntries>
+					</archive>
+					<packagingExcludes>
+						WEB-INF/deploy/**,
+						WEB-INF/lib/*-sources.jar
+						WEB-INF/WEB-INF/**,
+						WEB-INF/WEB-INF,
+						WEB-INF/eshome/esdata/**
+					</packagingExcludes>
+				</configuration>
+			</plugin>
+
+			<!-- GWT plugin -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>2.6.1</version>
+				<executions>
+					<execution>
+						<configuration>
+							<extraJvmArgs>-Xms512m -Xmx1024m -XX:PermSize=64M -XX:MaxPermSize=256m -XX:+UseParallelGC</extraJvmArgs>
+							<localWorkers>2</localWorkers>
+							<!-- <style>PRETTY</style> -->
+						</configuration>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

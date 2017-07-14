@@ -1,0 +1,112 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+	xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
+	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
+	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
+	xmlns:cc="urn:import:org.ccframe.client.components"
+	xmlns:grid="urn:import:com.sencha.gxt.widget.core.client.grid"
+>
+	<ui:style>
+        .toolbarBg{background-color: #ededed}
+	</ui:style>
+
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="leftMargins">
+		<ui:attributes top="4" right="0" bottom="4" left="4" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="rightMargins">
+		<ui:attributes top="4" right="4" bottom="4" left="4" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="rowMargins">
+		<ui:attributes top="5" right="0" bottom="0" left="0" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.core.client.util.Padding" field="vBoxPaddings">
+		<ui:attributes top="5" right="15" bottom="5" left="15" />
+	</ui:with>
+
+	<ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="leftData">
+		<ui:attributes margins="{leftMargins}" flex="1"/>
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="rightData">
+		<ui:attributes margins="{rightMargins}"/>
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="rowData">
+		<ui:attributes margins="{rowMargins}"/>
+	</ui:with>
+
+	<ui:with type="com.sencha.gxt.widget.core.client.grid.ColumnModel" field="columnModel" />
+	<ui:with type="com.sencha.gxt.data.shared.ListStore" field="store" />
+	<ui:with type="org.ccframe.client.commons.RestyGwtPagingLoader" field="loader" />
+	<ui:with type="com.sencha.gxt.widget.core.client.grid.GridView" field="view"/>
+
+	<container:HBoxLayoutContainer hBoxLayoutAlign="STRETCH">
+		<container:child layoutData="{leftData}">
+			<gxt:ContentPanel headingHtml="参数列表">
+				<grid:Grid ui:field="grid" store="{store}" cm="{columnModel}" view="{view}" loader="{loader}" borders="true" height="400"/>
+			</gxt:ContentPanel>
+		</container:child>
+		<container:child layoutData="{rightData}">
+			<gxt:ContentPanel headingHtml="参数编辑" buttonAlign="CENTER" width="350" borders="true">
+				<container:VBoxLayoutContainer vBoxLayoutAlign="STRETCH" padding="{vBoxPaddings}">
+					<container:child layoutData="{rowData}">
+						<form:FieldLabel text="参数名称" labelWidth="70">
+							<form:widget>
+								<cc:CcTextField ui:field="paramNm" width="150" maxLength="150" readOnly="true"/>
+							</form:widget>
+						</form:FieldLabel>
+					</container:child>
+					<container:child layoutData="{rowData}">
+						<form:FieldLabel text="参数编码" labelWidth="70">
+							<form:widget>
+								<cc:CcTextField ui:field="paramInnerCoding" width="150" maxLength="150" readOnly="true"/>
+							</form:widget>
+						</form:FieldLabel>
+					</container:child>
+					<container:child layoutData="{rowData}">
+						<form:FieldLabel text="参数描述" labelWidth="70">
+							<form:widget>
+								<cc:CcTextArea ui:field="paramDescr" width="150" height="80" readOnly="true"/>
+							</form:widget>
+						</form:FieldLabel>
+					</container:child>
+					<container:child layoutData="{rowData}">
+						<g:Label text="参数值:"/>
+					</container:child>
+					<container:child layoutData="{rowData}">
+						<container:CardLayoutContainer ui:field="editCardLayout" height="200">
+							<container:child>
+								<cc:CcTextArea ui:field="textArea" maxLength="65536"/>
+							</container:child>
+							<container:child>
+								<cc:CcCkTextEditor ui:field="ckTextEditor" allowBlank="true" toolbarRows="2" height="200"/>
+							</container:child>
+							<container:child>
+								<container:CssFloatLayoutContainer ui:field="switchRadioLayout">
+									<container:child>
+										<form:Radio ui:field="yesRadio"/>
+									</container:child>
+									<container:child>
+										<form:Radio ui:field="noRadio"/>
+									</container:child>
+								</container:CssFloatLayoutContainer>
+							</container:child>
+							<container:child>
+								<container:CssFloatLayoutContainer ui:field="dynamicSelectionArea">
+								</container:CssFloatLayoutContainer>
+							</container:child>
+						</container:CardLayoutContainer>
+					</container:child>
+					<container:child layoutData="{rowData}">
+						<button:ButtonBar pack="CENTER">
+							<button:child>
+								<button:TextButton text="保存" ui:field="editButton"/>
+							</button:child>
+						</button:ButtonBar>
+					</container:child>
+				</container:VBoxLayoutContainer>
+			</gxt:ContentPanel>
+		</container:child>
+	</container:HBoxLayoutContainer>
+</ui:UiBinder> 

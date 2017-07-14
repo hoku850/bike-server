@@ -1,0 +1,42 @@
+
+
+/*新闻列表*/
+.newListStyle { width:1300px; height: 860px; background-color: white; margin: 0px auto; margin-top: 15px;}
+/*新闻列表标题*/
+.newListStyle div { margin: 0px auto; }
+.newListStyle .pageTitle { width:1165px; height: 58px; font-weight: bold; font-size: 18px; font-family: "微软雅黑"; color: #404040; padding-left: 35px; border-bottom: 3px solid #404040; line-height: 75px;}
+
+.newListStyle .pageTitle div { float: left; }
+.newListStyle .pageTitle .newTtileImg { margin-left: 4px; margin-top: 2px;}
+
+.newListStyle .newContent { width:1200px;  clear: both;  margin-top:10px;}
+.newListStyle .newListHeight { height: 735px;}
+.newListStyle .newListHeight .newHeight { height: 48px; border-bottom: 1px solid #DDDDDD; line-height: 49px; }
+.newListStyle .newListHeight .newHeight:hover { background-color: #f7f7f7;}
+
+.newListStyle .newListHeight .newDate { float: right; color: #6A6A6A; font-size: 12px; margin-right: 35px; }
+
+.newListStyle .newListHeight .newTietle { margin-left: 35px; float: left; font-size:14px; }
+.newListStyle .newListHeight .newTietle p { display: inline; margin-left: 5px;}
+.newListStyle .newListHeight .newTietle a { color: #404040; }
+.newListStyle .newListHeight .newTietle a:hover { color: #26A8FF; text-decoration: underline;}
+
+/*
+.newListStyle .newPage { text-align: center; margin:0px auto;  height: 45px; line-height: 45px; }
+
+.newListStyle .newPage a {margin-left: 10px;}
+.newListStyle .newPage .page { padding:7px 10px; border: 1px solid #CCCCCC; color:#999; line-height: 25px; font-size: 13px; }
+
+.newListStyle .newPage .first,.last,.prev,.next {  background-repeat: no-repeat; }
+
+.newListStyle .newPage .first,.last { padding: 7px 20px; }
+.newListStyle .newPage .first {  margin-left: 0px; background-image:url(../images/page-icon.png);  }
+.newListStyle .newPage .last { background-image:url(../images/page-icon.png); background-position: -106px; }
+
+.newListStyle .newPage .prev,.next { padding: 7px 15px; }
+.newListStyle .newPage .prev { background-image:url(statics/images/page-icon.png); background-position: -42px; }
+.newListStyle .newPage .next { background-image:url(statics/images/page-icon.png); background-position: -74px; }
+
+.newListStyle .newPage .page:hover { color: #FFFFFF; border:1px solid #26A8FF; background: #26A8FF;}
+.newListStyle .newPage .lock { color: #FFFFFF; border:1px solid #26A8FF; background: #26A8FF;}
+*/

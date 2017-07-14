@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0">
+    <tlib-version>1.0</tlib-version>
+    <jsp-version>2.0</jsp-version>
+    <short-name>integrateweb functions</short-name>
+    <uri>http://www.ccframe.org/sdk</uri>
+    <display-name>sdk functions</display-name>
+    <description>Tag lib for functions used in jsp.</description>
+
+
+	<tag>
+		<name>pageTag</name>
+		<tag-class>org.ccframe.commons.taglib.PageTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>page</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+	        <deferred-value>
+			    <type>org.ccframe.client.commons.ClientPage</type>
+	        </deferred-value>
+		</attribute>
+		<attribute>
+			<name>format</name>
+			<required>true</required>
+		</attribute>
+		<attribute>
+			<name>pageClass</name>
+			<required>false</required>
+		</attribute>
+		<attribute>
+			<name>disableClass</name>
+			<required>false</required>
+		</attribute>
+		<attribute>
+			<name>currentClass</name>
+			<required>false</required>
+		</attribute>
+		<attribute>
+			<name>pagePerfix</name>
+			<required>false</required>
+		</attribute>
+		<attribute>
+			<name>firstClass</name>
+			<required>false</required>
+		</attribute>
+		<attribute>
+			<name>nextClass</name>
+			<required>false</required>
+		</attribute>
+		<attribute>
+			<name>prevClass</name>
+			<required>false</required>
+		</attribute>
+		<attribute>
+			<name>lastClass</name>
+			<required>false</required>
+		</attribute>
+		<attribute>
+			<name>iconNavButton</name>
+			<required>false</required>
+		</attribute>
+	</tag>
+
+    <!--公共-->
+    <function>
+        <name>getParentNodes</name>
+        <function-class>org.ccframe.sdk.core.function.CoreApi</function-class>
+        <function-signature>
+            java.util.List getParentNodes(java.lang.Integer)
+        </function-signature>
+    </function>
+
+    <function>
+        <name>getParamValue</name>
+        <function-class>org.ccframe.sdk.core.function.CoreApi</function-class>
+        <function-signature>
+            java.lang.String getParamValue(java.lang.String)
+        </function-signature>
+    </function>
+
+    <function>
+        <name>enumFromCode</name>
+        <function-class>org.ccframe.sdk.core.function.CoreApi</function-class>
+        <function-signature>
+            java.lang.Enum enumFromCode(java.lang.String, java.lang.String)
+        </function-signature>
+    </function>
+
+    <function>
+        <name>cleanHTML</name>
+        <function-class>org.ccframe.sdk.core.function.TextUtilApi</function-class>
+        <function-signature>
+            java.lang.String cleanHTML(java.lang.String)
+        </function-signature>
+    </function>
+
+    <function>
+        <name>cutString</name>
+        <function-class>org.ccframe.sdk.core.function.TextUtilApi</function-class>
+        <function-signature>
+            java.lang.String cutString(java.lang.String, int, java.lang.String)
+        </function-signature>
+    </function>
+    
+	
+<!-- 	 chuqin:根据id获取一个树节点 -->
+	<function>
+        <name>getTree</name>
+        <function-class>org.ccframe.sdk.core.function.CoreApi</function-class>
+        <function-signature>
+             org.ccframe.client.commons.TreeNodeTree getTree(int)
+        </function-signature>
+    </function>
+    
+	<function>
+        <name>getOrgList</name>
+        <function-class>org.ccframe.sdk.core.function.CoreApi</function-class>
+        <function-signature>java.util.List getOrgList()</function-signature>
+    </function>
+
+
+    <!--文章-->
+    <!-- 2017-07-27楚钦修改， function-class类名写错-->
+    <function>
+        <name>getArticleById</name>
+        <function-class>org.ccframe.sdk.article.function.ArticleApi</function-class>
+        <function-signature>
+            org.ccframe.domain.ArticleInf getArticleById(java.lang.Integer)
+        </function-signature>
+    </function>
+
+	<function>
+        <name>getArticlePorxyById</name>
+        <function-class>org.ccframe.sdk.article.function.ArticleApi</function-class>
+        <function-signature>
+          org.ccframe.sdk.article.proxy.ArticleInfProxy  getArticleInfProxyById(java.lang.Integer)
+        </function-signature>
+    </function>
+	<!-- test -->
+    <function>
+        <name>findTest</name>
+        <function-class>org.ccframe.sdk.article.function.ArticleApi</function-class>
+        <function-signature>
+            org.ccframe.sdk.article.function.proxy.ArticleInfProxy findTest(java.lang.Integer, java.lang.Integer)
+        </function-signature>
+    </function>
+	
+
+    <function>
+        <name>findArticleInfByArticleCategoryId</name>
+        <function-class>org.ccframe.sdk.article.function.ArticleApi</function-class>
+        <function-signature>
+            java.util.List findArticleInfByArticleCategoryId(java.lang.Integer,java.lang.Integer)
+        </function-signature>
+    </function>
+<!--     <function> -->
+<!--         <name>findArticleInfListByArticleCategoryIdTopN</name> -->
+<!--         <function-class>org.ccframe.sdk.article.function.ArticleApi</function-class> -->
+<!--         <function-signature> -->
+<!--             java.util.List findArticleInfListByArticleCategoryIdTopN(java.lang.Integer,java.lang.Integer) -->
+<!--         </function-signature> -->
+<!--     </function> -->
+    
+    <function>
+        <name>findArticleInfByArticleTag</name>
+        <function-class>org.ccframe.sdk.article.function.ArticleApi</function-class>
+        <function-signature>
+            java.util.List findArticleInfByArticleTag(java.lang.String,java.lang.Integer)
+        </function-signature>
+    </function>
+
+    <function>
+        <name>findArticleInfPageByArticleCategoryId</name>
+        <function-class>org.ccframe.sdk.article.function.ArticleApi</function-class>
+        <function-signature>
+            org.ccframe.client.commons.Page findArticleInfPageByArticleCategoryId(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+        </function-signature>
+    </function>
+    
+    
+
+</taglib>

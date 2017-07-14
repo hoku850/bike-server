@@ -1,0 +1,44 @@
+
+
+.subPage { width:1300px; min-height: 860px; margin-left: 50px; margin-top: 15px;}
+
+/*左侧栏*/
+.subLeft { background-color: white; width:295px; min-height: 860px; float: left; border-right: 5px solid #FFBB33; }
+
+/*左侧栏标题*/
+.subLeft .subTitle {letter-spacing: 2px;  text-align: center; line-height: 60px; font-weight: bold; font-family: "微软雅黑";  color: white; height: 60px; background-color: #404040; }
+
+/*左侧栏列表题*/
+.subLeft .subnewList { height: 740px;}
+.subLeft .subName p { padding-left: 5px; display: inline;}
+.subLeft .subName { padding-left: 15px; padding-right: 15px;  border-bottom: 1px solid #DDDDDD; text-align: left; line-height: 35px; width:265px; height: 73px; font-size: 14px;}
+.subLeft .subName a { color: #404040;}
+.subLeft .subName:hover { background-color: #DDDDDD;}
+.subLeft .subName:hover a { color: #26A8FF; text-decoration: underline;}
+
+/*左侧栏more*/
+.subLeft .subMore { margin-right: 20px; margin-top:15px; text-align: right;}
+
+
+/*右侧栏*/
+.subRight { min-height: 860px;  background-color: white; width:985px; min-height: 840px; margin-left: 15px; float:right; }
+
+/*右侧栏标题*/
+.subRight .pageTitle { width:905px; height:60px; font-weight: bold; font-size: 18px; font-family: "微软雅黑"; color: #404040; margin: 0px auto; padding-left: 25px; border-bottom: 3px solid #404040; line-height: 75px; }
+.subRight .pageTitle div { float: left; }
+.subRight .pageTitle .newTtileImg { margin-left: 4px; margin-top: 2px;}
+
+/*内容标题*/
+.subRight .detailTitle { clear: both; text-align: center; margin-top: 10px; padding-top:10px; line-height: 76px;  font-family: "微软雅黑"; color: #404040; width:880px; height: 90px; margin: 0px auto; }
+.subRight .detailTitle div { margin:0px auto; }
+
+.subRight  .detailTitle .newpublic { text-align: center; line-height: 10px;  min-width: 500px; font-size: 12px; color: #6A6A6A;}
+.subRight  .detailTitle .newpublic ul li {display: inline; float: left; }
+.subRight  .detailTitle .newpublic .public02 { margin-left: 20px;}
+
+/*清除浮动*/
+.clear { clear: both;}
+
+/*详细内容*/
+.detailContent { padding-top:20px; font-size: 14px; color: #404040; width:885px; min-height: 665px; margin-left: 50px; line-height: 25px;}
+.detailContent p { margin-bottom:10px;}

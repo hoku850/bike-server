@@ -1,0 +1,83 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+	xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
+	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
+	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
+	xmlns:cc="urn:import:org.ccframe.client.components"
+	xmlns:grid="urn:import:com.sencha.gxt.widget.core.client.grid">
+
+	<ui:import field='org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum.*'/>
+
+    <ui:with type="com.sencha.gxt.core.client.util.Margins" field="topMargins">
+    	<ui:attributes top="4" right="4" bottom="0" left="4" />
+  	</ui:with>
+
+  	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="centerMargins">
+    	<ui:attributes top="4" right="4" bottom="4" left="4" />
+  	</ui:with>
+
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="bottomMargins">
+		<ui:attributes top="0" right="4" bottom="4" left="4" />
+	</ui:with>
+  
+	<ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="toolRow">
+		<ui:attributes width="1" height="45" margins="{topMargins}" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="gridRow">
+		<ui:attributes width="1" height="1.0d" margins="{centerMargins}" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="pagingRow">
+		<ui:attributes width="1" height="45" margins="{bottomMargins}" />
+	</ui:with>
+
+	<ui:with type="com.sencha.gxt.widget.core.client.grid.ColumnModel" field="columnModel" />
+	<ui:with type="com.sencha.gxt.data.shared.ListStore" field="store" />
+	<ui:with type="org.ccframe.client.commons.RestyGwtPagingLoader" field="loader" />
+	<ui:with type="com.sencha.gxt.widget.core.client.grid.GridView" field="view"/>
+
+	<container:VerticalLayoutContainer>
+		<container:child layoutData="{toolRow}">
+			<toolbar:ToolBar borders="true">
+				<g:Label text="骑行订单管理"/>
+				<button:TextButton text="查看轨迹" ui:field="findTrajectory" />
+				<button:TextButton text="导 出" ui:field="exportButton" />
+				<toolbar:FillToolItem />
+			</toolbar:ToolBar>
+		</container:child>
+		
+		<container:child layoutData="{toolRow}">
+			<toolbar:ToolBar borders="true">
+				<cc:CcLabelValueCombobox ui:field="orgNm" width="120" searchAllText="全部运营商" defaultValue="0" beanName="agentService"/>
+				<cc:CcLabelValueCombobox ui:field="bikeTypeNm" width="135" searchAllText="全部单车类型" defaultValue="0" beanName="bikeTypeService"/>
+				<cc:CcEnumCombobox ui:field="orderState" width="135" searchAllText="全部订单状态" default="{ON_THE_WAY}" enumTexts="骑行中,骑行完成,支付完成,已报修,锁定中" />
+				<toolbar:FillToolItem />
+				<g:Label text="时间范围"/>
+				<cc:CcDateField ui:field="startTime" width="120"  allowBlank="true"/>
+				<g:Label text="至"/>
+				<cc:CcDateField ui:field="endTime" width="120"  allowBlank="true"/>
+				<form:TextField ui:field="searchField" allowBlank="true" width="180" emptyText="登陆ID/硬件编号/车牌号"/>
+				<button:TextButton text="搜 索" ui:field="searchButton" />
+			</toolbar:ToolBar>
+		</container:child>
+		
+		<container:child layoutData="{gridRow}">
+			<grid:Grid ui:field="grid" store="{store}" cm="{columnModel}" view="{view}" loader="{loader}" borders="true" height="400"/>
+		</container:child>
+		<container:child layoutData="{pagingRow}">
+			<g:HorizontalPanel>
+			<toolbar:PagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
+				<toolbar:ToolBar />
+				<toolbar:ToolBar borders="true" height="41.8">
+					<toolbar:FillToolItem />
+					<g:Label text="总计:"/>
+					<g:Label ui:field="amount" text="&#160;&#160;&#160;&#160;"/>
+					<g:Label text="元"/>
+			</toolbar:ToolBar>
+			</g:HorizontalPanel>
+		</container:child>
+
+	</container:VerticalLayoutContainer>
+</ui:UiBinder> 

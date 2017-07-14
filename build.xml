@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<project name="ccframe" default="compileClient" basedir=".">
+	
+    <property name="gwtLib" value="${basedir}/gwtlib/gwt-2.6.1"/>
+    <property name="gxtLib" value="${basedir}/gwtlib/gxt-3.1.1"/>
+    <property name="guiceLib" value="${basedir}/gwtlib/guice"/>
+
+    <target name="compileClient">
+        <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+            <classpath>
+            	<pathelement location="${basedir}/war/WEB-INF/classes"/>
+                <pathelement location="${basedir}/src/main/java"/>
+                <pathelement location="${basedir}/gwtlib/freshbizz.jar"/>
+                <pathelement location="${basedir}/gwtlib/restygwt-2.0.3.jar"/>
+                <pathelement location="${basedir}/gwtlib/lib-gwt-file-0.3.5.jar"/>
+                <fileset dir="${basedir}/war/WEB-INF/lib" includes="*.jar"/>
+                <fileset dir="${gxtLib}" includes="*.jar"/>
+                <fileset dir="${gwtLib}" includes="*.jar"/>
+                <fileset dir="${guiceLib}" includes="*.jar"/>
+            </classpath>
+            <jvmarg value="-Xmx1280M"/>
+            <jvmarg value="-Xms1280M"/>
+            <arg value="-war"/>
+            <arg value="war"/>
+            <arg value="-localWorkers"/>
+            <arg value="2"/>
+            <arg value="-strict"/>
+            <arg value="org.ccframe.client.Client"/>
+        </java>
+    </target>
+
+</project>
+

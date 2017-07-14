@@ -1,0 +1,64 @@
+
+/*banner*/
+#banner { width: 1400px; height: 280px; }
+#blayer { width: 1400px; height: 6px;  position: absolute; top:290px;}
+#blay { width:115px;  margin: 0 auto;}
+#blay li { width:25px; height: 6px; background-color: white; float: left; border-radius: 1px; opacity: 0.7; }
+#blay li.nowlay {background-color: #26A8FF; }
+.layl { margin-left: 20px;}
+
+/*nav*/
+.nav { width: 1300px; height: 120px; margin: 0 auto; background-color: white; margin-top: 15px; }
+.nav .titleNav {  width: 354px; height: 34px; margin-top:10px; border-bottom: 1px solid #ddd;}
+.nav ul li { float: left; text-align: center; height: 53px; background-color: #f7f7f7; border-radius: 5px; border:1px solid #26a8ff; margin-left: 10px; }
+.nav ul li a { display: block; color: #26a8ff; font-weight: bold; font-size:14px; line-height: 53px;}
+.nav ul li:hover { background-color: #26A8FF; }
+.nav ul li:hover a { color: white; }
+.nav ul li ul li { display:none; background-color: #404040; opacity:0.8;  position:relative; left:-1px; border-radius: 0px; margin: 0px; border:none; }
+.nav ul li:hover ul li { display:block; z-index:9999; }
+
+
+.nav .arrow { background-image:url(../images/nav_arrows01.png); background-repeat: no-repeat;  }
+.nav .arrow:hover { background-image:url(../images/nav_arrows02.png); background-repeat: no-repeat;  }
+
+.navStyle02 .conNav .arrow { background-position: 90px 25px; }
+.navStyle02 .conNav .arrow:hover { background-position: 90px 25px; }
+
+.navStyle01 .conNav .arrow { background-position: 66px 25px; }
+.navStyle01 .conNav .arrow:hover { background-position: 66px 25px; }
+
+.nav .navStyle01 { float: left; width:400px; height: 117px; border-bottom: 3px #26a8ff solid; }
+.nav .navStyle01 div { min-width: 354px; margin-left: 23px; }
+.nav .navStyle01 .conNav { height:55px; margin-top:9px; font-family: "微软雅黑"; }
+.nav .navStyle01 .conNav ul li { width: 79px; }
+.nav .navStyle01 .conNav ul li ul li { width: 81px; }
+.nav .navStyle01 .conNav .mnSpace { margin-left: 0px;}
+.nav .navStyle02 { width: 500px; height: 120px; background-color: #ffbb33; float: left; }
+.nav .navStyle02 div { min-width:400px; margin-left: 50px;}
+.nav .navStyle02 .titleNav { width:400px; border-bottom: 1px solid #fff; }
+.nav .navStyle02 .conNav { height: 55px; margin-top:10px; }
+.nav .navStyle02 .conNav ul li { margin:0px; margin-left: 11px; }
+.nav .navStyle02 .conNav ul li { width: 124px; border:1px solid white; }
+.nav .navStyle02 .conNav ul li ul li { width: 126px; margin-left: 0px; border:none; }
+.nav .navStyle02 .conNav .mnSpace { margin-left: 0px;}
+
+/*新闻内容*/
+.content { width:1400px; height: 475px; margin-top: 15px;}
+.content .contentStyle { width:400px; height: 475px; background-color: white; margin-left: 50px; float: left;}
+
+.content .contentStyle .titleBg01 { background-image: url(../images/news_bg.png);  }
+.content .contentStyle .titleBg02 { background-image: url(../images/employ_bg.png); }
+.content .contentStyle .titleBg03 { background-image: url(../images/academic_bg.png); }
+
+.content .contentStyle .conTitle { background-repeat: no-repeat; height: 68px; font-family: "微软雅黑"; font-weight: bold; font-size: 18px; color: #3a3a3a; padding-left: 25px; line-height: 68px;}
+.content .contentStyle .conTitle div { float: left; }
+.content .contentStyle .conTitle .titleArrow { margin-left: 5px; margin-top:2px;}
+
+.content .contentStyle .contentnew { width:352px; height: 355px; margin-top: 7px; margin-left: 20px; line-height: 24px; }
+.content .contentStyle .contentnew ul { height: 55px; border-bottom: 1px solid #eee; margin-top: 3px;}
+.content .contentStyle .contentnew ul p { display: inline; margin-left: 5px; }
+.content .contentStyle .contentnew ul .title { color: #404040; font-family: "微软雅黑"; font-size: 14px;  height: 44px;}
+.content .contentStyle .contentnew ul .title:hover { color: #26A8FF; text-decoration: underline; }
+.content .contentStyle .contentnew ul .date { color: #6A6A6A; font-size: 12px; text-align: right; height: 16px;  line-height: 2px;}
+
+.content .contentStyle .moreBtn { height: 30px; margin-top: 5px; width:352px; margin-left: 20px; text-align: right;}

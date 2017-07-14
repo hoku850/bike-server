@@ -1,0 +1,76 @@
+@CHARSET "UTF-8";
+
+body {
+	font-family: airal,verdana,tahoma,helvetica,"microsoft yahei","宋体";
+	font-size: 14px;
+	margin: 0;
+	padding: 0;
+	word-wrap: break-word;
+	/** background-color: #000000; **/
+	display: block;
+	height: 100%;
+}
+
+/* GXT样式覆盖 */
+.x-toolbar {
+	background: -webkit-linear-gradient(#EDEDED, #EDEDED) !important; /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(#EDEDED, #EDEDED) !important; /* Opera 11.10+ */
+	background: -ms-linear-gradient(#EDEDED, #EDEDED) !important; /* IE10+ */
+	background: linear-gradient(#EDEDED, #EDEDED) !important; /* W3C */
+}
+
+.x-toolbar .gwt-Label{
+	padding:0px 5px !important;
+	color: #34495E !important;
+	font-size: 14px;
+	font-weight: bold;
+    letter-spacing: 2px;
+    word-spacing: 2px;
+}
+
+input[readonly] {
+	background-color:#e0e0e0 !important;
+}
+textarea {padding: 2px 6px 1px !important;}
+textarea[readonly] {
+	background-color:#e0e0e0 !important;
+}
+.ccCombo input[readonly]{
+	background-color:#FFFFFF !important;
+}
+
+/* TODO参考用，需要整合进GWT样式 */
+.button, .buttonOver, .buttonFocused, .buttonFocusedOver, .buttonDown, .buttonFocusedDown, .buttonSelected, .buttonSelectedFocused, .buttonSelectedDown, .buttonSelectedFocusedDown, .buttonSelectedOver, .buttonSelectedFocusedOver, .buttonDisabled, .buttonSelectedDisabled,
+.buttonRounded, .buttonRoundedOver, .buttonRoundedFocused, .buttonRoundedFocusedOver, .buttonRoundedDown, .buttonRoundedFocusedDown, .buttonRoundedSelected, .buttonRoundedSelectedFocused, .buttonRoundedSelectedDown, .buttonRoundedSelectedFocusedDown, .buttonRoundedSelectedOver, .buttonRoundedSelectedFocusedOver, .buttonRoundedDisabled, .buttonRoundedSelectedDisabled
+{
+    letter-spacing: 4px;
+    word-spacing: 4px;
+}
+
+.toolStripButton, .toolStripButtonOver, .toolStripButtonFocused, .toolStripButtonFocusedOver, .toolStripButtonDown, .toolStripButtonFocusedDown, .toolStripButtonSelected, .toolStripButtonSelectedFocused, .toolStripButtonSelectedDown, .toolStripButtonSelectedFocusedDown, .toolStripButtonSelectedOver, .toolStripButtonSelectedFocusedOver, .toolStripButtonDisabled, .toolStripButtonSelectedDisabled{
+    font-family: airal,verdana,tahoma,helvetica,"宋体","microsoft yahei" !important;
+    font-size: 12px !important;
+    letter-spacing: 2px;
+    word-spacing: 2px;
+}
+
+.fileGrid .simpleTileSelected, .fileGrid .simpleTileSelectedOver{background: url(../images/file_grid_selected_bg.gif);}
+
+.ckeditorFile .simpleTileSelected, .ckeditorFile .simpleTileSelectedOver{border: 1px solid #69ac9f;}
+.ckeditorFile .buttonRounded,
+.ckeditorFile .buttonRoundedOver,
+.ckeditorFile .buttonRoundedFocused,
+.ckeditorFile .buttonRoundedFocusedOver,
+.ckeditorFile .buttonRoundedDown,
+.ckeditorFile .buttonRoundedFocusedDown,
+.ckeditorFile .buttonRoundedSelected,
+.ckeditorFile .buttonRoundedSelectedFocused,
+.ckeditorFile .buttonRoundedSelectedDown,
+.ckeditorFile .buttonRoundedSelectedFocusedDown,
+.ckeditorFile .buttonRoundedSelectedOver,
+.ckeditorFile .buttonRoundedSelectedFocusedOver,
+.ckeditorFile .buttonRoundedDisabled,
+.ckeditorFile .buttonRoundedSelectedDisabled{
+	letter-spacing: 0px;
+    word-spacing: 0px;
+}

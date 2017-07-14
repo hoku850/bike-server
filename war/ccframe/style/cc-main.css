@@ -1,0 +1,163 @@
+@CHARSET "UTF-8";
+
+.badge{
+	border-radius: 9px;
+	padding:0px 6px;
+}
+
+/* main frame */
+.frameMainColor {
+	background: -webkit-linear-gradient(top, #34495e 0%, #34495e 100%) !important;
+	background: -o-linear-gradient(top, #34495e 0%, #34495e 100%) !important;
+	background: -ms-linear-gradient(top, #34495e 0%, #34495e 100%) !important;
+	background: linear-gradient(to bottom, #34495e 0%, #34495e 100%) !important;
+}
+
+.leftMenuTop {
+	border-top:1px dashed #AAAAAA;
+	border-bottom:1px dashed #AAAAAA;
+}
+
+.nav-img-button-bar {
+	background-color: #34495e;
+	padding: 5px;
+}
+.nav-img-button-bar button{
+	background-color: #445f7a;
+	color:#ecf0f5;
+	cursor:pointer;
+	border:none;
+	font-size:16px;
+}
+.nav-img-button-bar button:hover{
+	background-color:#597da0;
+	color:#ffffff;
+}
+.nav-img-button-bar button:active{
+	padding-top:2px;padding-left:5px;
+}
+.nav-menu-accordion > div:first-child {
+	border-bottom: 1px dashed #AAAAAA;
+}
+
+.cc-nav {
+	border-left:1px solid #e1e1e1;
+	border-top:none;
+	border-right:none;
+	border-top:none;
+	color: #ffffff !important;
+	text-align:left !important;
+	cursor: pointer;
+	padding-left:10px;
+}
+
+.cc-menu li,.cc-nav li{
+	font-size:18px !important;
+	margin-right:5px !important;
+}
+.cc-menu span:hover{
+	color:#ffffff !important;
+}
+
+
+.cc-nav.red {background-color: #892e65 !important;text-align:center;}
+.cc-nav.red > li{animation: 2s ease 1s normal none 5 running ringing;transform-origin:50% 0 0;}
+.cc-nav.red:hover{background-color: #762c59 !important;}
+.cc-nav.red > .badge{background-color: #d15b47 !important;}
+
+.cc-nav.green {background-color: #2e8965 !important;}
+.cc-nav.green > li{animation: 2s ease 2s normal none 5 running vertical;}
+.cc-nav.green:hover{background-color: #2c7659 !important;}
+.cc-nav.green > .badge{background-color: #82af6f !important;}
+
+.cc-nav.user{background-color: #1b6ba5 !important; color: #ffffff !important;white-space:nowrap;font-size:14px;}
+.cc-nav.user:hover{background-color: #005892 !important;}
+.cc-nav.user img{width:40px;height:40px;border-radius:100%;vertical-align:middle;margin-right:10px;border:1px solid #DDDDDD;}
+.cc-nav.user li{display:inline-block;margin-left:5px;font-size:14px !important;}
+
+.cc-lmenu .nav-menu-accordion{background-color: #efefef!important;};
+
+.badge {
+	font-size: 12px;
+	padding: 1px 6px;
+	border: 1px solid #D1D1D1;
+	border-radius: 10px;
+	display: inline-block;
+	font-weight: 400 !important;
+    vertical-align: text-bottom !important;
+	behavior:url(${webRoot}/common-statics/bootstrap-patch/PIE.htc);
+}
+
+.fa-menu-icon {
+    border: 0 none;
+    height: 16px;
+    left: 3px;
+    margin: 3px;
+    padding: 0;
+    position: absolute;
+    vertical-align: top;
+    width: 16px;
+}
+
+/* 上传组件支持 TODO css图片合并*/
+.cc-upload-add {
+	background: url(../images/upload_add.png);
+	border:1px solid #3a688a;
+	border-radius: 3px;
+}
+
+.cc-upload-addOver, .cc-upload-addDisabled {
+	background: url(../images/upload_add_over.png);
+}
+
+.cc-upload-del {
+	background: url(../images/upload_del.png);
+	border:1px solid #FFFFFF;
+	border-radius: 2px;
+}
+.cc-upload-delOver, .cc-upload-delDisabled {
+	background-color: #6aa4cf;
+}
+
+
+.cc-upload-insert {
+	background: url(../images/upload_insert.png);
+	border:1px solid #FFFFFF;
+	border-radius: 2px;
+}
+.cc-upload-insertOver, .cc-upload-insertDisabled {
+	background-color: #6aa4cf;
+}
+
+.cc-file{background: url(../images/file_icons.png) no-repeat scroll 0 0 transparent;}
+.cc-file-xls,.cc-file-xlsx{background-position: 10px 2px;}
+.cc-file-pdf{background-position: -32px 2px;}
+.cc-file-rar{background-position: -74px 2px;}
+.cc-file-ppt,.cc-file-pptx{background-position: -116px 2px;}
+.cc-file-doc,.cc-file-docx{background-position: -158px 2px;}
+.cc-file-zip{background-position: -242px 2px;}
+.cc-file-other{background-position: -200px 2px;}
+
+@keyframes ringing {
+0% {transform: rotate(-15deg);}
+2% {transform: rotate(15deg);}
+4% {transform: rotate(-18deg);}
+6% {transform: rotate(18deg);}
+8% {transform: rotate(-22deg);}
+10% {transform: rotate(22deg);}
+12% {transform: rotate(-18deg);}
+14% {transform: rotate(18deg);}
+16% {transform: rotate(-12deg);}
+18% {transform: rotate(12deg);}
+20% {transform: rotate(0deg);}
+}
+
+@keyframes vertical {
+0% {transform: translate(0px, -3px);}
+4% {transform: translate(0px, 3px);}
+8% {transform: translate(0px, -3px);}
+12% {transform: translate(0px, 3px);}
+16% {transform: translate(0px, -3px);}
+20% {transform: translate(0px, 3px);}
+22% {transform: translate(0px, 0px);}
+}

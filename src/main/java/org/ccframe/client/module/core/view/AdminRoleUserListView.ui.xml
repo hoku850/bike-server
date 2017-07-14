@@ -1,0 +1,41 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+	xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
+	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
+	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
+	xmlns:cc="urn:import:org.ccframe.client.components"
+	xmlns:grid="urn:import:com.sencha.gxt.widget.core.client.grid"
+	xmlns:article="urn:import:org.ccframe.client.module.article"
+	xmlns:tree="urn:import:com.sencha.gxt.widget.core.client.tree"
+>
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="centerMargins">
+		<ui:attributes top="4" right="0" bottom="4" left="4" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="toolMargins">
+		<ui:attributes top="0" right="0" bottom="0" left="4" />
+	</ui:with>
+
+	<ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="toolRow">
+		<ui:attributes margins="{toolMargins}" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="centerData">
+		<ui:attributes flex="1" margins="{centerMargins}"/>
+	</ui:with>
+
+	<container:VBoxLayoutContainer vBoxLayoutAlign="STRETCH">
+		<container:child layoutData="{toolRow}">
+			<toolbar:ToolBar borders="true">
+				<g:Label text="角色用户"/>
+				<button:TextButton text="添加" ui:field="addButton" />
+				<button:TextButton text="删除" ui:field="deleteButton" />
+			</toolbar:ToolBar>
+		</container:child>
+		<container:child layoutData="{centerData}">
+			<gxt:ListView ui:field="userList" borders="true"/>
+		</container:child>
+	</container:VBoxLayoutContainer>
+
+</ui:UiBinder> 

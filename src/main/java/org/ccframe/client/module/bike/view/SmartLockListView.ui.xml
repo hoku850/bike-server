@@ -1,0 +1,70 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+	xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
+	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
+	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
+	xmlns:cc="urn:import:org.ccframe.client.components"
+	xmlns:grid="urn:import:com.sencha.gxt.widget.core.client.grid"
+>
+	<ui:import field='org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum.*'/>
+  	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="topMargins">
+    	<ui:attributes top="4" right="4" bottom="0" left="4" />
+  	</ui:with>
+
+  	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="centerMargins">
+    	<ui:attributes top="4" right="4" bottom="4" left="4" />
+ 	</ui:with>
+
+  	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="bottomMargins">
+    	<ui:attributes top="0" right="4" bottom="4" left="4" />
+  	</ui:with>
+  
+	<ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="toolRow">
+		<ui:attributes width="1" height="45" margins="{topMargins}" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="gridRow">
+		<ui:attributes width="1" height="1.0d" margins="{centerMargins}" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="pagingRow">
+		<ui:attributes width="1" height="45" margins="{bottomMargins}" />
+	</ui:with>
+
+	<ui:with type="com.sencha.gxt.widget.core.client.grid.ColumnModel" field="columnModel" />
+	<ui:with type="com.sencha.gxt.data.shared.ListStore" field="store" />
+	<ui:with type="org.ccframe.client.commons.RestyGwtPagingLoader" field="loader" />
+	<ui:with type="com.sencha.gxt.widget.core.client.grid.GridView" field="view"/>
+
+	<container:VerticalLayoutContainer>
+		<container:child layoutData="{toolRow}">
+			<toolbar:ToolBar borders="true">
+				<g:Label text="智能锁管理"/>
+				<button:TextButton text="增 加" ui:field="addButton" />
+				<button:TextButton text="修 改" ui:field="editButton" />
+				<button:TextButton text="删 除" ui:field="deleteButton" />
+				<button:TextButton text="发 放" ui:field="grantButton" />
+				<button:TextButton text="导 入" ui:field="importButton" />
+				<button:TextButton text="报 废" ui:field="desertButton" />
+				<button:TextButton text="导 出" ui:field="exportButton" />
+				
+				
+				<cc:CcLabelValueCombobox ui:field="orgId" width="150" defaultValue="0" searchAllText="全部运营商"  beanName="agentService" />
+				<cc:CcEnumCombobox ui:field="smartLockStatCode" default="{ACTIVED}" width="110" searchAllText="全部状态" enumTexts="未生产,已生产,已发放,已激活,维修中,已废弃"/>
+				
+				<toolbar:FillToolItem/>
+				<form:TextField ui:field="searchText" allowBlank="true" width="250" emptyText="硬件编号/IMEI码/MAC/车牌号"/>
+				<button:TextButton text="查询" ui:field="searchButton" />
+			</toolbar:ToolBar>
+		</container:child>
+
+		<container:child layoutData="{gridRow}">
+			<grid:Grid ui:field="grid" store="{store}" cm="{columnModel}" view="{view}" loader="{loader}" borders="true" height="400"/>
+		</container:child>
+		<container:child layoutData="{pagingRow}">
+			<toolbar:PagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
+		</container:child>
+
+	</container:VerticalLayoutContainer>
+</ui:UiBinder> 

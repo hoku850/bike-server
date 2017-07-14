@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="OFF">
+	<appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{MM.dd HH:mm:ss.SSS} %-5p %c - %m%n" />
+		</Console>
+	</appenders>
+	<loggers>
+		<root level="error">
+			<appender-ref ref="Console" />
+		</root>
+		<logger name="org.ccframe" level="info" additivity="false">
+            <appender-ref ref="Console"/>
+        </logger>
+		<logger name="log4jdbc.log4j2" level="error" additivity="false"><!-- level=info则开启SQL输出 -->
+			<MarkerFilter marker="LOG4JDBC_NON_STATEMENT" onMatch="DENY" onMismatch="NEUTRAL" />
+			<appender-ref ref="Console" />
+		</logger>
+	</loggers>
+</configuration>

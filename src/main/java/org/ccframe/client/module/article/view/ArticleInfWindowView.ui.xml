@@ -1,0 +1,105 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+	xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
+	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
+	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
+	xmlns:cc="urn:import:org.ccframe.client.components"
+	xmlns:grid="urn:import:com.sencha.gxt.widget.core.client.grid"
+	xmlns:article="urn:import:org.ccframe.client.module.article"
+>
+	<ui:import field='org.ccframe.subsys.core.domain.code.ApproveStatCodeEnum.*'/>
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="rowMargins">
+		<ui:attributes top="5" right="5" bottom="0" left="5" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.core.client.util.Padding" field="vBoxPaddings">
+		<ui:attributes top="5" right="15" bottom="5" left="15" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="vBoxLayoutData">
+		<ui:attributes margins="{rowMargins}"/>
+	</ui:with>
+	
+	<gxt:Window ui:field="window" width="990" modal="true" headingText="修改文章" focusWidget="{closeButton}" buttonAlign="CENTER" bodyStyle="background-color: 0xFFF; padding-top:10px;">
+		<cc:CcVBoxLayoutContainer ui:field="vBoxLayoutContainer" padding="{vBoxPaddings}">
+			
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="文章标题">
+					<form:widget>
+						<cc:CcTextField ui:field="articleTitle" allowBlank="false" width="840"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			
+			<cc:child layoutData="{vBoxLayoutData}">
+				<container:HBoxLayoutContainer>
+					<container:child>
+						<container:SimpleContainer width="492" resize="false"><!-- 包装一个resize=false的容器后可以禁止拉伸，并按照实际宽度生效 -->
+							<form:FieldLabel text="文章分类">
+						        <form:widget>
+							        <cc:CcTreePathField ui:field="articleCategoryId" rootEnum="ARTICLE_CATEGORY_TREE_ROOT" rootText="文章分类" allowBlank="false" width="368"/>
+						        </form:widget>
+					        </form:FieldLabel>
+				        </container:SimpleContainer>
+					</container:child>
+					<container:child>
+						<container:SimpleContainer resize="false"><!-- 包装一个resize=false的容器后可以禁止拉伸，并按照实际宽度生效 -->
+						    <form:FieldLabel text="文章来源">
+								<form:widget>
+									<cc:CcTextField ui:field="articleSource" allowBlank="true" width="348"/>
+								</form:widget>
+							</form:FieldLabel>
+						</container:SimpleContainer>
+					</container:child>
+				</container:HBoxLayoutContainer>
+			</cc:child>
+			
+			<cc:child layoutData="{vBoxLayoutData}">
+				<container:HBoxLayoutContainer>
+					<container:child>
+						<container:SimpleContainer width="492" resize="false"><!-- 包装一个resize=false的容器后可以禁止拉伸，并按照实际宽度生效 -->
+							<form:FieldLabel text="文章作者">
+						        <form:widget>
+							        <cc:CcTextField ui:field="articleAuthor" allowBlank="true" width="150"/>
+						        </form:widget>
+					        </form:FieldLabel>
+						</container:SimpleContainer>
+					</container:child>
+					<container:child>
+						<container:SimpleContainer width="453" resize="false"><!-- 包装一个resize=false的容器后可以禁止拉伸，并按照实际宽度生效 -->
+						    <form:FieldLabel text="排序">
+								<form:widget>
+									<cc:CcIntegerField ui:field="articlePosition" allowBlank="false" defaultValue="100" width="150"/>
+								</form:widget>
+							</form:FieldLabel>
+						</container:SimpleContainer>
+					</container:child>
+				</container:HBoxLayoutContainer>
+			</cc:child>
+			
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="文章内容">
+					<form:widget>
+						<cc:CcCkEditor ui:field="articleContStr" allowBlank="false" width="840" height="360"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="发布状态">
+					<form:widget>
+						<cc:CcEnumRadioField ui:field="approveStatCode" default="{APPROVE}" enumTexts="未提交,未处理,同意,拒绝"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+		</cc:CcVBoxLayoutContainer>
+		<gxt:button>
+			<button:TextButton ui:field="saveButton" text="保存"/>
+		</gxt:button>
+		<gxt:button>
+			<button:TextButton ui:field="closeButton" text="退出"/>
+		</gxt:button>
+	</gxt:Window>
+
+</ui:UiBinder> 

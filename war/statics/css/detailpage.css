@@ -1,0 +1,15 @@
+
+/*当前位置*/
+#place { width:1350px; height: 30px; background-color: #f9f9f9; font-family: "微软雅黑"; line-height: 30px; font-size: 12px; padding-left: 50px;}
+
+#detailPage{ width:1300px; height: 840px; background-color: white; margin-left: 50px;}
+/*内容标题*/
+#detailTitle { text-align: center; margin-top: 10px; }
+#detailTitle { padding-top: 20px; line-height: 35px;  font-family: "微软雅黑"; font-size: 14px; color: #404040; width:1200px; height: 60px; margin-left: 50px; }
+#detailTitle  .detaille { display: inline; font-weight: bold; }
+#detailTitle #newpublic { line-height: 10px;   width: 240px; height: 40px; margin-left: 480px; font-size: 12px; color: #6A6A6A;}
+#detailTitle #newpublic  .public01 { display: inline; float: left;}
+#detailTitle #newpublic  .public02 { display: inline; float: right;}
+/*详细内容*/
+#detailContent {  font-size: 12px; color: #404040;  text-indent: 2em; width:1200px; height: 750px; margin-left: 50px; line-height: 25px;}
+#detailContent p { margin-top:5px;}

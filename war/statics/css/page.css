@@ -1,0 +1,82 @@
+* { padding: 0px; margin: 0px; }
+a { text-decoration: none;} 
+ul { list-style: outside none none;}
+ul,li { margin: 0px; padding: 0px;}
+
+.bodyRow{width:1400px; margin: 0px auto; }
+
+/* 公共分页样式 */
+.pager{
+	text-align: center;
+}
+.pager a{
+    border: 1px solid #999999;
+    color: #777;
+    font-size: 13px;
+    line-height: 30px;
+    margin-left: 10px;
+    height: 30px;
+    text-align:center;
+    width: 35px;
+    display: inline-block;
+    vertical-align:middle;
+}
+.pager .page:hover,.pager .page.curr {
+    background: #26a8ff none repeat scroll 0 0;
+    border: 1px solid #26a8ff;
+    color: #ffffff;
+}
+.pager .disabled{
+	color: #CCC;
+	border: 1px solid #CCC;
+}
+.pager .first{width: 40px; background-image:url('../images/page-icon.png');background-position: 0px;}
+.pager .last{width: 40px; background-image:url(../images/page-icon.png);background-position: -106px;}
+.pager .prev{width: 30px; background-image:url(../images/page-icon.png);background-position: -42px;}
+.pager .next{width: 30px; background-image:url(../images/page-icon.png);background-position: -74px;}
+
+/* 隐藏分页的样式
+.pager .disabled{
+	display:none;
+} */
+
+/*页眉*/
+.top { min-width:1400px; background-color: #6a6a6a;height: 50px;}
+.top .bodyRow div{float:left;}
+.top .bodyRow .logo { width:100px; margin-left: 50px; float:left;}
+.top .bodyRow .logo img { margin-top: 7px; }
+
+.top .bodyRow .menu { margin-left: 60px; width:1140px; }
+.top .bodyRow .menu a { display: block; color: white; font-size: 16px; }
+.top .bodyRow .menu ul li {float: left; width:95px; height: 45px; line-height: 50px; text-align: center; font-family: "微软雅黑";}
+.top .bodyRow .menu ul li:hover { background-color: .404040; border-bottom: 5px solid #FFBB33;}
+.top .bodyRow .menu ul li:hover a { color: #FFBB33;}
+.top .bodyRow .menu ul li ul li {z-index:9999; position:relative; top:-1px; display: none; background-color: #404040; line-height: 45px; opacity: 0.9; }
+.top .bodyRow .menu ul li ul li:hover { border: none; background-color: #FFBB33;}
+.top .bodyRow .menu ul li ul li:hover a { color: white;}
+.top .bodyRow .menu ul li:hover ul li { display: block;}
+
+
+/*当前位置*/
+.place { width:1350px; height: 30px; background-color: #f9f9f9; font-family: "微软雅黑"; line-height: 30px; font-size: 12px; padding-left: 50px;}
+.place a { color: #000;}
+.place a:hover { color: #26A8FF; text-decoration: underline;}
+
+
+/*页面容器*/
+.pageContainer { width:1400px; min-height: 875px; margin: 0px auto; background-color: #f0f0f0; padding-bottom: 15px; }
+
+
+/*footer*/
+.footer { min-width:1400px; height: 100px; background-color: #404040;  }
+.footer a { text-decoration: none; color: white; font-size: 12px;}
+.footer a:hover { color: #26A8FF; text-decoration: underline;}
+
+.footer .bodyRow .lfoot { width:120px; float:left; margin-left:50px; }
+.footer .bodyRow .lfoot .flogo { height: 55px; padding-top:22px; }
+
+.footer .bodyRow .ftext {margin-left:161px; float:left; font-family: "微软雅黑"; color:#FFF; font-size:12px;  line-height:25px; }
+.footer .bodyRow .ftext div {  height:25px; width:1019px; }
+.footer .bodyRow .ftext ul li { float:left; margin-left:25px; }
+.footer .bodyRow .ftext .fcon {margin-top:13px; }
+.footer .bodyRow .ftext .fconPad {margin-left:0px; }

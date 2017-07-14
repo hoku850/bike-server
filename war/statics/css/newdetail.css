@@ -1,0 +1,12 @@
+
+
+.detailPage{ width:1300px; min-height: 860px; background-color: white; margin: 0px auto; margin-top:15px; }
+
+/*内容标题*/
+.detailPage .detailTitle div { width:1200px; text-align: center; margin:0px auto; }
+.detailPage .detailTitle { padding-top:10px; line-height: 76px;  font-family: "微软雅黑"; color: #404040;  height: 90px;  }
+.detailPage .detailTitle .newpublic { line-height: 10px; margin: 0px auto; font-size: 12px; color: #6A6A6A;}
+.detailPage .detailTitle .newpublic .public02 {  margin-left: 20px; }
+/*详细内容*/
+.detailPage .detailContent { padding-bottom:5px; padding-top:20px; font-size: 14px; color: #404040; width:1200px; min-height: 735px; margin-left: 50px; line-height: 25px;}
+.detailPage .detailContent p { margin-bottom:5px;}

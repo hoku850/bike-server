@@ -1,0 +1,64 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+	xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
+	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
+	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
+	xmlns:cc="urn:import:org.ccframe.client.components"
+	xmlns:grid="urn:import:com.sencha.gxt.widget.core.client.grid">
+
+	<ui:import field='org.ccframe.subsys.bike.domain.code.PaymentTypeCodeEnum.*'/>
+	<ui:import field='org.ccframe.subsys.bike.domain.code.ChargeOrderStatCodeEnum.*'/>
+	
+    <ui:with type="com.sencha.gxt.core.client.util.Margins" field="topMargins">
+    	<ui:attributes top="4" right="4" bottom="0" left="4" />
+  	</ui:with>
+
+  	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="centerMargins">
+    	<ui:attributes top="4" right="4" bottom="4" left="4" />
+  	</ui:with>
+
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="bottomMargins">
+		<ui:attributes top="0" right="4" bottom="4" left="4" />
+	</ui:with>
+  
+	<ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="toolRow">
+		<ui:attributes width="1" height="45" margins="{topMargins}" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="gridRow">
+		<ui:attributes width="1" height="1.0d" margins="{centerMargins}" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="pagingRow">
+		<ui:attributes width="1" height="45" margins="{bottomMargins}" />
+	</ui:with>
+
+	<ui:with type="com.sencha.gxt.widget.core.client.grid.ColumnModel" field="columnModel" />
+	<ui:with type="com.sencha.gxt.data.shared.ListStore" field="store" />
+	<ui:with type="org.ccframe.client.commons.RestyGwtPagingLoader" field="loader" />
+	<ui:with type="com.sencha.gxt.widget.core.client.grid.GridView" field="view"/>
+
+	<container:VerticalLayoutContainer>
+		<container:child layoutData="{toolRow}">
+			<toolbar:ToolBar borders="true">
+				<g:Label text="充值订单"/>
+				<button:TextButton text="导 出" ui:field="exportButton" />
+				<cc:CcLabelValueCombobox ui:field="orgNm" width="120" searchAllText="全部运营商" defaultValue="0" beanName="agentService"/>
+				<cc:CcEnumCombobox ui:field="chargeState" width="135" searchAllText="全部状态" default="{UNPAID}" enumTexts="待支付,充值成功,充值失败,退款中,退款成功,退款失败" />
+				<cc:CcEnumCombobox ui:field="payState" width="135" searchAllText="全部支付类型" default="{ALIPAY}" enumTexts="支付宝,微信,中国银联" />
+				<toolbar:FillToolItem />
+				<form:TextField ui:field="search" allowBlank="true" width="250" emptyText="输入登陆ID/订单号码"/>
+				<button:TextButton text="查询" ui:field="searchButton" />
+			</toolbar:ToolBar>
+		</container:child>
+
+		<container:child layoutData="{gridRow}">
+			<grid:Grid ui:field="grid" store="{store}" cm="{columnModel}" view="{view}" loader="{loader}" borders="true" height="400"/>
+		</container:child>
+		<container:child layoutData="{pagingRow}">
+			<toolbar:PagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
+		</container:child>
+
+	</container:VerticalLayoutContainer>
+</ui:UiBinder> 

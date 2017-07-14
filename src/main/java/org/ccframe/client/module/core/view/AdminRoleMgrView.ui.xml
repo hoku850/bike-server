@@ -1,0 +1,35 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+	xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
+	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
+	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
+	xmlns:cc="urn:import:org.ccframe.client.components"
+	xmlns:core="urn:import:org.ccframe.client.module.core.view"
+>
+
+	<ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="leftTopData">
+		<ui:attributes flex="1" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="leftBottomData">
+		<ui:attributes flex="2" />
+	</ui:with>
+
+	<container:HBoxLayoutContainer hBoxLayoutAlign="STRETCH"><!-- 角色管理 -->
+		<container:child>
+			<container:VBoxLayoutContainer width="210" vBoxLayoutAlign="STRETCH">
+				<container:child layoutData="{leftTopData}">
+					<core:AdminRoleListView ui:field="adminRoleListView"/>
+				</container:child>
+				<container:child layoutData="{leftBottomData}">
+					<core:AdminRoleUserListView ui:field="adminRoleUserListView"/>
+				</container:child>
+			</container:VBoxLayoutContainer>
+		</container:child>
+		<container:child layoutData="{leftTopData}">
+			<core:AdminRoleMenuView ui:field="adminRoleMenuView"/>
+		</container:child>
+	</container:HBoxLayoutContainer>
+</ui:UiBinder> 

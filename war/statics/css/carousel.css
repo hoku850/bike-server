@@ -1,0 +1,57 @@
+* {
+				margin: 0;
+				padding: 0;
+			}
+			
+			body {
+				background-color: #1E1E1E;
+				color: #666666;
+			}
+			
+			li {
+				list-style: none;
+			}
+			
+			.pj-Carousel {
+				/*这里控制图片大小*/
+				width: 1400px;
+				height: 280px;
+				overflow: hidden;
+				position: relative;
+			}
+			
+			.pj-Carousel-box {
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			
+			.pj-Carousel-item {
+				float: left;
+				background-color: #E3E3E3;
+				text-align: center;
+				line-height: 300px;
+				font-family: "Arial Black";
+				color: #979797;
+				font-size: 40px;
+			}
+			
+			.pj-Carousel-active {
+				position: absolute;
+				bottom: 10px;
+				margin: auto auto;
+				z-index: 5;
+			}
+			
+			.pj-Carousel-color {
+				background-color: #A2A2A2;
+				width: 14px;
+				height: 14px;
+				border-radius: 50%;
+				float: left;
+				margin: 0px 5px;
+			}
+			
+			.pj-Carousel .active {
+				background-color: #272727;
+			}

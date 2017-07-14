@@ -1,0 +1,109 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+	xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
+	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
+	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
+	xmlns:cc="urn:import:org.ccframe.client.components"
+>
+
+	<ui:style>
+		.maincolor{
+			background-color: #34495e;
+		}
+	</ui:style>
+
+	<ui:with type="org.ccframe.client.resources.ClientImages" field="icons" />
+
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="westMargins">
+		<ui:attributes top="0" right="5" bottom="5" left="5" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="centerMargins">
+		<ui:attributes top="0" right="0" bottom="0" left="0" />
+	</ui:with>
+	<ui:with
+		type="com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData"
+		field="northData">
+		<ui:attributes size="50"/>
+	</ui:with>
+	<ui:with
+		type="com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData"
+		field="westData">
+		<ui:attributes size="210" minSize="200" margins="{westMargins}" collapsible="true" split="true" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.MarginData"
+		field="centerData">
+		<ui:attributes margins="{centerMargins}" />
+	</ui:with>
+
+
+	<ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="boxDataFlex1">
+		<ui:attributes flex="1" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.core.client.util.Padding" field="padding5">
+		<ui:attributes top="5" right="10" bottom="5" left="10" />
+	</ui:with>
+  
+	<container:Viewport>
+		<container:BorderLayoutContainer ui:field="borderLayoutContainer" borders="false" styleName="{style.maincolor}">
+			<container:north layoutData="{northData}">
+				<container:HBoxLayoutContainer height="50px" styleName="{style.maincolor}" addStyleNames="x-toolbar-mark" ui:field="hbox"><!-- hBoxLayoutAlign="STRETCH"  -->
+					<container:child>
+						<cc:CcImage contextUrl="ccframe/images/backgroud_log.png"/>
+					</container:child>
+					<container:child layoutData="{boxDataFlex1}">
+						<container:SimpleContainer></container:SimpleContainer>
+					</container:child>
+					<container:child>
+						<!-- <cc:FaTextButtonfaText="" faIconType="GEARS" scale="LARGE" height="33px" width="45px"/>  -->
+						<cc:FaBadgeButton badgeText="0" addStyleNames="cc-nav red" faIconType="BELL" width="74px" height="50px" ui:field="navButton1"/>
+					</container:child>
+					<container:child>
+						<cc:FaBadgeButton badgeText="0" addStyleNames="cc-nav green" faIconType="ENVELOPE" width="74px" height="50px"/>
+					</container:child>
+					<container:child>
+						<g:Button addStyleNames="cc-nav user" height="50px" ui:field="userButton"/>
+					</container:child>
+				</container:HBoxLayoutContainer>
+			</container:north>
+			<container:west layoutData="{westData}">
+				<gxt:ContentPanel ui:field="menuPanel" headingText="功能导航">
+					<container:VBoxLayoutContainer ui:field="buttonBox" vBoxLayoutAlign="STRETCH">
+						<container:child>
+							<container:HBoxLayoutContainer hBoxLayoutAlign="TOP" height="45" addStyleNames="nav-img-button-bar"><!-- 强制toolbar颜色 -->
+								<container:child><cc:FaButton ui:field="fastMenu1" faIconType="GEARS" height="33px" width="45px"/></container:child>
+								<container:child layoutData="{boxDataFlex1}">
+									<container:SimpleContainer></container:SimpleContainer>
+								</container:child>
+								<container:child><cc:FaButton ui:field="fastMenu2" faIconType="STEAM_SQUARE" height="33px" width="45px"/></container:child>
+								<container:child layoutData="{boxDataFlex1}">
+									<container:SimpleContainer></container:SimpleContainer>
+								</container:child>
+								<container:child><cc:FaButton ui:field="fastMenu3" faIconType="BELL_O" height="33px" width="45px"/></container:child>
+								<container:child layoutData="{boxDataFlex1}">
+									<container:SimpleContainer></container:SimpleContainer>
+								</container:child>
+								<container:child><cc:FaButton ui:field="fastMenu4" faIconType="STAR" height="33px" width="45px"/></container:child>
+							</container:HBoxLayoutContainer>
+						</container:child>
+					</container:VBoxLayoutContainer>
+				</gxt:ContentPanel>
+			</container:west>
+			<container:center layoutData="{centerData}" >
+				<gxt:ContentPanel headerVisible="false" ui:field="centerPanel" resize="true"><!-- 模块空间 -->
+<!-- 
+				
+					<gxt:button>
+						<button:TextButton text="Button 1" icon="{icons.add16}" />
+					</gxt:button>
+					<gxt:button>
+						<cc:FaButton text="Button 1" faIconType="BELL" />
+					</gxt:button>
+ -->
+				</gxt:ContentPanel>
+			</container:center>
+		</container:BorderLayoutContainer>
+	</container:Viewport>
+</ui:UiBinder> 

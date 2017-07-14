@@ -1,0 +1,24 @@
+
+
+.teampage { overflow: hidden; width:1400px; height: 920px; background-color: rgba(255,187,33,0.6); margin: 0px auto; }
+
+.teampage .teamcontent { width:595px; height: 750px; background-color: #FFFFFF; margin: 85px auto 0px ; }
+
+
+
+.teampage .teamcontent .teamtitle { padding: 20px 0px 0px 0px; height: 60px;}
+.teampage .teamcontent .teamtitle ul li { letter-spacing:1px; font-size: 25px; text-align: center; color: #26A8FF; font-weight: bold; line-height: 35px; }
+
+
+.teampage .teamcontent .teammember { margin-top:30px; }
+.teampage .teamcontent .teammember ul li div { float: left; margin:auto;}
+.teampage .teamcontent .teammember ul li { margin-bottom: 15px; font-weight: bold; width:520px; border-radius: 10px; border:1px solid #DDDDDD; padding: 10px; height: 120px; margin-left: 25px; }
+
+.teampage .teamcontent .teammember ul li .memimg { margin-left: 15px; color: #404040; font-size: 25px; line-height: 120px; text-align: center; background-color: #DDDDDD; width:120px; height: 120px; border-radius: 50%; }
+
+
+.teampage .teamcontent .teammember ul li .memwork {  margin-left: 25px; width:350px; height: 120px; background-color: #FFBB33;  border-radius: 10px;}
+.teampage .teamcontent .teammember ul li .memwork ul { vertical-align: middle; padding-top:12px;  }
+.teampage .teamcontent .teammember ul li .memwork ul li { text-align: left; font-size: 15px; margin: 0px; padding: 5px 0px 0px 30px; height: 25px;  border: none; color: #FFFFFF; line-height: 30px;}
+
+

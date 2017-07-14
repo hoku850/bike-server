@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.7.0//EN" "http://google-web-toolkit.googlecode.com/svn/tags/1.7.0/distro-source/core/src/gwt-module.dtd">
+<module rename-to='client'>
+    <inherits name='com.google.gwt.user.User' />
+
+    <inherits name="com.google.gwt.http.HTTP" />
+    <inherits name="com.google.gwt.json.JSON" />
+    <inherits name="com.google.gwt.i18n.I18N" />
+  	<inherits name="com.google.web.bindery.autobean.AutoBean"/>
+	<inherits name='com.google.gwt.inject.Inject'/>
+    <inherits name='org.fusesource.restygwt.RestyGWT' />
+	<inherits name='com.google.gwt.inject.Inject'/>
+    <inherits name='com.flipthebird.GwtHashCodeEquals' />
+
+ 	<inherits name="com.sencha.gxt.ui.GXT"/>
+
+	<inherits name="com.axeiya.gwtckeditor.Gwtckeditor"/>
+
+	<inherits name="org.vectomatic.libgwtfile" />
+
+    <inherits name='org.ccframe.subsys.core.domain.CodeSource' />
+    <inherits name='org.ccframe.subsys.core.dto.CodeSource' />
+
+    <inherits name='org.ccframe.subsys.article.domain.CodeSource' />
+    <inherits name='org.ccframe.subsys.article.dto.CodeSource' />
+    
+    <inherits name='org.ccframe.subsys.bike.domain.CodeSource' />
+    <inherits name='org.ccframe.subsys.bike.dto.CodeSource' />
+
+	<stylesheet src="reset.css" />
+	
+	<!-- <inherits name="com.sencha.gxt.theme.neptune.Theme" /> -->
+	<inherits name="com.sencha.gxt.theme.freshbizz.Theme" />
+	<!-- <inherits name="com.example.Theme" />  -->
+	
+    <!-- <entry-point class='org.ccframe.client.module.MainFrame' /> -->
+    <entry-point class='org.ccframe.client.Client' />
+    <source path="" />
+
+	<extend-property name="locale" values="zh"/>
+    <set-property name="locale" value="zh"/><!-- 用sourceMap debug必须只指定一个语言，否则会出错 -->
+    <!-- <set-property-fallback name="locale" value="zh"/>  -->
+    <!--<set-property name="gxt.user.agent" value="gecko1_8" /> 采用传统调试模式，调试浏览器用火狐26.0 -->
+    <!-- <set-property name="gxt.user.agent" value="chrome" /> SuperDevMode只能用chrome,不能加gecko1_8,gecko1_9否则报多个sourcemap错，由于sourceMap问题，需要回归DevMode -->
+	<!-- <add-linker name="xsiframe" /> 该参数只用于SuperDevMode -->
+
+</module>

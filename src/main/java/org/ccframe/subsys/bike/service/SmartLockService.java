@@ -27,6 +27,7 @@ import org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
+import org.ccframe.subsys.bike.dto.SmartLockRowDto;
 import org.ccframe.subsys.bike.repository.SmartLockRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -115,9 +116,9 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		ImportDataCheckUtil.stringCheck("IMEI码", 15, false, checkValue.getImeiCode(), rowNum, 1, resultList);
 		ImportDataCheckUtil.stringCheck("MAC地址", 17, false, checkValue.getMacAddress(), rowNum, 2, resultList);
 		ImportDataCheckUtil.stringCheck("单车车牌号", 15, false, checkValue.getBikePlateNumber(), rowNum, 3, resultList);
-		ImportDataCheckUtil.stringCheck("运营商", 6, false, checkValue.getOrgId().toString(), rowNum, 4, resultList);
+		ImportDataCheckUtil.enumCheck("运营商", "总平台,摩拜单车,ofo小黄单,小蓝车,Hello,小鸣", checkValue.getOrgId().toString(), rowNum, 4, resultList);
 		ImportDataCheckUtil.enumCheck("状态", "未生产,已生产,已发放,已激活,维修中,已废弃", checkValue.getSmartLockStatCode(), rowNum, 5, resultList);
-		ImportDataCheckUtil.stringCheck("单车类型", 6, false, checkValue.getBikeTypeId().toString(), rowNum, 6, resultList);
+		ImportDataCheckUtil.enumCheck("单车类型", "标准单车,摩拜 lite,摩拜  小橙车,ofo lite,ofo 经典,小蓝 lite,小蓝 经典,Hello Bike lite,Hello Bike 经典,小鸣 lite,小鸣 经典", checkValue.getBikeTypeId().toString(), rowNum, 6, resultList);
 		return resultList;
 	}
 
@@ -137,7 +138,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			SmartLock smartLock = null;
 			smartLock = this.getByKey(SmartLock.LOCKER_HARDWARE_CODE, rowSmartLock.getLockerHardwareCode());//数据库内容
 
-			// 判断对错
+			// 判断重复
 			SmartLock check = null;
 			if (smartLock != null) {// 硬件编号存在,update
 				check = this.getByKey(SmartLock.IMEI_CODE, rowSmartLock.getImeiCode());
@@ -197,9 +198,73 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 				smartLockStatCode = SmartLockStatCodeEnum.UNPRODUCE.toCode();
 				break;	
 			}
-//			if(rowSmartLock.getSmartLockStatCode().equals("未生产")){
-//				smartLockStatCode = SmartLockStatCodeEnum.UNPRODUCE.toCode();
-//			}else if(rowSmartLock.getSmartLockStatCode().equals("未生产"))
+
+			//运营商转换
+			String org = null;
+			switch (rowSmartLock.getOrgId().toString()){
+			case "总平台":
+				org = "1";
+				break;
+			case "摩拜单车":
+				org = "501";
+				break;
+			case "ofo小黄单":
+				org = "502";
+				break;
+			case "小蓝车":
+				org = "503";
+				break;
+			case "Hello":
+				org = "504";
+				break;
+			case "小鸣":
+				org = "505";
+				break;
+			default:
+				org = "1";
+				break;	
+			}
+			
+			//单车类型转换
+			String bikeType = null;
+			switch (rowSmartLock.getBikeTypeId().toString()){
+			case "标准单车":
+				bikeType = "60000";
+				break;
+			case "摩拜 lite":
+				bikeType = "60001";
+				break;
+			case "摩拜  小橙车":
+				bikeType = "60002";
+				break;
+			case "ofo lite":
+				bikeType = "60011";
+				break;
+			case "ofo 经典":
+				bikeType = "60012";
+				break;
+			case "小蓝 lite":
+				bikeType = "60021";
+				break;
+			case "小蓝 经典":
+				bikeType = "60022";
+				break;
+			case "Hello Bike lite":
+				bikeType = "60031";
+				break;
+			case "Hello Bike 经典":
+				bikeType = "60032";
+				break;
+			case "小鸣 lite":
+				bikeType = "60041";
+				break;
+			case "小鸣 经典":
+				bikeType = "60042";
+				break;
+			default:
+				bikeType = "1";
+				break;	
+			}
 			
 			// 保存
 			SmartLock dbSmartLock = this.getByKey(SmartLock.LOCKER_HARDWARE_CODE, rowSmartLock.getLockerHardwareCode());
@@ -209,9 +274,9 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 				dbSmartLock.setSmartLockStatCode("0");
 				dbSmartLock.setBikeTypeId(60000);
 			}else{//update
-				dbSmartLock.setOrgId(rowSmartLock.getOrgId());
+				dbSmartLock.setOrgId(Integer.parseInt(org));
 				dbSmartLock.setSmartLockStatCode(smartLockStatCode);
-				dbSmartLock.setBikeTypeId(rowSmartLock.getBikeTypeId());
+				dbSmartLock.setBikeTypeId(Integer.parseInt(bikeType));
 			}
 			dbSmartLock.setLockerHardwareCode(rowSmartLock.getLockerHardwareCode());
 			dbSmartLock.setImeiCode(rowSmartLock.getImeiCode());
@@ -303,5 +368,10 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 
 		return JsonBinder.buildNormalBinder().toJson(fileName);
 	}
-
+	
+	public void doDesert(SmartLockRowDto selectedRow){
+		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(selectedRow.getSmartLockId());
+		smartLock.setSmartLockStatCode(SmartLockStatCodeEnum.DESERTED.toCode());
+		SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
+	}
 }

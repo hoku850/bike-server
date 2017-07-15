@@ -1,5 +1,6 @@
 package org.ccframe.client.module.bike.view;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.base.BaseWindowView;
 import org.ccframe.client.commons.CcFormPanelHelper;
 import org.ccframe.client.commons.ClientManager;
@@ -7,6 +8,7 @@ import org.ccframe.client.commons.RestCallback;
 import org.ccframe.client.components.CcLabelValueCombobox;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
+import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.fusesource.restygwt.client.Method;
 
@@ -78,7 +80,6 @@ public class BikeTypeWindowView extends BaseWindowView<Integer, BikeType> implem
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
 		driver.initialize(this);
-		bikeTypeNm.setMaxLength(12);
 		driver.edit(new BikeType());
 		return widget;
 	}
@@ -93,12 +94,20 @@ public class BikeTypeWindowView extends BaseWindowView<Integer, BikeType> implem
 		orgId.reset();
 		if(bikeTypeId == null){
 			FormPanelHelper.reset(vBoxLayoutContainer);
+			// 运营商登陆
+			if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+				orgId.setValue(MainFrame.adminUser.getOrgId());
+				orgId.setEnabled(false);
+			}
 		}else{
 			ClientManager.getBikeTypeClient().getById(bikeTypeId, new RestCallback<BikeType>(){
 				@Override
 				public void onSuccess(Method method, BikeType response) {
 					driver.edit(response);
-					orgId.setValue(response.getOrgId());
+					// 运营商登陆
+					if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+						orgId.setEnabled(false);
+					}
 				}
 			});
 		}

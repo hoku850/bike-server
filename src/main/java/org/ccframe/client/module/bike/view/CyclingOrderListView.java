@@ -143,8 +143,8 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 			@Override
 			public void call(int offset, int limit,final RestyGwtPagingLoader<CyclingOrderRowDto> loader) {
 				CyclingOrderListReq cyclingOrderListReq = new CyclingOrderListReq();
-				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getUserId()) {
-					cyclingOrderListReq.setOrgId(MainFrame.adminUser.getUserId());
+				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+					cyclingOrderListReq.setOrgId(MainFrame.adminUser.getOrgId());
 				} else {
 					cyclingOrderListReq.setOrgId(orgNm.getValue());
 				}
@@ -173,35 +173,28 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
+		// 时间范围默认为当前至前30天
+		startTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date(new Date().getTime() - (long)30 * 24 * 60 * 60 * 1000)));
+		endTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date()));
 		// 运营商登陆 <- 用户登陆的ID跟总平台ID不同
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getUserId()) {
+		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
 			this.columnModel.getColumn(1).setHidden(true);
 			this.orgNm.hide();
+			bikeTypeNm.setExtraParam(MainFrame.adminUser.getOrgId().toString());
+			bikeTypeNm.reset();
+		} else {
+			orgNm.reset();
+			orgNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<Integer> event) {
+					bikeTypeNm.setExtraParam(event.getValue().toString());
+					bikeTypeNm.reset();
+					loader.load();
+				}
+			});
+			bikeTypeNm.setExtraParam(Integer.toString(0));
+			bikeTypeNm.reset();
 		}
-		// 时间范围默认为当前至前30天
-		startTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date(new Date().getTime() - (long)30 * 24 * 60 * 60 * 1000)));
-		endTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date()));
-		return widget;
-	}
-
-	@Override
-	public void onModuleReload(BodyContentEvent event) {
-		super.onModuleReload(event);
-		// 时间范围默认为当前至前30天
-		startTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date(new Date().getTime() - (long)30 * 24 * 60 * 60 * 1000)));
-		endTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date()));
-		orgNm.reset();
-		bikeTypeNm.setExtraParam(Integer.toString(0));
-		bikeTypeNm.reset();
-		orderState.reset();
-		orgNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Integer> event) {
-				bikeTypeNm.setExtraParam(event.getValue().toString());
-				bikeTypeNm.reset();
-				loader.load();
-			}
-		});
 		bikeTypeNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Integer> event) {
@@ -214,5 +207,22 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 				loader.load();
 			}
 		});
+		return widget;
+	}
+
+	@Override
+	public void onModuleReload(BodyContentEvent event) {
+		super.onModuleReload(event);
+		// 时间范围默认为当前至前30天
+		startTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date(new Date().getTime() - (long)30 * 24 * 60 * 60 * 1000)));
+		endTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date()));
+		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+			bikeTypeNm.setExtraParam(MainFrame.adminUser.getOrgId().toString());
+			bikeTypeNm.reset();
+		} else {
+			orgNm.setValue(0);
+			bikeTypeNm.setExtraParam(Integer.toString(0));
+			bikeTypeNm.reset();
+		}
 	}
 }

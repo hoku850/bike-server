@@ -54,9 +54,6 @@ public class MainFrameController{
 			throw new BusinessException(ResGlobal.ERRORS_LOGIN_PASSWORD, true);
 		}
 		AdminUser adminUser = AdminUser.create(user, orgId); 
-		System.out.println(adminUser.getOrgId()+"001");//暂时只处理总平台逻辑不处理不同平台
-		adminUser.setOrgId(502);
-		System.out.println(adminUser.getOrgId()+"002");
 		WebContextHolder.getSessionContextStore().setServerValue(Global.SESSION_LOGIN_ADMIN, adminUser);
 		WebContextHolder.getSessionContextStore().removeServerValue(Global.SESSION_VALIDATE_CODE);
 		return BoolCodeEnum.YES;

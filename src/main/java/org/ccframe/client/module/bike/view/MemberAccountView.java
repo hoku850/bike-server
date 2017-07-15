@@ -58,7 +58,7 @@ public class MemberAccountView extends BasePagingListView<MemberAccountRowDto> {
 	public TabPanel statusTabPanel;
 	
     @UiField
-    public CcLabelValueCombobox orgId;
+    public CcLabelValueCombobox orgNm;
 	
 	@UiHandler("searchButton")
 	public void searchButtonClick(SelectEvent e){
@@ -137,12 +137,11 @@ public class MemberAccountView extends BasePagingListView<MemberAccountRowDto> {
 			}
 		});
 		// 运营商登陆
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getUserId()) {
-			orgId.hide();
-//			orgId.setValue(value);// 把运营商的ID set进去
+		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+			orgNm.hide();
 		} else {
-			orgId.reset();
-			orgId.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+			orgNm.reset();
+			orgNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 				@Override
 				public void onValueChange(ValueChangeEvent<Integer> event) {
 					loader.load();
@@ -160,7 +159,11 @@ public class MemberAccountView extends BasePagingListView<MemberAccountRowDto> {
 				MemberAccountListReq memberAccountListReq = new MemberAccountListReq();
 				memberAccountListReq.setSearchText(searchField.getValue());
 				memberAccountListReq.setAccountTypeCode(tabFlag.toString());
-				memberAccountListReq.setOrgId(orgId.getValue());
+				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+					memberAccountListReq.setOrgId(MainFrame.adminUser.getOrgId());
+				} else {
+					memberAccountListReq.setOrgId(orgNm.getValue());
+				}
 				ClientManager.getMemberAccountClient().findList(memberAccountListReq, offset, limit, new RestCallback<ClientPage<MemberAccountRowDto>>(){
 
 					@Override

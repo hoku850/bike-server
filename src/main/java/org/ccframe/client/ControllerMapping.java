@@ -154,6 +154,7 @@ public interface ControllerMapping {
 	String SMART_LOCK_SEARCH_LIST = "grantSearch"; 
 	String SMART_LOCK_LIST = "findSmartLockList"; //用户分页列表
 	String SMART_LOCK_EXPORT = "doExport"; //导出
+	String SMART_LOCK_DESERT = "doDesert"; //报废
 	
 	//单车类型管理
 	String BIKE_TYPE_BASE = ADMIN_BASE + "bikeType";

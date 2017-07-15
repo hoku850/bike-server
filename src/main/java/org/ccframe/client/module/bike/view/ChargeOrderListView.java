@@ -115,8 +115,8 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 			@Override
 			public void call(int offset, int limit,final RestyGwtPagingLoader<ChargeOrderRowDto> loader) {
 				ChargeOrderListReq chargeOrderListReq = new ChargeOrderListReq();
-				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getUserId()) {
-					chargeOrderListReq.setOrgId(MainFrame.adminUser.getUserId());
+				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+					chargeOrderListReq.setOrgId(MainFrame.adminUser.getOrgId());
 				} else {
 					chargeOrderListReq.setOrgId(orgNm.getValue());
 				}
@@ -137,25 +137,17 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
 		// 运营商登陆
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getUserId()) {
+		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
 			this.orgNm.hide();
+		} else {
+			orgNm.reset();
+			orgNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<Integer> event) {
+					loader.load();
+				}
+			});
 		}
-		return widget;
-	}
-
-	@Override
-	public void onModuleReload(BodyContentEvent event) {
-		super.onModuleReload(event);
-		orgNm.reset();
-		chargeState.reset();
-		payState.reset();
-		search.setValue(null);
-		orgNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Integer> event) {
-				loader.load();
-			}
-		});
 		chargeState.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
@@ -168,5 +160,16 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 				loader.load();
 			}
 		});
+		return widget;
+	}
+
+	@Override
+	public void onModuleReload(BodyContentEvent event) {
+		super.onModuleReload(event);
+		// 总平台登陆
+		if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
+			orgNm.setValue(0);
+		}
+		search.setValue(null);
 	}
 }

@@ -31,4 +31,7 @@ public interface SmartLockClient extends RestService{
 
 	@POST @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.SMART_LOCK_BASE + "/"+ ControllerMapping.SMART_LOCK_EXPORT + Global.REST_REQUEST_URL_SUFFIX)
 	void exportUrl(String tempFilePath, RestCallback<String> restCallback);
+	
+	@POST @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.SMART_LOCK_BASE + "/"+ ControllerMapping.SMART_LOCK_DESERT + Global.REST_REQUEST_URL_SUFFIX)
+	void doDesert(SmartLockRowDto selectedRow, RestCallback<Void> restCallback);
 }

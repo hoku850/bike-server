@@ -10,6 +10,7 @@ import org.ccframe.client.commons.ColumnConfigEx;
 import org.ccframe.client.commons.EventBusUtil;
 import org.ccframe.client.commons.RestCallback;
 import org.ccframe.client.commons.RestyGwtPagingLoader;
+import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.commons.WindowEventCallback;
 import org.ccframe.client.commons.RestyGwtPagingLoader.CallBack;
 import org.ccframe.client.components.CcEnumCombobox;
@@ -118,7 +119,21 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 	
 	@UiHandler("desertButton")
 	public void desertButtonClick(SelectEvent e){
+		final SmartLockRowDto selectedRow = grid.getSelectionModel().getSelectedItem();
 		
+		ViewUtil.confirm("提示信息", "你确定要报废该智能锁吗？ 该操作将不可撤销！！", new Runnable(){
+			@Override
+			public void run() {
+				ClientManager.getSmartLockClient().doDesert(selectedRow, new RestCallback<Void>(){
+					@Override
+					public void onSuccess(Method method, Void response) {
+						Info.display("操作完成", "智能锁报废成功！");
+						loader.load();
+					}
+				});
+				
+			}
+		});
 	}
 	
 	@UiHandler("searchButton")

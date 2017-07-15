@@ -106,9 +106,8 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 					userId = mAccount.getUserId();
 					loader.load();
 					// 总平台登陆
-					if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getUserId()) {
+					if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
 						ClientManager.getAgentClient().getById(mAccount.getOrgId(), new RestCallback<Agent>() {
-							
 							@Override
 							public void onSuccess(Method method, Agent response) {
 								title.setText("账户交易日志(" + response.getAgentNm() + "预存款)");

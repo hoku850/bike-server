@@ -2,6 +2,7 @@ package org.ccframe.client.module.bike.view;
 
 import java.util.List;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.ViewResEnum;
 import org.ccframe.client.base.BaseCrudListView;
 import org.ccframe.client.commons.ClientManager;
@@ -15,6 +16,7 @@ import org.ccframe.client.commons.WindowEventCallback;
 import org.ccframe.client.components.CcLabelValueCombobox;
 import org.ccframe.client.module.core.event.BodyContentEvent;
 import org.ccframe.client.module.core.event.LoadWindowEvent;
+import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.dto.BikeTypeListReq;
 import org.ccframe.subsys.bike.dto.BikeTypeRowDto;
@@ -116,7 +118,11 @@ public class BikeTypeListView extends BaseCrudListView<BikeTypeRowDto> {
 			@Override
 			public void call(int offset, int limit,final RestyGwtPagingLoader<BikeTypeRowDto> loader) {
 				BikeTypeListReq bikeTypeListReq = new BikeTypeListReq();
-				bikeTypeListReq.setOrgId(orgId.getValue());
+				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+					bikeTypeListReq.setOrgId(MainFrame.adminUser.getOrgId());
+				} else {
+					bikeTypeListReq.setOrgId(orgId.getValue());
+				}
 				ClientManager.getBikeTypeClient().findBikeTypeList(bikeTypeListReq, offset, limit, new RestCallback<ClientPage<BikeTypeRowDto>>(){
 					@Override
 					public void onSuccess(Method method, ClientPage<BikeTypeRowDto> response) {
@@ -130,18 +136,26 @@ public class BikeTypeListView extends BaseCrudListView<BikeTypeRowDto> {
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
+		// 运营商登陆
+		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+			orgId.hide();
+		} else {
+			orgId.reset();
+			orgId.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<Integer> event) {
+					loader.load();
+				}
+			});
+		}
 		return widget;
 	}
 
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
-		orgId.reset();
-		orgId.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Integer> event) {
-				loader.load();
-			}
-		});
+		if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
+			orgId.setValue(0);
+		}
 	}
 }

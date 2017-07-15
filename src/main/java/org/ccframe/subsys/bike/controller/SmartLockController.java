@@ -45,5 +45,10 @@ public class SmartLockController{
 	public String doExport(@RequestBody String tempFilePath) throws IOException{
 		return SpringContextHelper.getBean(SmartLockService.class).doExport(tempFilePath);
 	}
+	
+	@RequestMapping(value = ControllerMapping.SMART_LOCK_DESERT, method=RequestMethod.POST)
+	public void doDesert(@RequestBody SmartLockRowDto selectedRow){
+		SpringContextHelper.getBean(SmartLockService.class).doDesert(selectedRow);
+	}
 }
 

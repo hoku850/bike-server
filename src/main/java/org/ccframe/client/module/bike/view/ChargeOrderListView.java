@@ -139,6 +139,7 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 		// 运营商登陆
 		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
 			this.orgNm.hide();
+			this.columnModel.getColumn(1).setHidden(true);
 		} else {
 			orgNm.reset();
 			orgNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {

@@ -9,6 +9,7 @@ import org.ccframe.client.components.CcLabelValueCombobox;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
 import org.ccframe.subsys.bike.dto.SmartLockGrant;
+import org.ccframe.subsys.bike.dto.SmartLockGrantDto;
 import org.fusesource.restygwt.client.Method;
 
 import com.google.gwt.core.client.GWT;
@@ -102,6 +103,7 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 			}
 			
 		});
+		orgId.reset();
 		bikeTypeId.reset();
 		return widget;
 	}
@@ -132,26 +134,32 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 			final TextButton button = ((TextButton)(e.getSource()));
 			button.disable();
 			
-			long totalLock = ClientManager.getSmartLockGrantClient().grantSearch(smartLockGrant);
-			System.out.println(totalLock);
-//			ViewUtil.confirm("提示信息", "符合条件的车锁共计"+totalLock+"把"+","+"你确定发放吗？该操作将不可撤销！！", new Runnable(){
-//				@Override
-//				public void run() {
-//					ClientManager.getSmartLockGrantClient().grant(smartLockGrant, new RestCallback<Void>(){
-//						@Override
-//						public void onSuccess(Method method, Void response) {
-//							Info.display("操作完成", "智能锁发放成功");
-//							SmartLockGrantWindowView.this.retCallBack.onClose(null); //保存并回传结果数据
-//							button.enable();
-//							window.hide();
-//						}
-//						@Override
-//						protected void afterFailure(){ //如果采用按钮的disable逻辑，一定要在此方法enable按钮
-//							button.enable();
-//						}
-//					});
-//				}
-//			});
+			ClientManager.getSmartLockGrantClient().grantSearch(smartLockGrant, new RestCallback<Long>(){
+				
+				@Override
+				public void onSuccess(Method method, Long response) {
+					System.out.println(response);
+					ViewUtil.confirm("提示信息", "符合条件的车锁共计"+"<span style='color:red'>"+response+"</span>"+"把"+","+"你确定发放吗？该操作将不可撤销！！", new Runnable(){
+						@Override
+						public void run() {
+							ClientManager.getSmartLockGrantClient().grant(smartLockGrant, new RestCallback<SmartLockGrantDto>(){
+								@Override
+								public void onSuccess(Method method, SmartLockGrantDto response) {
+									Info.display("操作完成", "成功发放单车车锁 "+response.getTotalLock()+" 把至运营商 "+response.getOrgNm());
+									SmartLockGrantWindowView.this.retCallBack.onClose(null); //保存并回传结果数据
+									button.enable();
+									window.hide();
+								}
+								@Override
+								protected void afterFailure(){ //如果采用按钮的disable逻辑，一定要在此方法enable按钮
+									button.enable();
+								}
+							});
+						}
+					});
+				}
+				
+			});
 		}
 	}
 }

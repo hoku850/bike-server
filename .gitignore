@@ -48,6 +48,7 @@ Temporary Items
 
 # bikeserver的忽略提交目录
 war/client/
+war/WEB-INF/eshome/esdata
 gwt-unitCache/
 .settings
 .svn

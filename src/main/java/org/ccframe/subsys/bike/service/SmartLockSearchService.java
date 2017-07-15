@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ccframe.client.commons.ClientPage;
+import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
@@ -13,6 +14,7 @@ import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.dto.SmartLockGrant;
+import org.ccframe.subsys.bike.dto.SmartLockGrantDto;
 import org.ccframe.subsys.bike.dto.SmartLockListReq;
 import org.ccframe.subsys.bike.dto.SmartLockRowDto;
 import org.ccframe.subsys.bike.search.SmartLockSearchRepository;
@@ -84,9 +86,12 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 		return totalLock;
 	}
 	
-	public void grant(SmartLockGrant smartLockGrant) {
+	public SmartLockGrantDto grant(SmartLockGrant smartLockGrant) {
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		RangeQueryBuilder rangeQuerybuilder = QueryBuilders.rangeQuery(SmartLock.LOCKER_HARDWARE_CODE);
+		
+		SmartLockGrantDto smartLockGrantDto = new SmartLockGrantDto();
+		
 		if(StringUtils.isNotBlank(smartLockGrant.getStartLockerHardwareCode())){
 			rangeQuerybuilder.from(smartLockGrant.getStartLockerHardwareCode());
 		}
@@ -99,9 +104,7 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 			boolQueryBuilder.must(prefixQueryBuilder);
 		}
 		Page<SmartLock> smartLockPage = this.getRepository().search(boolQueryBuilder, null);
-		Long totalLock = smartLockPage.getTotalElements();
-		
-		System.out.println("符合条件的车锁共计"+totalLock+"把"+","+"你确定发放吗？该操作将不可撤销！！");
+		smartLockGrantDto.setTotalLock(smartLockPage.getTotalElements());
 		
 		List<SmartLock> list = smartLockPage.getContent();
 		for (SmartLock smartLock : list) {
@@ -109,15 +112,10 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 			smartLock.setOrgId(smartLockGrant.getOrgId());
 			smartLock.setBikeTypeId(smartLockGrant.getBikeTypeId());
 			SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
-			
+
 			Agent org = SpringContextHelper.getBean(AgentService.class).getById(smartLockGrant.getOrgId());
-			String orgNm = org.getAgentNm();
-			
-//			Info.display("操作完成", "成功发放单车车锁 "+totalLock+" 把至运营商 "+orgNm);
-			System.out.println("成功发放单车车锁 "+totalLock+" 把至运营商 "+orgNm);
+			smartLockGrantDto.setOrgNm(org.getAgentNm());
 		}
-		
-		
-		
+		return smartLockGrantDto;
 	}
 }

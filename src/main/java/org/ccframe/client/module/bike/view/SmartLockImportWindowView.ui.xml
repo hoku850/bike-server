@@ -32,12 +32,12 @@
 							<cc:CcSimpleFileUpload ui:field="simpleFileUpload" width="420" filterGroup="FILTER_OFFICE_EXCEL"/>
 						</form:widget>
 					</form:FieldLabel>
-					<gxt:button>
-						<button:TextButton ui:field="deleteFile" text="保存"/>
+					<!-- <gxt:button>
+						<button:TextButton ui:field="deleteFile" text="删除"/>
 					</gxt:button>
 					<gxt:button>
-						<button:TextButton ui:field="previewFile" text="保存"/>
-					</gxt:button>
+						<button:TextButton ui:field="previewFile" text="预览"/>
+					</gxt:button> -->
 				</g:HorizontalPanel>
 			</cc:child>
 			<cc:child layoutData="{vBoxLayoutData}">

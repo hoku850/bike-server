@@ -10,11 +10,14 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.ccframe.client.Global;
 import org.ccframe.client.ResGlobal;
 import org.ccframe.commons.base.BaseService;
 import org.ccframe.commons.data.BatchImportSupport;
 import org.ccframe.commons.data.ExcelReaderError;
+import org.ccframe.commons.data.ImportDataCheckUtil;
 import org.ccframe.commons.data.ListExcelReader;
 import org.ccframe.commons.data.ListExcelWriter;
 import org.ccframe.commons.helper.SpringContextHelper;
@@ -34,7 +37,10 @@ import org.ccframe.subsys.bike.search.SmartLockSearchRepository;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.ccframe.subsys.core.domain.code.BoolCodeEnum;
+import org.ccframe.subsys.core.domain.code.UserStatCodeEnum;
 import org.ccframe.subsys.core.domain.entity.Org;
+import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.OrgService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,14 +83,13 @@ public class SmartLockService extends BaseService<SmartLock,java.lang.Integer, S
 	
 	private List<ExcelReaderError> dataLogicCheck(SmartLock checkValue,int rowNum){
 		List<ExcelReaderError> resultList = new ArrayList<>();
-//		ImportDataCheckUtil.stringCheck("IMEI码", 15, false, checkValue.getImeiCode(), rowNum, 0, resultList);
-//		ImportDataCheckUtil.stringCheck("MAC地址", 17, false, checkValue.getMacAddress(), rowNum, 1, resultList);
-//		ImportDataCheckUtil.stringCheck("硬件编码", 32, false, checkValue.getLockerHardwareCode(), rowNum, 2, resultList);
-//		ImportDataCheckUtil.stringCheck("单车车牌号", 15, false, checkValue.getBikePlateNumber(), rowNum, 3, resultList);
-//		ImportDataCheckUtil.stringCheck("机构ID", 32, false, checkValue.getOrgId(), rowNum, 4, resultList);
-//		ImportDataCheckUtil.stringCheck("单车类型", 32, false, checkValue.getBikeTypeId(), rowNum, 5, resultList);
-//		ImportDataCheckUtil.enumCheck("智能锁状态", "未生产,已生产,已发放,已激活,维修中,已废弃", checkValue.getSmartLockStatCode(), rowNum, 6, resultList);
-//		ImportDataCheckUtil.enumCheck("智能锁状态", "未生产,已生产,已发放,已激活,维修中,已废弃", checkValue.getSmartLockStatCode(), rowNum, 6, resultList);
+		ImportDataCheckUtil.stringCheck("硬件编码", 32, false, checkValue.getLockerHardwareCode(), rowNum, 0, resultList);
+		ImportDataCheckUtil.stringCheck("IMEI码", 15, false, checkValue.getImeiCode(), rowNum, 1, resultList);
+		ImportDataCheckUtil.stringCheck("MAC地址", 17, false, checkValue.getMacAddress(), rowNum, 2, resultList);
+		ImportDataCheckUtil.stringCheck("单车车牌号", 15, false, checkValue.getBikePlateNumber(), rowNum, 3, resultList);
+		ImportDataCheckUtil.stringCheck("运营商", 32, false, checkValue.getOrgId().toString(), rowNum, 4, resultList);
+		ImportDataCheckUtil.stringCheck("状态", 2, false, checkValue.getSmartLockStatCode(), rowNum, 5, resultList);
+		ImportDataCheckUtil.stringCheck("单车类型", 32, false, checkValue.getBikeTypeId().toString(), rowNum, 6, resultList);
 		return resultList;
 	}
 	
@@ -93,65 +98,48 @@ public class SmartLockService extends BaseService<SmartLock,java.lang.Integer, S
 			Map<String, Object> importParam) {
 		List<ExcelReaderError> resultList = new ArrayList<ExcelReaderError>();
 		int rowNum = rowBase;
-		for(SmartLock rowUser: importList){
-			List<ExcelReaderError> checkErrorList = dataLogicCheck(rowUser, rowNum);
+		for(SmartLock rowSmartLock: importList){
+			List<ExcelReaderError> checkErrorList = dataLogicCheck(rowSmartLock, rowNum);
 			rowNum ++;
 			if(checkErrorList.size() > 0){ //有错误，不处理
 				resultList.addAll(checkErrorList);
 				continue;
 			}
-		}
 			
-//			User loginUser = this.getByKey(User.LOGIN_ID, rowUser.getLoginId());
+			SmartLock smartLock = this.getByKey(SmartLock.LOCKER_HARDWARE_CODE, rowSmartLock.getLockerHardwareCode());
 //			User mobileUser = null;
-//			if(StringUtils.isNotBlank(rowUser.getUserMobile())){
-//				mobileUser = this.getByKey(User.USER_MOBILE, rowUser.getUserMobile());
+//			if(StringUtils.isNotBlank(rowSmartLock.getUserMobile())){
+//				mobileUser = this.getByKey(User.USER_MOBILE, rowSmartLock.getUserMobile());
 //			}
 //			User emailUser = null;
-//			if(StringUtils.isNotBlank(rowUser.getUserEmail())){
-//				emailUser = this.getByKey(User.USER_EMAIL, rowUser.getUserEmail());
+//			if(StringUtils.isNotBlank(rowSmartLock.getUserEmail())){
+//				emailUser = this.getByKey(User.USER_EMAIL, rowSmartLock.getUserEmail());
 //			}
-//			if(loginUser != null){ //add
-//				if(mobileUser != null){
-//					resultList.add(new ExcelReaderError(2, rowNum - 1, "用户手机重复"));
-//					continue;
-//				}
-//				if(emailUser != null){
-//					resultList.add(new ExcelReaderError(3, rowNum - 1, "用户E-MAIL重复"));
-//					continue;
-//				}
-//			}else{ //update
-//				if(mobileUser != null && !mobileUser.equals(loginUser)){
-//					resultList.add(new ExcelReaderError(2, rowNum - 1, "用户手机重复"));
-//					continue;
-//				}
-//				if(emailUser != null && !mobileUser.equals(emailUser)){
-//					resultList.add(new ExcelReaderError(3, rowNum - 1, "用户E-MAIL重复"));
-//					continue;
-//				}
+//			if(smartLock != null){ //add
+//				resultList.add(new ExcelReaderError(2, rowNum - 1, "智能锁硬件编号重复"));
 //			}
-			
-//			User dbUser = this.getByKey(User.LOGIN_ID, rowUser.getLoginId());
-//			if(dbUser == null){ //add
-//				dbUser = new User();
-//				dbUser.setLoginId(rowUser.getLoginId());
-//				dbUser.setUserPsw(DigestUtils.sha512Hex("123456"));
-//				dbUser.setUserStatCode(UserStatCodeEnum.NORMAL.toCode());
-//			}
+//			
+			SmartLock dbSmartLock = this.getByKey(SmartLock.LOCKER_HARDWARE_CODE, rowSmartLock.getLockerHardwareCode());
+			if(dbSmartLock == null){ //add
+				dbSmartLock = new SmartLock();
+				dbSmartLock.setLockerHardwareCode(rowSmartLock.getLockerHardwareCode());
+				dbSmartLock.setImeiCode(rowSmartLock.getImeiCode());
+				dbSmartLock.setMacAddress(rowSmartLock.getMacAddress());
+				dbSmartLock.setOrgId(rowSmartLock.getOrgId());
+				dbSmartLock.setBikePlateNumber(rowSmartLock.getBikePlateNumber());
+				dbSmartLock.setSmartLockStatCode(rowSmartLock.getSmartLockStatCode());
+				dbSmartLock.setBikeTypeId(rowSmartLock.getBikeTypeId());
+			}
 //			dbUser.setUserNm(rowUser.getUserNm());
 //			dbUser.setUserMobile(rowUser.getUserMobile());
 //			dbUser.setUserEmail(rowUser.getUserEmail());
 //			dbUser.setIfAdmin(BoolCodeEnum.toCode("是".equals(rowUser.getIfAdmin())));
 //			dbUser.setCreateDate(rowUser.getCreateDate());
-//			SpringContextHelper.getBean(this.getClass()).save(dbUser);
-//			getRepository().flush(); //临时刷新到数据库，用于判断重复
-//		}
-//		try {
-//			Thread.sleep(2000); //TODO 去掉，延迟观察进度条
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-		return null;
+			SpringContextHelper.getBean(this.getClass()).save(dbSmartLock);
+			getRepository().flush(); //临时刷新到数据库，用于判断重复
+		}
+
+		return resultList;
 	}
 
 	@Override

@@ -94,6 +94,33 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 		Widget widget = uiBinder.createAndBindUi(this);
 		driver.initialize(this);
 		driver.edit(new SmartLock());
+//		orgId.addValueChangeHandler(new ValueChangeHandler<Integer>(){
+//
+//			@Override
+//			public void onValueChange(ValueChangeEvent<Integer> event) {
+//				bikeTypeId.setExtraParam(event.getValue().toString());
+//				bikeTypeId.reset();
+//			}
+//			
+//		});
+		return widget;
+	}
+
+	@Override
+	protected void onLoadData(Integer smartLockId) {
+		this.smartLockId = smartLockId;
+		window.setHeadingText("智能锁" + (smartLockId == null ? "增加" : "修改"));
+		if(smartLockId != null){
+			orgId.setReadOnly(false);
+			bikeTypeId.setReadOnly(false);
+		}else{
+			orgId.setReadOnly(true);
+			bikeTypeId.setReadOnly(true);
+		}
+		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
+		// 重置下拉框
+		orgId.reset();
+		bikeTypeId.reset();
 		orgId.addValueChangeHandler(new ValueChangeHandler<Integer>(){
 
 			@Override
@@ -103,18 +130,6 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 			}
 			
 		});
-		return widget;
-	}
-
-	@Override
-	protected void onLoadData(Integer smartLockId) {
-		this.smartLockId = smartLockId;
-		window.setHeadingText("智能锁" + (smartLockId == null ? "增加" : "修改"));
-		
-		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
-		// 重置下拉框
-		orgId.reset();
-		bikeTypeId.reset();
 		if(smartLockId == null){
 			FormPanelHelper.reset(vBoxLayoutContainer);
 			

@@ -99,7 +99,7 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 			new WindowEventCallback<Void>(){
 				@Override
 				public void onClose(Void returnData) {
-					// TODO Auto-generated method stub
+					loader.load();
 				}
 			}
 		));

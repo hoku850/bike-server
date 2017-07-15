@@ -17,6 +17,7 @@ import org.ccframe.client.components.CcEnumCombobox;
 import org.ccframe.client.components.CcLabelValueCombobox;
 import org.ccframe.client.module.core.event.BodyContentEvent;
 import org.ccframe.client.module.core.event.LoadWindowEvent;
+import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.dto.SmartLockListReq;
@@ -109,7 +110,7 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 	@UiHandler("exportButton")
 	public void exportButtonClick(SelectEvent e){
 		//excel下载用
-        ClientManager.getSmartLockClient().exportUrl("123", new RestCallback<String>(){			
+        ClientManager.getSmartLockClient().exportUrl(MainFrame.adminUser.getOrgId(), new RestCallback<String>(){			
 			@Override
 			public void onSuccess(Method method, String response) {
 				Window.open(GWT.getHostPageBaseURL() + response, "", "");

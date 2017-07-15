@@ -43,8 +43,8 @@ public class CyclingOrderController{
 	}
 	
 	@RequestMapping(value = ControllerMapping.CYCLING_ORDER_EXPORT, method=RequestMethod.POST)
-	public String doExport(@RequestBody String tempFilePath) throws IOException{
-		return SpringContextHelper.getBean(CyclingOrderService.class).doExport(tempFilePath);
+	public String doExport(@RequestBody Integer orgId) throws IOException{
+		return SpringContextHelper.getBean(CyclingOrderService.class).doExport(orgId);
 	}
 }
 

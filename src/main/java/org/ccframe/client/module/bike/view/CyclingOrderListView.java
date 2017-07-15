@@ -76,7 +76,7 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 	@UiHandler("exportButton")
 	public void exportButtonClick(SelectEvent e){
 		//excel下载用
-        ClientManager.getCyclingOrderClient().exportUrl("123", new RestCallback<String>(){			
+        ClientManager.getCyclingOrderClient().exportUrl(MainFrame.adminUser.getOrgId(), new RestCallback<String>(){			
 			@Override
 			public void onSuccess(Method method, String response) {
 				Window.open(GWT.getHostPageBaseURL() + response, "", "");

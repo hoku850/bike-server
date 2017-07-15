@@ -43,8 +43,8 @@ public class ChargeOrderController{
 	}
 	
 	@RequestMapping(value = ControllerMapping.CHARGE_ORDER_EXPORT, method=RequestMethod.POST)
-	public String doExport(@RequestBody String tempFilePath) throws IOException{
-		return SpringContextHelper.getBean(ChargeOrderService.class).doExport(tempFilePath);
+	public String doExport(@RequestBody Integer orgId) throws IOException{
+		return SpringContextHelper.getBean(ChargeOrderService.class).doExport(orgId);
 	}
 }
 

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.ccframe.client.Global;
+import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.commons.base.BaseService;
 import org.ccframe.commons.data.ListExcelWriter;
 import org.ccframe.commons.helper.SpringContextHelper;
@@ -37,13 +38,21 @@ public class ChargeOrderService extends BaseService<ChargeOrder,java.lang.Intege
 		
 	}
 
-	public String doExport(String tempFilePath) throws IOException {
+	public String doExport(Integer orgId) throws IOException {
 		//生成一个EXCEL导入文件到TEMP,并且文件名用UUID
     	String filePathString = WebContextHolder.getWarPath()+"/exceltemplate/chargeOrderListExcel.xls";//"war/exceltemplate/goodsInfListExcel.xls";
         
     	ListExcelWriter writer = new ListExcelWriter(filePathString);   //GWT.getHostPageBaseURL()+     
         List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-		List<ChargeOrder> chargeOrders = getRepository().findAll();
+        
+        // 区分总平台跟运营商的导出数据
+        List<ChargeOrder> chargeOrders = null;
+		if (Global.PLATFORM_ORG_ID != orgId) {
+			chargeOrders = SpringContextHelper.getBean(ChargeOrderSearchService.class).findByKey(ChargeOrder.ORG_ID, orgId);
+		} else {
+			chargeOrders = getRepository().findAll();
+		}
+		
 		for (ChargeOrder chargeOrder : chargeOrders) {
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put("chargeOrderId", chargeOrder.getChargeOrderId());

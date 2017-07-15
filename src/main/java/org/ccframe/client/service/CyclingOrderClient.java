@@ -31,6 +31,6 @@ public interface CyclingOrderClient extends RestService{
 	void saveOrUpdate(CyclingOrder cyclingOrder, RestCallback<Void> restCallback);
 
 	@POST @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.CYCLING_ORDER_BASE + "/"+ ControllerMapping.CYCLING_ORDER_EXPORT + Global.REST_REQUEST_URL_SUFFIX)
-	void exportUrl(String tempFilePath, RestCallback<String> restCallback);
+	void exportUrl(Integer orgId, RestCallback<String> restCallback);
 
 }

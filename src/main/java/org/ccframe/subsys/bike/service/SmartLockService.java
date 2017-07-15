@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.ccframe.client.Global;
 import org.ccframe.client.ResGlobal;
+import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.commons.base.BaseService;
 import org.ccframe.commons.data.BatchImportSupport;
 import org.ccframe.commons.data.ExcelReaderError;
@@ -310,14 +311,21 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 	 * @return
 	 * @throws IOException
 	 */
-	public String doExport(String tempFilePath) throws IOException {
+	public String doExport(Integer orgId) throws IOException {
 		// 生成一个EXCEL导入文件到TEMP,并且文件名用UUID
 		String filePathString = WebContextHolder.getWarPath() + "/exceltemplate/smartLockListExcel.xls";// "war/exceltemplate/goodsInfListExcel.xls";
 
 		ListExcelWriter writer = new ListExcelWriter(filePathString); // GWT.getHostPageBaseURL()+
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-		List<SmartLock> smartLocks = getRepository().findAll();
-
+		
+        // 区分总平台跟运营商的导出数据
+		List<SmartLock> smartLocks = null;
+		if (Global.PLATFORM_ORG_ID != orgId) {
+			smartLocks = SpringContextHelper.getBean(SmartLockSearchService.class).findByKey(SmartLock.ORG_ID, orgId);
+		} else {
+			smartLocks = getRepository().findAll();
+		}
+		
 		for (SmartLock smartLock : smartLocks) {
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put("smartLockId", smartLock.getSmartLockId());

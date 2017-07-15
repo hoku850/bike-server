@@ -31,5 +31,5 @@ public interface ChargeOrderClient extends RestService{
 	void saveOrUpdate(ChargeOrder chargeOrder, RestCallback<Void> restCallback);
 
 	@POST @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.CHARGE_ORDER_BASE + "/"+ ControllerMapping.CHARGE_ORDER_EXPORT + Global.REST_REQUEST_URL_SUFFIX)
-	void exportUrl(String tempFilePath, RestCallback<String> restCallback);
+	void exportUrl(Integer orgId, RestCallback<String> restCallback);
 }

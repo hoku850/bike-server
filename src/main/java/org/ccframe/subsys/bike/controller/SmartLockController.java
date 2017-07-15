@@ -42,8 +42,8 @@ public class SmartLockController{
 	}
 	
 	@RequestMapping(value = ControllerMapping.SMART_LOCK_EXPORT, method=RequestMethod.POST)
-	public String doExport(@RequestBody String tempFilePath) throws IOException{
-		return SpringContextHelper.getBean(SmartLockService.class).doExport(tempFilePath);
+	public String doExport(@RequestBody Integer orgId) throws IOException{
+		return SpringContextHelper.getBean(SmartLockService.class).doExport(orgId);
 	}
 	
 	@RequestMapping(value = ControllerMapping.SMART_LOCK_DESERT, method=RequestMethod.POST)

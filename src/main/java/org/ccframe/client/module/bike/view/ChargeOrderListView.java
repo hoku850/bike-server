@@ -62,7 +62,7 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 	@UiHandler("exportButton")
 	public void exportButtonClick(SelectEvent e){
 		//excel下载用
-        ClientManager.getChargeOrderClient().exportUrl("123", new RestCallback<String>(){			
+        ClientManager.getChargeOrderClient().exportUrl(MainFrame.adminUser.getOrgId(), new RestCallback<String>(){			
 			@Override
 			public void onSuccess(Method method, String response) {
 				Window.open(GWT.getHostPageBaseURL() + response, "", "");

@@ -17,15 +17,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.ccframe.client.Global;
 
-import nl.captcha.Captcha;
-import nl.captcha.backgrounds.GradiatedBackgroundProducer;
-import nl.captcha.gimpy.BlockGimpyRenderer;
-import nl.captcha.gimpy.FishEyeGimpyRenderer;
-import nl.captcha.gimpy.GimpyRenderer;
-import nl.captcha.servlet.CaptchaServletUtil;
-import nl.captcha.text.producer.TextProducer;
-import nl.captcha.text.renderer.ColoredEdgesWordRenderer;
-import nl.captcha.text.renderer.WordRenderer;
+import cn.apiclub.captcha.text.producer.TextProducer;
+import cn.apiclub.captcha.Captcha;
+import cn.apiclub.captcha.backgrounds.GradiatedBackgroundProducer;
+import cn.apiclub.captcha.gimpy.BlockGimpyRenderer;
+import cn.apiclub.captcha.gimpy.FishEyeGimpyRenderer;
+import cn.apiclub.captcha.gimpy.GimpyRenderer;
+import cn.apiclub.captcha.servlet.CaptchaServletUtil;
+import cn.apiclub.captcha.text.renderer.ColoredEdgesWordRenderer;
+import cn.apiclub.captcha.text.renderer.WordRenderer;
 
 public class CaptchaServlet extends HttpServlet {
 

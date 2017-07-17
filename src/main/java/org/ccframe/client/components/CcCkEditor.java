@@ -62,7 +62,7 @@ public class CcCkEditor extends AdapterField<String> {
         t.add(new ToolbarLine(new CKConfig.TOOLBAR_OPTIONS[]{ //源码
                 CKConfig.TOOLBAR_OPTIONS.Source,
                 CKConfig.TOOLBAR_OPTIONS.Preview,
-                CKConfig.TOOLBAR_OPTIONS._,
+                CKConfig.TOOLBAR_OPTIONS._DASH,
                 CKConfig.TOOLBAR_OPTIONS.PasteText,
                 CKConfig.TOOLBAR_OPTIONS.PasteFromWord
         }));
@@ -71,16 +71,16 @@ public class CcCkEditor extends AdapterField<String> {
                 CKConfig.TOOLBAR_OPTIONS.FontSize,
                 CKConfig.TOOLBAR_OPTIONS.Bold,
                 CKConfig.TOOLBAR_OPTIONS.Italic,
-                CKConfig.TOOLBAR_OPTIONS._,
+                CKConfig.TOOLBAR_OPTIONS._DASH,
                 CKConfig.TOOLBAR_OPTIONS.TextColor,
                 CKConfig.TOOLBAR_OPTIONS.BGColor,
-                CKConfig.TOOLBAR_OPTIONS._,
+                CKConfig.TOOLBAR_OPTIONS._DASH,
                 CKConfig.TOOLBAR_OPTIONS.RemoveFormat
         }));
         t.add(new ToolbarLine(new CKConfig.TOOLBAR_OPTIONS[]{
                 CKConfig.TOOLBAR_OPTIONS.NumberedList,
                 CKConfig.TOOLBAR_OPTIONS.BulletedList,
-                CKConfig.TOOLBAR_OPTIONS._,
+                CKConfig.TOOLBAR_OPTIONS._DASH,
                 CKConfig.TOOLBAR_OPTIONS.JustifyLeft,
                 CKConfig.TOOLBAR_OPTIONS.JustifyCenter,
                 CKConfig.TOOLBAR_OPTIONS.JustifyRight
@@ -88,7 +88,7 @@ public class CcCkEditor extends AdapterField<String> {
         t.add(new ToolbarLine(new CKConfig.TOOLBAR_OPTIONS[]{
                 CKConfig.TOOLBAR_OPTIONS.Link,
                 CKConfig.TOOLBAR_OPTIONS.Unlink,
-                CKConfig.TOOLBAR_OPTIONS._,
+                CKConfig.TOOLBAR_OPTIONS._DASH,
                 CKConfig.TOOLBAR_OPTIONS.Table,
                 CKConfig.TOOLBAR_OPTIONS.Image,
                 CKConfig.TOOLBAR_OPTIONS.Flash,

@@ -117,9 +117,9 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		ImportDataCheckUtil.stringCheck("IMEI码", 15, false, checkValue.getImeiCode(), rowNum, 1, resultList);
 		ImportDataCheckUtil.stringCheck("MAC地址", 17, false, checkValue.getMacAddress(), rowNum, 2, resultList);
 		ImportDataCheckUtil.stringCheck("单车车牌号", 15, false, checkValue.getBikePlateNumber(), rowNum, 3, resultList);
-		ImportDataCheckUtil.enumCheck("运营商", "总平台,摩拜单车,ofo小黄单,小蓝车,Hello,小鸣", checkValue.getOrgId().toString(), rowNum, 4, resultList);
+//		ImportDataCheckUtil.enumCheck("运营商", "总平台,摩拜单车,ofo小黄单,小蓝车,Hello,小鸣", checkValue.getOrgId().toString(), rowNum, 4, resultList);
 		ImportDataCheckUtil.enumCheck("状态", "未生产,已生产,已发放,已激活,维修中,已废弃", checkValue.getSmartLockStatCode(), rowNum, 5, resultList);
-		ImportDataCheckUtil.enumCheck("单车类型", "标准单车,摩拜 lite,摩拜  小橙车,ofo lite,ofo 经典,小蓝 lite,小蓝 经典,Hello Bike lite,Hello Bike 经典,小鸣 lite,小鸣 经典", checkValue.getBikeTypeId().toString(), rowNum, 6, resultList);
+//		ImportDataCheckUtil.enumCheck("单车类型", "标准单车,摩拜 lite,摩拜  小橙车,ofo lite,ofo 经典,小蓝 lite,小蓝 经典,Hello Bike lite,Hello Bike 经典,小鸣 lite,小鸣 经典", checkValue.getBikeTypeId().toString(), rowNum, 6, resultList);
 		return resultList;
 	}
 
@@ -263,7 +263,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 				bikeType = "60042";
 				break;
 			default:
-				bikeType = "1";
+				bikeType = "60000";
 				break;	
 			}
 			

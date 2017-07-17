@@ -9,5 +9,7 @@ public interface CyclingOrderSearchRepository extends ElasticsearchRepository<Cy
 
 	List<CyclingOrder> findByUserIdAndOrgIdOrderByEndTimeDesc(Integer userId,
 			Integer orgId);
-	
+
+	List<CyclingOrder> findByUserIdAndOrgIdOrderByStartTimeDesc(Integer userId,
+			Integer orgId);	
 }

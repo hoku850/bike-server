@@ -1,6 +1,7 @@
 package org.ccframe.sdk.bike.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.ccframe.client.ControllerMapping;
 import org.ccframe.commons.helper.SpringContextHelper;
@@ -20,4 +21,9 @@ public class TravelController{
 		return SpringContextHelper.getBean(CyclingOrderService.class).getTravelList();
 	}
 	
+	@RequestMapping(value = "getTravelDetail")
+	@ResponseBody
+	public Map<String, Object> getTravelDetail(Integer cyclingOrderId) {
+		return SpringContextHelper.getBean(CyclingOrderService.class).getTravelDetail(cyclingOrderId);
+	}
 }

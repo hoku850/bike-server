@@ -141,7 +141,7 @@
 		    <input style="display:none;" type="text" name="loginId"><!-- 360的样式兼容 -->
 		    <input style="display:none;" type="password" name="userPsw"><!-- 360的样式兼容 -->
 			<div style="height:40px"></div>
-			<div id="left_logo"><img style="margin-left:10px" src="<c:url value="/ccframe/images/left_logo.gif"/>"/></div>
+			<div id="left_logo"><img src="<c:url value="/ccframe/images/left_logo.gif"/>"/></div>
 			<div id="login_form_div">
 				<div id="login_form_title"><c:out value="${sdk:getParamValue('siteNm')}"/>管理<span>ver 1.0</span></div>
 				<div id="error_hint" class="login_row_div">请输入管理员登录账户及密码</div>

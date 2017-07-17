@@ -2,6 +2,7 @@ package org.ccframe.client.module.bike.view;
 
 import java.util.List;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.ViewResEnum;
 import org.ccframe.client.base.BasePagingListView;
 import org.ccframe.client.commons.ClientManager;
@@ -16,6 +17,7 @@ import org.ccframe.client.components.CcEnumCombobox;
 import org.ccframe.client.components.CcLabelValueCombobox;
 import org.ccframe.client.module.core.event.BodyContentEvent;
 import org.ccframe.client.module.core.event.LoadWindowEvent;
+import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.subsys.bike.domain.code.RepairResonCodeEnum;
 import org.ccframe.subsys.bike.domain.code.FixStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
@@ -120,7 +122,7 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
             }
         });
 		
-		ColumnConfigEx<UserToRepairRecordRowDto, String> repairLocationCodeColumn = new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.toRepairLocationCode(), 100, "保修原因", HasHorizontalAlignment.ALIGN_CENTER, false);
+		ColumnConfigEx<UserToRepairRecordRowDto, String> repairLocationCodeColumn = new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.toRepairLocationCode(), 100, "报修原因", HasHorizontalAlignment.ALIGN_CENTER, false);
 		repairLocationCodeColumn.setCell(new AbstractCell<String>(){
             @Override
             public void render(com.google.gwt.cell.client.Cell.Context context,
@@ -158,7 +160,7 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.lockerHardwareCode(), 100, "智能锁硬件编号", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.bikePlateNumber(), 100, "单车车牌号", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(repairLocationCodeColumn);
-		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.toRepairTimeStr(), 100, "保修时间", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.toRepairTimeStr(), 100, "报修时间", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.finishFixTimeStr(), 100, "维修时间", HasHorizontalAlignment.ALIGN_CENTER, false));
 	}
 	
@@ -173,8 +175,8 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 				userToRepairRecordListReq.setFixStatCode(fixStatCode.getValue()==""?null:fixStatCode.getValue());
 				
 				if(isAgent){
-//					userToRepairRecordListReq.setOrgId(MainFrame.adminUser.getOrgId());
-					userToRepairRecordListReq.setOrgId(502);
+					userToRepairRecordListReq.setOrgId(MainFrame.adminUser.getOrgId());
+//					userToRepairRecordListReq.setOrgId(502);
 				}else{
 					userToRepairRecordListReq.setOrgId(orgId.getValue());
 				}
@@ -193,6 +195,11 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
+		if(MainFrame.adminUser.getOrgId() != Global.PLATFORM_ORG_ID){
+			isAgent = true;
+		}else{
+			isAgent = false;
+		}
 		if(isAgent){
 			this.columnModel.getColumn(0).setHidden(true);
 			this.orgId.hide();
@@ -221,6 +228,11 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
+		if(MainFrame.adminUser.getOrgId() != Global.PLATFORM_ORG_ID){
+			isAgent = true;
+		}else{
+			isAgent = false;
+		}
 		if(isAgent){
 			this.columnModel.getColumn(0).setHidden(true);
 			this.orgId.hide();

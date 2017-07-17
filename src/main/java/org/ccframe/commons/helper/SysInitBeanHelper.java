@@ -95,7 +95,8 @@ public class SysInitBeanHelper implements InitializingBean{
     
     @Value("${app.initMode:none}")
     public void setInitMode(String initMode){
-    	this.initMode = initMode;
+    	String forceInitMode = System.getProperty("forceInitMode", null); //自动发布时，通过环境变量-D强制指定是重置还是不处理
+    	this.initMode = (forceInitMode == null ? initMode : forceInitMode);
     }
     
     @Value("${app.dataSource.schema:}")

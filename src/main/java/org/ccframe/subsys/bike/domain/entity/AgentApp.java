@@ -30,7 +30,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.ccframe.subsys.bike.domain.*;
 
 @Entity
-@Table(name = "prd_agent_app")
+@Table(name = "PRD_AGENT_APP")
 @AutoCacheConfig
 //elasticsearch
 @Document(indexName = "agent_app_index", type = "agentApp")

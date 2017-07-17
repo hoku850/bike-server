@@ -60,7 +60,7 @@ public class ToolbarLine {
 	}
 	
 	public void addBlockSeparator(){
-		blocks.add(TOOLBAR_OPTIONS._);
+		blocks.add(TOOLBAR_OPTIONS._DASH);
 	}
 	
 	public Object getRepresentation(){
@@ -69,7 +69,7 @@ public class ToolbarLine {
 		}else{
 			JavaScriptObject array = JavaScriptObject.createArray();
 			for(TOOLBAR_OPTIONS opt:blocks){
-				if(opt == TOOLBAR_OPTIONS._)
+				if(opt == TOOLBAR_OPTIONS._DASH)
 					array = addToArray(array,"-");
 				else
 					array = addToArray(array,opt.toString());

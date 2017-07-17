@@ -167,6 +167,7 @@ public interface ControllerMapping {
 	String MEMBER_TRAVEL_BASE = MEMBER_BASE + "travel";
 	String MEMBER_TRADEDETAIL_BASE = MEMBER_BASE + "tradeDetail";
 	String MEMBER_FIXREPORT_BASE = MEMBER_BASE + "fixReport";
+	String MEMBER_USINGBIKE_BASE = MEMBER_BASE + "usingBike";
 	
 	//骑行订单管理
 	String CYCLING_ORDER_BASE = ADMIN_BASE + "cyclingOrder";

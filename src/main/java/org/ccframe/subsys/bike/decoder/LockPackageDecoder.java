@@ -16,7 +16,7 @@ import org.ccframe.subsys.bike.tcpobj.LockPackage;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import sun.misc.CRC16;
+//import sun.misc.CRC16;
 
 public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 
@@ -28,17 +28,17 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			return;
 		}
 
-		//解析CRC
-		CRC16 crc = new CRC16();
-		for(int i = 1; i < msg.length - 4; i ++){
-			crc.update(msg[i]);
-		}
-		System.out.println("crc=" + Long.toHexString(crc.value));
-		int crcValue = ((int)msg[msg.length - 2] | msg[msg.length - 1] << 8);
-		System.out.println("crcValue=" + Integer.toHexString(crcValue).substring(4));
-		if(crc.value != crcValue){
-			//JAVA的CRC没有一个版本对得上的
-		}
+//		//解析CRC
+//		CRC16 crc = new CRC16();
+//		for(int i = 1; i < msg.length - 4; i ++){
+//			crc.update(msg[i]);
+//		}
+//		System.out.println("crc=" + Long.toHexString(crc.value));
+//		int crcValue = ((int)msg[msg.length - 2] | msg[msg.length - 1] << 8);
+//		System.out.println("crcValue=" + Integer.toHexString(crcValue).substring(4));
+//		if(crc.value != crcValue){
+//			//JAVA的CRC没有一个版本对得上的
+//		}
 		
 		try (
 			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(msg);

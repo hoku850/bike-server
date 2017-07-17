@@ -55,10 +55,10 @@ public class CcCkTextEditor extends AdapterField<String> {
                 CKConfig.TOOLBAR_OPTIONS.JustifyLeft,
                 CKConfig.TOOLBAR_OPTIONS.JustifyCenter,
                 CKConfig.TOOLBAR_OPTIONS.JustifyRight,
-                CKConfig.TOOLBAR_OPTIONS._,
+                CKConfig.TOOLBAR_OPTIONS._DASH,
                 CKConfig.TOOLBAR_OPTIONS.Link,
                 CKConfig.TOOLBAR_OPTIONS.Unlink,
-                CKConfig.TOOLBAR_OPTIONS._,
+                CKConfig.TOOLBAR_OPTIONS._DASH,
                 CKConfig.TOOLBAR_OPTIONS.Table
         }));
         t.add(new ToolbarLine(new CKConfig.TOOLBAR_OPTIONS[]{
@@ -67,7 +67,7 @@ public class CcCkTextEditor extends AdapterField<String> {
                 CKConfig.TOOLBAR_OPTIONS.Bold,
                 CKConfig.TOOLBAR_OPTIONS.Italic,
                 CKConfig.TOOLBAR_OPTIONS.TextColor,
-                CKConfig.TOOLBAR_OPTIONS._,
+                CKConfig.TOOLBAR_OPTIONS._DASH,
                 CKConfig.TOOLBAR_OPTIONS.RemoveFormat
         }));
         ckConfig.setToolbar(t);

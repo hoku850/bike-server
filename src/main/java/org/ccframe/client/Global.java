@@ -19,6 +19,7 @@ public interface Global {
 	String SESSION_VALIDATE_CODE = "org_ccframe_ValidateCode";
 	String SESSION_LOGIN_ADMIN = "org_ccframe_LoginAdmin";
 	String SESSION_LOGIN_MEMBER_USER = "org_bike_LoginMember_User";
+	String SESSION_START_CYCLING_TIME = "session_start_cycling_time";
 
 	String WEB_ROOT_PROPERTY = "webApp.root";
 	

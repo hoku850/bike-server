@@ -23,8 +23,8 @@ public class FixReportController{
 	
 	@RequestMapping(value = "saveRepairRecord")
 	@ResponseBody
-	public String saveRepairRecord(String posCode, Integer reasonID) {
-
-		return SpringContextHelper.getBean(UserToRepairRecordService.class).saveRepairRecord(posCode, reasonID);
+	public String saveRepairRecord(String posCode, Integer reasonID, String position) {
+ 
+		return SpringContextHelper.getBean(UserToRepairRecordService.class).saveRepairRecord(posCode, reasonID, position);
 	}
 }

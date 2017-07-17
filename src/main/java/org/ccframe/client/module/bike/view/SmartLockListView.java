@@ -2,6 +2,7 @@ package org.ccframe.client.module.bike.view;
 
 import java.util.List;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.ViewResEnum;
 import org.ccframe.client.base.BaseCrudListView;
 import org.ccframe.client.commons.ClientManager;
@@ -261,8 +262,8 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 				smartLockListReq.setSmartLockStatCode(smartLockStatCode.getValue()==""?null:smartLockStatCode.getValue());
 				
 				if(isAgent){
-//					smartLockListReq.setOrgId(MainFrame.adminUser.getOrgId());
-					smartLockListReq.setOrgId(503);
+					smartLockListReq.setOrgId(MainFrame.adminUser.getOrgId());
+//					smartLockListReq.setOrgId(503);
 				}else{
 					smartLockListReq.setOrgId(orgId.getValue());
 				}
@@ -280,6 +281,11 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
+		if(MainFrame.adminUser.getOrgId() != Global.PLATFORM_ORG_ID){
+			isAgent = true;
+		}else{
+			isAgent = false;
+		}
 		if(isAgent){
 			this.columnModel.getColumn(4).setHidden(true);
 			this.addButton.hide();
@@ -297,7 +303,12 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
-//		MainFrame.adminUser.getOrgId() != Global.PLATFORM_ORG_ID
+//		MainFrame.adminUser.getOrgId() != Global.PLATFORM_ORG_ID 
+		if(MainFrame.adminUser.getOrgId() != Global.PLATFORM_ORG_ID){
+			isAgent = true;
+		}else{
+			isAgent = false;
+		}
 		if(isAgent){
 			this.columnModel.getColumn(4).setHidden(true);
 			this.addButton.hide();

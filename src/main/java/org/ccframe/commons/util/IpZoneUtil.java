@@ -4,8 +4,6 @@ import java.io.File;
 
 import org.ccframe.client.Global;
 
-import sun.misc.LRUCache;
-
 import com.ipip.IP;
 
 /**

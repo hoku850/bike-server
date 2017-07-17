@@ -47,8 +47,7 @@ Temporary Items
 .apdisk
 
 # bikeserver的忽略提交目录
+.svn
+build/
 war/client/
 war/WEB-INF/eshome/esdata
-gwt-unitCache/
-.settings
-.svn

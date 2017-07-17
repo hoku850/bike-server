@@ -100,8 +100,18 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 		return new ClientPage<CyclingOrderRowDto>((int)cPage.getTotalElements(), offset / limit, limit, resultList);
 	}
 
+	/**
+	 * @author zjm
+	 */
 	public List<CyclingOrder> findByUserIdAndOrgIdOrderByEndTimeDesc(
 			Integer userId, Integer orgId) {
+		return this.getRepository().findByUserIdAndOrgIdOrderByEndTimeDesc(userId, orgId);
+	}
+	
+	/**
+	 * @author zjm
+	 */
+	public List<CyclingOrder> findByUserIdAndOrgIdOrderByStartTimeDesc(Integer userId, Integer orgId) {
 		return this.getRepository().findByUserIdAndOrgIdOrderByEndTimeDesc(userId, orgId);
 	}
 

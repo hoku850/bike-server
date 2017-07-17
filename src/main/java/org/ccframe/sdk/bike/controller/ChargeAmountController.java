@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(ControllerMapping.MEMBER_CHARGEAMOUNT_BASE)
-public class ChargeAmountController{
+public class ChargeAmountController {
 	
 	@RequestMapping(value = "getChargeAmount")
 	@ResponseBody

@@ -178,6 +178,20 @@
         </function-signature>
     </function>
     
+    <function>
+    	<name>getAMapDataByCyclingOrderId</name>
+    	<function-class>org.ccframe.sdk.map.funtion.AMapApi</function-class>
+    	<function-signature>
+    		org.ccframe.sdk.map.domain.AMapData getAMapDataByCyclingOrderId(java.lang.Integer)
+    	</function-signature>
+    </function>
     
+    <function>
+    	<name>getAMapDataByUserToRepairRecordId</name>
+    	<function-class>org.ccframe.sdk.map.funtion.AMapApi</function-class>
+    	<function-signature>
+    		org.ccframe.sdk.map.domain.AMapData getAMapDataByUserToRepairRecordId(java.lang.Integer)
+    	</function-signature>
+    </function>
 
 </taglib>

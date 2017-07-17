@@ -39,8 +39,8 @@ public class CyclingTrajectoryRecord implements Serializable{
 	
 	public static final String CYCLING_TRAJECTORY_RECORD_ID = "cyclingTrajectoryRecordId";
 	public static final String CYCLING_ORDER_ID = "cyclingOrderId";
-	public static final String RECORD_LOCATION_LNG = "recordLocationLng";
-	public static final String RECORD_LOCATION_LAT = "recordLocationLat";
+	public static final String RECORD_LOCATION_LNG = "recordLocationLng";// 经度
+	public static final String RECORD_LOCATION_LAT = "recordLocationLat"; // 纬度
 	public static final String RECORD_TIME = "recordTime";
 	
 	public static final String RECORD_TIME_STR = "recordTimeStr";

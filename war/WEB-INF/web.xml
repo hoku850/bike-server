@@ -195,7 +195,7 @@
 		<servlet-class>org.ccframe.commons.servlet.CaptchaServlet</servlet-class>
         <init-param>
             <param-name>avaiableChars</param-name>
-            <param-value>bcdefghkmnprtuvwxy34678</param-value>
+            <param-value>0123456789</param-value><!-- bcdefghkmnprtuvwxy34678 -->
         </init-param>
         <init-param>
             <param-name>colorConfig</param-name>

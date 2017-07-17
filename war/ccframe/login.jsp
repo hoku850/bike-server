@@ -154,10 +154,10 @@
 				</div>
 				<div class="login_row_div login_select_zone">
 				<c:forEach var="org" items="${orgList}">
-					<input type="radio" name="orgId" id="orgId${org.orgId}" class="login_select" value="${org.orgId}" <c:if test="${org.orgId == lastOrgId}">checked</c:if> /><label for="orgId${org.orgId}">${org.orgNm}</label>
+					<input type="radio" name="orgId" id="orgId${org.agentId}" class="login_select" value="${org.agentId}" <c:if test="${org.agentId == lastOrgId}">checked</c:if> /><label for="orgId${org.agentId}">${org.agentNm}</label>
 				</c:forEach> 
 				</div>
-				<div class="login_row_div">
+				<div class="login_row_div" style="margin-top: 20px">
 					<img id="captchaImg" width="100" height="35"/>
 					<img id="refreshImg" src="<c:url value="/ccframe/images/refresh_side.gif"/>" width="24" height="37"/>
 					<input type="text" maxlength="4" class="login_input" id="validateCode" name="validateCode"></input>

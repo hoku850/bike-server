@@ -29,13 +29,14 @@ import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.dto.SmartLockRowDto;
+import org.ccframe.subsys.bike.dto.SmartLockVO;
 import org.ccframe.subsys.bike.repository.SmartLockRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, SmartLockRepository>
-		implements BatchImportSupport<SmartLock> {
+		implements BatchImportSupport<SmartLockVO> {
 
 	private static final String SMART_LOCK_IMPORT_TEMPLATE_FILE_NAME = "smartLockImport.xls";
 
@@ -111,24 +112,24 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		}
 	}
 
-	private List<ExcelReaderError> dataLogicCheck(SmartLock checkValue, int rowNum) {
+	private List<ExcelReaderError> dataLogicCheck(SmartLockVO checkValue, int rowNum) {
 		List<ExcelReaderError> resultList = new ArrayList<>();
 		ImportDataCheckUtil.stringCheck("硬件编码", 32, false, checkValue.getLockerHardwareCode(), rowNum, 0, resultList);
-		ImportDataCheckUtil.stringCheck("IMEI码", 15, false, checkValue.getImeiCode(), rowNum, 1, resultList);
-		ImportDataCheckUtil.stringCheck("MAC地址", 17, false, checkValue.getMacAddress(), rowNum, 2, resultList);
-		ImportDataCheckUtil.stringCheck("单车车牌号", 15, false, checkValue.getBikePlateNumber(), rowNum, 3, resultList);
-//		ImportDataCheckUtil.enumCheck("运营商", "总平台,摩拜单车,ofo小黄单,小蓝车,Hello,小鸣", checkValue.getOrgId().toString(), rowNum, 4, resultList);
+		ImportDataCheckUtil.stringCheck("IMEI码", 15, true, checkValue.getImeiCode(), rowNum, 1, resultList);
+		ImportDataCheckUtil.stringCheck("MAC地址", 17, true, checkValue.getMacAddress(), rowNum, 2, resultList);
+		ImportDataCheckUtil.stringCheck("单车车牌号", 15, true, checkValue.getBikePlateNumber(), rowNum, 3, resultList);
+		ImportDataCheckUtil.stringCheck("运营商", 15, true, checkValue.getOrgNm(), rowNum, 4, resultList);
 		ImportDataCheckUtil.enumCheck("状态", "未生产,已生产,已发放,已激活,维修中,已废弃", checkValue.getSmartLockStatCode(), rowNum, 5, resultList);
-//		ImportDataCheckUtil.enumCheck("单车类型", "标准单车,摩拜 lite,摩拜  小橙车,ofo lite,ofo 经典,小蓝 lite,小蓝 经典,Hello Bike lite,Hello Bike 经典,小鸣 lite,小鸣 经典", checkValue.getBikeTypeId().toString(), rowNum, 6, resultList);
+		ImportDataCheckUtil.stringCheck("单车类型", 15, true, checkValue.getBikeTypeNm(), rowNum, 6, resultList);
 		return resultList;
 	}
 
 	@Override
-	public List<ExcelReaderError> importBatch(int rowBase, List<SmartLock> importList, boolean isLastRow,
+	public List<ExcelReaderError> importBatch(int rowBase, List<SmartLockVO> importList, boolean isLastRow,
 			Map<String, Object> importParam) {
 		List<ExcelReaderError> resultList = new ArrayList<ExcelReaderError>();
 		int rowNum = rowBase;
-		for (SmartLock rowSmartLock : importList) {
+		for (SmartLockVO rowSmartLock : importList) {
 			List<ExcelReaderError> checkErrorList = dataLogicCheck(rowSmartLock, rowNum);
 			rowNum++;
 			if (checkErrorList.size() > 0) { // 有错误，不处理
@@ -142,36 +143,56 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			// 判断重复
 			SmartLock check = null;
 			if (smartLock != null) {// 硬件编号存在,update
-				check = this.getByKey(SmartLock.IMEI_CODE, rowSmartLock.getImeiCode());
-				if (check != null && !check.getImeiCode().equals(smartLock.getImeiCode())) {// IMEI码存在,并且
-					resultList.add(new ExcelReaderError(1, rowNum - 1, "IMEI码重复"));
-					continue;
+				if(rowSmartLock.getImeiCode() != null){
+					check = this.getByKey(SmartLock.IMEI_CODE, rowSmartLock.getImeiCode());
+					if (check != null && !check.getImeiCode().equals(smartLock.getImeiCode())) {// IMEI码存在,并且
+						resultList.add(new ExcelReaderError(1, rowNum - 1, "IMEI码重复"));
+						continue;
+					}
+				}else{
+					rowSmartLock.setImeiCode(smartLock.getImeiCode());
 				}
-				check = this.getByKey(SmartLock.MAC_ADDRESS, rowSmartLock.getMacAddress());
-				if (check != null && !check.getMacAddress().equals(smartLock.getMacAddress())) {// MAC地址存在,并且
-					resultList.add(new ExcelReaderError(2, rowNum - 1, "MAC地址重复"));
-					continue;
+				
+				if(rowSmartLock.getMacAddress() != null){
+					check = this.getByKey(SmartLock.MAC_ADDRESS, rowSmartLock.getMacAddress());
+					if (check != null && !check.getMacAddress().equals(smartLock.getMacAddress())) {// MAC地址存在,并且
+						resultList.add(new ExcelReaderError(2, rowNum - 1, "MAC地址重复"));
+						continue;
+					}
+				}else{
+					rowSmartLock.setMacAddress(smartLock.getMacAddress());
 				}
-				check = this.getByKey(SmartLock.BIKE_PLATE_NUMBER, rowSmartLock.getBikePlateNumber());
-				if (check != null && !check.getBikePlateNumber().equals(smartLock.getBikePlateNumber())) {// 单车车牌号存在，并且
-					resultList.add(new ExcelReaderError(3, rowNum - 1, "单车车牌号重复"));
-					continue;
+				
+				if(rowSmartLock.getBikePlateNumber() != null){
+					check = this.getByKey(SmartLock.BIKE_PLATE_NUMBER, rowSmartLock.getBikePlateNumber());
+					if (check != null && !check.getBikePlateNumber().equals(smartLock.getBikePlateNumber())) {// 单车车牌号存在，并且
+						resultList.add(new ExcelReaderError(3, rowNum - 1, "单车车牌号重复"));
+						continue;
+					}
+				}else{
+					rowSmartLock.setBikePlateNumber(smartLock.getBikePlateNumber());
 				}
 			} else {// 硬件编码不存在,add
-				check = this.getByKey(SmartLock.IMEI_CODE, rowSmartLock.getImeiCode());
-				if (check != null) {// IMEI码存在
-					resultList.add(new ExcelReaderError(1, rowNum - 1, "IMEI码重复"));
-					continue;
+				if(rowSmartLock.getImeiCode() != null){
+					check = this.getByKey(SmartLock.IMEI_CODE, rowSmartLock.getImeiCode());
+					if (check != null) {// IMEI码存在
+						resultList.add(new ExcelReaderError(1, rowNum - 1, "IMEI码重复"));
+						continue;
+					}
 				}
-				check = this.getByKey(SmartLock.MAC_ADDRESS, rowSmartLock.getMacAddress());
-				if (check != null) {// MAC地址存在
-					resultList.add(new ExcelReaderError(2, rowNum - 1, "MAC地址重复"));
-					continue;
+				if(rowSmartLock.getMacAddress() != null){
+					check = this.getByKey(SmartLock.MAC_ADDRESS, rowSmartLock.getMacAddress());
+					if (check != null) {// MAC地址存在
+						resultList.add(new ExcelReaderError(2, rowNum - 1, "MAC地址重复"));
+						continue;
+					}
 				}
-				check = this.getByKey(SmartLock.BIKE_PLATE_NUMBER, rowSmartLock.getBikePlateNumber());
-				if (check != null) {// 单车车牌号存在
-					resultList.add(new ExcelReaderError(3, rowNum - 1, "单车车牌号重复"));
-					continue;
+				if(rowSmartLock.getBikePlateNumber() != null){
+					check = this.getByKey(SmartLock.BIKE_PLATE_NUMBER, rowSmartLock.getBikePlateNumber());
+					if (check != null) {// 单车车牌号存在
+						resultList.add(new ExcelReaderError(3, rowNum - 1, "单车车牌号重复"));
+						continue;
+					}
 				}
 			}
 			
@@ -202,7 +223,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 
 			//运营商转换
 			String org = null;
-			switch (rowSmartLock.getOrgId().toString()){
+			switch (rowSmartLock.getOrgNm()){
 			case "总平台":
 				org = "1";
 				break;
@@ -228,42 +249,97 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			
 			//单车类型转换
 			String bikeType = null;
-			switch (rowSmartLock.getBikeTypeId().toString()){
+			switch (rowSmartLock.getBikeTypeNm()){
 			case "标准单车":
 				bikeType = "60000";
 				break;
 			case "摩拜 lite":
-				bikeType = "60001";
+				if(rowSmartLock.getOrgNm().equals("摩拜单车")){
+					bikeType = "60001";
+				}else{
+					bikeType = "60101";
+				}
 				break;
 			case "摩拜  小橙车":
-				bikeType = "60002";
+				if(rowSmartLock.getOrgNm().equals("摩拜单车")){
+					bikeType = "60002";
+				}else{
+					bikeType = "60101";
+				}
 				break;
 			case "ofo lite":
-				bikeType = "60011";
+				if(rowSmartLock.getOrgNm().equals("ofo小黄单")){
+					bikeType = "60011";
+				}else{
+					bikeType = "60201";
+				}
 				break;
 			case "ofo 经典":
-				bikeType = "60012";
+				if(rowSmartLock.getOrgNm().equals("ofo小黄单")){
+					bikeType = "60012";
+				}else{
+					bikeType = "60201";
+				}
 				break;
 			case "小蓝 lite":
+				if(rowSmartLock.getOrgNm().equals("小蓝车")){
+					bikeType = "60021";
+				}else{
+					bikeType = "60301";
+				}
 				bikeType = "60021";
 				break;
 			case "小蓝 经典":
-				bikeType = "60022";
+				if(rowSmartLock.getOrgNm().equals("小蓝车")){
+					bikeType = "60022";
+				}else{
+					bikeType = "60301";
+				}
 				break;
 			case "Hello Bike lite":
-				bikeType = "60031";
+				if(rowSmartLock.getOrgNm().equals("Hello")){
+					bikeType = "60031";
+				}else{
+					bikeType = "60401";
+				}
 				break;
 			case "Hello Bike 经典":
-				bikeType = "60032";
+				if(rowSmartLock.getOrgNm().equals("Hello")){
+					bikeType = "60032";
+				}else{
+					bikeType = "60401";
+				}
 				break;
 			case "小鸣 lite":
-				bikeType = "60041";
+				if(rowSmartLock.getOrgNm().equals("小鸣")){
+					bikeType = "60041";
+				}else{
+					bikeType = "60501";
+				}
 				break;
 			case "小鸣 经典":
-				bikeType = "60042";
+				if(rowSmartLock.getOrgNm().equals("小鸣")){
+					bikeType = "60042";
+				}else{
+					bikeType = "60501";
+				}
 				break;
 			default:
-				bikeType = "60000";
+				if(rowSmartLock.getOrgNm().equals("总平台")){
+					bikeType = "60000";
+				}else if(rowSmartLock.getOrgNm().equals("摩拜单车")){
+					bikeType = "60101";
+				}else if(rowSmartLock.getOrgNm().equals("ofo小黄单")){
+					bikeType = "60201";
+				}else if(rowSmartLock.getOrgNm().equals("小蓝车")){
+					bikeType = "60301";
+				}else if(rowSmartLock.getOrgNm().equals("Hello")){
+					bikeType = "60401";
+				}else if(rowSmartLock.getOrgNm().equals("小鸣")){
+					bikeType = "60501";
+				}else{
+					bikeType = "60000";
+				}
 				break;	
 			}
 			
@@ -271,9 +347,9 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			SmartLock dbSmartLock = this.getByKey(SmartLock.LOCKER_HARDWARE_CODE, rowSmartLock.getLockerHardwareCode());
 			if (dbSmartLock == null) {//add
 				dbSmartLock = new SmartLock();
-				dbSmartLock.setOrgId(1);
-				dbSmartLock.setSmartLockStatCode("0");
-				dbSmartLock.setBikeTypeId(60000);
+				dbSmartLock.setOrgId(Integer.parseInt(org));
+				dbSmartLock.setSmartLockStatCode(smartLockStatCode);
+				dbSmartLock.setBikeTypeId(Integer.parseInt(bikeType));
 			}else{//update
 				dbSmartLock.setOrgId(Integer.parseInt(org));
 				dbSmartLock.setSmartLockStatCode(smartLockStatCode);
@@ -293,9 +369,9 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 
 	@Override
 	public void doImport(String filePath, Map<String, Object> importParam) {
-		ListExcelReader<SmartLock> listExcelReader = new ListExcelReader<>(WebContextHolder.getWarPath()
+		ListExcelReader<SmartLockVO> listExcelReader = new ListExcelReader<>(WebContextHolder.getWarPath()
 				+ File.separator + Global.EXCEL_TEMPLATE_DIR + File.separator + SMART_LOCK_IMPORT_TEMPLATE_FILE_NAME,
-				SmartLock.class);
+				SmartLockVO.class);
 		listExcelReader.readFromFile(filePath, SpringContextHelper.getBean(SmartLockService.class), importParam);
 	}
 
@@ -382,4 +458,5 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		smartLock.setSmartLockStatCode(SmartLockStatCodeEnum.DESERTED.toCode());
 		SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
 	}
+
 }

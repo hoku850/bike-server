@@ -56,12 +56,12 @@ public class SmartLock implements Serializable{
 	
 	//elasticsearch 
 	//@Field(type = FieldType.String, analyzer="ik") //浣跨敤ik鍒嗚瘝鍣ㄨ繘琛屽垎璇�
-	@Column(name = "IMEI_CODE", nullable = false, length = 15)
+	@Column(name = "IMEI_CODE", nullable = true, length = 15)
 	private java.lang.String imeiCode;
 	
 	//elasticsearch 
 	//@Field(type = FieldType.String, analyzer="ik") //浣跨敤ik鍒嗚瘝鍣ㄨ繘琛屽垎璇�
-	@Column(name = "MAC_ADDRESS", nullable = false, length = 17)
+	@Column(name = "MAC_ADDRESS", nullable = true, length = 17)
 	private java.lang.String macAddress;
 	
 	//elasticsearch 

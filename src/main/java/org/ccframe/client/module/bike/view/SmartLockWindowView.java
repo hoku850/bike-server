@@ -69,7 +69,15 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 			
 			final SmartLock smartLock = driver.flush();
 			smartLock.setSmartLockId(smartLockId);
-			
+			if(imeiCode.getValue()==null){
+				imeiCode.setValue("");
+			}
+			if(macAddress.getValue()==null){
+				macAddress.setValue("");
+			}
+			if(bikePlateNumber.getValue()==null){
+				bikePlateNumber.setValue("");
+			}
 			final TextButton button = ((TextButton)(e.getSource()));
 			button.disable();
 
@@ -94,15 +102,17 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 		Widget widget = uiBinder.createAndBindUi(this);
 		driver.initialize(this);
 		driver.edit(new SmartLock());
-//		orgId.addValueChangeHandler(new ValueChangeHandler<Integer>(){
-//
-//			@Override
-//			public void onValueChange(ValueChangeEvent<Integer> event) {
-//				bikeTypeId.setExtraParam(event.getValue().toString());
-//				bikeTypeId.reset();
-//			}
-//			
-//		});
+		orgId.reset();
+		bikeTypeId.reset();
+		orgId.addValueChangeHandler(new ValueChangeHandler<Integer>(){
+
+			@Override
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				bikeTypeId.setExtraParam(event.getValue().toString());
+				bikeTypeId.reset();
+			}
+			
+		});
 		return widget;
 	}
 

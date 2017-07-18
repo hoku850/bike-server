@@ -8,6 +8,7 @@ import org.ccframe.client.module.article.view.ArticleInfWindowView;
 import org.ccframe.client.module.bike.view.AgentAppListView;
 import org.ccframe.client.module.bike.view.AgentAppWindowView;
 import org.ccframe.client.module.bike.view.AgentListView;
+import org.ccframe.client.module.bike.view.AgentTipWindowView;
 import org.ccframe.client.module.bike.view.AgentWindowView;
 import org.ccframe.client.module.bike.view.BikeTypeListView;
 import org.ccframe.client.module.bike.view.BikeTypeWindowView;
@@ -149,6 +150,11 @@ public class MenuConfig {
     @Inject
     public void setAgentWindowAsyncProvider(AsyncProvider<AgentWindowView> asyncProvider){
     	viewRegistry.put(ViewResEnum.AGENT_WINDOW, asyncProvider);
+    }
+    
+    @Inject
+    public void setAgentTipWindowAsyncProvider(AsyncProvider<AgentTipWindowView> asyncProvider){
+    	viewRegistry.put(ViewResEnum.AGENT_TIP_WINDOW, asyncProvider);
     }
     
     @Inject

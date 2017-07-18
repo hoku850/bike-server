@@ -32,14 +32,14 @@
 			<cc:child layoutData="{vBoxLayoutData}">
 				<form:FieldLabel text="IMEI码">
 					<form:widget>
-						<cc:CcTextField ui:field="imeiCode" allowBlank="false" width="200" maxLength="15"/>
+						<cc:CcTextField ui:field="imeiCode" allowBlank="true" width="200" maxLength="15"/>
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>
 			<cc:child layoutData="{vBoxLayoutData}">
 				<form:FieldLabel text="MAC地址 ">
 					<form:widget>
-						<cc:CcTextField ui:field="macAddress" allowBlank="false" width="200" maxLength="17" />
+						<cc:CcTextField ui:field="macAddress" allowBlank="true" width="200" maxLength="17" />
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>
@@ -67,7 +67,7 @@
 			<cc:child layoutData="{vBoxLayoutData}">
 				<form:FieldLabel text="单车车牌号 ">
 					<form:widget>
-						<cc:CcTextField ui:field="bikePlateNumber" allowBlank="false" width="200" maxLength="15" />
+						<cc:CcTextField ui:field="bikePlateNumber" allowBlank="true" width="200" maxLength="15" />
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>

@@ -277,7 +277,12 @@ public enum ViewResEnum{
 	/**
 	 * 运营商窗口
 	 */
-	AGENT_WINDOW;
+	AGENT_WINDOW, 
+	
+	/**
+	 * 运营商成功添加后提示账户和密码的窗口
+	 */
+	AGENT_TIP_WINDOW;
 	
 	
 	public static ViewResEnum fromValue(String value){

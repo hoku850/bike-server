@@ -1,18 +1,24 @@
 package org.ccframe.client.module.bike.view;
 
+import org.ccframe.client.ViewResEnum;
 import org.ccframe.client.base.BaseWindowView;
 import org.ccframe.client.commons.CcFormPanelHelper;
 import org.ccframe.client.commons.ClientManager;
+import org.ccframe.client.commons.EventBusUtil;
 import org.ccframe.client.commons.RestCallback;
+import org.ccframe.client.commons.WindowEventCallback;
 import org.ccframe.client.components.CcPhoneField;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
+import org.ccframe.client.module.core.event.LoadWindowEvent;
 import org.ccframe.subsys.bike.domain.entity.Agent;
+import org.ccframe.subsys.core.domain.entity.User;
 import org.fusesource.restygwt.client.Method;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -51,19 +57,26 @@ public class AgentWindowView extends BaseWindowView<Integer, Agent> implements E
 	public void handleSaveClick(SelectEvent e){
 		if(FormPanelHelper.isValid(vBoxLayoutContainer, false)){
 			
-			final Agent Agent = driver.flush();
-			Agent.setAgentId(agentId);
+			final Agent agent = driver.flush();
+			agent.setAgentId(agentId);
 			
 			final TextButton button = ((TextButton)(e.getSource()));
 			button.disable();
 
-			ClientManager.getAgentClient().saveOrUpdate(Agent, new RestCallback<Void>(){
+			ClientManager.getAgentClient().saveOrUpdate(agent, new RestCallback<User>(){
 				@Override
-				public void onSuccess(Method method, Void response) {
+				public void onSuccess(Method method, User response) {
 					Info.display("操作完成", "运营商" + (agentId == null ? "新增" : "修改") + "成功");
-					AgentWindowView.this.retCallBack.onClose(Agent); //保存并回传结果数据
+					AgentWindowView.this.retCallBack.onClose(agent); //保存并回传结果数据
 					button.enable();
 					window.hide();
+					// 成功后提示该运营商的账户和密码
+					EventBusUtil.fireEvent(new LoadWindowEvent<Integer, User, EventHandler>(ViewResEnum.AGENT_TIP_WINDOW, response.getUserId(), new WindowEventCallback<User>(){
+						@Override
+						public void onClose(User returnData) {
+							
+						}
+					}));
 				}
 				@Override
 				protected void afterFailure(){ //如果采用按钮的disable逻辑，一定要在此方法enable按钮

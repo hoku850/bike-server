@@ -10,6 +10,7 @@ import org.ccframe.subsys.bike.dto.AgentListReq;
 import org.ccframe.subsys.bike.dto.AgentRowDto;
 import org.ccframe.subsys.bike.service.AgentSearchService;
 import org.ccframe.subsys.bike.service.AgentService;
+import org.ccframe.subsys.core.domain.entity.User;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,8 +37,8 @@ public class AgentController{
 	}
 
 	@RequestMapping(method=RequestMethod.POST)
-	public void saveOrUpdate(@RequestBody Agent agent){
-		SpringContextHelper.getBean(AgentService.class).saveOrUpdateAgent(agent);
+	public User saveOrUpdate(@RequestBody Agent agent){
+		return SpringContextHelper.getBean(AgentService.class).saveOrUpdateAgent(agent);
 	}
 }
 

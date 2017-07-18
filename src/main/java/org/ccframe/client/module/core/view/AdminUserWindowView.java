@@ -116,7 +116,12 @@ public class AdminUserWindowView extends BaseWindowView<Integer, User> implement
 		this.userId = userId;
 		window.setHeadingText((userId == null ? "新增" : "修改") + "用户");
 		createDateStr.getParent().setVisible(userId != null);
-		userPsw.getParent().setVisible(userId == null);
+		if(userId == null){
+			userPsw.getParent().setVisible(true);
+		}else{
+			userPsw.getParent().setVisible(false);
+			userPsw.setValue("        "); //避免修改时隐藏的validate问题
+		}
 		loginId.setReadOnly(userId != null);
 		
 		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);

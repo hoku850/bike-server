@@ -14,6 +14,7 @@ import org.ccframe.client.commons.RestCallback;
 import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.dto.AgentListReq;
 import org.ccframe.subsys.bike.dto.AgentRowDto;
+import org.ccframe.subsys.core.domain.entity.User;
 import org.fusesource.restygwt.client.RestService;
 
 public interface AgentClient extends RestService{
@@ -28,5 +29,5 @@ public interface AgentClient extends RestService{
 	void findAgentList(AgentListReq agentListReq, @QueryParam("offset") int offset, @QueryParam("limit") int limit, RestCallback<ClientPage<AgentRowDto>> callback);
 
 	@POST @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.AGENT_BASE + Global.REST_REQUEST_URL_SUFFIX)
-	void saveOrUpdate(Agent agent, RestCallback<Void> restCallback);
+	void saveOrUpdate(Agent agent, RestCallback<User> restCallback);
 }

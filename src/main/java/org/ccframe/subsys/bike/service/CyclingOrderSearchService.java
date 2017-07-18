@@ -5,12 +5,10 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ccframe.client.Global;
-import org.ccframe.client.ResGlobal;
 import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
-import org.ccframe.commons.util.BusinessException;
 import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
@@ -48,8 +46,8 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 			}
 			// TODO 有bug
 			if (locks.size() == 0) {
-				throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"没有该类型单车的骑行订单"});
-				//boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.SMART_LOCK_ID, " "));
+				boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.ORG_ID, 0));
+//				throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"没有该类型单车的骑行订单"});
 			}
 		}
 		// 过滤状态

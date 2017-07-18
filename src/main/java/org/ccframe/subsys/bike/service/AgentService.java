@@ -44,7 +44,7 @@ public class AgentService extends BaseService<Agent,java.lang.Integer, AgentRepo
 	 * @param agent
 	 */
 	@Transactional
-	public void saveOrUpdateAgent(Agent agent) {
+	public User saveOrUpdateAgent(Agent agent) {
 		agent.setIfDelete(BoolCodeEnum.NO.toCode());
 		agent.setRoleId(2); // TODO 先设管理员 后期再修改
 		Agent saveAgent = SpringContextHelper.getBean(this.getClass()).save(agent);
@@ -60,8 +60,8 @@ public class AgentService extends BaseService<Agent,java.lang.Integer, AgentRepo
 		
 		User user = new User();
 		// 登陆ID的规则：  机构ID + 00X
-		user.setLoginId(getLoginId(saveAgent.getAgentId() + "001"));
-		user.setUserNm(saveAgent.getAgentNm() + "管理员");
+		user.setLoginId(getLoginId("admin" + "001"));
+		user.setUserNm(saveAgent.getAgentNm() + "系统管理员");
 		user.setUserPsw("ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff");
 		user.setIfAdmin("Y");
 		user.setCreateDate(new Date());
@@ -82,6 +82,8 @@ public class AgentService extends BaseService<Agent,java.lang.Integer, AgentRepo
 		bikeType.setBikeTypeNm("标准单车");
 		bikeType.setHalfhourAmmount(1.0);
 		SpringContextHelper.getBean(BikeTypeService.class).save(bikeType);
+		
+		return saveUser;
 	}
 	
 	public String getLoginId(String loginId){
@@ -89,7 +91,14 @@ public class AgentService extends BaseService<Agent,java.lang.Integer, AgentRepo
 		if (findByKey.size() == 0) {
 			return loginId;
 		} else {
-			loginId = Integer.parseInt(loginId)+ 1 + "";
+			Integer id = Integer.parseInt(loginId.substring(loginId.length() - 3, loginId.length()))+ 1;
+			if (id < 10) {
+				loginId = "admin00" + id;
+			} else if (id < 100) {
+				loginId = "admin0" + id;
+			} else if (id < 1000) {
+				loginId = "admin" + id;
+			}
 			return getLoginId(loginId);
 		}
 	}

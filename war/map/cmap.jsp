@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="/commons/taglibs.jsp" %>
-<c:set var="cyclingOrderId" value="60001"/>
+<c:set var="cyclingOrderId" value="${param.cyclingOrderId}"/>
 <c:set var="aMapData" value="${sdk:getAMapDataByCyclingOrderId(cyclingOrderId )}"/>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -36,7 +36,22 @@
         strokeDasharray: [10, 5] //补充线样式
     });
     polyline.setMap(map);
-
+    
+    // 标记起终点
+    var startMarker = new AMap.Marker({
+        icon: "image/map_icon_start.png",
+        position: ${aMapData.startPosition }
+    });
+    startMarker.setMap(map);
+    
+    var endMarker = new AMap.Marker({
+        icon: "image/map_icon_end.png",
+        position: ${aMapData.endPosition }
+    });
+    endMarker.setMap(map);
+    
+    // 地图自适应显示
+    var newCenter = map.setFitView();
 </script>
 </body>
 </html>

@@ -4,7 +4,6 @@ import org.ccframe.client.base.BaseWindowView;
 import org.ccframe.client.commons.CcFormPanelHelper;
 import org.ccframe.client.commons.ClientManager;
 import org.ccframe.client.commons.RestCallback;
-import org.ccframe.client.components.CcIntegerField;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
@@ -15,6 +14,7 @@ import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Singleton;
 import com.sencha.gxt.widget.core.client.Component;
@@ -28,6 +28,9 @@ public class CyclingOrderWindowView extends BaseWindowView<Integer, CyclingOrder
 	
 	private static CyclingOrderUiBinder uiBinder = GWT.create(CyclingOrderUiBinder.class);
 	private CyclingOrderDriver driver = GWT.create(CyclingOrderDriver.class);
+	
+	@UiField
+	Frame frame;
 	
 	@UiField
 	CcVBoxLayoutContainer vBoxLayoutContainer;
@@ -64,6 +67,8 @@ public class CyclingOrderWindowView extends BaseWindowView<Integer, CyclingOrder
 		if(id == null){
 			FormPanelHelper.reset(vBoxLayoutContainer);
 		}else{
+			frame.setUrl(GWT.getHostPageBaseURL() + "map/cmap.jsp?cyclingOrderId=" + id);
+			frame.setPixelSize(750, 545);
 			ClientManager.getCyclingOrderClient().getDtoById(id, new RestCallback<CyclingOrderRowDto>(){
 				@Override
 				public void onSuccess(Method method, CyclingOrderRowDto response) {

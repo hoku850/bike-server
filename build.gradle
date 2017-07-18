@@ -55,12 +55,11 @@ gwt {
 
 	minHeapSize = "1024M";
 	maxHeapSize = "1280M";
+	sourceLevel = "1.7";
 
 	compiler {
 		strict = true;
-		enableClosureCompiler = true;
-		disableClassMetadata = true;
-		disableCastChecking = true;
+		// style = "DETAILED"; //关闭混淆
 	}
 }
 
@@ -112,7 +111,7 @@ dependencies {
     api 'org.elasticsearch:elasticsearch:2.4.4' //TODO，插件编译的时候还是244，可以考虑重新编译后升级
     api 'com.alibaba:fastjson:1.2.34'
     api 'org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1'
-    api 'com.google.guava:guava:22.0'
+    api 'com.google.guava:guava:20.0' //guava>20.0需要java8
     api 'com.flipthebird.gwt-hashcode-equals:gwt-hashcode-equals:0.1.0'
     api 'org.hibernate.common:hibernate-commons-annotations:5.0.1.Final'
     api 'org.hibernate:hibernate-core:5.2.10.Final'
@@ -187,11 +186,18 @@ dependencies {
     //参与编译但是不进行发布.
     //guice
     providedCompile 'com.google.gwt.inject:gin:2.1.2'
-    providedCompile 'com.google.inject:guice:3.0' //TODO，检测是否可以升级4.0
+    providedCompile 'com.google.inject:guice:3.0' //gin bridge只支持到3.0
     providedCompile 'com.google.inject.extensions:guice-assistedinject:3.0'
     providedCompile 'javax.inject:javax.inject:1'
 	
 	//gwt 2.6.1
+    providedCompile ('com.fasterxml.jackson.core:jackson-databind:2.8.9'){
+		artifact {
+			name = 'jackson-databind'
+			type = 'jar'
+			classifier = 'sources'
+		}
+    }
     providedCompile 'com.google.gwt:gwt-dev:2.6.1'
     providedCompile 'com.google.gwt:gwt-user:2.6.1'
     providedCompile 'com.google.gwt:gwt-servlet:2.6.1'
@@ -207,6 +213,7 @@ dependencies {
 			classifier = 'sources'
 		}
 	}
+	
 	//gxt
     providedCompile 'com.sencha.gxt:gxt-chart:3.1.1'
     providedCompile 'com.sencha.gxt:gxt-legacy:3.1.1'
@@ -217,7 +224,7 @@ dependencies {
     providedCompile 'javax.servlet.jsp:jsp-api:2.1'
     providedCompile 'org.apache.ant:ant-launcher:1.10.1'
     providedCompile 'org.vectomatic:lib-gwt-file:0.3.8'
-    providedCompile 'org.fusesource.restygwt:restygwt:2.0.3' //2.2.0需要gwt-jackson
+    providedCompile 'org.fusesource.restygwt:restygwt:2.1.1' //2.2.0需要gwt-jackson,gwt2.7
     
     //自定义仓库的
     providedCompile 'org.ccframe:gwttheme-freshbizz:1.0'

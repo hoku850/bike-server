@@ -7,8 +7,8 @@
 	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
 	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
 	xmlns:cc="urn:import:org.ccframe.client.components"
-	xmlns:grid="urn:import:com.sencha.gxt.widget.core.client.grid"
->
+	xmlns:grid="urn:import:com.sencha.gxt.widget.core.client.grid">
+	
 	<ui:import field='org.ccframe.subsys.bike.domain.code.FixStatCodeEnum.*'/>
   	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="topMargins">
     	<ui:attributes top="4" right="4" bottom="0" left="4" />

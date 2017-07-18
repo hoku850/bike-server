@@ -50,6 +50,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		
 	}
 
+	// 返回骑行轨迹的窗口
 	public CyclingOrderRowDto getDtoById(Integer cyclingOrderId) {
 		CyclingOrder cyclingOrder = getById(cyclingOrderId);
 		CyclingOrderRowDto cyclingOrderRowDto = new CyclingOrderRowDto();

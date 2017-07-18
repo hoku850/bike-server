@@ -10,53 +10,69 @@
 	xmlns:grid="urn:import:com.sencha.gxt.widget.core.client.grid">
 	
 	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="rowMargins">
-		<ui:attributes top="5" right="5" bottom="0" left="5" />
+		<ui:attributes top="5" right="5" bottom="0" left="15" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="mapMargins">
+		<ui:attributes top="10" right="5" bottom="15" left="15" />
 	</ui:with>
 	<ui:with type="com.sencha.gxt.core.client.util.Padding" field="vBoxPaddings">
 		<ui:attributes top="5" right="15" bottom="5" left="15" />
+	</ui:with>
+
+	<ui:with type="com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData" field="mapLayoutData">
+		<ui:attributes margins="{mapMargins}"/>
 	</ui:with>
 	<ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="vBoxLayoutData">
 		<ui:attributes margins="{rowMargins}"/>
 	</ui:with>
 
-	<gxt:Window ui:field="window" width="380" modal="true" headingText="新增运营商" focusWidget="{closeButton}" buttonAlign="CENTER" resizable="false">
-		<cc:CcVBoxLayoutContainer ui:field="vBoxLayoutContainer" padding="{vBoxPaddings}">
-			<cc:child layoutData="{vBoxLayoutData}">
-				<form:FieldLabel text="骑行用户">
-					<form:widget>
-						<cc:CcTextField ui:field="userNm" allowBlank="false" width="200" maxLength="10" enabled="false"/>
-					</form:widget>
-				</form:FieldLabel>
-			</cc:child>
-			<cc:child layoutData="{vBoxLayoutData}">
-				<form:FieldLabel text="骑行开始时间">
-					<form:widget>
-						<cc:CcTextField ui:field="startTimeStr" allowBlank="false" width="200" maxLength="10" enabled="false"/>
-					</form:widget>
-				</form:FieldLabel>
-			</cc:child>
-			<cc:child layoutData="{vBoxLayoutData}">
-				<form:FieldLabel text="骑行结束时间">
-					<form:widget>
-						<cc:CcTextField ui:field="endTimeStr" allowBlank="false" width="200" maxLength="10" enabled="false"/>
-					</form:widget>
-				</form:FieldLabel>
-			</cc:child>
-			<cc:child layoutData="{vBoxLayoutData}">
-				<form:FieldLabel text="持续时间">
-					<form:widget>
-						<cc:CcTextField ui:field="continueTimeStr" allowBlank="false" width="200" maxLength="10" enabled="false"/>
-					</form:widget>
-				</form:FieldLabel>
-			</cc:child>
-			<cc:child layoutData="{vBoxLayoutData}">
-				<form:FieldLabel text="骑行距离">
-					<form:widget>
-						<cc:CcTextField ui:field="cyclingDistanceMeterStr" allowBlank="false" width="200" enabled="false"/>
-					</form:widget>
-				</form:FieldLabel>
-			</cc:child>
-		</cc:CcVBoxLayoutContainer>
+	<gxt:Window ui:field="window" width="1100" height="650" modal="true" headingText="新增运营商" focusWidget="{closeButton}" buttonAlign="CENTER" resizable="false">
+		
+		<container:HorizontalLayoutContainer>
+			<container:child layoutData="{mapLayoutData}">
+				<g:Frame ui:field="frame"></g:Frame>
+			</container:child>
+			<container:child>
+				<cc:CcVBoxLayoutContainer ui:field="vBoxLayoutContainer" padding="{vBoxPaddings}">
+					<cc:child layoutData="{vBoxLayoutData}">
+						<form:FieldLabel text="骑行用户">
+							<form:widget>
+								<cc:CcTextField ui:field="userNm" allowBlank="false" width="160" maxLength="10" readOnly="true"/>
+							</form:widget>
+						</form:FieldLabel>
+					</cc:child>
+					<cc:child layoutData="{vBoxLayoutData}">
+						<form:FieldLabel text="骑行开始时间">
+							<form:widget>
+								<cc:CcTextField ui:field="startTimeStr" allowBlank="false" width="160" maxLength="10" readOnly="true"/>
+							</form:widget>
+						</form:FieldLabel>
+					</cc:child>
+					<cc:child layoutData="{vBoxLayoutData}">
+						<form:FieldLabel text="骑行结束时间">
+							<form:widget>
+								<cc:CcTextField ui:field="endTimeStr" allowBlank="false" width="160" maxLength="10" readOnly="true"/>
+							</form:widget>
+						</form:FieldLabel>
+					</cc:child>
+					<cc:child layoutData="{vBoxLayoutData}">
+						<form:FieldLabel text="持续时间">
+							<form:widget>
+								<cc:CcTextField ui:field="continueTimeStr" allowBlank="false" width="160" maxLength="10" readOnly="true"/>
+							</form:widget>
+						</form:FieldLabel>
+					</cc:child>
+					<cc:child layoutData="{vBoxLayoutData}">
+						<form:FieldLabel text="骑行距离">
+							<form:widget>
+								<cc:CcTextField ui:field="cyclingDistanceMeterStr" allowBlank="false" width="160" readOnly="true"/>
+							</form:widget>
+						</form:FieldLabel>
+					</cc:child>
+				</cc:CcVBoxLayoutContainer>
+			</container:child>
+		</container:HorizontalLayoutContainer>
+
 		<gxt:button>
 			<button:TextButton ui:field="closeButton" text="确定"/>
 		</gxt:button>

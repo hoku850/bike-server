@@ -11,18 +11,16 @@ import org.ccframe.client.commons.ColumnConfigEx;
 import org.ccframe.client.commons.EventBusUtil;
 import org.ccframe.client.commons.RestCallback;
 import org.ccframe.client.commons.RestyGwtPagingLoader;
-import org.ccframe.client.commons.WindowEventCallback;
 import org.ccframe.client.commons.RestyGwtPagingLoader.CallBack;
+import org.ccframe.client.commons.WindowEventCallback;
 import org.ccframe.client.components.CcEnumCombobox;
 import org.ccframe.client.components.CcLabelValueCombobox;
 import org.ccframe.client.module.core.event.BodyContentEvent;
 import org.ccframe.client.module.core.event.LoadWindowEvent;
 import org.ccframe.client.module.core.view.MainFrame;
-import org.ccframe.subsys.bike.domain.code.RepairResonCodeEnum;
 import org.ccframe.subsys.bike.domain.code.FixStatCodeEnum;
-import org.ccframe.subsys.bike.domain.entity.BikeType;
+import org.ccframe.subsys.bike.domain.code.RepairResonCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.UserToRepairRecord;
-import org.ccframe.subsys.bike.dto.BikeTypeRowDto;
 import org.ccframe.subsys.bike.dto.UserToRepairRecordListReq;
 import org.ccframe.subsys.bike.dto.UserToRepairRecordRowDto;
 import org.fusesource.restygwt.client.Method;
@@ -212,7 +210,7 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 				
 				EventBusUtil.fireEvent(new LoadWindowEvent<Integer, UserToRepairRecord, EventHandler>(
 						ViewResEnum.USER_TO_REPAIR_WINDOW, 
-						selectedItem.getToRepairReasonId(),
+						selectedItem.getUserToRepairRecordId(),
 						new WindowEventCallback<UserToRepairRecord>(){
 							@Override
 							public void onClose(UserToRepairRecord returnData) {

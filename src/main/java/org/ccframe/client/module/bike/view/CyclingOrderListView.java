@@ -12,6 +12,7 @@ import org.ccframe.client.commons.ColumnConfigEx;
 import org.ccframe.client.commons.EventBusUtil;
 import org.ccframe.client.commons.RestCallback;
 import org.ccframe.client.commons.RestyGwtPagingLoader;
+import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.commons.RestyGwtPagingLoader.CallBack;
 import org.ccframe.client.commons.UtilDateTimeClient;
 import org.ccframe.client.commons.WindowEventCallback;
@@ -86,6 +87,10 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 	
 	@UiHandler("findTrajectory")
 	public void findTrajectory(SelectEvent e){
+		if(grid.getSelectionModel().getSelectedItems().size() != 1){
+			ViewUtil.error("系统信息", "请选择一条记录进行编辑");
+			return;
+		}
 		CyclingOrderRowDto selectedItem = grid.getSelectionModel().getSelectedItem();
 		
 		EventBusUtil.fireEvent(new LoadWindowEvent<Integer, CyclingOrderRowDto, EventHandler>(

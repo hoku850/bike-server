@@ -8,6 +8,7 @@ import org.ccframe.subsys.bike.domain.entity.BikeType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Singleton;
 import com.sencha.gxt.widget.core.client.Component;
@@ -21,6 +22,9 @@ public class UserToRepairWindowView extends BaseWindowView<Integer, BikeType> {
 	private static UserToRepairUiBinderUiBinder uiBinder = GWT.create(UserToRepairUiBinderUiBinder.class);
 	
 	@UiField
+	Frame frame;
+	
+	@UiField
 	CcVBoxLayoutContainer vBoxLayoutContainer;
 	
 	@Override
@@ -30,15 +34,17 @@ public class UserToRepairWindowView extends BaseWindowView<Integer, BikeType> {
 	}
 
 	@Override
-	protected void onLoadData(Integer bikeTypeId) {
-		window.setHeadingText("单车类型" + (bikeTypeId == null ? "增加" : "修改"));
+	protected void onLoadData(Integer id) {
+		window.setHeadingText("报修位置显示");
 		
 		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
-		if(bikeTypeId == null){
+		if(id == null){
 			FormPanelHelper.reset(vBoxLayoutContainer);
 		}else{
-			FormPanelHelper.reset(vBoxLayoutContainer);
+			frame.setUrl(GWT.getHostPageBaseURL() + "map/umap.jsp?userToRepairRecordId=" + id);
+			frame.setPixelSize(750, 520);
 		}
+		
 		vBoxLayoutContainer.forceLayout();
 	}
 

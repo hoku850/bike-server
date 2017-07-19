@@ -5,6 +5,7 @@ import org.ccframe.client.base.BaseWindowView;
 import org.ccframe.client.commons.CcFormPanelHelper;
 import org.ccframe.client.commons.ClientManager;
 import org.ccframe.client.commons.RestCallback;
+import org.ccframe.client.components.CcCurrencyField;
 import org.ccframe.client.components.CcLabelValueCombobox;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
@@ -48,7 +49,7 @@ public class BikeTypeWindowView extends BaseWindowView<Integer, BikeType> implem
     CcLabelValueCombobox orgId;
     
 	@UiField
-	DoubleField halfhourAmmount;
+	CcCurrencyField halfhourAmmount;
 	
 	@UiHandler("saveButton")
 	public void handleSaveClick(SelectEvent e){

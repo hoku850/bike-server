@@ -91,7 +91,7 @@ public interface Global {
 	//RegEx
 	public static final String USER_PASSWORD_PATTERN = "^(?=.*[0-9].*)(?=.*[a-zA-Z].*).{7,}$"; //包含字符数字大于等于8
 	public static final String EMAIL_PATTERN = "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*";
-	public static final String MOBILE_CHECK_REGEX = "^((1[3,5,8][0-9])|(14[5,7])|(17[0,6,7,8]))\\d{8}$";
+	public static final String MOBILE_PATTERN = "^((1[3,5,8][0-9])|(14[5,7])|(17[0,6,7,8]))\\d{8}$";
 
 	//停止定时器的CRON
 	String DISABLED_SCHEDULED_CRON = "1 1 1 1 JAN *";

@@ -4,6 +4,7 @@ import org.ccframe.client.base.BaseWindowView;
 import org.ccframe.client.commons.CcFormPanelHelper;
 import org.ccframe.client.commons.ClientManager;
 import org.ccframe.client.commons.RestCallback;
+import org.ccframe.client.components.CcCurrencyField;
 import org.ccframe.client.components.CcEnumRadioField;
 import org.ccframe.client.components.CcTextArea;
 import org.ccframe.client.components.CcTextField;
@@ -56,7 +57,7 @@ public class MemberAccountWindowView extends BaseWindowView<Integer, MemberAccou
 	public CcEnumRadioField chargeOperateTypeCode;
 	
 	@UiField
-	public DoubleField changeValue;
+	public CcCurrencyField changeValue;
 	
 	@UiField
 	public CcTextArea reason;
@@ -92,6 +93,10 @@ public class MemberAccountWindowView extends BaseWindowView<Integer, MemberAccou
 					button.enable();
 					window.hide();
 				}
+				@Override
+				protected void afterFailure(){ //如果采用按钮的disable逻辑，一定要在此方法enable按钮
+					button.enable();
+				}
 			});
 		}
 	}
@@ -106,7 +111,7 @@ public class MemberAccountWindowView extends BaseWindowView<Integer, MemberAccou
 
 	@Override
 	protected void onLoadData(Integer memberAccountId) {
-		window.setHeadingText("充值/扣费");
+//		window.setHeadingText("充值/扣费");
 		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
 		if(memberAccountId == null){
 			FormPanelHelper.reset(vBoxLayoutContainer);

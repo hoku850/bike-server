@@ -271,7 +271,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 		List<ExcelReaderError> resultList = new ArrayList<>();
 		ImportDataCheckUtil.stringCheck("登录名", 38 - 6, false, checkValue.getLoginId(), rowNum, 0, resultList);
 		ImportDataCheckUtil.stringCheck("用户名称", 32, false, checkValue.getUserNm(), rowNum, 1, resultList);
-		ImportDataCheckUtil.patternCheck("用户手机", Global.MOBILE_CHECK_REGEX, true, checkValue.getUserMobile(), rowNum, 2, resultList);
+		ImportDataCheckUtil.patternCheck("用户手机", Global.MOBILE_PATTERN, true, checkValue.getUserMobile(), rowNum, 2, resultList);
 		ImportDataCheckUtil.patternCheck("用户E-MAIL", Global.EMAIL_PATTERN, true, checkValue.getUserEmail(), rowNum, 3, resultList);
 		ImportDataCheckUtil.enumCheck("是否管理员", "是,否", checkValue.getIfAdmin(), rowNum, 4, resultList);
 		return resultList;

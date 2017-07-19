@@ -1,6 +1,5 @@
 package org.ccframe.subsys.bike.tcpobj;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.ccframe.subsys.bike.domain.code.BykeTypeCodeEnum;
@@ -24,11 +23,20 @@ public class LockPackage {
 	
 	private BykeTypeCodeEnum bykeTypeCodeEnum;
 	
-	private CommandFlagEnum CommandFlagEnum;
+	private CommandFlagEnum commandFlagEnum;
 	
 	private AnswerFlagEnum answerFlagEnum;
 	
 	private Map<DataBlockTypeEnum, Object> dataBlockMap;
+
+	@Override
+	public String toString() {
+		return "LockPackage [type=" + type + ", version=" + version
+				+ ", lockId=" + lockId + ", bykeTypeCodeEnum="
+				+ bykeTypeCodeEnum + ", commandFlagEnum=" + commandFlagEnum
+				+ ", answerFlagEnum=" + answerFlagEnum + ", dataBlockMap="
+				+ dataBlockMap + "]";
+	}
 
 	public byte getType() {
 		return type;
@@ -63,11 +71,11 @@ public class LockPackage {
 	}
 
 	public CommandFlagEnum getCommandFlagEnum() {
-		return CommandFlagEnum;
+		return commandFlagEnum;
 	}
 
 	public void setCommandFlagEnum(CommandFlagEnum commandFlagEnum) {
-		CommandFlagEnum = commandFlagEnum;
+		commandFlagEnum = commandFlagEnum;
 	}
 
 	public AnswerFlagEnum getAnswerFlagEnum() {

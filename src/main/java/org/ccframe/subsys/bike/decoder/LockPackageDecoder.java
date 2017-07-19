@@ -1,22 +1,19 @@
 package org.ccframe.subsys.bike.decoder;
 
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+//import sun.misc.CRC16;
+
 import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.CRC32;
 
-import org.apache.commons.codec.binary.Hex;
 import org.ccframe.subsys.bike.domain.code.BykeTypeCodeEnum;
 import org.ccframe.subsys.bike.tcpobj.AnswerFlagEnum;
 import org.ccframe.subsys.bike.tcpobj.CommandFlagEnum;
 import org.ccframe.subsys.bike.tcpobj.DataBlockTypeEnum;
 import org.ccframe.subsys.bike.tcpobj.LockPackage;
-
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-//import sun.misc.CRC16;
 
 public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 
@@ -69,9 +66,16 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			byte[] dataBuff = new byte[dataInputStream.available() - 2];
 			dataInputStream.read(dataBuff);
 			
+			System.out.println("pack -> " + lockPackage);
+			
 			lockPackage.setDataBlockMap(decodeDataBlock(dataBuff));
 			
-			System.out.println(lockPackage.getDataBlockMap());
+			System.out.println("map -> " + lockPackage.getDataBlockMap());
+			
+			// 解析CRC
+			short CRC = dataInputStream.readShortReverse();
+			
+			System.out.println("CRC -> " + CRC);
 		}
 	}
 	
@@ -86,20 +90,79 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 					int size = dataInputStream.readByte();
 					short dataBlockType = dataInputStream.readShortReverse();
 					DataBlockTypeEnum dataBlockTypeEnum = DataBlockTypeEnum.fromValue(dataBlockType);
+					byte[] stringBuf;
 					switch(dataBlockTypeEnum){
 						case LOCK_STATUS:
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readByte());
+							break;
 						case LOCK_BATTERY:
-						case GPRS_KEEP_ALIVE:
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readByte());
+							break;
+						case LOCK_MAC:
+							stringBuf = new byte[size - 3];
+							dataInputStream.read(stringBuf);
+							dataBlockMap.put(dataBlockTypeEnum, new String(stringBuf, "utf-8"));
+							break;
+						case SYS_TIME:
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readTimeReverse());
+							break;
+						case GPS_INFO:
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readByte());
+							break;
+						case SOFTWARE_VERSION:
+							stringBuf = new byte[size - 3];
+							dataInputStream.read(stringBuf);
+							dataBlockMap.put(dataBlockTypeEnum, new String(stringBuf, "GBK"));
+							break;
+						
+						case IMSI:
+							stringBuf = new byte[size - 3];
+							dataInputStream.read(stringBuf);
+							dataBlockMap.put(dataBlockTypeEnum, new String(stringBuf, "GBK"));
+							break;
+						case CSQ:
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readByte());
+							break;
+							
+						case LOCK_IF_OPEN:
 							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readByte());
 							break;
 						case USER_ID:
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readIntReverse());
+							break;
+						case LOCK_ERROR:
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readByte());
+							break;
+						
+						case GPRS_KEEP_ALIVE:
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readByte());
+							break;
 						case UNLOCK_TIME_DURATION:
 							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readIntReverse());
+							break;
 						case LOCK_LNG:
-						case LOCK_LAT:
-							byte[] stringBuf = new byte[size - 3];
+							stringBuf = new byte[size - 3];
 							dataInputStream.read(stringBuf);
 							dataBlockMap.put(dataBlockTypeEnum, new String(stringBuf, "GBK"));
+							break;
+						case LOCK_LAT:
+							stringBuf = new byte[size - 3];
+							dataInputStream.read(stringBuf);
+							dataBlockMap.put(dataBlockTypeEnum, new String(stringBuf, "GBK"));
+							break;
+						case CPRS_SATELLITE_NUM:
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readByte());
+							break;
+						case GPS_REPORT_TYPE:
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readByte());
+							break;
+							
+						case WARN_INFO:
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readIntReverse());
+							break;
+						case UPGRADE:
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readByte());
+							break;
 					}
 				}catch(ArrayIndexOutOfBoundsException e){
 					break;

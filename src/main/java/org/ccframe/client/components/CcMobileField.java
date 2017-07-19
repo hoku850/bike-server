@@ -21,7 +21,7 @@ public class CcMobileField extends CcTextField{
 	private int lastKeyCode;
 
 	public CcMobileField(){
-		this.addValidator(new RegExValidator(Global.MOBILE_CHECK_REGEX, "手机号码格式错误"));
+		this.addValidator(new RegExValidator(Global.MOBILE_PATTERN, "手机号码格式错误"));
 		this.setMaxLength(11);
 		this.addKeyDownHandler(new KeyDownHandler(){
 

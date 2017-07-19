@@ -58,7 +58,7 @@ public enum DataBlockTypeEnum{
 	 */
 	LOCK_BATTERY((short)0x0051),
 	/**
-	 * 用户ID(0x0052)
+	 * 用户ID/IC 卡 ID(0x0052)
 	 */
 	USER_ID((short)0x0052),
 	/**
@@ -76,19 +76,65 @@ public enum DataBlockTypeEnum{
 	 * 单车设备号(0x0101)
 	 */
 	MODEL_NUM((short)0x0101),
+	
+	/**
+	 * 锁的开关(0x0104)
+	 */
+	LOCK_IF_OPEN((short)0x0104),
+	
+	/**
+	 * 锁的MAC(0x0105)
+	 */
+	LOCK_MAC((short)0x0105),
 
 	/**
 	 * 开锁时长(0x0108)
 	 */
 	UNLOCK_TIME_DURATION((short)0x0108),
+	
+	/**
+	 * GPRS卫星个数
+	 */
+	CPRS_SATELLITE_NUM((short)0x010a),
 
 	/**
 	 * GPRS 连接状态设置(0x010B)
 	 */
 	GPRS_KEEP_ALIVE((short)0x010B),
 	
+	/**
+	 * GPS上报类型(0x0113)
+	 */
+	GPS_REPORT_TYPE((short)0x0113),
 	
+	/**
+	 * 上报信号 csq(0x0114)
+	 */
+	CSQ((short)0x0114),
 	
+	/**
+	 * 时间(0x0150)
+	 */
+	SYS_TIME((short)0x0150),
+	
+	//-------------------告警和状态（可上报， 可读取，不能设置）----------------------
+	
+	/**
+	 * 告警信息(0x0301)
+	 */
+	WARN_INFO((short)0x0301),
+	
+	//-------------------升级指令----------------------
+	
+	/**
+	 * 升级包类型(0x0901)
+	 */
+	UPGRADE((short)0x0901),
+	
+	/**
+	 * 蓝牙桩类型
+	 */
+	BLUETOOTH_TYPE((short)1201),
 	;
 	
 	private short value;

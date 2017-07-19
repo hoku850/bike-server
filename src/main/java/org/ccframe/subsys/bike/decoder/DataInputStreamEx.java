@@ -28,7 +28,7 @@ public class DataInputStreamEx extends DataInputStream {
             throw new EOFException();
         return ((ch1 << 8) + (ch2 << 0) + (ch3 << 24) + (ch4 << 16));
     }
-
+    
     private byte readBuffer[] = new byte[8];
     public final long readLongReverse() throws IOException { //TODO FIX IT
         readFully(readBuffer, 0, 8);
@@ -41,5 +41,25 @@ public class DataInputStreamEx extends DataInputStream {
                 ((readBuffer[6] & 255) <<  8) +
                 ((readBuffer[7] & 255) <<  0));
     }
+    
+    public final String readTimeReverse() throws IOException {
+    	String ch1 = Integer.toHexString(in.read());
+    	String ch2 = Integer.toHexString(in.read());
+    	String ch3 = Integer.toHexString(in.read());
+    	String ch4 = Integer.toHexString(in.read());
+    	String ch5 = Integer.toHexString(in.read());
+    	String ch6 = Integer.toHexString(in.read());
+    	String ch7 = Integer.toHexString(in.read());
+    	return ch1 + ch2 + ch3 + ch4 + ch5 + ch6 + ch7;
+    }
+
+	public String getStr(byte[] stringBuf) {
+		StringBuilder data = new StringBuilder("");
+		for (int i = 0; i < stringBuf.length; i++) {
+			String hexString = Integer.toHexString(stringBuf[i]);
+			data.append(hexString);
+		}
+		return data.toString();
+	}
 
 }

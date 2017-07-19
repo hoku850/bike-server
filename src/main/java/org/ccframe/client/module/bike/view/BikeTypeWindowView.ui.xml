@@ -39,7 +39,7 @@
 				<g:HorizontalPanel>
 					<form:FieldLabel text="半小时金额 ">
 						<form:widget>
-							<form:DoubleField ui:field="halfhourAmmount" allowBlank="false" width="180" />
+							<cc:CcCurrencyField ui:field="halfhourAmmount" allowBlank="false" width="180" />
 						</form:widget>
 					</form:FieldLabel>
 					<g:Label text="&#160;元" />

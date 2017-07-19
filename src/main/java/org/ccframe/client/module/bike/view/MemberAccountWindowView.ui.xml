@@ -61,7 +61,7 @@
 			<cc:child layoutData="{vBoxLayoutData}">
 				<form:FieldLabel text="数量 ">
 					<form:widget>
-						<form:DoubleField ui:field="changeValue" allowBlank="false" width="180" />
+						<cc:CcCurrencyField ui:field="changeValue" allowBlank="false" width="180" />
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>

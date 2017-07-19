@@ -1,16 +1,13 @@
 package org.ccframe.client.module.bike.view;
 
-import org.ccframe.client.ViewResEnum;
 import org.ccframe.client.base.BaseWindowView;
 import org.ccframe.client.commons.CcFormPanelHelper;
 import org.ccframe.client.commons.ClientManager;
-import org.ccframe.client.commons.EventBusUtil;
 import org.ccframe.client.commons.RestCallback;
-import org.ccframe.client.commons.WindowEventCallback;
+import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.components.CcPhoneField;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
-import org.ccframe.client.module.core.event.LoadWindowEvent;
 import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.fusesource.restygwt.client.Method;
@@ -18,7 +15,6 @@ import org.fusesource.restygwt.client.Method;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
-import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -70,13 +66,11 @@ public class AgentWindowView extends BaseWindowView<Integer, Agent> implements E
 					AgentWindowView.this.retCallBack.onClose(agent); //保存并回传结果数据
 					button.enable();
 					window.hide();
-					// 成功后提示该运营商的账户和密码
-					EventBusUtil.fireEvent(new LoadWindowEvent<Integer, User, EventHandler>(ViewResEnum.AGENT_TIP_WINDOW, response.getUserId(), new WindowEventCallback<User>(){
-						@Override
-						public void onClose(User returnData) {
-							
-						}
-					}));
+					// 新增成功后提示该运营商的账户和密码
+					if (response != null && agentId == null) {
+						String message = "管理员账户: " + response.getLoginId() + "   密码: test";
+						ViewUtil.messageBox("运营商默认管理员账号", message);
+					}
 				}
 				@Override
 				protected void afterFailure(){ //如果采用按钮的disable逻辑，一定要在此方法enable按钮

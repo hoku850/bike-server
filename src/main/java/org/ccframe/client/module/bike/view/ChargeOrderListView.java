@@ -85,7 +85,7 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 		ValueProvider<ChargeOrderRowDto, Integer> chargeOrderId();
 		ValueProvider<ChargeOrderRowDto, String> chargeOrderNum();
 		ValueProvider<ChargeOrderRowDto, String> orgNm();
-		ValueProvider<ChargeOrderRowDto, Integer> userId();
+		ValueProvider<ChargeOrderRowDto, String> loginId();
 		ValueProvider<ChargeOrderRowDto, String> paymentTypeCodeStr();
 		ValueProvider<ChargeOrderRowDto, Double> chargeAmmount();
 		ValueProvider<ChargeOrderRowDto, String> paymentTransactionalNumber();
@@ -98,15 +98,15 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 	protected void initColumnConfig(List<ColumnConfig<ChargeOrderRowDto, ?>> configList) {
 		BikeTypeProperties props = GWT.create(BikeTypeProperties.class);
 		
-		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.chargeOrderNum(), 100, "订单号码", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.chargeOrderNum(), 150, "订单号码", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.orgNm(), 100, "运营商", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<ChargeOrderRowDto, Integer>(props.userId(), 100, "登陆ID", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.paymentTypeCodeStr(), 100, "支付类型", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.loginId(), 150, "登陆ID", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.paymentTypeCodeStr(), 100, "支付类型", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<ChargeOrderRowDto, Double>(props.chargeAmmount(), 100, "金额", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.paymentTransactionalNumber(), 100, "交易流水", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.chargeOrderStatCodeStr(), 80, "状态", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.createTimeStr(), 130, "创建时间", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.chargeFinishTimeStr(), 130, "完成时间", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.paymentTransactionalNumber(), 150, "交易流水", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.chargeOrderStatCodeStr(), 80, "状态", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.createTimeStr(), 160, "创建时间", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.chargeFinishTimeStr(), 160, "完成时间", HasHorizontalAlignment.ALIGN_CENTER, true));
 	}
 
 	@Override

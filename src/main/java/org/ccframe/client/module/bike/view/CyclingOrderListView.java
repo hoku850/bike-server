@@ -119,7 +119,7 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 		ValueProvider<CyclingOrderRowDto, Integer> cyclingOrderId();
 		ValueProvider<CyclingOrderRowDto, String> orgNm();
 		ValueProvider<CyclingOrderRowDto, Integer> userId();
-		ValueProvider<CyclingOrderRowDto, Integer> smartLockId();
+		ValueProvider<CyclingOrderRowDto, String> lockerHardwareCode();
 		ValueProvider<CyclingOrderRowDto, String> bikePlateNumber();
 		ValueProvider<CyclingOrderRowDto, String> bikeTypeNm();
 		ValueProvider<CyclingOrderRowDto, String> cyclingOrderStatCodeStr();
@@ -131,15 +131,15 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 	protected void initColumnConfig(List<ColumnConfig<CyclingOrderRowDto, ?>> configList) {
 		BikeTypeProperties props = GWT.create(BikeTypeProperties.class);
 		
-		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Integer>(props.cyclingOrderId(), 160, "订单编号", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Integer>(props.cyclingOrderId(), 150, "订单编号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.orgNm(), 100, "运营商", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Integer>(props.userId(), 100, "登陆ID", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Integer>(props.smartLockId(), 160, "智能锁硬件编号", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.bikePlateNumber(), 160, "单车车牌号", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Integer>(props.userId(), 120, "登陆ID", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.lockerHardwareCode(), 150, "智能锁硬件编号", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.bikePlateNumber(), 150, "单车车牌号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.bikeTypeNm(), 100, "单车类型", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.cyclingOrderStatCodeStr(), 100, "状态", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.cyclingOrderStatCodeStr(), 80, "状态", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Double>(props.orderAmmount(), 100, "金额", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.endTimeStr(), 160, "结束时间", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.endTimeStr(), 160, "结束时间", HasHorizontalAlignment.ALIGN_CENTER, true));
 	}
 
 	@Override

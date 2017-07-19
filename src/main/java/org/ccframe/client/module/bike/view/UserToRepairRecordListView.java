@@ -100,7 +100,7 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 	protected void initColumnConfig(List<ColumnConfig<UserToRepairRecordRowDto, ?>> configList) {
 		UserToRepairRecordProperties props = GWT.create(UserToRepairRecordProperties.class);
 		
-		ColumnConfigEx<UserToRepairRecordRowDto, String> fixStatColumn = new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.ifFinishFix(), 100, "维修状态", HasHorizontalAlignment.ALIGN_CENTER, false);
+		ColumnConfigEx<UserToRepairRecordRowDto, String> fixStatColumn = new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.ifFinishFix(), 80, "维修状态", HasHorizontalAlignment.ALIGN_CENTER, true);
 		fixStatColumn.setCell(new AbstractCell<String>(){
             @Override
             public void render(com.google.gwt.cell.client.Cell.Context context,
@@ -154,12 +154,12 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 		
 		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.orgNm(), 100, "运营商", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(fixStatColumn);
-		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, Integer>(props.userId(), 100, "登录ID", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.lockerHardwareCode(), 100, "智能锁硬件编号", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.bikePlateNumber(), 100, "单车车牌号", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, Integer>(props.userId(), 120, "登录ID", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.lockerHardwareCode(), 150, "智能锁硬件编号", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.bikePlateNumber(), 150, "单车车牌号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(repairLocationCodeColumn);
-		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.toRepairTimeStr(), 100, "报修时间", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.finishFixTimeStr(), 100, "维修时间", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.toRepairTimeStr(), 160, "报修时间", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.finishFixTimeStr(), 160, "维修时间", HasHorizontalAlignment.ALIGN_CENTER, true));
 	}
 	
 	@Override

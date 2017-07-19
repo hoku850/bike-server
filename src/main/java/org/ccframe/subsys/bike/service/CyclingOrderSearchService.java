@@ -88,6 +88,7 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 			// 查询出单车类型
 			SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(cyclingOrder.getSmartLockId());
 			if (smartLock != null) {
+				cyclingOrderRowDto.setLockerHardwareCode(smartLock.getLockerHardwareCode());
 				BikeType bikeType = SpringContextHelper.getBean(BikeTypeService.class).getById(smartLock.getBikeTypeId());
 				if (bikeType != null) {
 					cyclingOrderRowDto.setBikeTypeNm(bikeType.getBikeTypeNm());

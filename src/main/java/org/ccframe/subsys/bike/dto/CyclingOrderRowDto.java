@@ -20,6 +20,18 @@ public class CyclingOrderRowDto extends CyclingOrder {
 	
 	private String cyclingDistanceMeterStr;
 	
+	private String lockerHardwareCode;
+	
+	
+	
+	public String getLockerHardwareCode() {
+		return lockerHardwareCode;
+	}
+
+	public void setLockerHardwareCode(String lockerHardwareCode) {
+		this.lockerHardwareCode = lockerHardwareCode;
+	}
+
 	public String getCyclingDistanceMeterStr() {
 		return cyclingDistanceMeterStr;
 	}

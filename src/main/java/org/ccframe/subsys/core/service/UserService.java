@@ -27,6 +27,9 @@ import org.ccframe.commons.jpaquery.Criteria;
 import org.ccframe.commons.jpaquery.Restrictions;
 import org.ccframe.commons.util.BusinessException;
 import org.ccframe.commons.util.WebContextHolder;
+import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
+import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
+import org.ccframe.subsys.bike.service.CyclingOrderSearchService;
 import org.ccframe.subsys.core.domain.code.AccountTypeCodeEnum;
 import org.ccframe.subsys.core.domain.code.BoolCodeEnum;
 import org.ccframe.subsys.core.domain.code.UserStatCodeEnum;
@@ -49,6 +52,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gwt.i18n.client.NumberFormat;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 
 @Service
@@ -453,8 +457,9 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 	 * @author zjm
 	 */
 	@Transactional
-	public void login(String phoneName) {
-		List<User> list = SpringContextHelper.getBean(UserSearchService.class).findByKey(User.LOGIN_ID, phoneName);
+	public void login(String phoneNumber, String iMEI) {
+
+		List<User> list = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(phoneNumber, iMEI);
 		
 		User user2 = null;
 		if(list!= null && list.size()>0){
@@ -466,16 +471,24 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 				this.newAccount(user2);
 			}
 		} else {
-			//新建用户
-			User user = new User();
-			user.setLoginId(phoneName);
-			user.setUserNm(phoneName);
-			user.setUserMobile(phoneName);
-			user.setUserPsw(UUID.randomUUID().toString());
-			user.setIfAdmin("N");
-			user.setCreateDate(new Date());
-			user.setUserStatCode(UserStatCodeEnum.NORMAL.toCode());
-			
+			User user = null;
+			List<User> findByKey = SpringContextHelper.getBean(UserService.class).findByKey(User.LOGIN_ID, phoneNumber, null);
+			if(findByKey!=null && findByKey.size()>0) {
+				//更新用户的UserPsw(IMEI).
+				user = findByKey.get(0);
+				user.setUserPsw(iMEI);
+			} else {
+				//新建用户
+				user = new User();
+				user.setLoginId(phoneNumber);
+				user.setUserNm(phoneNumber);
+				user.setUserMobile(phoneNumber);
+				user.setUserPsw(iMEI);
+				user.setIfAdmin("N");
+				user.setCreateDate(new Date());
+				user.setUserStatCode(UserStatCodeEnum.NORMAL.toCode());
+			}
+
 			user2 = SpringContextHelper.getBean(UserService.class).save(user);
 			
 			this.newAccount(user2);
@@ -510,6 +523,26 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 		memberAccount3.setAccountTypeCode(AccountTypeCodeEnum.DEPOSIT.toCode());
 		memberAccount3.setAccountValue(0.00);
 		SpringContextHelper.getBean(MemberAccountService.class).save(memberAccount3);
+	}
+
+	/**
+	 * @author zjm
+	 */
+	@Transactional(readOnly=true)
+	public String checkState() {
+		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+		String state = "first";
+		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), 1);
+		if(list!=null && list.size()>0) {
+			if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode())) {
+				return "onTheWay";
+			} else if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode())) {
+				return "waitPay";
+			}
+		}
+		
+		
+		return state;
 	}
 
 }

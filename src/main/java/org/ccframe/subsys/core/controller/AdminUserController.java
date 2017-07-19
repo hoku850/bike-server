@@ -19,9 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ControllerMapping.ADMIN_USER_BASE)
 public class AdminUserController{
 
+	private static final String FAKE_PASSWORD = "ABCD1234";
+	
 	@RequestMapping(value = Global.ID_BINDER_PATH)
 	public User getUser(@PathVariable(Global.ID_BINDER_ID) Integer userId) {
-		return SpringContextHelper.getBean(UserService.class).getById(userId);
+		User user = SpringContextHelper.getBean(UserService.class).getById(userId);
+		user.setUserPsw(FAKE_PASSWORD);
+		return user;
 	}
 
 	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.DELETE)

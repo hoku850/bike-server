@@ -109,7 +109,7 @@ public class BikeTypeListView extends BaseCrudListView<BikeTypeRowDto> {
 		
 		configList.add(new ColumnConfigEx<BikeTypeRowDto, String>(props.bikeTypeNm(), 100, "名称", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<BikeTypeRowDto, String>(props.orgNm(), 100, "运营商", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<BikeTypeRowDto, Double>(props.halfhourAmmount(), 100, "半小时金额", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<BikeTypeRowDto, Double>(props.halfhourAmmount(), 100, "半小时金额", HasHorizontalAlignment.ALIGN_CENTER, true));
 	}
 
 	@Override

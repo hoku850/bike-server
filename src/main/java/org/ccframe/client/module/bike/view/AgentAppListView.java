@@ -101,8 +101,8 @@ public class AgentAppListView extends BaseCrudListView<AgentAppRowDto>{
 	protected void initColumnConfig(List<ColumnConfig<AgentAppRowDto, ?>> configList) {
 		AgentAppProperties props = GWT.create(AgentAppProperties.class);
 		
-		configList.add(new ColumnConfigEx<AgentAppRowDto, String>(props.orgNm(), 100, "运营商", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<AgentAppRowDto, String>(props.appNm(), 100, "APP名称", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<AgentAppRowDto, String>(props.orgNm(), 70, "运营商", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<AgentAppRowDto, String>(props.appNm(), 70, "APP名称", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<AgentAppRowDto, String>(props.androidUrl(), 100, "IOS URL", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<AgentAppRowDto, String>(props.isoUrl(), 100, "安卓 URL", HasHorizontalAlignment.ALIGN_CENTER, false));
 	}

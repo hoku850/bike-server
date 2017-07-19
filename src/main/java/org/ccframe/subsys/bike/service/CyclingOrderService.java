@@ -35,6 +35,8 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 @Service
 public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Integer, CyclingOrderRepository>{
 
@@ -139,8 +141,8 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	 */
 	@Transactional(readOnly=true)
 	public List<CyclingOrder> getPayDetail() {
-		
-		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderService.class).findByKey(CyclingOrder.USER_ID, 1, new Order(Direction.DESC,CyclingOrder.END_TIME));
+		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByEndTimeDesc(user.getUserId(), 1);
 		List<CyclingOrder> list2 = null;
 		if(list != null && list.size()>0){
 			list2 = new ArrayList<CyclingOrder>();

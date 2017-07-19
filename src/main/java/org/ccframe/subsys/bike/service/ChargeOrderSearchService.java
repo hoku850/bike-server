@@ -13,6 +13,8 @@ import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
 import org.ccframe.subsys.bike.dto.ChargeOrderListReq;
 import org.ccframe.subsys.bike.dto.ChargeOrderRowDto;
 import org.ccframe.subsys.bike.search.ChargeOrderSearchRepository;
+import org.ccframe.subsys.core.domain.entity.User;
+import org.ccframe.subsys.core.service.UserService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.BeanUtils;
@@ -44,7 +46,11 @@ public class ChargeOrderSearchService extends BaseSearchService<ChargeOrder, Int
 		// 过滤[输入登陆ID/订单号码]
 		if (StringUtils.isNotBlank(chargeOrderListReq.getSearchText())) {
 			BoolQueryBuilder shouldQueryBuilder = QueryBuilders.boolQuery();
-			shouldQueryBuilder.should(QueryBuilders.termQuery(ChargeOrder.USER_ID, chargeOrderListReq.getSearchText()));
+			
+			User user = SpringContextHelper.getBean(UserService.class).getByKey(User.LOGIN_ID, chargeOrderListReq.getSearchText());
+			if(user != null){
+				shouldQueryBuilder.should(QueryBuilders.termQuery(ChargeOrder.USER_ID, user.getUserId()));
+			}
 			shouldQueryBuilder.should(QueryBuilders.termQuery(ChargeOrder.CHARGE_ORDER_NUM, chargeOrderListReq.getSearchText()));
 			boolQueryBuilder.must(shouldQueryBuilder);
 		}
@@ -60,6 +66,11 @@ public class ChargeOrderSearchService extends BaseSearchService<ChargeOrder, Int
 			
 			ChargeOrderRowDto chargeOrderRowDto = new ChargeOrderRowDto();
 			BeanUtils.copyProperties(chargeOrder, chargeOrderRowDto);
+			
+			User user = SpringContextHelper.getBean(UserService.class).getById(chargeOrder.getUserId());
+			if (user != null) {
+				chargeOrderRowDto.setLoginId(user.getLoginId());
+			}
 			// 查询出运营商的信息
 			Agent agent = SpringContextHelper.getBean(AgentService.class).getById(chargeOrder.getOrgId());
 			if (agent != null) {

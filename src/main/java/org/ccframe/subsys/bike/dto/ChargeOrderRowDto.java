@@ -12,6 +12,16 @@ public class ChargeOrderRowDto extends ChargeOrder {
 	private static final long serialVersionUID = -6717254207360426962L;
 
 	private String orgNm;
+	private String loginId;
+	
+
+	public String getLoginId() {
+		return loginId;
+	}
+
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
+	}
 
 	public String getOrgNm() {
 		return orgNm;

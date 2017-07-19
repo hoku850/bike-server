@@ -47,43 +47,51 @@ public class AgentService extends BaseService<Agent,java.lang.Integer, AgentRepo
 	public User saveOrUpdateAgent(Agent agent) {
 		agent.setIfDelete(BoolCodeEnum.NO.toCode());
 		agent.setRoleId(2); // TODO 先设管理员 后期再修改
-		Agent saveAgent = SpringContextHelper.getBean(this.getClass()).save(agent);
 		
-		Role role = new Role();
-		role.setRoleNm("系统管理员");
-		role.setIfTemplate("N");
-		role.setOrgId(agent.getAgentId());
-		Role saveRole = SpringContextHelper.getBean(RoleService.class).save(role);
-		
-		agent.setRoleId(saveRole.getRoleId());
-		SpringContextHelper.getBean(this.getClass()).save(agent);
-		
-		User user = new User();
-		// 登陆ID的规则：  机构ID + 00X
-		user.setLoginId(getLoginId("admin" + "001"));
-		user.setUserNm(saveAgent.getAgentNm() + "系统管理员");
-		user.setUserPsw("ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff");
-		user.setIfAdmin("Y");
-		user.setCreateDate(new Date());
-		user.setUserStatCode(UserStatCodeEnum.NORMAL.toCode());
-		User saveUser = SpringContextHelper.getBean(UserService.class).save(user );
-		
-		UserRoleRel userRoleRel = new UserRoleRel();
-		userRoleRel.setUserId(saveUser.getUserId());
-		userRoleRel.setRoleId(2);
-		SpringContextHelper.getBean(UserRoleRelService.class).save(userRoleRel);
-		UserRoleRel userRoleRel2 = new UserRoleRel();
-		userRoleRel2.setUserId(saveUser.getUserId());
-		userRoleRel2.setRoleId(role.getRoleId());
-		SpringContextHelper.getBean(UserRoleRelService.class).save(userRoleRel2);
-		
-		BikeType bikeType = new BikeType();
-		bikeType.setOrgId(saveAgent.getAgentId());
-		bikeType.setBikeTypeNm("标准单车");
-		bikeType.setHalfhourAmmount(1.0);
-		SpringContextHelper.getBean(BikeTypeService.class).save(bikeType);
-		
-		return saveUser;
+		// 新增操作下 同时新增 角色， 用户， 角色用户关系， 单车类型
+		if (agent.getAgentId() == null) {
+			
+			SpringContextHelper.getBean(this.getClass()).save(agent);
+			
+			Role role = new Role();
+			role.setRoleNm("系统管理员");
+			role.setIfTemplate("N");
+			role.setOrgId(agent.getAgentId());
+			Role saveRole = SpringContextHelper.getBean(RoleService.class).save(role);
+			
+			agent.setRoleId(saveRole.getRoleId());
+			SpringContextHelper.getBean(this.getClass()).save(agent);
+			
+			User user = new User();
+			// 登陆ID的规则：  机构ID + 00X
+			user.setLoginId(getLoginId("admin" + "001"));
+			user.setUserNm("系统管理员");
+			user.setUserPsw("ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff");
+			user.setIfAdmin("Y");
+			user.setCreateDate(new Date());
+			user.setUserStatCode(UserStatCodeEnum.NORMAL.toCode());
+			SpringContextHelper.getBean(UserService.class).save(user);
+			
+			UserRoleRel userRoleRel = new UserRoleRel();
+			userRoleRel.setUserId(user.getUserId());
+			userRoleRel.setRoleId(2);
+			SpringContextHelper.getBean(UserRoleRelService.class).save(userRoleRel);
+			UserRoleRel userRoleRel2 = new UserRoleRel();
+			userRoleRel2.setUserId(user.getUserId());
+			userRoleRel2.setRoleId(role.getRoleId());
+			SpringContextHelper.getBean(UserRoleRelService.class).save(userRoleRel2);
+			
+			BikeType bikeType = new BikeType();
+			bikeType.setOrgId(agent.getAgentId());
+			bikeType.setBikeTypeNm("标准单车");
+			bikeType.setHalfhourAmmount(1.0);
+			SpringContextHelper.getBean(BikeTypeService.class).save(bikeType);
+			
+			return user;
+			
+		} else {
+			return null;
+		}
 	}
 	
 	public String getLoginId(String loginId){

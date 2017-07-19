@@ -208,7 +208,7 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 	protected void initColumnConfig(List<ColumnConfig<SmartLockRowDto, ?>> configList) {
 		SmartLockProperties props = GWT.create(SmartLockProperties.class);
 		
-		ColumnConfigEx<SmartLockRowDto, String> smartLockStatColumn = new ColumnConfigEx<SmartLockRowDto, String>(props.smartLockStatCode(), 100, "状态", HasHorizontalAlignment.ALIGN_CENTER, false);
+		ColumnConfigEx<SmartLockRowDto, String> smartLockStatColumn = new ColumnConfigEx<SmartLockRowDto, String>(props.smartLockStatCode(), 80, "状态", HasHorizontalAlignment.ALIGN_CENTER, true);
 		smartLockStatColumn.setCell(new AbstractCell<String>(){
             @Override
             public void render(com.google.gwt.cell.client.Cell.Context context,
@@ -240,15 +240,15 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
             }
         });
 		
-		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.lockerHardwareCode(), 100, "硬件编号", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.imeiCode(), 100, "IMEI码", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.macAddress(), 100, "MAC地址", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.lockerHardwareCode(), 150, "硬件编号", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.imeiCode(), 150, "IMEI码", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.macAddress(), 130, "MAC地址", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(smartLockStatColumn);
 		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.orgNm(), 100, "运营商", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.bikePlateNumber(), 100, "单车车牌号", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.bikePlateNumber(), 150, "单车车牌号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.bikeTypeNm(), 100, "单车类型", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.activeDateStr(), 100, "激活日期", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.lastUseDateStr(), 100, "最后使用日期", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.activeDateStr(), 160, "激活日期", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.lastUseDateStr(), 160, "最后使用日期", HasHorizontalAlignment.ALIGN_CENTER, true));
 	}
 	
 	@Override

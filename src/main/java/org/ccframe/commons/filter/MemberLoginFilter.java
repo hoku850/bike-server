@@ -1,7 +1,7 @@
 package org.ccframe.commons.filter;
 
 import java.io.IOException;
-import java.net.URLEncoder;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -12,12 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ccframe.client.Global;
-import org.ccframe.client.commons.AdminUser;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.helper.SysInitBeanHelper;
 import org.ccframe.commons.util.WebContextHolder;
 import org.ccframe.subsys.core.domain.entity.User;
-import org.ccframe.subsys.core.service.UserService;
+import org.ccframe.subsys.core.service.UserSearchService;
+
 
 /**
  * 根据ajax请求还是非ajax请求。
@@ -39,16 +39,31 @@ private static String backendLoginUri;
         
         User user = (User)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
         System.out.println("user: " + user);
-//        if(user == null) {
-/*        	if(isAdminAutoLogin()){ //自动登录
-        		WebContextHolder.getSessionContextStore().setServerValue(Global.SESSION_LOGIN_MEMBER, AdminUser.create(SpringContextHelper.getBean(UserService.class).getById(Global.ADMIN_USER_ID), Global.PLATFORM_ORG_ID));
-        	}else{*/
-//	            httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//	            httpResponse.getWriter().print(backendLoginUri);
-//	            httpResponse.flushBuffer();
-//	            return;
-        	//}
-//        }
+        if(user == null) { 
+        		String phoneNumber = httpRequest.getParameter("phoneName");
+        		String IMEI = httpRequest.getParameter("IMEI");
+        		
+        		if(phoneNumber==null || phoneNumber.equals("") || IMEI==null || IMEI.equals("")) {
+        			httpResponse.getWriter().print("checkPhone");
+        			httpResponse.flushBuffer();
+    	            return;
+        		} else {
+        			 List<User> users = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(phoneNumber, IMEI);
+        			 if(users!=null && users.size()>0) {
+        				 WebContextHolder.getSessionContextStore().setServerValue(Global.SESSION_LOGIN_MEMBER_USER, users.get(0));
+        			 } else {
+        				 httpResponse.getWriter().print("checkPhone");
+             			 httpResponse.flushBuffer();
+         	             return;
+        			 }
+        		}
+        		
+	            /*httpResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+	            //httpResponse.getWriter().print(backendLoginUri);
+	            httpResponse.flushBuffer();
+	            return;*/
+        }
+
         filterChain.doFilter(request, response);
     }
 

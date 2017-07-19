@@ -94,10 +94,10 @@ public class AgentListView extends BaseCrudListView<AgentRowDto>{
 	protected void initColumnConfig(List<ColumnConfig<AgentRowDto, ?>> configList) {
 		AgentProperties props = GWT.create(AgentProperties.class);
 		
-		configList.add(new ColumnConfigEx<AgentRowDto, Integer>(props.agentId(), 100, "编号", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<AgentRowDto, Integer>(props.agentId(), 100, "编号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<AgentRowDto, String>(props.agentNm(), 100, "运营商名称", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<AgentRowDto, String>(props.manager(), 100, "联系人", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<AgentRowDto, String>(props.managerTel(), 100, "联系电话", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<AgentRowDto, String>(props.managerTel(), 120, "联系电话", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<AgentRowDto, Double>(props.chargeTotalValue(), 100, "充值总金额", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<AgentRowDto, Integer>(props.cyclingNum(), 100, "骑行订单数", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<AgentRowDto, Double>(props.cyclingIncome(), 100, "骑行总收入", HasHorizontalAlignment.ALIGN_CENTER, false));

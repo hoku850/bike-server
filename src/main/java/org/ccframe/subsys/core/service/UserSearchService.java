@@ -27,6 +27,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
+
 @Service
 public class UserSearchService extends BaseSearchService<User, Integer, UserSearchRepository>{
 
@@ -108,5 +110,12 @@ public class UserSearchService extends BaseSearchService<User, Integer, UserSear
 		}else{
 			return null;
 		}
+	}
+
+	/**
+	 * @author zjm
+	 */
+	public List<User> findByLoginIdAndUserPsw(String phoneNumber, String iMEI) {
+		return this.getRepository().findByLoginIdAndUserPsw(phoneNumber, iMEI);
 	}
 }

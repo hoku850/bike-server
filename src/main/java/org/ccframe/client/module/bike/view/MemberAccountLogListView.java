@@ -68,12 +68,12 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 	@Override
 	protected void initColumnConfig(List<ColumnConfig<MemberAccountLogRowDto, ?>> configList) {
 		MemberAccountLogProperties props = GWT.create(MemberAccountLogProperties.class);
-		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.sysTimeStr(), 80, "交易时间", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.sysTimeStr(), 160, "交易时间", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.prevValue(), 40, "交易前", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.changeValue(), 60, "交易预存款", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.afterValue(), 40, "交易后", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.reason(), 120, "变更原因", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.operationMan(), 50, "操作员", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.operationMan(), 150, "操作员", HasHorizontalAlignment.ALIGN_CENTER, true));
 	}
 	
 	@Override

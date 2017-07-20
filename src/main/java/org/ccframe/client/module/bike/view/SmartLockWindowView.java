@@ -78,6 +78,7 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 			if(bikePlateNumber.getValue()==null){
 				bikePlateNumber.setValue("");
 			}
+			
 			final TextButton button = ((TextButton)(e.getSource()));
 			button.disable();
 
@@ -100,19 +101,36 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
+		bikeTypeId.setAfterAsyncReset(new Runnable(){
+			
+			@Override
+			public void run() {
+				if(SmartLockWindowView.this.smartLockId != null){
+					ClientManager.getSmartLockClient().getById(smartLockId, new RestCallback<SmartLock>(){
+						@Override
+						public void onSuccess(Method method, SmartLock response) {
+							driver.edit(response);
+							orgId.setValue(response.getOrgId());
+							bikeTypeId.setValue(response.getBikeTypeId());
+							smartLockStatCode.setValue(response.getSmartLockStatCode());
+						}
+					});
+				}
+			}
+		});
 		driver.initialize(this);
 		driver.edit(new SmartLock());
-		orgId.reset();
-		bikeTypeId.reset();
-		orgId.addValueChangeHandler(new ValueChangeHandler<Integer>(){
-
-			@Override
-			public void onValueChange(ValueChangeEvent<Integer> event) {
-				bikeTypeId.setExtraParam(event.getValue().toString());
-				bikeTypeId.reset();
-			}
-			
-		});
+//		orgId.reset();
+//		bikeTypeId.reset();
+//		orgId.addValueChangeHandler(new ValueChangeHandler<Integer>(){
+//
+//			@Override
+//			public void onValueChange(ValueChangeEvent<Integer> event) {
+//				bikeTypeId.setExtraParam(event.getValue().toString());
+//				bikeTypeId.reset();
+//			}
+//			
+//		});
 		return widget;
 	}
 
@@ -127,12 +145,11 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 			orgId.setReadOnly(true);
 			bikeTypeId.setReadOnly(true);
 		}
-		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
-		// 重置下拉框
+		
 		orgId.reset();
-		bikeTypeId.reset();
+//		bikeTypeId.reset();
 		orgId.addValueChangeHandler(new ValueChangeHandler<Integer>(){
-
+			
 			@Override
 			public void onValueChange(ValueChangeEvent<Integer> event) {
 				bikeTypeId.setExtraParam(event.getValue().toString());
@@ -140,21 +157,12 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 			}
 			
 		});
+		
+		
+		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
 		if(smartLockId == null){
 			FormPanelHelper.reset(vBoxLayoutContainer);
-			
-		}else{
-			ClientManager.getSmartLockClient().getById(smartLockId, new RestCallback<SmartLock>(){
-				@Override
-				public void onSuccess(Method method, SmartLock response) {
-					driver.edit(response);
-					orgId.setValue(response.getOrgId());
-					bikeTypeId.setValue(response.getBikeTypeId());
-					smartLockStatCode.setValue(response.getSmartLockStatCode());
-				}
-			});
 		}
-		
 		vBoxLayoutContainer.forceLayout();
 	}
 

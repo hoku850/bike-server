@@ -9,9 +9,9 @@ public class AgentRowDto extends Agent {
 	 */
 	private static final long serialVersionUID = 565041499666817293L;
 
-	private Double chargeTotalValue;
-	private Integer cyclingNum;
-	private Double cyclingIncome;
+	private Double chargeTotalValue; // 充值总金额
+	private Integer cyclingNum; // 骑行订单树
+	private Double cyclingIncome; // 骑行总收入
 
 	public Double getChargeTotalValue() {
 		return chargeTotalValue;

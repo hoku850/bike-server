@@ -3,6 +3,7 @@ package org.ccframe.subsys.bike.decoder;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 //import sun.misc.CRC16;
+import io.netty.handler.timeout.IdleStateEvent;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -18,6 +19,35 @@ import org.ccframe.subsys.bike.tcpobj.LockPackage;
 public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 
 	private static final int MIN_PACKAGE_SIZE = 1/*start*/ + 1/*procal type*/ + 1/*version*/ + 8/*lockid*/ + 1/*bike type*/ + 2/*command*/ + 2 /*CRC*/ + 1/*end*/;  
+
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
+		super.channelActive(ctx);
+		SmartLockChannelUtil.registerChannel(34234, ctx.channel());
+		System.out.println("channelActive");
+	}
+
+	@Override
+	public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+		super.channelUnregistered(ctx);
+		System.out.println("channelUnregistered");
+	}
+
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		super.channelInactive(ctx);
+		System.out.println("channelInactive");
+	}
+
+	@Override
+	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+		super.userEventTriggered(ctx, evt);
+		if (evt instanceof IdleStateEvent) {
+			IdleStateEvent event = (IdleStateEvent)evt;
+			System.out.println("State:" + event.state());
+		}
+		System.out.println("userEventTriggered");
+	}
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, byte[] msg) throws Exception {
@@ -62,20 +92,20 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			lockPackage.setCommandFlagEnum(CommandFlagEnum.fromValue(dataInputStream.readByte()));
 			lockPackage.setAnswerFlagEnum(AnswerFlagEnum.fromValue(dataInputStream.readByte()));
 			
+			System.out.println("pack -> " + lockPackage);
+			
 			//解析数据单元
 			byte[] dataBuff = new byte[dataInputStream.available() - 2];
 			dataInputStream.read(dataBuff);
-			
-			System.out.println("pack -> " + lockPackage);
-			
 			lockPackage.setDataBlockMap(decodeDataBlock(dataBuff));
-			
 			System.out.println("map -> " + lockPackage.getDataBlockMap());
 			
 			// 解析CRC
 			short CRC = dataInputStream.readShortReverse();
-			
 			System.out.println("CRC -> " + CRC);
+
+			ctx.channel().writeAndFlush("this is return packet".getBytes());
+			System.out.println("writed -> ");
 		}
 	}
 	
@@ -101,7 +131,8 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 						case LOCK_MAC:
 							stringBuf = new byte[size - 3];
 							dataInputStream.read(stringBuf);
-							dataBlockMap.put(dataBlockTypeEnum, new String(stringBuf, "utf-8"));
+							//dataBlockMap.put(dataBlockTypeEnum, new String(stringBuf, "utf-8"));
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.getStr(stringBuf));
 							break;
 						case SYS_TIME:
 							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readTimeReverse());
@@ -112,13 +143,13 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 						case SOFTWARE_VERSION:
 							stringBuf = new byte[size - 3];
 							dataInputStream.read(stringBuf);
-							dataBlockMap.put(dataBlockTypeEnum, new String(stringBuf, "GBK"));
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.getStr(stringBuf));
 							break;
 						
 						case IMSI:
 							stringBuf = new byte[size - 3];
 							dataInputStream.read(stringBuf);
-							dataBlockMap.put(dataBlockTypeEnum, new String(stringBuf, "GBK"));
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.getStr(stringBuf));
 							break;
 						case CSQ:
 							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readByte());
@@ -143,12 +174,12 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 						case LOCK_LNG:
 							stringBuf = new byte[size - 3];
 							dataInputStream.read(stringBuf);
-							dataBlockMap.put(dataBlockTypeEnum, new String(stringBuf, "GBK"));
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.getStr(stringBuf));
 							break;
 						case LOCK_LAT:
 							stringBuf = new byte[size - 3];
 							dataInputStream.read(stringBuf);
-							dataBlockMap.put(dataBlockTypeEnum, new String(stringBuf, "GBK"));
+							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.getStr(stringBuf));
 							break;
 						case CPRS_SATELLITE_NUM:
 							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readByte());
@@ -156,12 +187,13 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 						case GPS_REPORT_TYPE:
 							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readByte());
 							break;
-							
 						case WARN_INFO:
 							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readIntReverse());
 							break;
 						case UPGRADE:
 							dataBlockMap.put(dataBlockTypeEnum, dataInputStream.readByte());
+							break;
+						default:
 							break;
 					}
 				}catch(ArrayIndexOutOfBoundsException e){
@@ -171,5 +203,18 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 		}
 		return dataBlockMap;
 	}
+	
+//	private byte[] encodeDataBlock(Map<DataBlockTypeEnum, Object> dataBlockMap) {
+//		try (
+//			ByteArrayOutputStream output = new ByteArrayOutputStream();
+//			ObjectOutputStream objectOutputStream = new ObjectOutputStream(output);
+//		){
+//			objectOutputStream.writeObject(dataBlockMap);
+//			objectOutputStream.flush();
+//		} catch (Exception e) {
+//			
+//		}
+//		return output.toByteArray();
+//	}
 
 }

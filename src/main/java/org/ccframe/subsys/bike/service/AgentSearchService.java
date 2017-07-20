@@ -7,6 +7,8 @@ import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.subsys.bike.domain.code.ChargeOrderStatCodeEnum;
+import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
@@ -42,17 +44,25 @@ public class AgentSearchService extends BaseSearchService<Agent, Integer, AgentS
 			List<ChargeOrder> chargeOrders = SpringContextHelper.getBean(ChargeOrderService.class).findByKey(ChargeOrder.ORG_ID, agent.getAgentId());
 			Double chargeTotalValue = 0.0;
 			for (ChargeOrder chargeOrder : chargeOrders) {
-				chargeTotalValue += chargeOrder.getChargeAmmount();
+				// 充值成功的状态
+				if (ChargeOrderStatCodeEnum.CHARGE_SUCCESS.toCode().equals(chargeOrder.getChargeOrderStatCode())) {
+					chargeTotalValue += chargeOrder.getChargeAmmount();
+				}
 			}
 			agentRowDto.setChargeTotalValue(chargeTotalValue);
 			// 查询出骑行订单
 			List<CyclingOrder> cyclingOrders = SpringContextHelper.getBean(CyclingOrderService.class).findByKey(CyclingOrder.ORG_ID, agent.getAgentId());
 			Double cyclingIncome = 0.0;
+			Integer cyclingNum = 0;
 			for (CyclingOrder cyclingOrder : cyclingOrders) {
-				cyclingIncome += cyclingOrder.getOrderAmmount();
+				// 骑行完成的状态
+				if (CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode().equals(cyclingOrder.getCyclingOrderStatCode())) {
+					cyclingIncome += cyclingOrder.getOrderAmmount();
+					cyclingNum++;
+				}
 			}
 			agentRowDto.setCyclingIncome(cyclingIncome);
-			agentRowDto.setCyclingNum(cyclingOrders.size());
+			agentRowDto.setCyclingNum(cyclingNum);
 			resultList.add(agentRowDto); 
 		}
 		return new ClientPage<AgentRowDto>((int)page.getTotalElements(), offset / limit, limit, resultList);

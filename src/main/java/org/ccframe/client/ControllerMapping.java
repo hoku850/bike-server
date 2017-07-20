@@ -168,6 +168,7 @@ public interface ControllerMapping {
 	String MEMBER_TRADEDETAIL_BASE = MEMBER_BASE + "tradeDetail";
 	String MEMBER_FIXREPORT_BASE = MEMBER_BASE + "fixReport";
 	String MEMBER_USINGBIKE_BASE = MEMBER_BASE + "usingBike";
+	String MEMBER_ORDER_PAY_BASE = MEMBER_BASE + "orderPay";
 	
 	//骑行订单管理
 	String CYCLING_ORDER_BASE = ADMIN_BASE + "cyclingOrder";
@@ -183,7 +184,7 @@ public interface ControllerMapping {
 	String CHARGE_ORDER_LIST = "findList";
 	String CHARGE_ORDER_EXPORT = "doExport"; //导出
 	
-	//用户保修记录
+	//用户报修记录
 	String USER_TO_REPAIR_RECORD_BASE = ADMIN_BASE + "userToRepairRecord";
 	String USER_TO_REPAIR_RECORD_LIST = "findList";
 	

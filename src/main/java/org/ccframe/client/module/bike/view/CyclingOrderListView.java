@@ -12,9 +12,9 @@ import org.ccframe.client.commons.ColumnConfigEx;
 import org.ccframe.client.commons.EventBusUtil;
 import org.ccframe.client.commons.RestCallback;
 import org.ccframe.client.commons.RestyGwtPagingLoader;
-import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.commons.RestyGwtPagingLoader.CallBack;
 import org.ccframe.client.commons.UtilDateTimeClient;
+import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.commons.WindowEventCallback;
 import org.ccframe.client.components.CcDateField;
 import org.ccframe.client.components.CcEnumCombobox;
@@ -42,6 +42,8 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.Component;
+import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
+import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -131,7 +133,7 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 	protected void initColumnConfig(List<ColumnConfig<CyclingOrderRowDto, ?>> configList) {
 		BikeTypeProperties props = GWT.create(BikeTypeProperties.class);
 		
-		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Integer>(props.cyclingOrderId(), 150, "订单编号", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Integer>(props.cyclingOrderId(), 130, "订单编号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.orgNm(), 100, "运营商", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Integer>(props.userId(), 120, "登陆ID", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.lockerHardwareCode(), 150, "智能锁硬件编号", HasHorizontalAlignment.ALIGN_CENTER, true));
@@ -139,7 +141,7 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.bikeTypeNm(), 100, "单车类型", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.cyclingOrderStatCodeStr(), 80, "状态", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Double>(props.orderAmmount(), 100, "金额", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.endTimeStr(), 160, "结束时间", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.endTimeStr(), 130, "结束时间", HasHorizontalAlignment.ALIGN_CENTER, true));
 	}
 
 	@Override
@@ -210,6 +212,23 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				loader.load();
+			}
+		});
+		grid.addCellDoubleClickHandler(new CellDoubleClickHandler() {
+			
+			@Override
+			public void onCellClick(CellDoubleClickEvent event) {
+				CyclingOrderRowDto selectedItem = grid.getSelectionModel().getSelectedItem();
+				
+				EventBusUtil.fireEvent(new LoadWindowEvent<Integer, CyclingOrderRowDto, EventHandler>(
+						ViewResEnum.CYCLING_ORDER_WINDOW, 
+						selectedItem.getCyclingOrderId(), 
+						new WindowEventCallback<CyclingOrderRowDto>(){
+							@Override
+							public void onClose(CyclingOrderRowDto returnData) {
+								loader.load(); //保存完毕后刷新
+							}
+				}));
 			}
 		});
 		return widget;

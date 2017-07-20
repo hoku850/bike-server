@@ -19,7 +19,7 @@
 		<ui:attributes margins="{rowMargins}"/>
 	</ui:with>
 
-	<gxt:Window ui:field="window" width="800" height="650" modal="true" headingText="保修位置显示" focusWidget="{closeButton}" buttonAlign="CENTER" resizable="false">
+	<gxt:Window ui:field="window" width="500" height="450" modal="true" headingText="保修位置显示" focusWidget="{closeButton}" buttonAlign="CENTER" resizable="false">
 		<cc:CcVBoxLayoutContainer ui:field="vBoxLayoutContainer" padding="{vBoxPaddings}">
 			<cc:child layoutData="{vBoxLayoutData}" >
 				<g:Frame ui:field="frame"></g:Frame>

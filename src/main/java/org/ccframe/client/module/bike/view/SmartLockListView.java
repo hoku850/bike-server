@@ -242,13 +242,13 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 		
 		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.lockerHardwareCode(), 150, "硬件编号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.imeiCode(), 150, "IMEI码", HasHorizontalAlignment.ALIGN_CENTER, true));
-		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.macAddress(), 130, "MAC地址", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.macAddress(), 150, "MAC地址", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(smartLockStatColumn);
 		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.orgNm(), 100, "运营商", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.bikePlateNumber(), 150, "单车车牌号", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.bikePlateNumber(), 150, "单车车牌号", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.bikeTypeNm(), 100, "单车类型", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.activeDateStr(), 160, "激活日期", HasHorizontalAlignment.ALIGN_CENTER, true));
-		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.lastUseDateStr(), 160, "最后使用日期", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.activeDateStr(), 130, "激活日期", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.lastUseDateStr(), 130, "最后使用日期", HasHorizontalAlignment.ALIGN_CENTER, true));
 	}
 	
 	@Override
@@ -303,7 +303,6 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
-//		MainFrame.adminUser.getOrgId() != Global.PLATFORM_ORG_ID 
 		if(MainFrame.adminUser.getOrgId() != Global.PLATFORM_ORG_ID){
 			isAgent = true;
 		}else{

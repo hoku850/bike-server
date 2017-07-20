@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 
 public class DataInputStreamEx extends DataInputStream {
 
@@ -43,20 +44,26 @@ public class DataInputStreamEx extends DataInputStream {
     }
     
     public final String readTimeReverse() throws IOException {
-    	String ch1 = Integer.toHexString(in.read());
-    	String ch2 = Integer.toHexString(in.read());
-    	String ch3 = Integer.toHexString(in.read());
-    	String ch4 = Integer.toHexString(in.read());
-    	String ch5 = Integer.toHexString(in.read());
-    	String ch6 = Integer.toHexString(in.read());
-    	String ch7 = Integer.toHexString(in.read());
+    	String ch1 = addZero(Integer.toHexString(in.read()));
+    	String ch2 = addZero(Integer.toHexString(in.read()));
+    	String ch3 = addZero(Integer.toHexString(in.read()));
+    	String ch4 = addZero(Integer.toHexString(in.read()));
+    	String ch5 = addZero(Integer.toHexString(in.read()));
+    	String ch6 = addZero(Integer.toHexString(in.read()));
+    	String ch7 = addZero(Integer.toHexString(in.read()));
     	return ch1 + ch2 + ch3 + ch4 + ch5 + ch6 + ch7;
+    }
+    
+    public String addZero(String str){
+        DecimalFormat df = new DecimalFormat("00");
+        return df.format(Integer.parseInt(str));
     }
 
 	public String getStr(byte[] stringBuf) {
 		StringBuilder data = new StringBuilder("");
 		for (int i = 0; i < stringBuf.length; i++) {
-			String hexString = Integer.toHexString(stringBuf[i]);
+			// byte的大小为8bits而int的大小为32bits
+			String hexString = Integer.toHexString(stringBuf[i] & 0xFF);
 			data.append(hexString);
 		}
 		return data.toString();

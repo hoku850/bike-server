@@ -16,7 +16,7 @@
 </head>
 <body onload="regeocoder()">
 <div id="container"></div>
-<div id="tip">
+<div id="tip" style="margin-right: 20px; margin-left: 30px">
     <b>经纬度 ${aMapData.centerPosition } 的地理编码结果:</b>
     <span id="result"></span>
 </div>

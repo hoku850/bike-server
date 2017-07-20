@@ -22,6 +22,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
+import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import io.netty.handler.codec.string.StringDecoder;
 
 @Component
@@ -61,6 +62,7 @@ public class NettyServerProcessor implements IProcesser{
 					ch.pipeline()
 					.addLast(new DelimiterBasedFrameDecoder(1024, BOUND_DELIMITER)) //发送和接收的数据包总长度（包括头尾的 0X7E）不超过 1024 个字节
 					.addLast(new ByteArrayDecoder())
+					.addLast(new ByteArrayEncoder())
 					.addLast(new LockPackageDecoder());
 				}
 			});

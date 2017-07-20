@@ -42,7 +42,7 @@ public class UserToRepairWindowView extends BaseWindowView<Integer, BikeType> {
 			FormPanelHelper.reset(vBoxLayoutContainer);
 		}else{
 			frame.setUrl(GWT.getHostPageBaseURL() + "map/umap.jsp?userToRepairRecordId=" + id);
-			frame.setPixelSize(750, 520);
+			frame.setPixelSize(445, 350);
 		}
 		
 		vBoxLayoutContainer.forceLayout();

@@ -39,7 +39,12 @@ public class CcLabelValueCombobox extends AdapterField<Integer>{
 	 * 判断是否在请求中的状态，如果有则将数据保存到pendingValue
 	 */
 	private String beanName;
+	private Runnable afterAsyncReset;
 
+	public void setAfterAsyncReset(Runnable afterAsyncReset){
+		this.afterAsyncReset = afterAsyncReset;
+	}
+	
 	private static LabelProvider<LabelValue> provider = new LabelProvider<LabelValue>(){
 		@Override
 		public String getLabel(LabelValue item) {
@@ -155,6 +160,9 @@ public class CcLabelValueCombobox extends AdapterField<Integer>{
 					if(response.size() > 0){
 						setValue(response.get(0).getValue());
 					}
+				}
+				if(afterAsyncReset != null){
+					afterAsyncReset.run();
 				}
 			}
 			@Override

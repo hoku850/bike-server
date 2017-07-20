@@ -33,7 +33,7 @@ public class BikeTypeSearchService extends BaseSearchService<BikeType, Integer, 
 		
 		Page<BikeType> bikeTypePage = this.getRepository().search(
 			boolQueryBuilder,
-			new OffsetBasedPageRequest(offset, limit, new Order(Direction.DESC, BikeType.BIKE_TYPE_ID))
+			new OffsetBasedPageRequest(offset, limit, new Order(Direction.ASC, BikeType.ORG_ID))
 		);
 
 		List<BikeTypeRowDto> resultList = new ArrayList<BikeTypeRowDto>();

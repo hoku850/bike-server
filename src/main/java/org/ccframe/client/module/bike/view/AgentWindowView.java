@@ -5,7 +5,7 @@ import org.ccframe.client.commons.CcFormPanelHelper;
 import org.ccframe.client.commons.ClientManager;
 import org.ccframe.client.commons.RestCallback;
 import org.ccframe.client.commons.ViewUtil;
-import org.ccframe.client.components.CcPhoneField;
+import org.ccframe.client.components.CcMobileField;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
 import org.ccframe.subsys.bike.domain.entity.Agent;
@@ -47,7 +47,7 @@ public class AgentWindowView extends BaseWindowView<Integer, Agent> implements E
 	CcTextField manager;
 	
 	@UiField
-	CcPhoneField managerTel;
+	CcMobileField managerTel;
 	
 	@UiHandler("saveButton")
 	public void handleSaveClick(SelectEvent e){

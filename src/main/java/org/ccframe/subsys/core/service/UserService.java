@@ -472,7 +472,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 			}
 		} else {
 			User user = null;
-			List<User> findByKey = SpringContextHelper.getBean(UserService.class).findByKey(User.LOGIN_ID, phoneNumber, null);
+			List<User> findByKey = SpringContextHelper.getBean(UserService.class).findByKey(User.LOGIN_ID, phoneNumber);
 			if(findByKey!=null && findByKey.size()>0) {
 				//更新用户的UserPsw(IMEI).
 				user = findByKey.get(0);
@@ -531,18 +531,18 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 	@Transactional(readOnly=true)
 	public String checkState() {
 		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-		String state = "first";
+		String state = "";
 		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), 1);
 		if(list!=null && list.size()>0) {
 			if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode())) {
-				return "onTheWay";
+				//return "onTheWay";
 			} else if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode())) {
 				return "waitPay";
 			}
 		}
 		
 		
-		return state;
+		return "";
 	}
 
 }

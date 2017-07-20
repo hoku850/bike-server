@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberAccountSearchService extends BaseSearchService<MemberAccount, Integer, MemberAccountSearchRepository> {
-
 	
 	public List<MemberAccount> findByUserIdAndOrgIdAndAccountTypeCode(Integer userId, Integer orgId, String code){
 		return this.getRepository().findByUserIdAndOrgIdAndAccountTypeCode(userId, orgId, code);
@@ -46,7 +45,12 @@ public class MemberAccountSearchService extends BaseSearchService<MemberAccount,
 		
 		// 过滤 登陆ID
 		if (StringUtils.isNotBlank(memberAccountListReq.getSearchText())) {
-			boolQueryBuilder.must(QueryBuilders.termQuery(MemberAccount.USER_ID, memberAccountListReq.getSearchText()));
+			User user = SpringContextHelper.getBean(UserService.class).getByKey(User.LOGIN_ID, memberAccountListReq.getSearchText());
+			if (user != null) {
+				boolQueryBuilder.must(QueryBuilders.termQuery(MemberAccount.USER_ID, user.getUserId()));
+			} else {
+				boolQueryBuilder.must(QueryBuilders.termQuery(MemberAccount.USER_ID, 0));
+			}
 		}
 		
 		// 过滤机构
@@ -68,7 +72,7 @@ public class MemberAccountSearchService extends BaseSearchService<MemberAccount,
 			BeanUtils.copyProperties(memberAccount, memberAccountRowDto);
 			// 查询用户信息
 			User user = SpringContextHelper.getBean(UserService.class).getById(memberAccount.getUserId());
-			memberAccountRowDto.setUserNm(user==null ? null : user.getUserNm());
+			memberAccountRowDto.setUserNm(user==null ? null : (user.getLoginId() + "(" + user.getUserNm() + ")"));
 
 			resultList.add(memberAccountRowDto);
 		}

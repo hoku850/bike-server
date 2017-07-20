@@ -158,8 +158,8 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.lockerHardwareCode(), 150, "智能锁硬件编号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.bikePlateNumber(), 150, "单车车牌号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(repairLocationCodeColumn);
-		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.toRepairTimeStr(), 160, "报修时间", HasHorizontalAlignment.ALIGN_CENTER, true));
-		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.finishFixTimeStr(), 160, "维修时间", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.toRepairTimeStr(), 130, "报修时间", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.finishFixTimeStr(), 130, "维修时间", HasHorizontalAlignment.ALIGN_CENTER, true));
 	}
 	
 	@Override

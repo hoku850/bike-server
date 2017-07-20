@@ -1,5 +1,10 @@
 package org.ccframe.client.module.bike.view;
 
+import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
+import java.util.List;
+
 import org.ccframe.client.Global;
 import org.ccframe.client.base.BaseWindowView;
 import org.ccframe.client.commons.CcFormPanelHelper;
@@ -15,7 +20,9 @@ import org.fusesource.restygwt.client.Method;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
+import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -26,6 +33,8 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.form.DoubleField;
 import com.sencha.gxt.widget.core.client.form.FormPanelHelper;
+import com.sencha.gxt.widget.core.client.form.Validator;
+import com.sencha.gxt.widget.core.client.form.validator.RegExValidator;
 import com.sencha.gxt.widget.core.client.info.Info;
 
 @Singleton
@@ -82,6 +91,12 @@ public class BikeTypeWindowView extends BaseWindowView<Integer, BikeType> implem
 		Widget widget = uiBinder.createAndBindUi(this);
 		driver.initialize(this);
 		driver.edit(new BikeType());
+		
+		//保留小数位后两位
+		//NumberFormat format = new NumberFormat(null, null, false);
+		//halfhourAmmount.setFormat(format);
+
+			
 		return widget;
 	}
 

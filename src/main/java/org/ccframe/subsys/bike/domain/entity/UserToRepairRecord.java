@@ -109,7 +109,7 @@ public class UserToRepairRecord implements Serializable{
 
 	//增强型方法satat
 	public String getToRepairTimeStr() {
-		return this.getToRepairTime() == null ? null : UtilDateTimeClient.convertDateTimeToString(this.getToRepairTime());
+		return this.getToRepairTime() == null ? null : UtilDateTimeClient.convertDateTimeToMmString(this.getToRepairTime());
 	}
 	
 	public void setToRepairTimeStr(String value) {
@@ -119,7 +119,7 @@ public class UserToRepairRecord implements Serializable{
 	}
 	
 	public String getFinishFixTimeStr() {
-		return this.getFinishFixTime() == null ? null : UtilDateTimeClient.convertDateTimeToString(this.getFinishFixTime());
+		return this.getFinishFixTime() == null ? null : UtilDateTimeClient.convertDateTimeToMmString(this.getFinishFixTime());
 	}
 	
 	public void setFinishFixTimeStr(String value) {

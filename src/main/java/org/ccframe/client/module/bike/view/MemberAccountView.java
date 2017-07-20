@@ -39,7 +39,10 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.Component;
 import com.sencha.gxt.widget.core.client.TabPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 
@@ -59,6 +62,9 @@ public class MemberAccountView extends BasePagingListView<MemberAccountRowDto> {
 	
     @UiField
     public CcLabelValueCombobox orgNm;
+    
+    @UiField
+    public TextButton chargeButton;
 	
 	@UiHandler("searchButton")
 	public void searchButtonClick(SelectEvent e){
@@ -102,7 +108,7 @@ public class MemberAccountView extends BasePagingListView<MemberAccountRowDto> {
 	protected void initColumnConfig(List<ColumnConfig<MemberAccountRowDto, ?>> configList) {
 		MemberAccountProperties props = GWT.create(MemberAccountProperties.class);
 		configList.add(new ColumnConfigEx<MemberAccountRowDto, String>(props.userNm(), 50, "会员用户", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<MemberAccountRowDto, Double>(props.accountValue(), 50, "余额", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<MemberAccountRowDto, Double>(props.accountValue(), 20, "余额", HasHorizontalAlignment.ALIGN_CENTER, false));
 	}
 	
 	@Override
@@ -134,6 +140,12 @@ public class MemberAccountView extends BasePagingListView<MemberAccountRowDto> {
 			public void onSelection(SelectionEvent<MemberAccountRowDto> event) {
 				MemberAccountRowDto selectedItem = event.getSelectedItem();
 				EventBusUtil.fireEvent(new MemberAccountSelectEvent(selectedItem == null ? null : selectedItem));
+			}
+		});
+		grid.addCellDoubleClickHandler(new CellDoubleClickHandler(){
+			@Override
+			public void onCellClick(CellDoubleClickEvent event) {
+				chargeButton.fireEvent(new SelectEvent());
 			}
 		});
 		// 运营商登陆
@@ -169,6 +181,7 @@ public class MemberAccountView extends BasePagingListView<MemberAccountRowDto> {
 					@Override
 					public void onSuccess(Method method, ClientPage<MemberAccountRowDto> response) {
 						loader.onLoad(response.getList(), response.getTotalLength(), response.getOffset());
+						grid.getSelectionModel().select(0, false);
 					}
 				});
 			}

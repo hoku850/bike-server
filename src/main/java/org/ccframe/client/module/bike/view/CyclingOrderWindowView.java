@@ -68,7 +68,7 @@ public class CyclingOrderWindowView extends BaseWindowView<Integer, CyclingOrder
 			FormPanelHelper.reset(vBoxLayoutContainer);
 		}else{
 			frame.setUrl(GWT.getHostPageBaseURL() + "map/cmap.jsp?cyclingOrderId=" + id);
-			frame.setPixelSize(750, 545);
+			frame.setPixelSize(550, 495);
 			ClientManager.getCyclingOrderClient().getDtoById(id, new RestCallback<CyclingOrderRowDto>(){
 				@Override
 				public void onSuccess(Method method, CyclingOrderRowDto response) {

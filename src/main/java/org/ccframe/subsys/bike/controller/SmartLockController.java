@@ -7,6 +7,7 @@ import org.ccframe.client.ControllerMapping;
 import org.ccframe.client.Global;
 import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.subsys.bike.decoder.SmartLockChannelUtil;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.dto.SmartLockListReq;
 import org.ccframe.subsys.bike.dto.SmartLockRowDto;
@@ -49,6 +50,11 @@ public class SmartLockController{
 	@RequestMapping(value = ControllerMapping.SMART_LOCK_DESERT, method=RequestMethod.POST)
 	public void doDesert(@RequestBody SmartLockRowDto selectedRow){
 		SpringContextHelper.getBean(SmartLockService.class).doDesert(selectedRow);
+	}
+	
+	@RequestMapping(value = "test", method=RequestMethod.GET)
+	public void test(){
+		SmartLockChannelUtil.writeBytes(null, "hello".getBytes());
 	}
 }
 

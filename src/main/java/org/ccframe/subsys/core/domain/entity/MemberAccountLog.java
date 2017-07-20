@@ -92,7 +92,7 @@ public class MemberAccountLog implements Serializable{
 
 	//增强型方法satat
 	public String getSysTimeStr() {
-		return this.getSysTime() == null ? null : UtilDateTimeClient.convertDateTimeToString(this.getSysTime());
+		return this.getSysTime() == null ? null : UtilDateTimeClient.convertDateTimeToMmString(this.getSysTime());
 	}
 	
 	public void setSysTimeStr(String value) {

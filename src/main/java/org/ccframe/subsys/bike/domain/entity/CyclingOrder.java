@@ -118,7 +118,7 @@ public class CyclingOrder implements Serializable{
 
 	//增强型方法satat
 	public String getStartTimeStr() {
-		return this.getStartTime() == null ? null : UtilDateTimeClient.convertDateTimeToString(this.getStartTime());
+		return this.getStartTime() == null ? null : UtilDateTimeClient.convertDateTimeToMmString(this.getStartTime());
 	}
 	
 	public void setStartTimeStr(String value) {
@@ -128,7 +128,7 @@ public class CyclingOrder implements Serializable{
 	}
 	
 	public String getEndTimeStr() {
-		return this.getEndTime() == null ? null : UtilDateTimeClient.convertDateTimeToString(this.getEndTime());
+		return this.getEndTime() == null ? null : UtilDateTimeClient.convertDateTimeToMmString(this.getEndTime());
 	}
 	
 	public void setEndTimeStr(String value) {

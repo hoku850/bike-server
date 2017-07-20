@@ -118,7 +118,7 @@ public class ChargeOrder implements Serializable{
 
 	//增强型方法satat
 	public String getCreateTimeStr() {
-		return this.getCreateTime() == null ? null : UtilDateTimeClient.convertDateTimeToString(this.getCreateTime());
+		return this.getCreateTime() == null ? null : UtilDateTimeClient.convertDateTimeToMmString(this.getCreateTime());
 	}
 	
 	public void setCreateTimeStr(String value) {
@@ -128,7 +128,7 @@ public class ChargeOrder implements Serializable{
 	}
 	
 	public String getChargeFinishTimeStr() {
-		return this.getChargeFinishTime() == null ? null : UtilDateTimeClient.convertDateTimeToString(this.getChargeFinishTime());
+		return this.getChargeFinishTime() == null ? null : UtilDateTimeClient.convertDateTimeToMmString(this.getChargeFinishTime());
 	}
 	
 	public void setChargeFinishTimeStr(String value) {

@@ -39,7 +39,7 @@ public class BikeTypeService extends BaseService<BikeType, Integer, BikeTypeRepo
 		if (bikeType.getBikeTypeNm().length() > 10) {
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"单车类型的输入长度应小于10"});
 		} else if (bikeType.getOrgId() == 0) {
-			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"请选择一种单车类型"});
+			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"请选择一个运营商"});
 		} else {
 			SpringContextHelper.getBean(BikeTypeService.class).save(bikeType);
 		}

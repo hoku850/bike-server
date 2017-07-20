@@ -38,7 +38,7 @@
 			<cc:child layoutData="{vBoxLayoutData}">
 				<form:FieldLabel text="联系人电话">
 					<form:widget>
-						<cc:CcPhoneField ui:field="managerTel" allowBlank="false" width="200" />
+						<cc:CcMobileField ui:field="managerTel" allowBlank="false" width="200" />
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>

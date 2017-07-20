@@ -25,16 +25,20 @@ import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.domain.entity.CyclingTrajectoryRecord;
+import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
 import org.ccframe.subsys.bike.repository.CyclingOrderRepository;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.UserService;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.gwt.dev.jjs.Correlation.Literal;
 import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 @Service
@@ -246,53 +250,31 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	 * @author zjm
 	 */
 	@Transactional
-	public Map<String, Object> getUsingBikeData(String startPos) {
-		
-		Date startDate = (Date) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_START_CYCLING_TIME);
-		Date nowDate = null;
-		System.out.println("session中的startDate：" + startDate);
-		if(startDate == null) {
-			startDate = new Date();
-			WebContextHolder.getSessionContextStore().setServerValue(Global.SESSION_START_CYCLING_TIME, startDate);
-			
-			User user = (User)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-			//生成骑行订单
-			CyclingOrder cyclingOrder = new CyclingOrder();
-			cyclingOrder.setSmartLockId(60001);
-			cyclingOrder.setBikePlateNumber("60001");
-			cyclingOrder.setUserId(user.getUserId());
-			cyclingOrder.setOrgId(1);
-			nowDate = new Date();
-			cyclingOrder.setStartTime(nowDate);
-			String[] splits = PositionUtil.splitPos(startPos);
-			cyclingOrder.setStartLocationLng(Double.valueOf(splits[0]));
-			cyclingOrder.setStartLocationLat(Double.valueOf(splits[1]));
-			cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode());
-			cyclingOrder.setCyclingContinousSec(0);
-			cyclingOrder.setCyclingDistanceMeter(0);
-			cyclingOrder.setOrderAmmount(0.00);
-			
-			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
-		} else {
-			nowDate = new Date();
-		}
-		
-		
-		System.out.println("当前时间：" + nowDate);
-		long[] time = DateDistanceUtil.getDistanceTimes(startDate, nowDate);
-		System.out.println("已骑行" + time[2] + "分钟");
-		//写死 每半小时支付0.5元
-		Integer count = (int) (time[2]/30.0);
-		//Integer count = (int) (31/30.0);
-		BigDecimal result = new BigDecimal(0.5).multiply(new BigDecimal(count), MathContext.DECIMAL32);
-		Double payMoney = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-
+	public Map<String, Object> getUsingBikeData(String meter) {
+		User user = (User)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), 1);
 		
 		Map<String, Object> map = new HashMap<String, Object>();
-		
-		map.put("min", time[2]+"");
-		map.put("bikeNumber", "SZCT00323424");
-		map.put("payMoney", payMoney+"");
+		if(list!=null && list.size()>0) {
+			CyclingOrder cyclingOrder = list.get(0);
+			long[] time = DateDistanceUtil.getDistanceTimes(cyclingOrder.getStartTime(), new Date());
+			System.out.println("已骑行" + time[2] + "分钟");
+			//写死 每半小时支付0.5元
+			Integer count = (int) (time[2]/30.0) + 1;
+			//Integer count = (int) (31/30.0);
+			BigDecimal result = new BigDecimal(0.5).multiply(new BigDecimal(count), MathContext.DECIMAL32);
+			Double payMoney = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+			
+			cyclingOrder.setCyclingContinousSec((int)time[3]);
+			cyclingOrder.setOrderAmmount(payMoney);
+			//cyclingOrder.setCyclingDistanceMeter(meter);
+			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
+
+			map.put("min", time[2]+"");
+			map.put("bikeNumber", "SZCT00323424");
+			map.put("payMoney", payMoney+"");
+		}
+
 
 		return map;
 	}
@@ -303,19 +285,62 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	@Transactional
 	public String closeLock(String paths) {
 		User user = (User)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+		Date startDate = (Date) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_START_CYCLING_TIME);
 		//更新骑行订单记录
 		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), 1);
 		CyclingOrder cyclingOrder = list.get(0);
-		cyclingOrder.setEndTime(new Date());
+		
 		String[] splits = PositionUtil.splitPos(paths);
 		cyclingOrder.setEndLocationLng(Double.valueOf(splits[0]));
 		cyclingOrder.setEndLocationLat(Double.valueOf(splits[1]));
 		cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode());
-		//-----------未完待续
+		Date endDate = new Date();
+		long[] times = DateDistanceUtil.getDistanceTimes(startDate, endDate);
+		cyclingOrder.setCyclingContinousSec((int)times[3]);
+		cyclingOrder.setEndTime(endDate);
+		//cyclingOrder.setOrderAmmount(orderAmmount);
+		//cyclingOrder.setCyclingDistanceMeter(cyclingDistanceMeter);
 		
 		return null;
 	}
+	
+	
 
+	/**
+	 * @author zjm
+	 */
+	@Transactional
+	public Map<String, Object> newCyclingOrder(String startPos) {
+		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), 1);
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(list!=null && list.size()>0) {
+			if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode())) {
+				return map;
+			}
+		}
+		//生成骑行订单
+		CyclingOrder cyclingOrder = new CyclingOrder();
+		cyclingOrder.setSmartLockId(60001);
+		cyclingOrder.setBikePlateNumber("60001");
+		cyclingOrder.setUserId(user.getUserId());
+		cyclingOrder.setOrgId(1);
+		cyclingOrder.setStartTime(new Date());
+		if(startPos.length()>=3) {
+			String[] splits = PositionUtil.splitPos(startPos);
+			cyclingOrder.setStartLocationLng(Double.valueOf(splits[0]));
+			cyclingOrder.setStartLocationLat(Double.valueOf(splits[1]));
+		}
+		
+		cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode());
+		cyclingOrder.setCyclingContinousSec(0);
+		cyclingOrder.setCyclingDistanceMeter(0);
+		cyclingOrder.setOrderAmmount(0.00);
+		
+		SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
+		
+		return map;
+	}
 
 
 }

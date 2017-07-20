@@ -26,7 +26,7 @@
 		<ui:attributes margins="{rowMargins}"/>
 	</ui:with>
 
-	<gxt:Window ui:field="window" width="1100" height="650" modal="true" headingText="新增运营商" focusWidget="{closeButton}" buttonAlign="CENTER" resizable="false">
+	<gxt:Window ui:field="window" width="900" height="600" modal="true" headingText="新增运营商" focusWidget="{closeButton}" buttonAlign="CENTER" resizable="false">
 		
 		<container:HorizontalLayoutContainer>
 			<container:child layoutData="{mapLayoutData}">

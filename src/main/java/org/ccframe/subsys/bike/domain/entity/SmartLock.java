@@ -105,7 +105,7 @@ public class SmartLock implements Serializable{
 
 	//增强型方法satat
 	public String getActiveDateStr() {
-		return this.getActiveDate() == null ? null : UtilDateTimeClient.convertDateTimeToString(this.getActiveDate());
+		return this.getActiveDate() == null ? null : UtilDateTimeClient.convertDateTimeToMmString(this.getActiveDate());
 	}
 	
 	public void setActiveDateStr(String value) {
@@ -115,7 +115,7 @@ public class SmartLock implements Serializable{
 	}
 	
 	public String getLastUseDateStr() {
-		return this.getLastUseDate() == null ? null : UtilDateTimeClient.convertDateTimeToString(this.getLastUseDate());
+		return this.getLastUseDate() == null ? null : UtilDateTimeClient.convertDateTimeToMmString(this.getLastUseDate());
 	}
 	
 	public void setLastUseDateStr(String value) {

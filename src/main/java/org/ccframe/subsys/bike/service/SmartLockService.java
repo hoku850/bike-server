@@ -28,6 +28,7 @@ import org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
+import org.ccframe.subsys.bike.dto.SmartLockImportData;
 import org.ccframe.subsys.bike.dto.SmartLockRowDto;
 import org.ccframe.subsys.bike.repository.SmartLockRepository;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,10 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 
 	@Transactional
 	public void saveOrUpdateSmartLock(SmartLock smartLock) {
+		if(smartLock.getSmartLockId()==null){
+			smartLock.setActiveDate(null);
+			smartLock.setLastUseDate(null);
+		}
 		if (smartLock.getOrgId() == 0 || smartLock.getBikeTypeId() == 0) {
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "运营商或单车类型没选择！！！" });
 		} else {
@@ -234,125 +239,33 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 
 			//运营商转换
 			int org = 1;
-			switch (rowSmartLock.getOrgNm()){
-			case "总平台":
-				org = 1;
-				break;
-			case "摩拜单车":
-				org = 501;
-				break;
-			case "ofo小黄单":
-				org = 502;
-				break;
-			case "小蓝车":
-				org = 503;
-				break;
-			case "Hello":
-				org = 504;
-				break;
-			case "小鸣":
-				org = 505;
-				break;
-			default:
-				org = 1;
-				break;	
+			
+			Agent agent = SpringContextHelper.getBean(AgentService.class).getByKey(Agent.ORG_NM, rowSmartLock.getOrgNm());
+			if(agent == null){
+				resultList.add(new ExcelReaderError(4, rowNum - 1, "运营商不存在"));
+			}else{
+				org = agent.getAgentId();
 			}
 			
 			//单车类型转换
 			int bikeType = 60000;
-			switch (rowSmartLock.getBikeTypeNm()){
-			case "标准单车":
-				bikeType = 60000;
-				break;
-			case "摩拜 lite":
-				if(rowSmartLock.getOrgNm().equals("摩拜单车")){
-					bikeType = 60001;
+			List<BikeType> listBikeType = SpringContextHelper.getBean(BikeTypeService.class).findByKey(BikeType.BIKE_TYPE_NM, rowSmartLock.getBikeTypeNm());
+			if(listBikeType.size()==0){
+				resultList.add(new ExcelReaderError(6, rowNum - 1, "单车类型不存在"));
+			}else{
+				if(rowSmartLock.getBikeTypeNm().equals("标准单车")){
+					List<BikeType> listDbBikeType = SpringContextHelper.getBean(BikeTypeService.class).findByKey(BikeType.ORG_ID, org);
+					for (BikeType bikeType2 : listBikeType) {
+						if(org == bikeType2.getOrgId()){
+							bikeType = bikeType2.getBikeTypeId();
+						}
+					}
 				}else{
-					bikeType = 60101;
+					BikeType db2 = SpringContextHelper.getBean(BikeTypeService.class).getByKey(BikeType.BIKE_TYPE_NM, rowSmartLock.getBikeTypeNm());
+					bikeType = db2.getBikeTypeId();
 				}
-				break;
-			case "摩拜  小橙车":
-				if(rowSmartLock.getOrgNm().equals("摩拜单车")){
-					bikeType = 60002;
-				}else{
-					bikeType = 60101;
-				}
-				break;
-			case "ofo lite":
-				if(rowSmartLock.getOrgNm().equals("ofo小黄单")){
-					bikeType = 60011;
-				}else{
-					bikeType = 60201;
-				}
-				break;
-			case "ofo 经典":
-				if(rowSmartLock.getOrgNm().equals("ofo小黄单")){
-					bikeType = 60012;
-				}else{
-					bikeType = 60201;
-				}
-				break;
-			case "小蓝 lite":
-				if(rowSmartLock.getOrgNm().equals("小蓝车")){
-					bikeType = 60021;
-				}else{
-					bikeType = 60301;
-				}
-				bikeType = 60021;
-				break;
-			case "小蓝 经典":
-				if(rowSmartLock.getOrgNm().equals("小蓝车")){
-					bikeType = 60022;
-				}else{
-					bikeType = 60301;
-				}
-				break;
-			case "Hello Bike lite":
-				if(rowSmartLock.getOrgNm().equals("Hello")){
-					bikeType = 60031;
-				}else{
-					bikeType = 60401;
-				}
-				break;
-			case "Hello Bike 经典":
-				if(rowSmartLock.getOrgNm().equals("Hello")){
-					bikeType = 60032;
-				}else{
-					bikeType = 60401;
-				}
-				break;
-			case "小鸣 lite":
-				if(rowSmartLock.getOrgNm().equals("小鸣")){
-					bikeType = 60041;
-				}else{
-					bikeType = 60501;
-				}
-				break;
-			case "小鸣 经典":
-				if(rowSmartLock.getOrgNm().equals("小鸣")){
-					bikeType = 60042;
-				}else{
-					bikeType = 60501;
-				}
-				break;
-			default:
-				if(rowSmartLock.getOrgNm().equals("总平台")){
-					bikeType = 60000;
-				}else if(rowSmartLock.getOrgNm().equals("摩拜单车")){
-					bikeType = 60101;
-				}else if(rowSmartLock.getOrgNm().equals("ofo小黄单")){
-					bikeType = 60201;
-				}else if(rowSmartLock.getOrgNm().equals("小蓝车")){
-					bikeType = 60301;
-				}else if(rowSmartLock.getOrgNm().equals("Hello")){
-					bikeType = 60401;
-				}else if(rowSmartLock.getOrgNm().equals("小鸣")){
-					bikeType = 60501;
-				}else{
-					bikeType = 60000;
-				}
-				break;	
 			}
+			
 			
 			// 保存
 			SmartLock dbSmartLock = this.getByKey(SmartLock.LOCKER_HARDWARE_CODE, rowSmartLock.getLockerHardwareCode());

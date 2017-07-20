@@ -1,7 +1,9 @@
 package org.ccframe.subsys.bike.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ccframe.client.Global;
@@ -9,6 +11,7 @@ import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
@@ -16,6 +19,8 @@ import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.dto.CyclingOrderListReq;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
 import org.ccframe.subsys.bike.search.CyclingOrderSearchRepository;
+import org.ccframe.subsys.core.domain.entity.User;
+import org.ccframe.subsys.core.service.UserService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -37,6 +42,7 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 		if(orgId != null && orgId != 0){
 			boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.ORG_ID, orgId));
 		}
+		
 		// 过滤单车类型 -> 找出该单车类型的智能锁，过滤掉
 		Integer typeId = cyclingOrderListReq.getBikeTypeId();
 		if(typeId != null && typeId != 0){
@@ -44,16 +50,16 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 			for (SmartLock smartLock : locks) {
 				boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.SMART_LOCK_ID, smartLock.getSmartLockId()));
 			}
-			// TODO 有bug
 			if (locks.size() == 0) {
-				boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.ORG_ID, 0));
-//				throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"没有该类型单车的骑行订单"});
+				boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.SMART_LOCK_ID, 0));
 			}
 		}
+		
 		// 过滤状态
 		if(StringUtils.isNotBlank(cyclingOrderListReq.getOrderState())){
 			boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.CYCLING_ORDER_STAT_CODE, cyclingOrderListReq.getOrderState()));
 		}
+		
 		// 过滤时间  GWT设有默认时间，不会为空
 		RangeQueryBuilder builder = QueryBuilders.rangeQuery(CyclingOrder.START_TIME);
 		builder.gte(cyclingOrderListReq.getStartTime() == null ? Global.MIN_SEARCH_DATE : cyclingOrderListReq.getStartTime());
@@ -85,10 +91,11 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 			if (org!=null) {
 				cyclingOrderRowDto.setOrgNm(org.getAgentNm());
 			}
-			// 查询出单车类型
+			// 查询出智能锁硬件编号
 			SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(cyclingOrder.getSmartLockId());
 			if (smartLock != null) {
 				cyclingOrderRowDto.setLockerHardwareCode(smartLock.getLockerHardwareCode());
+				// 查询出单车类型
 				BikeType bikeType = SpringContextHelper.getBean(BikeTypeService.class).getById(smartLock.getBikeTypeId());
 				if (bikeType != null) {
 					cyclingOrderRowDto.setBikeTypeNm(bikeType.getBikeTypeNm());
@@ -112,6 +119,37 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 	 */
 	public List<CyclingOrder> findByUserIdAndOrgIdOrderByStartTimeDesc(Integer userId, Integer orgId) {
 		return this.getRepository().findByUserIdAndOrgIdOrderByEndTimeDesc(userId, orgId);
+	}
+	
+	/**
+	 * @author lzh
+	 */
+	public Map<String, String> getOrderPayDetail(String loginId) {
+		Map<String, String> map = new HashMap<String, String>(); 
+		User user = SpringContextHelper.getBean(UserService.class).getByKey(User.LOGIN_ID, loginId);
+//		CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderService.class).findByKey(CyclingOrder.USER_ID, user.getUserId(), orders)ByKey(,);
+		//查询未完成的唯一订单
+		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+		boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.USER_ID, user.getUserId()));
+		boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.CYCLING_ORDER_STAT_CODE, CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode()));
+		Iterable<CyclingOrder> content = this.getRepository().search(boolQueryBuilder);
+		CyclingOrder cyclingOrder;
+		if(content.iterator().hasNext()){
+			 cyclingOrder = content.iterator().next();
+		}
+		else {
+			return null;
+		}
+		//查询单车类型
+		BikeType bikeType;
+		bikeType = SpringContextHelper.getBean(BikeTypeService.class).getByKey(BikeType.BIKE_TYPE_ID, 
+				SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.BIKE_PLATE_NUMBER, cyclingOrder.getBikePlateNumber()).getBikeTypeId());
+		//以后还需要考虑优惠
+		map.put("time", cyclingOrder.getCyclingContinousSec().toString());
+		map.put("price", cyclingOrder.getOrderAmmount().toString());
+		map.put("pricePerHalfHour", bikeType.getHalfhourAmmount().toString());
+		map.put("cyclingOriderId", cyclingOrder.getCyclingOrderId().toString());
+		return map;
 	}
 
 

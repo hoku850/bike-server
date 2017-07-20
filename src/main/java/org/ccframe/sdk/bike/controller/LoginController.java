@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(ControllerMapping.MEMBER_LOGIN_BASE)
-public class LoginController{
-	
+public class LoginController {
+
 	@RequestMapping(value = "login")
 	@ResponseBody
 	public String login(String phoneName, String IMEI) {
@@ -20,7 +20,7 @@ public class LoginController{
 		SpringContextHelper.getBean(UserService.class).login(phoneName, IMEI);
 		return "success";
 	}
-	
+
 	@RequestMapping(value = "checkState")
 	@ResponseBody
 	public String checkState() {

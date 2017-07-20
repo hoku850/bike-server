@@ -19,8 +19,14 @@ public class UsingBikeController{
 	
 	@RequestMapping(value = "getUsingBikeData")
 	@ResponseBody
-	public Map<String, Object> getUsingBikeData(@RequestParam(defaultValue="")String startPos) {
-		return SpringContextHelper.getBean(CyclingOrderService.class).getUsingBikeData(startPos);
+	public Map<String, Object> getUsingBikeData(String meter) {
+		return SpringContextHelper.getBean(CyclingOrderService.class).getUsingBikeData(meter);
+	}
+	
+	@RequestMapping(value = "newCyclingOrder")
+	@ResponseBody
+	public Map<String, Object> newCyclingOrder(String startPos) {
+		return SpringContextHelper.getBean(CyclingOrderService.class).newCyclingOrder(startPos);
 	}
 	
 	@RequestMapping(value = "savePosition")

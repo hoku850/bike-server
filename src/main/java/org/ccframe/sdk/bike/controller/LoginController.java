@@ -1,5 +1,7 @@
 package org.ccframe.sdk.bike.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.http.HttpRequest;
 import org.ccframe.client.ControllerMapping;
 import org.ccframe.commons.helper.SpringContextHelper;
@@ -23,8 +25,8 @@ public class LoginController {
 
 	@RequestMapping(value = "checkState")
 	@ResponseBody
-	public String checkState() {
-		return SpringContextHelper.getBean(UserService.class).checkState();
+	public String checkState(HttpServletRequest httpRequest) {
+		return SpringContextHelper.getBean(UserService.class).checkState(httpRequest);
 	}
 	
 }

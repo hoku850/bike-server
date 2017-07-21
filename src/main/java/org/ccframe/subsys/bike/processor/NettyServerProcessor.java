@@ -5,8 +5,7 @@ import javax.annotation.PreDestroy;
 import org.apache.log4j.Logger;
 import org.ccframe.commons.base.IProcesser;
 import org.ccframe.commons.helper.SysInitBeanHelper;
-import org.ccframe.subsys.bike.decoder.LockPackageDecoder;
-import org.ccframe.subsys.bike.decoder.TcpProtocolHandler;
+import org.ccframe.subsys.bike.socket.commons.LockPackageDecoder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -23,7 +22,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
-import io.netty.handler.codec.string.StringDecoder;
 
 @Component
 public class NettyServerProcessor implements IProcesser{
@@ -33,11 +31,11 @@ public class NettyServerProcessor implements IProcesser{
 	private NioEventLoopGroup bossGroup = new NioEventLoopGroup();
 	private NioEventLoopGroup workerGroup = new NioEventLoopGroup();
 
-	private static final ByteBuf BOUND_DELIMITER = Unpooled.copiedBuffer(new byte[]{0X7E});
+	public static final ByteBuf BOUND_DELIMITER = Unpooled.copiedBuffer(new byte[]{0X7E});
 	
 	private int port;
 
-	@Value("${app.netty.port:8081}")
+	@Value("${app.netty.port:8088}")
 	public void setPort(int port) {
 		this.port = port;
 	}

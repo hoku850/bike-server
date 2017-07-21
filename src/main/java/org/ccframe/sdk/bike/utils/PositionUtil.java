@@ -3,10 +3,14 @@ package org.ccframe.sdk.bike.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.sdk.bike.dto.Position;
+import org.ccframe.subsys.bike.domain.entity.CyclingTrajectoryRecord;
+import org.ccframe.subsys.bike.service.CyclingTrajectoryRecordService;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 
-import io.netty.util.internal.StringUtil;
+import com.google.gwt.dev.jjs.Correlation.Literal;
 
 public class PositionUtil {
 	
@@ -14,7 +18,6 @@ public class PositionUtil {
 	 * @author zjm
 	 */
 	public static String[] splitPos(String startPos) {
-		startPos = startPos.substring(1, startPos.length()-2);
 		String[] split = startPos.split(",");
 		return split;
 	}
@@ -49,5 +52,21 @@ public class PositionUtil {
 		}
 		
 		return list;
+	}
+
+	public static StringBuffer getPolylinePath(Integer orderId) {
+		List<CyclingTrajectoryRecord> list = SpringContextHelper.getBean(CyclingTrajectoryRecordService.class).findByKey(CyclingTrajectoryRecord.CYCLING_ORDER_ID, orderId, new Order(Direction.ASC, CyclingTrajectoryRecord.RECORD_TIME));
+		StringBuffer sBuffer = new StringBuffer("");
+		if(list!=null && list.size()>0) {
+			
+			sBuffer.append("[");
+			for(CyclingTrajectoryRecord record : list) {
+				sBuffer.append("[").append(record.getRecordLocationLng()).
+				append(",").append(record.getRecordLocationLat()).append("],");
+			}
+			sBuffer = sBuffer.deleteCharAt(sBuffer.length()-1);
+			sBuffer.append("]");
+		}
+		return sBuffer;
 	}
 }

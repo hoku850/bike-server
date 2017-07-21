@@ -235,15 +235,16 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 			//保存充值订单表
 			ChargeOrder chargeOrder = new ChargeOrder();
 			chargeOrder.setChargeOrderNum("123");
-			chargeOrder.setUserId(1);
-			chargeOrder.setMemberAccountId(1);
+			chargeOrder.setUserId(user.getUserId());
+			chargeOrder.setMemberAccountId(memberAccount.getMemberAccountId());
 			chargeOrder.setMemberAccountLogId(logId);
 			chargeOrder.setOrgId(1);
 			chargeOrder.setPaymentTransactionalNumber("123");
 			chargeOrder.setChargeAmmount(deposit);
 			chargeOrder.setChargeOrderStatCode(ChargeOrderStatCodeEnum.CHARGE_SUCCESS.toCode());
-			chargeOrder.setCreateTime(new Date());
-			chargeOrder.setChargeFinishTime(new Date());
+			Date nowDate = new Date();
+			chargeOrder.setCreateTime(nowDate);
+			chargeOrder.setChargeFinishTime(nowDate);
 			
 			if(payType.equals("alipay")) {
 				chargeOrder.setPaymentTypeCode(PaymentTypeCodeEnum.ALIPAY.toCode());

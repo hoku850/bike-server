@@ -1,4 +1,4 @@
-package org.ccframe.subsys.bike.tcpobj;
+package org.ccframe.subsys.bike.socket.tcpobj;
 
 /**
  * 数据块类型
@@ -93,7 +93,7 @@ public enum DataBlockTypeEnum{
 	UNLOCK_TIME_DURATION((short)0x0108),
 	
 	/**
-	 * GPRS卫星个数
+	 * GPRS卫星个数(0x010A)
 	 */
 	CPRS_SATELLITE_NUM((short)0x010a),
 

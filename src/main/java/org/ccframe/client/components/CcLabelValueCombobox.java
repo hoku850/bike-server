@@ -7,6 +7,8 @@ import org.ccframe.client.commons.ClientManager;
 import org.ccframe.client.commons.RestCallback;
 import org.fusesource.restygwt.client.Method;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -162,7 +164,12 @@ public class CcLabelValueCombobox extends AdapterField<Integer>{
 					}
 				}
 				if(afterAsyncReset != null){
-					afterAsyncReset.run();
+					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+						@Override
+						public void execute() {
+							afterAsyncReset.run();							
+						}
+					});
 				}
 			}
 			@Override

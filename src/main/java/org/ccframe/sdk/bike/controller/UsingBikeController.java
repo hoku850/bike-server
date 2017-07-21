@@ -37,8 +37,8 @@ public class UsingBikeController{
 	
 	@RequestMapping(value = "closeLock")
 	@ResponseBody
-	public String closeLock(String paths) {
-		return SpringContextHelper.getBean(CyclingOrderService.class).closeLock(paths);
+	public String closeLock(String paths, String meter) {
+		return SpringContextHelper.getBean(CyclingOrderService.class).closeLock(paths, meter);
 	}
 	
 

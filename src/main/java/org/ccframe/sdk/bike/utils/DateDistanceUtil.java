@@ -70,28 +70,10 @@ public class DateDistanceUtil {
         long[] times = {day, hour, min, sec};  
         return times;  
     }  
-    public static long[] getDistanceTimes(Date one, Date two) {  
-
-        long day = 0;  
-        long hour = 0;  
-        long min = 0;  
-        long sec = 0;  
-
-            long time1 = one.getTime();  
-            long time2 = two.getTime();  
-            long diff ;  
-            if(time1<time2) {  
-                diff = time2 - time1;  
-            } else {  
-                diff = time1 - time2;  
-            }  
-            day = diff / (24 * 60 * 60 * 1000);  
-            hour = (diff / (60 * 60 * 1000) - day * 24);  
-            min = ((diff / (60 * 1000)) - day * 24 * 60 - hour * 60);  
-            sec = (diff/1000-day*24*60*60-hour*60*60-min*60);  
-
-        long[] times = {day, hour, min, sec};  
-        return times;  
+    public static long getDistanceTimes(Date one, Date two) {  
+    	long sec = (two.getTime() - one.getTime()) / 1000;
+            
+        return sec;  
     }  
     /** 
      * 两个时间相差距离多少天多少小时多少分多少秒 

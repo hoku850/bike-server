@@ -211,31 +211,25 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		Double km = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 		BigDecimal result2 = new BigDecimal(cyclingOrder.getCyclingContinousSec()).divide(new BigDecimal(60), MathContext.DECIMAL32);
 		Double min = result2.setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
+		
+		//不含计算，只是指定格式
 		DecimalFormat df = new DecimalFormat("#0.00");  
 		String orderAmmount = df.format(cyclingOrder.getOrderAmmount());
+		
 		String startPos = "["+cyclingOrder.getStartLocationLng()+","
 				+cyclingOrder.getStartLocationLat()+"]";
 		String endPos = "["+cyclingOrder.getEndLocationLng()+","
 				+cyclingOrder.getEndLocationLat()+"]";
 		String bikeNumber = cyclingOrder.getBikePlateNumber();
 		
-		
-		List<CyclingTrajectoryRecord> list = SpringContextHelper.getBean(CyclingTrajectoryRecordService.class).findByKey(CyclingTrajectoryRecord.CYCLING_ORDER_ID, cyclingOrderId,
-				new Order(Direction.ASC, CyclingTrajectoryRecord.RECORD_TIME));
-		
-		List<String> posList = new ArrayList<String>();
-		if(list!=null && list.size()>0) {
-			String posString = "";
-			for(CyclingTrajectoryRecord record : list) {
-				posString = "["+record.getRecordLocationLng()+","+record.getRecordLocationLat()+"]";
-				
-				posList.add(posString);
-			}
+		StringBuffer polylinePath = PositionUtil.getPolylinePath(cyclingOrder.getCyclingOrderId());
+
+		if(polylinePath.length()>=3) {
+			polylinePath = polylinePath.insert(1, startPos+",");
+			polylinePath = polylinePath.insert(polylinePath.length()-1, ","+endPos);
 		}
-		
-		
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("list", posList);
+		map.put("list", polylinePath);
 		map.put("km", km+"");
 		map.put("min", min+"");
 		map.put("payMoney", orderAmmount+"");
@@ -256,22 +250,25 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(list!=null && list.size()>0) {
+			//更新骑行订单
 			CyclingOrder cyclingOrder = list.get(0);
-			long[] time = DateDistanceUtil.getDistanceTimes(cyclingOrder.getStartTime(), new Date());
-			System.out.println("已骑行" + time[2] + "分钟");
+			long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder.getStartTime(), new Date());
+			long min = sec / 60;
+			System.out.println("开始时间" + cyclingOrder.getStartTime());
+			System.out.println("已骑行" + min + "分钟");
 			//写死 每半小时支付0.5元
-			Integer count = (int) (time[2]/30.0) + 1;
+			Integer count = (int) (min/30.0) + 1;
 			//Integer count = (int) (31/30.0);
 			BigDecimal result = new BigDecimal(0.5).multiply(new BigDecimal(count), MathContext.DECIMAL32);
 			Double payMoney = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 			
-			cyclingOrder.setCyclingContinousSec((int)time[3]);
+			cyclingOrder.setCyclingContinousSec((int)sec);
 			cyclingOrder.setOrderAmmount(payMoney);
-			//cyclingOrder.setCyclingDistanceMeter(meter);
+			cyclingOrder.setCyclingDistanceMeter(Double.valueOf(meter).intValue());
 			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 
-			map.put("min", time[2]+"");
-			map.put("bikeNumber", "SZCT00323424");
+			map.put("min", min+"");
+			map.put("bikeNumber", cyclingOrder.getBikePlateNumber());
 			map.put("payMoney", payMoney+"");
 		}
 
@@ -283,25 +280,36 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	 * @author zjm
 	 */
 	@Transactional
-	public String closeLock(String paths) {
+	public String closeLock(String paths, String meter) {
 		User user = (User)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-		Date startDate = (Date) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_START_CYCLING_TIME);
-		//更新骑行订单记录
+		
 		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), 1);
-		CyclingOrder cyclingOrder = list.get(0);
 		
-		String[] splits = PositionUtil.splitPos(paths);
-		cyclingOrder.setEndLocationLng(Double.valueOf(splits[0]));
-		cyclingOrder.setEndLocationLat(Double.valueOf(splits[1]));
-		cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode());
-		Date endDate = new Date();
-		long[] times = DateDistanceUtil.getDistanceTimes(startDate, endDate);
-		cyclingOrder.setCyclingContinousSec((int)times[3]);
-		cyclingOrder.setEndTime(endDate);
-		//cyclingOrder.setOrderAmmount(orderAmmount);
-		//cyclingOrder.setCyclingDistanceMeter(cyclingDistanceMeter);
-		
-		return null;
+		if(list!=null && list.size()>0) {
+			//更新骑行订单记录
+			CyclingOrder cyclingOrder = list.get(0);
+			
+			String[] splits = PositionUtil.splitPos(paths);
+			cyclingOrder.setEndLocationLng(Double.valueOf(splits[0]));
+			cyclingOrder.setEndLocationLat(Double.valueOf(splits[1]));
+			cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode());
+			
+			long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder.getStartTime(), new Date());
+			long min = sec / 60;
+			System.out.println("已骑行" + min + "分钟");
+			//写死 每半小时支付0.5元
+			Integer count = (int) (min/30.0) + 1;
+			//Integer count = (int) (31/30.0);
+			BigDecimal result = new BigDecimal(0.5).multiply(new BigDecimal(count), MathContext.DECIMAL32);
+			Double payMoney = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+			
+			cyclingOrder.setCyclingContinousSec((int)sec);
+			cyclingOrder.setOrderAmmount(payMoney);
+			cyclingOrder.setCyclingDistanceMeter(Integer.valueOf(meter));
+			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
+		}
+			
+		return "success";
 	}
 	
 	
@@ -316,13 +324,33 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(list!=null && list.size()>0) {
 			if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode())) {
+				//用车中显示在前台时执行
+				CyclingOrder cyclingOrder2 = list.get(0);
+				
+				long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder2.getStartTime(), new Date());
+				long min = sec / 60;
+				//System.out.println("已骑行" + min + "分钟");
+				//写死 每半小时支付0.5元
+				Integer count = (int) (min/30.0) + 1;
+				//Integer count = (int) (31/30.0);
+				BigDecimal result = new BigDecimal(0.5).multiply(new BigDecimal(count), MathContext.DECIMAL32);
+				Double payMoney = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+				
+				StringBuffer polylinePath = PositionUtil.getPolylinePath(cyclingOrder2.getCyclingOrderId());
+				polylinePath = polylinePath.insert(polylinePath.length()-2, ","+startPos);
+				
+				map.put("min", min+"");
+				map.put("bikeNumber", cyclingOrder2.getBikePlateNumber());
+				map.put("payMoney", payMoney+"");
+				map.put("polylinePath", polylinePath+"");
+				
 				return map;
 			}
 		}
 		//生成骑行订单
 		CyclingOrder cyclingOrder = new CyclingOrder();
 		cyclingOrder.setSmartLockId(60001);
-		cyclingOrder.setBikePlateNumber("60001");
+		cyclingOrder.setBikePlateNumber("SZCT00323424");
 		cyclingOrder.setUserId(user.getUserId());
 		cyclingOrder.setOrgId(1);
 		cyclingOrder.setStartTime(new Date());

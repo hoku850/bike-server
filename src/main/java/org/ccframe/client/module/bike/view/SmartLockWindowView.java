@@ -78,7 +78,9 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 			if(bikePlateNumber.getValue()==null){
 				bikePlateNumber.setValue("");
 			}
-			
+			if(bikeTypeId.getValue()==null){
+				bikeTypeId.setValue(60000);
+			}
 			final TextButton button = ((TextButton)(e.getSource()));
 			button.disable();
 
@@ -102,7 +104,6 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
 		bikeTypeId.setAfterAsyncReset(new Runnable(){
-			
 			@Override
 			public void run() {
 				if(SmartLockWindowView.this.smartLockId != null){
@@ -118,19 +119,26 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 				}
 			}
 		});
+		orgId.setAfterAsyncReset(new Runnable(){
+
+			@Override
+			public void run() {
+				bikeTypeId.setExtraParam(orgId.getValue().toString());
+				bikeTypeId.reset();
+			}
+		});
+		
+		orgId.addValueChangeHandler(new ValueChangeHandler<Integer>(){
+			@Override
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				bikeTypeId.setExtraParam(event.getValue().toString());
+				bikeTypeId.reset();
+			}
+		});
+
+
 		driver.initialize(this);
 		driver.edit(new SmartLock());
-//		orgId.reset();
-//		bikeTypeId.reset();
-//		orgId.addValueChangeHandler(new ValueChangeHandler<Integer>(){
-//
-//			@Override
-//			public void onValueChange(ValueChangeEvent<Integer> event) {
-//				bikeTypeId.setExtraParam(event.getValue().toString());
-//				bikeTypeId.reset();
-//			}
-//			
-//		});
 		return widget;
 	}
 
@@ -138,27 +146,17 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 	protected void onLoadData(Integer smartLockId) {
 		this.smartLockId = smartLockId;
 		window.setHeadingText("智能锁" + (smartLockId == null ? "增加" : "修改"));
-		if(smartLockId != null){
-			orgId.setReadOnly(false);
-			bikeTypeId.setReadOnly(false);
-		}else{
-			orgId.setReadOnly(true);
-			bikeTypeId.setReadOnly(true);
-		}
+		
+//		if(smartLockId != null){
+//			orgId.setReadOnly(false);
+//			bikeTypeId.setReadOnly(false);
+//		}else{
+//			orgId.setReadOnly(true);
+//			bikeTypeId.setReadOnly(true);
+//		}
 		
 		orgId.reset();
-//		bikeTypeId.reset();
-		orgId.addValueChangeHandler(new ValueChangeHandler<Integer>(){
-			
-			@Override
-			public void onValueChange(ValueChangeEvent<Integer> event) {
-				bikeTypeId.setExtraParam(event.getValue().toString());
-				bikeTypeId.reset();
-			}
-			
-		});
-		
-		
+//		bikeTypeId.setExtraParam(orgId.getValue().toString());
 		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
 		if(smartLockId == null){
 			FormPanelHelper.reset(vBoxLayoutContainer);

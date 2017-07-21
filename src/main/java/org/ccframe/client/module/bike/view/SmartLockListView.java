@@ -263,7 +263,6 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 				
 				if(isAgent){
 					smartLockListReq.setOrgId(MainFrame.adminUser.getOrgId());
-//					smartLockListReq.setOrgId(503);
 				}else{
 					smartLockListReq.setOrgId(orgId.getValue());
 				}

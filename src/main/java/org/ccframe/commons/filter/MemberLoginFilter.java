@@ -52,6 +52,7 @@ private static String backendLoginUri;
         			 if(users!=null && users.size()>0) {
         				 //自动登录
         				 WebContextHolder.getSessionContextStore().setServerValue(Global.SESSION_LOGIN_MEMBER_USER, users.get(0));
+ 
         			 } else {
         				 httpResponse.getWriter().print("checkPhone");
              			 httpResponse.flushBuffer();

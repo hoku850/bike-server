@@ -118,7 +118,7 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 	 * @author zjm
 	 */
 	public List<CyclingOrder> findByUserIdAndOrgIdOrderByStartTimeDesc(Integer userId, Integer orgId) {
-		return this.getRepository().findByUserIdAndOrgIdOrderByEndTimeDesc(userId, orgId);
+		return this.getRepository().findByUserIdAndOrgIdOrderByStartTimeDesc(userId, orgId);
 	}
 	
 	/**

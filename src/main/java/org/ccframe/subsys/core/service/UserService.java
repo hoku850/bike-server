@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -529,20 +531,24 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 	 * @author zjm
 	 */
 	@Transactional(readOnly=true)
-	public String checkState() {
+	public String checkState(HttpServletRequest httpRequest) {
+		
 		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
 		String state = "";
 		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), 1);
 		if(list!=null && list.size()>0) {
 			if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode())) {
-				//return "onTheWay";
+				return "onTheWay";
 			} else if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode())) {
 				return "waitPay";
 			}
 		}
+		 String flag = httpRequest.getParameter("flag");
+		 if(flag!=null && flag.equals("onCreate")) {
+			 return "first";
+		 }
 		
-		
-		return "";
+		return state;
 	}
 
 }

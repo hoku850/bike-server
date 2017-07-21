@@ -46,14 +46,14 @@
 			<cc:child layoutData="{vBoxLayoutData}">
 				<form:FieldLabel text="运营商 ">
 					<form:widget>
-						<cc:CcLabelValueCombobox ui:field="orgId" width="150" beanName="agentService" readOnly="true"/>
+						<cc:CcLabelValueCombobox ui:field="orgId" width="150" beanName="agentService"/>
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>
 			<cc:child layoutData="{vBoxLayoutData}">
 				<form:FieldLabel text="单车类型 ">
 					<form:widget>
-						<cc:CcLabelValueCombobox ui:field="bikeTypeId" width="150" beanName="bikeTypeService" readOnly="true"/>
+						<cc:CcLabelValueCombobox ui:field="bikeTypeId" width="150" beanName="bikeTypeService" />
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>

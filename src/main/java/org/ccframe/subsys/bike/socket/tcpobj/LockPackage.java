@@ -1,4 +1,4 @@
-package org.ccframe.subsys.bike.tcpobj;
+package org.ccframe.subsys.bike.socket.tcpobj;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ public class LockPackage {
 	
 	private byte version = 0x01;
 	
-	private long lockId;
+	private long lockerHardwareCode;
 	
 	private BykeTypeCodeEnum bykeTypeCodeEnum;
 	
@@ -32,7 +32,7 @@ public class LockPackage {
 	@Override
 	public String toString() {
 		return "LockPackage [type=" + type + ", version=" + version
-				+ ", lockId=" + lockId + ", bykeTypeCodeEnum="
+				+ ", lockId=" + lockerHardwareCode + ", bykeTypeCodeEnum="
 				+ bykeTypeCodeEnum + ", commandFlagEnum=" + commandFlagEnum
 				+ ", answerFlagEnum=" + answerFlagEnum + ", dataBlockMap="
 				+ dataBlockMap + "]";
@@ -54,12 +54,12 @@ public class LockPackage {
 		this.version = version;
 	}
 
-	public long getLockId() {
-		return lockId;
+	public long getLockerHardwareCode() {
+		return lockerHardwareCode;
 	}
 
-	public void setLockId(long lockId) {
-		this.lockId = lockId;
+	public void setLockerHardwareCode(long lockerHardwareCode) {
+		this.lockerHardwareCode = lockerHardwareCode;
 	}
 
 	public BykeTypeCodeEnum getBykeTypeCodeEnum() {
@@ -75,7 +75,7 @@ public class LockPackage {
 	}
 
 	public void setCommandFlagEnum(CommandFlagEnum commandFlagEnum) {
-		commandFlagEnum = commandFlagEnum;
+		this.commandFlagEnum = commandFlagEnum;
 	}
 
 	public AnswerFlagEnum getAnswerFlagEnum() {

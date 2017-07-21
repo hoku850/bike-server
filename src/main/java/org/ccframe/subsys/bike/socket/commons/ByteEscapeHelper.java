@@ -26,8 +26,7 @@ public class ByteEscapeHelper {
 	}
 	
 	/**
-	 * 转义编码.  	0x5E， 0x5D 来代替 0x5E
-	 * 				0x5E， 0x7D 来代替 0x7E
+	 * 转义编码.
 	 * @param originalBytes
 	 * @return
 	 */
@@ -37,9 +36,11 @@ public class ByteEscapeHelper {
 			if (originalByteList.contains(originalBytes[i])) {
 				int index = originalByteList.indexOf(originalBytes[i]); //获取当前的索引
 				byte[] bs = escapedBytesList.get(index);
-				for (byte b : bs) {
-					returnData.add(b);
-				}
+				returnData.add(bs[0]);
+				returnData.add(bs[1]);
+//				for (byte b : bs) {
+//					returnData.add(b);
+//				}
 			} else {
 				returnData.add(originalBytes[i]);
 			}
@@ -48,8 +49,7 @@ public class ByteEscapeHelper {
 	}
 	
 	/**
-	 * 转义解码.   	0x5E， 0x5D 来代替 0x5E
-	 * 				0x5E， 0x7D 来代替 0x7E
+	 * 转义解码.
 	 * @param escapedBytes
 	 * @return
 	 */

@@ -17,6 +17,7 @@ import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.commons.base.BaseService;
 import org.ccframe.commons.data.ListExcelWriter;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.commons.util.BigDecimalUtil;
 import org.ccframe.commons.util.JsonBinder;
 import org.ccframe.commons.util.WebContextHolder;
 import org.ccframe.sdk.bike.utils.DateDistanceUtil;
@@ -28,7 +29,11 @@ import org.ccframe.subsys.bike.domain.entity.CyclingTrajectoryRecord;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
 import org.ccframe.subsys.bike.repository.CyclingOrderRepository;
+import org.ccframe.subsys.core.domain.entity.MemberAccount;
+import org.ccframe.subsys.core.domain.entity.MemberAccountLog;
 import org.ccframe.subsys.core.domain.entity.User;
+import org.ccframe.subsys.core.service.MemberAccountLogService;
+import org.ccframe.subsys.core.service.MemberAccountService;
 import org.ccframe.subsys.core.service.UserService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -370,5 +375,54 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		return map;
 	}
 
-
+	/**
+	 * @author lzh
+	 */
+	public Map<String, String> getMenuData(User user, Integer orgId){
+		Map<String, String> map = new HashMap<String, String>();
+		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class)
+			.findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), orgId);
+		Integer cyclingDistace = 0;
+		for (CyclingOrder cyclingOrder : list) {
+			cyclingDistace += cyclingOrder.getCyclingDistanceMeter();
+		}
+		map.put("item0", cyclingDistace.toString());
+		map.put("item1", Double.toString((cyclingDistace / 16) * 413.27));
+		map.put("item2", SpringContextHelper.getBean(MemberAccountService.class).
+				getByKey(MemberAccount.USER_ID, user.getUserId()).getAccountValue().toString());
+		map.put("item3", Integer.toString(list.size()));
+		map.put("item4", "0");
+		
+		return map;
+	}
+	/**
+	 * @author lzh
+	 */
+	public String orderPay(Integer orderId, String loginId){
+		CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderService.class).getById(orderId);
+		cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.PAY_FINISH.toCode());
+		User user = SpringContextHelper.getBean(UserService.class).getByLoginId(loginId);
+		MemberAccount memberAccount = SpringContextHelper.getBean(MemberAccountService.class).getByKey(MemberAccount.USER_ID, user.getUserId());
+		//构造并添加账户日志
+//		MemberAccountLog memberAccountLog = SpringContextHelper.getBean(MemberAccountLog.class);
+		MemberAccountLog memberAccountLog = new MemberAccountLog();
+		
+		memberAccountLog.setUserId(cyclingOrder.getUserId());
+		memberAccountLog.setOrgId(cyclingOrder.getOrgId());
+		memberAccountLog.setMemberAccountId(memberAccount.getMemberAccountId());
+		memberAccountLog.setPrevValue(memberAccount.getAccountValue());
+		memberAccountLog.setAfterValue(BigDecimalUtil.subtract(memberAccount.getAccountValue(), cyclingOrder.getOrderAmmount()));
+		memberAccountLog.setChangeValue(cyclingOrder.getOrderAmmount());
+		memberAccountLog.setSysTime(new Date());
+		memberAccountLog.setReason("系统正常骑行扣费");
+		memberAccountLog.setOperationManId(null);
+		//设置用户数值
+		memberAccount.setAccountValue(memberAccountLog.getAfterValue());
+		//保存数据
+		SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
+		SpringContextHelper.getBean(MemberAccountService.class).save(memberAccount);
+		SpringContextHelper.getBean(MemberAccountLogService.class).save(memberAccountLog);
+		
+		return "success";
+	}
 }

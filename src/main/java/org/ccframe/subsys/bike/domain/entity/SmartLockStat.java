@@ -52,6 +52,16 @@ public class SmartLockStat implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
+	@Override
+	public String toString() {
+		return "SmartLockStat [smartLockStatId=" + smartLockStatId
+				+ ", smartLockId=" + smartLockId + ", orgId=" + orgId
+				+ ", lockBattery=" + lockBattery + ", lockLng=" + lockLng
+				+ ", lockLat=" + lockLat + ", ifRepairIng=" + ifRepairIng
+				+ ", lockSwitchStatCode=" + lockSwitchStatCode
+				+ ", lastLocationUpdTime=" + lastLocationUpdTime + "]";
+	}
+
 	//columns START
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

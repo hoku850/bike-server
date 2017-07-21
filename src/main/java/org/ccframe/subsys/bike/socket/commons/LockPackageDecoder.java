@@ -7,7 +7,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
-import org.apache.commons.codec.binary.Hex;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.CRC16Util;
 import org.ccframe.subsys.bike.domain.code.BykeTypeCodeEnum;
@@ -103,12 +102,12 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			System.out.println("decode map  -> " + requestPackage.getDataBlockMap());
 			
 			//TODO 测试encode
-			byte[] encodeDataBlock = DataBlockEncodeUtil.encodeDataBlock(dataBlock);
-			System.out.println("encode      -> " + Hex.encodeHexString(encodeDataBlock));
-			System.out.println("encode map  -> " + DataBlockEncodeUtil.decodeDataBlock(encodeDataBlock));
+//			byte[] encodeDataBlock = DataBlockEncodeUtil.encodeDataBlock(dataBlock);
+//			System.out.println("encode      -> " + Hex.encodeHexString(encodeDataBlock));
+//			System.out.println("encode map  -> " + DataBlockEncodeUtil.decodeDataBlock(encodeDataBlock));
 			
 			//检查连接，如果没有则放入到channel池
-			SmartLockChannelUtil.checkAndRegisterChannel(requestPackage.getLockerHardwareCode(), ctx.channel());
+//			SmartLockChannelUtil.checkAndRegisterChannel(requestPackage.getLockerHardwareCode(), ctx.channel());
 
 			Map<DataBlockTypeEnum, Object> responseDataMap = null;
 			AnswerFlagEnum answerFlagEnum = AnswerFlagEnum.SUCCESS; //默认是成功
@@ -161,6 +160,8 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			ctx.channel().write(NettyServerProcessor.BOUND_DELIMITER.array());
 			ctx.channel().write(responseStream.toByteArray());		
 			ctx.channel().write(NettyServerProcessor.BOUND_DELIMITER.array());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

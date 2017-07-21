@@ -100,7 +100,7 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 		}
 		boolQueryBuilder.must(rangeQuerybuilder);
 		if(StringUtils.isNotBlank(smartLockGrant.getBikePlateNumberPrefixText())){
-			PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery(SmartLock.BIKE_PLATE_NUMBER, smartLockGrant.getBikePlateNumberPrefixText());
+			PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery(SmartLock.BIKE_PLATE_NUMBER, smartLockGrant.getBikePlateNumberPrefixText().toLowerCase());
 			boolQueryBuilder.must(prefixQueryBuilder);
 		}
 		Page<SmartLock> smartLockPage = this.getRepository().search(boolQueryBuilder, null);
@@ -111,7 +111,9 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 			smartLock.setSmartLockStatCode(SmartLockStatCodeEnum.GRANTED.toCode());
 			smartLock.setOrgId(smartLockGrant.getOrgId());
 			smartLock.setBikeTypeId(smartLockGrant.getBikeTypeId());
-			SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
+			if(smartLock != null){
+				SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
+			}
 
 			Agent org = SpringContextHelper.getBean(AgentService.class).getById(smartLockGrant.getOrgId());
 			smartLockGrantDto.setOrgNm(org.getAgentNm());

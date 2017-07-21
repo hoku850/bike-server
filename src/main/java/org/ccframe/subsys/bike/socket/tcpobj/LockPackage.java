@@ -32,10 +32,10 @@ public class LockPackage {
 	@Override
 	public String toString() {
 		return "LockPackage [type=" + type + ", version=" + version
-				+ ", lockId=" + lockerHardwareCode + ", bykeTypeCodeEnum="
-				+ bykeTypeCodeEnum + ", commandFlagEnum=" + commandFlagEnum
-				+ ", answerFlagEnum=" + answerFlagEnum + ", dataBlockMap="
-				+ dataBlockMap + "]";
+				+ ", lockerHardwareCode=" + lockerHardwareCode
+				+ ", bykeTypeCodeEnum=" + bykeTypeCodeEnum
+				+ ", commandFlagEnum=" + commandFlagEnum + ", answerFlagEnum="
+				+ answerFlagEnum + ", dataBlockMap=" + dataBlockMap + "]";
 	}
 
 	public byte getType() {

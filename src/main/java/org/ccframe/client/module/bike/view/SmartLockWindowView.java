@@ -156,7 +156,6 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 //		}
 		
 		orgId.reset();
-//		bikeTypeId.setExtraParam(orgId.getValue().toString());
 		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
 		if(smartLockId == null){
 			FormPanelHelper.reset(vBoxLayoutContainer);

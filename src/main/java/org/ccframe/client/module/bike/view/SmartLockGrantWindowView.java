@@ -94,6 +94,14 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 				}
 			}
 		});
+		orgId.setAfterAsyncReset(new Runnable(){
+
+			@Override
+			public void run() {
+				bikeTypeId.setExtraParam(orgId.getValue().toString());
+				bikeTypeId.reset();
+			}
+		});
 		orgId.addValueChangeHandler(new ValueChangeHandler<Integer>(){
 
 			@Override
@@ -103,8 +111,8 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 			}
 			
 		});
-		orgId.reset();
-		bikeTypeId.reset();
+//		orgId.reset();
+//		bikeTypeId.reset();
 		return widget;
 	}
 
@@ -113,7 +121,7 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
 		// 重置下拉框
 		orgId.reset();
-		bikeTypeId.reset();
+//		bikeTypeId.reset();
 		FormPanelHelper.reset(vBoxLayoutContainer);
 		vBoxLayoutContainer.forceLayout();
 	}

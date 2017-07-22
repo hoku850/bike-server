@@ -36,22 +36,22 @@ public class OrderPayController {
 	@RequestMapping(value = "getPayData")
 	@ResponseBody
 	public Map<String, String> getPayData(Integer orderId) {
-		System.out.println("test");
-//		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-//		return SpringContextHelper.getBean(CyclingOrderSearchService.class).getOrderPayDetail(user.getLoginId());		
+//		System.out.println("test");
+		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+		return SpringContextHelper.getBean(CyclingOrderSearchService.class).getOrderPayDetail(user.getLoginId());		
 		//测试用，正式使用时解除以上2注释并注释以下2语句
-		String loginId = "18813299774";
+//		String loginId = "18813299774";
 		
-		return SpringContextHelper.getBean(CyclingOrderSearchService.class).getOrderPayDetail(loginId);
+//		return SpringContextHelper.getBean(CyclingOrderSearchService.class).getOrderPayDetail(loginId);
 	}
 	
 	@RequestMapping(value = "orderPaySubmit")
 	@ResponseBody
 	public String orderPaySubmit(Integer orderId) {
-//		String loginIdString = ((User) WebContextHolder.getSessionContextStore()
-//				.getServerValue(Global.SESSION_LOGIN_MEMBER_USER)).getLoginId();
+		String loginId= ((User) WebContextHolder.getSessionContextStore()
+				.getServerValue(Global.SESSION_LOGIN_MEMBER_USER)).getLoginId();
 		//测试用，正式使用时解除以上2注释并注释以下1语句
-		String loginId = "18813299774";
+//		String loginId = "18813299774";
 		
 		
 		return SpringContextHelper.getBean(CyclingOrderService.class).orderPay(orderId, loginId);

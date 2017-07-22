@@ -28,7 +28,7 @@
 			
 			<cc:child layoutData="{vBoxLayoutData}">
 				<g:HorizontalPanel>
-					<form:Radio ui:field="LockerHardwareCodeScope" boxLabel="硬件码范围"/>
+					<form:Radio ui:field="LockerHardwareCodeScope" boxLabel="硬件码范围" />
 					<cc:CcTextField ui:field="startLockerHardwareCode" width="80"  allowBlank="true"/>
 					<cc:CcTextLabel text="至"/>
 					<cc:CcTextField ui:field="endLockerHardwareCode" width="80"  allowBlank="true"/>

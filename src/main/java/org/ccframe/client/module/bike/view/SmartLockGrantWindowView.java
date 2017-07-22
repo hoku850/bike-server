@@ -77,20 +77,25 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 		Widget widget = uiBinder.createAndBindUi(this);
 		toggle.add(LockerHardwareCodeScope);
 		toggle.add(bikePlateNumberPrefix);
+		LockerHardwareCodeScope.setValue(true);
+		bikePlateNumberPrefixText.disable();
+//		bikePlateNumberPrefixText.setValue("");
+		startLockerHardwareCode.enable();
+		endLockerHardwareCode.enable();
 		toggle.addValueChangeHandler(new ValueChangeHandler<HasValue<Boolean>>(){
 			@Override
 			public void onValueChange(ValueChangeEvent<HasValue<Boolean>> event) {
 				if(LockerHardwareCodeScope.getValue()==true){
+//					bikePlateNumberPrefixText.setValue("");
 					bikePlateNumberPrefixText.disable();
-					bikePlateNumberPrefixText.setValue(null);
 					startLockerHardwareCode.enable();
 					endLockerHardwareCode.enable();
 				}else{
 					bikePlateNumberPrefixText.enable();
+//					startLockerHardwareCode.setValue("");
+//					endLockerHardwareCode.setValue("");
 					startLockerHardwareCode.disable();
 					endLockerHardwareCode.disable();
-					startLockerHardwareCode.setValue(null);
-					endLockerHardwareCode.setValue(null);
 				}
 			}
 		});
@@ -111,8 +116,6 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 			}
 			
 		});
-//		orgId.reset();
-//		bikeTypeId.reset();
 		return widget;
 	}
 
@@ -121,7 +124,6 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
 		// 重置下拉框
 		orgId.reset();
-//		bikeTypeId.reset();
 		FormPanelHelper.reset(vBoxLayoutContainer);
 		vBoxLayoutContainer.forceLayout();
 	}
@@ -140,7 +142,7 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 			smartLockGrant.setOrgId(orgId.getValue());
 			smartLockGrant.setBikeTypeId(bikeTypeId.getValue());
 			final TextButton button = ((TextButton)(e.getSource()));
-			button.disable();
+//			button.disable();
 			
 			ClientManager.getSmartLockGrantClient().grantSearch(smartLockGrant, new RestCallback<Long>(){
 				
@@ -162,9 +164,14 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 								protected void afterFailure(){ //如果采用按钮的disable逻辑，一定要在此方法enable按钮
 									button.enable();
 								}
+								
 							});
 						}
 					});
+				}
+				@Override
+				protected void afterFailure(){ //如果采用按钮的disable逻辑，一定要在此方法enable按钮
+					button.enable();
 				}
 				
 			});

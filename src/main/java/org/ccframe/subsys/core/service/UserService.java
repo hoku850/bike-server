@@ -546,6 +546,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 		 String flag = httpRequest.getParameter("flag");
 		 if(flag!=null && flag.equals("onCreate")) {
 			 return "first";
+			 //return "";
 		 }
 		
 		return state;

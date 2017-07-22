@@ -13,7 +13,6 @@ import java.util.UUID;
 
 import org.ccframe.client.Global;
 import org.ccframe.client.commons.UtilDateTimeClient;
-import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.commons.base.BaseService;
 import org.ccframe.commons.data.ListExcelWriter;
 import org.ccframe.commons.helper.SpringContextHelper;
@@ -25,8 +24,6 @@ import org.ccframe.sdk.bike.utils.PositionUtil;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
-import org.ccframe.subsys.bike.domain.entity.CyclingTrajectoryRecord;
-import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
 import org.ccframe.subsys.bike.repository.CyclingOrderRepository;
 import org.ccframe.subsys.core.domain.entity.MemberAccount;
@@ -35,16 +32,9 @@ import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.MemberAccountLogService;
 import org.ccframe.subsys.core.service.MemberAccountService;
 import org.ccframe.subsys.core.service.UserService;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.google.gwt.dev.jjs.Correlation.Literal;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 @Service
 public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Integer, CyclingOrderRepository>{

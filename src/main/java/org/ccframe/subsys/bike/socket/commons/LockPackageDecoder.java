@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Hex;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.CRC16Util;
 import org.ccframe.subsys.bike.domain.code.BykeTypeCodeEnum;
@@ -58,12 +59,12 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 		byte[] packageData = byteEscapeHelper.unescapeBytes(msg);
 		
 		//CRC16Util检测CRC是否正确
-		int expectCrcValue = (short)(((packageData[packageData.length - 2]) & 0xff) + ((packageData[packageData.length - 1]) << 8));
-		int crcValue = CRC16Util.crc16(packageData, packageData.length - 2);
-		if(crcValue != expectCrcValue){
-			logger.error("CRC Error! Expected: {}, CRC Value: {}", expectCrcValue, crcValue);
-			return; //TODO FIX CRC错，要返回包请求重发
-		}
+//		int expectCrcValue = (short)(((packageData[packageData.length - 2]) & 0xff) + ((packageData[packageData.length - 1]) << 8));
+//		int crcValue = CRC16Util.crc16(packageData, packageData.length - 2);
+//		if(crcValue != expectCrcValue){
+//			logger.error("CRC Error! Expected: {}, CRC Value: {}", expectCrcValue, crcValue);
+//			return; //TODO FIX CRC错，要返回包请求重发
+//		}
 
 		try (
 			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(packageData);
@@ -102,9 +103,9 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			System.out.println("decode map  -> " + requestPackage.getDataBlockMap());
 			
 			//TODO 测试encode
-//			byte[] encodeDataBlock = DataBlockEncodeUtil.encodeDataBlock(dataBlock);
-//			System.out.println("encode      -> " + Hex.encodeHexString(encodeDataBlock));
-//			System.out.println("encode map  -> " + DataBlockEncodeUtil.decodeDataBlock(encodeDataBlock));
+			byte[] encodeDataBlock = DataBlockEncodeUtil.encodeDataBlock(dataBlock);
+			System.out.println("encode      -> " + Hex.encodeHexString(encodeDataBlock));
+			System.out.println("encode map  -> " + DataBlockEncodeUtil.decodeDataBlock(encodeDataBlock));
 			
 			//检查连接，如果没有则放入到channel池
 //			SmartLockChannelUtil.checkAndRegisterChannel(requestPackage.getLockerHardwareCode(), ctx.channel());

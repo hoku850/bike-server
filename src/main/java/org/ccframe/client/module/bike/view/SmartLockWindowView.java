@@ -78,9 +78,6 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 			if(bikePlateNumber.getValue()==null){
 				bikePlateNumber.setValue("");
 			}
-			if(bikeTypeId.getValue()==null){
-				bikeTypeId.setValue(60000);
-			}
 			final TextButton button = ((TextButton)(e.getSource()));
 			button.disable();
 

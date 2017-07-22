@@ -9,13 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AgentAppService extends BaseService<AgentApp,java.lang.Integer, AgentAppRepository> {
+	
 	@Transactional
 	public void saveOrUpdateAgentApp(AgentApp agentApp) {
 		SpringContextHelper.getBean(AgentAppService.class).save(agentApp);
-	}
-	
-	@Transactional
-	public void myDeleteById(Integer agentAppId) {
-		deleteById(agentAppId);
 	}
 }

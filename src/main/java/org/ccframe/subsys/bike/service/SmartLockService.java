@@ -28,15 +28,13 @@ import org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
-import org.ccframe.subsys.bike.dto.SmartLockImportData;
 import org.ccframe.subsys.bike.dto.SmartLockRowDto;
 import org.ccframe.subsys.bike.repository.SmartLockRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, SmartLockRepository>
-		implements BatchImportSupport<SmartLockRowDto> {
+public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, SmartLockRepository> implements BatchImportSupport<SmartLockRowDto> {
 
 	private static final String SMART_LOCK_IMPORT_TEMPLATE_FILE_NAME = "smartLockImport.xls";
 

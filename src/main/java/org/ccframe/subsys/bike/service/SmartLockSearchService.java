@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ccframe.client.commons.ClientPage;
-import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
@@ -13,6 +12,7 @@ import org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
+import org.ccframe.subsys.bike.domain.entity.SmartLockStat;
 import org.ccframe.subsys.bike.dto.SmartLockGrant;
 import org.ccframe.subsys.bike.dto.SmartLockGrantDto;
 import org.ccframe.subsys.bike.dto.SmartLockListReq;
@@ -27,7 +27,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer, SmartLockSearchRepository>{
@@ -81,8 +80,12 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 			PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery(SmartLock.BIKE_PLATE_NUMBER, smartLockGrant.getBikePlateNumberPrefixText());
 			boolQueryBuilder.must(prefixQueryBuilder);
 		}
+		boolQueryBuilder.mustNot(QueryBuilders.termQuery(SmartLock.SMART_LOCK_STAT_CODE, SmartLockStatCodeEnum.UNPRODUCE.toCode()));
 		Page<SmartLock> smartLockPage = this.getRepository().search(boolQueryBuilder, null);
-		long totalLock = smartLockPage.getTotalElements();
+		long totalLock = 0;
+		if(smartLockPage != null){
+			totalLock = smartLockPage.getTotalElements();
+		}
 		return totalLock;
 	}
 	
@@ -103,6 +106,8 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 			PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery(SmartLock.BIKE_PLATE_NUMBER, smartLockGrant.getBikePlateNumberPrefixText().toLowerCase());
 			boolQueryBuilder.must(prefixQueryBuilder);
 		}
+		boolQueryBuilder.mustNot(QueryBuilders.termQuery(SmartLock.SMART_LOCK_STAT_CODE, SmartLockStatCodeEnum.GRANTED.toCode()));
+		
 		Page<SmartLock> smartLockPage = this.getRepository().search(boolQueryBuilder, null);
 		smartLockGrantDto.setTotalLock(smartLockPage.getTotalElements());
 		
@@ -113,6 +118,17 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 			smartLock.setBikeTypeId(smartLockGrant.getBikeTypeId());
 			if(smartLock != null){
 				SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
+				
+				SmartLockStat smartLockStat = new SmartLockStat();
+				smartLockStat.setSmartLockId(smartLock.getSmartLockId());
+				smartLockStat.setOrgId(smartLock.getOrgId());
+				smartLockStat.setLockLng(39.54);
+				smartLockStat.setLockLat(116.23);
+//				smartLockStat.setLockBattery(lockLng);
+				smartLockStat.setLockSwitchStatCode("0");
+				smartLockStat.setIfRepairIng("N");
+//				smartLockStat.setLastLocationUpdTime(lockLng);
+				SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
 			}
 
 			Agent org = SpringContextHelper.getBean(AgentService.class).getById(smartLockGrant.getOrgId());

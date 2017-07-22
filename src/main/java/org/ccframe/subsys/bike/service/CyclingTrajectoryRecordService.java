@@ -1,22 +1,20 @@
 package org.ccframe.subsys.bike.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
+import org.ccframe.client.Global;
+import org.ccframe.commons.base.BaseService;
+import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.commons.util.WebContextHolder;
 import org.ccframe.sdk.bike.dto.Position;
 import org.ccframe.sdk.bike.utils.PositionUtil;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.domain.entity.CyclingTrajectoryRecord;
 import org.ccframe.subsys.bike.repository.CyclingTrajectoryRecordRepository;
 import org.ccframe.subsys.core.domain.entity.User;
-import org.ccframe.client.Global;
-import org.ccframe.commons.base.BaseService;
-import org.ccframe.commons.helper.SpringContextHelper;
-import org.ccframe.commons.util.WebContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CyclingTrajectoryRecordService extends BaseService<CyclingTrajectoryRecord,java.lang.Integer, CyclingTrajectoryRecordRepository>{

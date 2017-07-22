@@ -26,7 +26,7 @@ public class AgentAppController{
 
 	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.DELETE)
 	public void delete(@PathVariable(Global.ID_BINDER_ID) java.lang.Integer agentAppId){
-		SpringContextHelper.getBean(AgentAppService.class).myDeleteById(agentAppId);
+		SpringContextHelper.getBean(AgentAppService.class).deleteById(agentAppId);
 	}
 
 	@RequestMapping(value = ControllerMapping.AGENT_APP_LIST, method = RequestMethod.POST)

@@ -25,9 +25,9 @@ public class IndexMenuController {
 	@RequestMapping(value = "getMenuData")
 	@ResponseBody
 	public Map<String, String> gerMenuData(Integer orgId){
-//		User user = (User)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-		User user = new User();
-		user.setUserId(50005);
+		User user = (User)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+//		User user = new User();
+//		user.setUserId(50005);
 		
 		return SpringContextHelper.getBean(CyclingOrderService.class).getMenuData(user, orgId);
 	}

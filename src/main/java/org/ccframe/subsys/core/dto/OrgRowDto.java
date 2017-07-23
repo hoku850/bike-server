@@ -1,8 +1,8 @@
-package org.ccframe.subsys.bike.dto;
+package org.ccframe.subsys.core.dto;
 
-import org.ccframe.subsys.bike.domain.entity.Agent;
+import org.ccframe.subsys.core.domain.entity.Org;
 
-public class AgentRowDto extends Agent {
+public class OrgRowDto extends Org {
 
 	/**
 	 * 

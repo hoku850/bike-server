@@ -19,6 +19,21 @@ import org.ccframe.subsys.bike.socket.tcpobj.DataBlockTypeEnum;
 
 public class DataBlockEncodeUtil {
 	
+	private static final int HEAD_LENGTH = 3;
+	
+	private static final byte ONE_BYTES_HEAD_LENGTH = 0x04;
+	private static final byte FOUR_BYTES_HEAD_LENGTH = 0x07;
+	private static final byte SIX_BYTES_HEAD_LENGTH = 0x09;
+	private static final byte TWENTY_BYTES_HEAD_LENGTH = 0x17;
+	private static final byte TIME_HEAD_LENGHT = 0x0A;
+	
+	private static final String TIME_FORMAT = "yyyyMMddHHmmss";//小写的mm表示的是分钟
+	
+	private static final String NORTH = "N";
+	private static final String SOUTH = "S";
+	private static final String EAST = "E";
+	private static final String WEST = "W";
+	
 	private DataBlockEncodeUtil(){}
 	
 	public static Map<DataBlockTypeEnum, Object> decodeDataBlock(byte[] dataBuff) throws IOException, DecoderException, ParseException{
@@ -57,7 +72,7 @@ public class DataBlockEncodeUtil {
 					
 					// String
 					case LOCK_MAC:
-						stringBuf = new byte[size - 3];
+						stringBuf = new byte[size - HEAD_LENGTH];
 						dataInputStream.read(stringBuf);
 						dataBlockMap.put(dataBlockTypeEnum, Hex.encodeHexString(stringBuf));
 						break;
@@ -65,7 +80,7 @@ public class DataBlockEncodeUtil {
 					// String 去NUL
 					case IMSI:
 					case SOFTWARE_VERSION:
-						stringBuf = new byte[size - 3];
+						stringBuf = new byte[size - HEAD_LENGTH];
 						dataInputStream.read(stringBuf);
 						String softwareVersion = new String(stringBuf);
 //						softwareVersion = softwareVersion.substring(0, softwareVersion.lastIndexOf("0")+1);
@@ -75,22 +90,22 @@ public class DataBlockEncodeUtil {
 					
 					// Date
 					case SYS_TIME:
-						stringBuf = new byte[size - 3];
+						stringBuf = new byte[size - HEAD_LENGTH];
 						dataInputStream.read(stringBuf);
-						SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddhhmmss");//小写的mm表示的是分钟
+						SimpleDateFormat sdf=new SimpleDateFormat(TIME_FORMAT);
 						dataBlockMap.put(dataBlockTypeEnum, sdf.parse(Hex.encodeHexString(stringBuf)));
 						break;
 						
 					// Double
 					case LOCK_LNG:
 					case LOCK_LAT:
-						stringBuf = new byte[size - 3];
+						stringBuf = new byte[size - HEAD_LENGTH];
 						dataInputStream.read(stringBuf);
 						String latLng = new String(stringBuf);
-						if (latLng.charAt(0) == 'N' || latLng.charAt(0) == 'E') {
+						if (latLng.charAt(0) == NORTH.charAt(0) || latLng.charAt(0) == EAST.charAt(0)) {
 							latLng = latLng.replace(latLng.charAt(0), '+');
 						}
-						if (latLng.charAt(0) == 'S' || latLng.charAt(0) == 'W') {
+						if (latLng.charAt(0) == SOUTH.charAt(0) || latLng.charAt(0) == WEST.charAt(0)) {
 							latLng = latLng.replace(latLng.charAt(0), '-');
 						}
 						latLng = trimnull(latLng);
@@ -124,7 +139,7 @@ public class DataBlockEncodeUtil {
 			case CPRS_SATELLITE_NUM:
 			case GPS_REPORT_TYPE:
 			case UPGRADE:
-				dataOutputStream.write((byte)0x04);
+				dataOutputStream.write(ONE_BYTES_HEAD_LENGTH);
 				dataOutputStream.writeShortReverse(entry.getKey().toValue());
 				dataOutputStream.write((byte)dataBlockMap.get(entry.getKey()));
 				break;
@@ -133,7 +148,7 @@ public class DataBlockEncodeUtil {
 			case USER_ID:
 			case WARN_INFO:
 			case UNLOCK_TIME_DURATION:
-				dataOutputStream.write((byte)0x07);
+				dataOutputStream.write(FOUR_BYTES_HEAD_LENGTH);
 				dataOutputStream.writeShortReverse(entry.getKey().toValue());
 				dataOutputStream.writeIntReverse((int)dataBlockMap.get(entry.getKey()));
 				break;
@@ -141,7 +156,7 @@ public class DataBlockEncodeUtil {
 			// String
 			case LOCK_MAC:
 				String info = (String)dataBlockMap.get(entry.getKey());
-				dataOutputStream.write((byte)( info.length()/2 + 3 ));
+				dataOutputStream.write(SIX_BYTES_HEAD_LENGTH);
 				dataOutputStream.writeShortReverse(entry.getKey().toValue());
 				dataOutputStream.write(Hex.decodeHex(info.toCharArray()));
 				break;
@@ -150,16 +165,16 @@ public class DataBlockEncodeUtil {
 			case IMSI:
 			case SOFTWARE_VERSION:
 				String softwareVersion = (String) dataBlockMap.get(entry.getKey());
-				dataOutputStream.write((byte)0x17);
+				dataOutputStream.write(TWENTY_BYTES_HEAD_LENGTH);
 				dataOutputStream.writeShortReverse(entry.getKey().toValue());
 				dataOutputStream.write(Arrays.copyOf(softwareVersion.getBytes(), 20));
 				break;
 			
 			// Date
 			case SYS_TIME:
-				SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddhhmmss");//小写的mm表示的是分钟
+				SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT);
 				String time = sdf.format((Date)dataBlockMap.get(entry.getKey()));
-				dataOutputStream.write((byte)( time.length()/2 + 3 ));
+				dataOutputStream.write(TIME_HEAD_LENGHT);
 				dataOutputStream.writeShortReverse(entry.getKey().toValue());
 				dataOutputStream.write(Hex.decodeHex(time.toCharArray()));
 				break;
@@ -170,12 +185,12 @@ public class DataBlockEncodeUtil {
 				Double d = (Double)dataBlockMap.get(entry.getKey());
 				String latLng = null;
 				if (entry.getKey() == DataBlockTypeEnum.LOCK_LAT) {
-					latLng = d >= 0 ? ("N" + d) : ("S" + d);
+					latLng = d >= 0 ? (NORTH + d) : (SOUTH + d);
 				}
 				if (entry.getKey() == DataBlockTypeEnum.LOCK_LNG) {
-					latLng = d >= 0 ? ("E" + d) : ("W" + d);
+					latLng = d >= 0 ? (EAST + d) : (WEST + d);
 				}
-				dataOutputStream.write((byte)0x17);
+				dataOutputStream.write(TWENTY_BYTES_HEAD_LENGTH);
 				dataOutputStream.writeShortReverse(entry.getKey().toValue());
 				dataOutputStream.write(Arrays.copyOf(latLng.getBytes(), 20));
 				break;
@@ -187,7 +202,7 @@ public class DataBlockEncodeUtil {
 	}
 
 	/**
-	 * 去除字符串中的null域
+	 * 去除字符串中的NUL域（'口'字）
 	 * 
 	 * @param string
 	 * @return

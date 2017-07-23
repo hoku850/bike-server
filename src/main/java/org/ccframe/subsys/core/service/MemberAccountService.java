@@ -47,12 +47,13 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 		
 		// 账户表
 		BeanUtils.copyProperties(memberAccountRowDto, memberAccount);
-		BigDecimal oldValue = new BigDecimal(Double.toString(memberAccountRowDto.getAccountValue()));
-		BigDecimal changeValue = new BigDecimal(Double.toString(memberAccountRowDto.getChangeValue()));
+//		BigDecimal oldValue = new BigDecimal(memberAccountRowDto.getAccountValue());
+//		BigDecimal changeValue = new BigDecimal(memberAccountRowDto.getChangeValue());
+//		BigDecimalUtil.add(memberAccountRowDto.getAccountValue(), memberAccountRowDto.getChangeValue()).doubleValue();
 		if (ChargeOperateCodeEnum.RECHARGE == chargeOperateCodeEnum) {
-			memberAccount.setAccountValue(oldValue.add(changeValue).doubleValue());
+			memberAccount.setAccountValue(BigDecimalUtil.add(memberAccountRowDto.getAccountValue(), memberAccountRowDto.getChangeValue()).doubleValue());
 		} else {
-			memberAccount.setAccountValue(oldValue.subtract(changeValue).doubleValue());
+			memberAccount.setAccountValue(BigDecimalUtil.subtract(memberAccountRowDto.getAccountValue(), memberAccountRowDto.getChangeValue()).doubleValue());
 		}
 		SpringContextHelper.getBean(MemberAccountService.class).save(memberAccount);
 		
@@ -79,10 +80,10 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 		memberAccountLog.setMemberAccountId(memberAccountRowDto.getUserId());
 		memberAccountLog.setPrevValue(memberAccountRowDto.getAccountValue());
 		if (ChargeOperateCodeEnum.RECHARGE == chargeOperateCodeEnum) {
-			memberAccountLog.setAfterValue(oldValue.add(changeValue).doubleValue());
+			memberAccountLog.setAfterValue(BigDecimalUtil.add(memberAccountRowDto.getAccountValue(), memberAccountRowDto.getChangeValue()).doubleValue());
 			memberAccountLog.setChangeValue(memberAccountRowDto.getChangeValue());
 		} else {
-			memberAccountLog.setAfterValue(oldValue.subtract(changeValue).doubleValue());
+			memberAccountLog.setAfterValue(BigDecimalUtil.subtract(memberAccountRowDto.getAccountValue(), memberAccountRowDto.getChangeValue()).doubleValue());
 			memberAccountLog.setChangeValue(0 - memberAccountRowDto.getChangeValue());
 		}
 		memberAccountLog.setSysTime(new Date());

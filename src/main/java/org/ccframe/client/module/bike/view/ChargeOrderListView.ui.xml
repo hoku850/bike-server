@@ -44,7 +44,7 @@
 			<toolbar:ToolBar borders="true">
 				<g:Label text="充值订单"/>
 				<button:TextButton text="导 出" ui:field="exportButton" />
-				<cc:CcLabelValueCombobox ui:field="orgNm" width="120" searchAllText="全部运营商" defaultValue="0" beanName="agentService"/>
+				<cc:CcLabelValueCombobox ui:field="orgNm" width="120" searchAllText="全部运营商" defaultValue="0" beanName="orgService"/>
 				<cc:CcEnumCombobox ui:field="chargeState" width="135" searchAllText="全部状态" default="{UNPAID}" enumTexts="待支付,充值成功,充值失败,退款中,退款成功,退款失败" />
 				<cc:CcEnumCombobox ui:field="payState" width="135" searchAllText="全部支付类型" default="{ALIPAY}" enumTexts="支付宝,微信,中国银联" />
 				<toolbar:FillToolItem />
@@ -57,7 +57,7 @@
 			<grid:Grid ui:field="grid" store="{store}" cm="{columnModel}" view="{view}" loader="{loader}" borders="true" height="400"/>
 		</container:child>
 		<container:child layoutData="{pagingRow}">
-			<toolbar:PagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
+			<cc:CcPagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
 		</container:child>
 
 	</container:VerticalLayoutContainer>

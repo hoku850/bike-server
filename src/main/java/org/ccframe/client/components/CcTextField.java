@@ -1,9 +1,16 @@
 package org.ccframe.client.components;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.InputElement;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.form.validator.MinLengthValidator;
 
+/**
+ * 支持原生maxlength设置的文本输出框.
+ * @author JIM
+ *
+ */
 public class CcTextField extends TextField{
 
 	private Integer maxLength;
@@ -19,9 +26,25 @@ public class CcTextField extends TextField{
 	@Override
 	public void setValue(String value){
 		super.setValue(value);
-		if(this.isRendered()){
-			InputElement ie = getCell().getAppearance().getInputElement(getElement()).cast();
-			ie.setMaxLength(maxLength);
-		}
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				InputElement ie = getCell().getAppearance().getInputElement(getElement()).cast();
+				ie.setMaxLength(maxLength);
+			}
+		});
 	}
+
+	@Override
+	public void reset(){
+		super.reset();
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				InputElement ie = getCell().getAppearance().getInputElement(getElement()).cast();
+				ie.setMaxLength(maxLength);
+			}
+		});
+	}
+	
 }

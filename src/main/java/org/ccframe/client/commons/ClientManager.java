@@ -3,7 +3,7 @@ package org.ccframe.client.commons;
 import org.ccframe.client.service.AdminRoleClient;
 import org.ccframe.client.service.AdminUserClient;
 import org.ccframe.client.service.AgentAppClient;
-import org.ccframe.client.service.AgentClient;
+import org.ccframe.client.service.OrgClient;
 import org.ccframe.client.service.ArticleInfClient;
 import org.ccframe.client.service.BikeTypeClient;
 import org.ccframe.client.service.CacheInfClient;
@@ -173,11 +173,11 @@ public class ClientManager {
 		return memberAccountLogClient;
 	}
 	
-	private static AgentClient agentClient;
-	public static AgentClient getAgentClient() {
-		if (agentClient == null) {
-			agentClient = GWT.create(AgentClient.class);
+	private static OrgClient orgClient;
+	public static OrgClient getOrgClient() {
+		if (orgClient == null) {
+			orgClient = GWT.create(OrgClient.class);
 		}
-		return agentClient;
+		return orgClient;
 	}
 }

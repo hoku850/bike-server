@@ -14,10 +14,12 @@ import org.ccframe.client.commons.RestyGwtPagingLoader;
 import org.ccframe.client.commons.RestyGwtPagingLoader.CallBack;
 import org.ccframe.client.module.bike.event.MemberAccountSelectEvent;
 import org.ccframe.client.module.core.view.MainFrame;
-import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.core.domain.entity.MemberAccount;
+import org.ccframe.subsys.core.domain.entity.Org;
+import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.dto.MemberAccountLogListReq;
 import org.ccframe.subsys.core.dto.MemberAccountLogRowDto;
+import org.ccframe.subsys.core.dto.OrgDto;
 import org.fusesource.restygwt.client.Method;
 
 import com.google.gwt.core.client.GWT;
@@ -69,11 +71,11 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 	protected void initColumnConfig(List<ColumnConfig<MemberAccountLogRowDto, ?>> configList) {
 		MemberAccountLogProperties props = GWT.create(MemberAccountLogProperties.class);
 		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.sysTimeStr(), 130, "交易时间", HasHorizontalAlignment.ALIGN_CENTER, true));
-		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.prevValue(), 40, "交易前", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.changeValue(), 60, "交易预存款", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.afterValue(), 40, "交易后", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.reason(), 250, "变更原因", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.operationMan(), 80, "操作员", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.prevValue(), 65, "交易前", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.changeValue(), 90, "交易预存款", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.afterValue(), 65, "交易后", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.reason(), 260, "变更原因", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.operationMan(), 60, "操作员", HasHorizontalAlignment.ALIGN_CENTER, false));
 	}
 	
 	@Override
@@ -101,19 +103,27 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 
 			@Override
 			public void action(MemberAccountSelectEvent event) {
-				MemberAccount mAccount = event.getObject();
+				final MemberAccount mAccount = event.getObject();
 				if (mAccount != null) {
 					userId = mAccount.getUserId();
 					loader.load();
-					// 总平台登陆
-					if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
-						ClientManager.getAgentClient().getById(mAccount.getOrgId(), new RestCallback<Agent>() {
-							@Override
-							public void onSuccess(Method method, Agent response) {
-								title.setText("账户交易日志(" + response.getAgentNm() + "预存款)");
+					ClientManager.getAdminUserClient().getById(userId, new RestCallback<User>() {
+						@Override
+						public void onSuccess(Method method, User response) {
+							// 改变title的值
+							title.setText(response.getUserNm() + "账户交易日志");
+							
+							// 总平台登陆
+							if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
+								ClientManager.getOrgClient().getById(mAccount.getOrgId(), new RestCallback<OrgDto>() {
+									@Override
+									public void onSuccess(Method method, OrgDto response) {
+										title.setText(title.getText() +  "(" + response.getOrgNm() + "预存款)");
+									}
+								});
 							}
-						});
-					}
+						}
+					});
 				}
 			}
 		});

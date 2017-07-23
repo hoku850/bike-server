@@ -8,8 +8,8 @@ import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.subsys.bike.domain.code.LockSwitchStatCodeEnum;
 import org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum;
-import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.domain.entity.SmartLockStat;
@@ -18,6 +18,9 @@ import org.ccframe.subsys.bike.dto.SmartLockGrantDto;
 import org.ccframe.subsys.bike.dto.SmartLockListReq;
 import org.ccframe.subsys.bike.dto.SmartLockRowDto;
 import org.ccframe.subsys.bike.search.SmartLockSearchRepository;
+import org.ccframe.subsys.core.domain.code.BoolCodeEnum;
+import org.ccframe.subsys.core.domain.entity.Org;
+import org.ccframe.subsys.core.service.OrgService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.PrefixQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -56,8 +59,8 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 		List<SmartLockRowDto> resultList = new ArrayList<SmartLockRowDto>();
 		for(SmartLock smartLock:smartLockPage.getContent()){
 			SmartLockRowDto rowRecord = new SmartLockRowDto();
-			Agent org = SpringContextHelper.getBean(AgentService.class).getById(smartLock.getOrgId());
-			rowRecord.setOrgNm(org.getAgentNm());
+			Org org = SpringContextHelper.getBean(OrgService.class).getById(smartLock.getOrgId());
+			rowRecord.setOrgNm(org.getOrgNm());
 			BikeType bikeType = SpringContextHelper.getBean(BikeTypeService.class).getById(smartLock.getBikeTypeId());
 			rowRecord.setBikeTypeNm(bikeType.getBikeTypeNm());
 			BeanUtils.copyProperties(smartLock, rowRecord);
@@ -122,17 +125,17 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 				SmartLockStat smartLockStat = new SmartLockStat();
 				smartLockStat.setSmartLockId(smartLock.getSmartLockId());
 				smartLockStat.setOrgId(smartLock.getOrgId());
-				smartLockStat.setLockLng(39.54);
+				smartLockStat.setLockLng(39.54);//天安门经纬度
 				smartLockStat.setLockLat(116.23);
 //				smartLockStat.setLockBattery(lockLng);
-				smartLockStat.setLockSwitchStatCode("0");
-				smartLockStat.setIfRepairIng("N");
+				smartLockStat.setLockSwitchStatCode(LockSwitchStatCodeEnum.NO_USE.toCode());
+				smartLockStat.setIfRepairIng(BoolCodeEnum.NO.toCode());
 //				smartLockStat.setLastLocationUpdTime(lockLng);
 				SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
 			}
 
-			Agent org = SpringContextHelper.getBean(AgentService.class).getById(smartLockGrant.getOrgId());
-			smartLockGrantDto.setOrgNm(org.getAgentNm());
+			Org org = SpringContextHelper.getBean(OrgService.class).getById(smartLockGrant.getOrgId());
+			smartLockGrantDto.setOrgNm(org.getOrgNm());
 		}
 		return smartLockGrantDto;
 	}

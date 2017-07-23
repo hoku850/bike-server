@@ -6,7 +6,9 @@ import java.util.List;
 import com.google.common.primitives.Bytes;
 
 /**
- * 转义编/解码工具
+ * 转义编/解码工具 0x5E， 0x5D 来代替 0x5E, 0x5E， 0x7D 来代替 0x7E
+ * 
+ * TODO: lqz改进算法
  * @author JIM
  *
  */
@@ -63,7 +65,7 @@ public class ByteEscapeHelper {
 			j = 0;
 			isFind = false;
 			for (byte[] esByte : escapedBytesList) {
-				if (escapedBytes[i] == esByte[0] && escapedBytes[i+1] == esByte[1]) {
+				if (escapedBytes[i] == esByte[0] && escapedBytes[i+1] == esByte[1]) { //TODO lqz，写死成了2个规则，不对。
 					returnData.add(originalByteList.get(j));
 					isFind = true;
 					i++; // 跳过下一次判断

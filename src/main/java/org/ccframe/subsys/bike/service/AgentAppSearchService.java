@@ -7,11 +7,12 @@ import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
-import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.AgentApp;
 import org.ccframe.subsys.bike.dto.AgentAppListReq;
 import org.ccframe.subsys.bike.dto.AgentAppRowDto;
 import org.ccframe.subsys.bike.search.AgentAppSearchRepository;
+import org.ccframe.subsys.core.domain.entity.Org;
+import org.ccframe.subsys.core.service.OrgService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.BeanUtils;
@@ -35,8 +36,8 @@ public class AgentAppSearchService extends BaseSearchService<AgentApp, Integer, 
 		for(AgentApp agentApp:agentAppPage.getContent()){
 			AgentAppRowDto rowRecord = new AgentAppRowDto();
 			BeanUtils.copyProperties(agentApp, rowRecord);
-			Agent agent = SpringContextHelper.getBean(AgentService.class).getById(agentApp.getOrgId());
-			rowRecord.setOrgNm(agent.getAgentNm());
+			Org org = SpringContextHelper.getBean(OrgService.class).getById(agentApp.getOrgId());
+			rowRecord.setOrgNm(org.getOrgNm());
 			resultList.add(rowRecord);
 		}
 		return new ClientPage<AgentAppRowDto>((int)agentAppPage.getTotalElements(), offset / limit, limit, resultList);

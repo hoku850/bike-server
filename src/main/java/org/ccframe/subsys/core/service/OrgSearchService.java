@@ -1,4 +1,4 @@
-package org.ccframe.subsys.bike.service;
+package org.ccframe.subsys.core.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +9,14 @@ import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.subsys.bike.domain.code.ChargeOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
-import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
-import org.ccframe.subsys.bike.dto.AgentListReq;
-import org.ccframe.subsys.bike.dto.AgentRowDto;
-import org.ccframe.subsys.bike.search.AgentSearchRepository;
+import org.ccframe.subsys.bike.service.ChargeOrderService;
+import org.ccframe.subsys.bike.service.CyclingOrderService;
+import org.ccframe.subsys.core.domain.entity.Org;
+import org.ccframe.subsys.core.dto.OrgListReq;
+import org.ccframe.subsys.core.dto.OrgRowDto;
+import org.ccframe.subsys.core.search.OrgSearchRepository;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.BeanUtils;
@@ -25,23 +27,23 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class AgentSearchService extends BaseSearchService<Agent, Integer, AgentSearchRepository>{
+public class OrgSearchService extends BaseSearchService<Org, Integer, OrgSearchRepository>{
 
-	public ClientPage<AgentRowDto> findAgentList(AgentListReq agentListReq,	int offset, int limit) {
+	public ClientPage<OrgRowDto> findAgentList(OrgListReq agentListReq,	int offset, int limit) {
 
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		
-		Page<Agent> page = this.getRepository().search(
+		Page<Org> page = this.getRepository().search(
 			boolQueryBuilder,
-			new OffsetBasedPageRequest(offset, limit, new Order(Direction.DESC, Agent.AGENT_ID))
+			new OffsetBasedPageRequest(offset, limit, new Order(Direction.DESC, Org.ORG_ID))
 		);
 
-		List<AgentRowDto> resultList = new ArrayList<AgentRowDto>();
-		for(Agent agent : page.getContent()){
-			AgentRowDto agentRowDto = new AgentRowDto();
-			BeanUtils.copyProperties(agent, agentRowDto);
+		List<OrgRowDto> resultList = new ArrayList<OrgRowDto>();
+		for(Org org : page.getContent()){
+			OrgRowDto orgRowDto = new OrgRowDto();
+			BeanUtils.copyProperties(org, orgRowDto);
 			// 查询出充值总金额
-			List<ChargeOrder> chargeOrders = SpringContextHelper.getBean(ChargeOrderService.class).findByKey(ChargeOrder.ORG_ID, agent.getAgentId());
+			List<ChargeOrder> chargeOrders = SpringContextHelper.getBean(ChargeOrderService.class).findByKey(ChargeOrder.ORG_ID, org.getOrgId());
 			Double chargeTotalValue = 0.0;
 			for (ChargeOrder chargeOrder : chargeOrders) {
 				// 充值成功的状态
@@ -49,9 +51,9 @@ public class AgentSearchService extends BaseSearchService<Agent, Integer, AgentS
 					chargeTotalValue += chargeOrder.getChargeAmmount();
 				}
 			}
-			agentRowDto.setChargeTotalValue(chargeTotalValue);
+			orgRowDto.setChargeTotalValue(chargeTotalValue);
 			// 查询出骑行订单
-			List<CyclingOrder> cyclingOrders = SpringContextHelper.getBean(CyclingOrderService.class).findByKey(CyclingOrder.ORG_ID, agent.getAgentId());
+			List<CyclingOrder> cyclingOrders = SpringContextHelper.getBean(CyclingOrderService.class).findByKey(CyclingOrder.ORG_ID, org.getOrgId());
 			Double cyclingIncome = 0.0;
 			Integer cyclingNum = 0;
 			for (CyclingOrder cyclingOrder : cyclingOrders) {
@@ -61,11 +63,11 @@ public class AgentSearchService extends BaseSearchService<Agent, Integer, AgentS
 					cyclingNum++;
 				}
 			}
-			agentRowDto.setCyclingIncome(cyclingIncome);
-			agentRowDto.setCyclingNum(cyclingNum);
-			resultList.add(agentRowDto); 
+			orgRowDto.setCyclingIncome(cyclingIncome);
+			orgRowDto.setCyclingNum(cyclingNum);
+			resultList.add(orgRowDto); 
 		}
-		return new ClientPage<AgentRowDto>((int)page.getTotalElements(), offset / limit, limit, resultList);
+		return new ClientPage<OrgRowDto>((int)page.getTotalElements(), offset / limit, limit, resultList);
 	}
 
 	

@@ -41,7 +41,7 @@
 		<container:child layoutData="{toolRow}">
 			<toolbar:ToolBar borders="true">
 				<g:Label text="用户报修记录"/>
-				<cc:CcLabelValueCombobox ui:field="orgId" width="150" defaultValue="0" searchAllText="全部运营商"  beanName="agentService" />
+				<cc:CcLabelValueCombobox ui:field="orgId" width="150" defaultValue="0" searchAllText="全部运营商"  beanName="orgService" />
 				<cc:CcEnumCombobox ui:field="fixStatCode" default="{FIXED}" width="110" searchAllText="全部状态 " enumTexts="未处理,已处理"/>
 				<toolbar:FillToolItem/>
 				<form:TextField ui:field="searchText" allowBlank="true" width="250" emptyText="输入智能锁硬件编号/车牌号"/>
@@ -53,7 +53,7 @@
 			<grid:Grid ui:field="grid" store="{store}" cm="{columnModel}" view="{view}" loader="{loader}" borders="true" height="400"/>
 		</container:child>
 		<container:child layoutData="{pagingRow}">
-			<toolbar:PagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
+			<cc:CcPagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
 		</container:child>
 
 	</container:VerticalLayoutContainer>

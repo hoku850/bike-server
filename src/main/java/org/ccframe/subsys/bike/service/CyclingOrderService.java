@@ -22,15 +22,16 @@ import org.ccframe.commons.util.WebContextHolder;
 import org.ccframe.sdk.bike.utils.DateDistanceUtil;
 import org.ccframe.sdk.bike.utils.PositionUtil;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
-import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
 import org.ccframe.subsys.bike.repository.CyclingOrderRepository;
 import org.ccframe.subsys.core.domain.entity.MemberAccount;
 import org.ccframe.subsys.core.domain.entity.MemberAccountLog;
+import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.MemberAccountLogService;
 import org.ccframe.subsys.core.service.MemberAccountService;
+import org.ccframe.subsys.core.service.OrgService;
 import org.ccframe.subsys.core.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -91,9 +92,9 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			data.put("cyclingOrderId", cyclingOrder.getCyclingOrderId());
 			data.put("userId", cyclingOrder.getUserId());
 			
-			Agent org = SpringContextHelper.getBean(AgentService.class).getById(cyclingOrder.getOrgId());
+			Org org = SpringContextHelper.getBean(OrgService.class).getById(cyclingOrder.getOrgId());
 			if (org != null) {
-				data.put("orgId", org.getAgentNm());
+				data.put("orgId", org.getOrgNm());
 			}
 			data.put("smartLockId", cyclingOrder.getSmartLockId());
 			data.put("bikePlateNumber", cyclingOrder.getBikePlateNumber());

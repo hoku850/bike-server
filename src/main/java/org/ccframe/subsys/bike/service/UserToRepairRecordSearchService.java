@@ -8,12 +8,13 @@ import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
-import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.domain.entity.UserToRepairRecord;
 import org.ccframe.subsys.bike.dto.UserToRepairRecordListReq;
 import org.ccframe.subsys.bike.dto.UserToRepairRecordRowDto;
 import org.ccframe.subsys.bike.search.UserToRepairRecordSearchRepository;
+import org.ccframe.subsys.core.domain.entity.Org;
+import org.ccframe.subsys.core.service.OrgService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.BeanUtils;
@@ -52,8 +53,8 @@ public class UserToRepairRecordSearchService extends BaseSearchService<UserToRep
 				for(UserToRepairRecord userToRepairRecord:userToRepairRecordPage.getContent()){
 					UserToRepairRecordRowDto rowRecord = new UserToRepairRecordRowDto();
 					
-					Agent org = SpringContextHelper.getBean(AgentService.class).getById(userToRepairRecord.getOrgId());
-					rowRecord.setOrgNm(org.getAgentNm());
+					Org org = SpringContextHelper.getBean(OrgService.class).getById(userToRepairRecord.getOrgId());
+					rowRecord.setOrgNm(org.getOrgNm());
 					SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(userToRepairRecord.getSmartLockId());
 					rowRecord.setLockerHardwareCode(smartLock.getLockerHardwareCode());
 					BeanUtils.copyProperties(userToRepairRecord, rowRecord);

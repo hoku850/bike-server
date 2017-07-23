@@ -6,8 +6,6 @@ import org.ccframe.client.commons.TreeNodeTree;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.BusinessException;
 import org.ccframe.commons.util.EnumFromCodeUtil;
-import org.ccframe.subsys.bike.domain.entity.Agent;
-import org.ccframe.subsys.bike.service.AgentService;
 import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.TreeNode;
 import org.ccframe.subsys.core.service.OrgService;
@@ -35,7 +33,7 @@ public class CoreApi {
     	return EnumFromCodeUtil.enumFromCode(enumClassName, code);
     }
 
-    public static List<Agent> getOrgList(){
-    	return SpringContextHelper.getBean(AgentService.class).listAll();
+    public static List<Org> getOrgList(){
+    	return SpringContextHelper.getBean(OrgService.class).listAll();
     }
 }

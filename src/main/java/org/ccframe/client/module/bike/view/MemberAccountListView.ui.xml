@@ -72,7 +72,7 @@
 			<toolbar:ToolBar borders="true">
 				<g:Label text="账户管理"/>
 				<toolbar:FillToolItem />
-				<cc:CcLabelValueCombobox ui:field="orgNm" width="128" searchAllText="全部运营商" defaultValue="0" beanName="agentService"/>
+				<cc:CcLabelValueCombobox ui:field="orgNm" width="128" searchAllText="全部运营商" defaultValue="0" beanName="orgService"/>
 			</toolbar:ToolBar>
 		</container:child>
 		
@@ -88,8 +88,7 @@
 			<toolbar:ToolBar borders="true">
 				<button:TextButton text="充值/扣费" ui:field="chargeButton" />
 				<toolbar:FillToolItem />
-				<form:TextField ui:field="searchField" allowBlank="true" width="135" emptyText="请输入登陆ID"/>
-				<toolbar:FillToolItem />
+				<form:TextField ui:field="searchField" allowBlank="true" width="115" emptyText="请输入登陆ID"/>
 				<button:TextButton text="搜索" ui:field="searchButton" />
 			</toolbar:ToolBar>
 		</container:child>
@@ -98,7 +97,7 @@
 			<grid:Grid ui:field="grid" store="{store}" cm="{columnModel}" view="{view}" loader="{loader}" borders="true" />
 		</container:child>
 		<container:child layoutData="{pagingRow}">
-			<toolbar:PagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
+			<cc:CcPagingToolBar mininumMode="true" pageSize="20" ui:field="pagingToolBar" borders="true"/>
 		</container:child>
 		
 	</container:VerticalLayoutContainer>

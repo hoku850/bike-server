@@ -13,9 +13,8 @@ public class CcCurrencyField extends DoubleField{
 	private static final NumberFormat CURRENCY_FORMAT = NumberFormat.getFormat("0.00");
 
 	public CcCurrencyField(){
-		this.setFormat(CURRENCY_FORMAT);
 		this.setAllowNegative(false); //默认不允许输入负数，但是可以在xml里设置
-		this.getPropertyEditor().setFormat(CURRENCY_FORMAT);
+		this.setFormat(CURRENCY_FORMAT);
 	}
 	
 	@Override

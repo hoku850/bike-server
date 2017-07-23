@@ -57,7 +57,7 @@
 			<grid:Grid ui:field="grid" store="{store}" cm="{columnModel}" view="{view}" loader="{loader}" borders="true" height="400"/>
 		</container:child>
 		<container:child layoutData="{pagingRow}">
-			<toolbar:PagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
+			<cc:CcPagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
 		</container:child>
 
 	</container:VerticalLayoutContainer>

@@ -23,7 +23,7 @@ public class MemberAccountMgrView implements ICcModule{
 	private Widget widget;
 	
 	@UiField
-	public MemberAccountView memberAccountView;
+	public MemberAccountListView memberAccountListView;
 	
 	@UiField
 	public MemberAccountLogListView memberAccountLogListView;
@@ -41,7 +41,7 @@ public class MemberAccountMgrView implements ICcModule{
 
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
-		memberAccountView.onModuleReload(event);
+		memberAccountListView.onModuleReload(event);
 		memberAccountLogListView.onModuleReload(event);
 	}
 

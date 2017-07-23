@@ -1,12 +1,13 @@
 package org.ccframe.client.base;
 
+import org.ccframe.client.components.CcPagingToolBar;
+
 import com.google.gwt.uibinder.client.UiField;
-import com.sencha.gxt.widget.core.client.toolbar.PagingToolBar;
 
 public abstract class BasePagingListView<T> extends BaseListView<T>{
 
 	@UiField
-	public PagingToolBar pagingToolBar;
+	public CcPagingToolBar pagingToolBar;
 
 	@Override
 	protected void bindOther(){

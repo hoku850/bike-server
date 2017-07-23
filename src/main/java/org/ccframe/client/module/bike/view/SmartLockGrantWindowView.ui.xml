@@ -45,7 +45,7 @@
 			<cc:child layoutData="{vBoxLayoutData}">
 				<form:FieldLabel text="发放至运营商 ">
 					<form:widget>
-						<cc:CcLabelValueCombobox ui:field="orgId" width="150" beanName="agentService"/>
+						<cc:CcLabelValueCombobox ui:field="orgId" width="150" beanName="orgService"/>
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>

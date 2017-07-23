@@ -20,7 +20,14 @@
   	</ui:with>
 
 	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="bottomMargins">
-		<ui:attributes top="0" right="4" bottom="4" left="4" />
+		<ui:attributes top="0" right="0" bottom="4" left="0" />
+	</ui:with>
+	
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="bottomLeftMargins">
+		<ui:attributes top="0" right="2" bottom="4" left="4" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="bottomRightMargins">
+		<ui:attributes top="0" right="3" bottom="4" left="2" />
 	</ui:with>
   
 	<ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="toolRow">
@@ -32,7 +39,14 @@
 	<ui:with type="com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData" field="pagingRow">
 		<ui:attributes width="1" height="45" margins="{bottomMargins}" />
 	</ui:with>
-
+	
+	<ui:with type="com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData" field="bottomLeftRow">
+		<ui:attributes width="0.8" height="45" margins="{bottomLeftMargins}" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData" field="bottomRightRow">
+		<ui:attributes width="0.2" height="45" margins="{bottomRightMargins}" />
+	</ui:with>
+	
 	<ui:with type="com.sencha.gxt.widget.core.client.grid.ColumnModel" field="columnModel" />
 	<ui:with type="com.sencha.gxt.data.shared.ListStore" field="store" />
 	<ui:with type="org.ccframe.client.commons.RestyGwtPagingLoader" field="loader" />
@@ -50,7 +64,7 @@
 		
 		<container:child layoutData="{toolRow}">
 			<toolbar:ToolBar borders="true">
-				<cc:CcLabelValueCombobox ui:field="orgNm" width="120" searchAllText="全部运营商" defaultValue="0" beanName="agentService"/>
+				<cc:CcLabelValueCombobox ui:field="orgNm" width="120" searchAllText="全部运营商" defaultValue="0" beanName="orgService"/>
 				<cc:CcLabelValueCombobox ui:field="bikeTypeNm" width="135" searchAllText="全部单车类型" defaultValue="0" beanName="bikeTypeService"/>
 				<cc:CcEnumCombobox ui:field="orderState" width="135" searchAllText="全部订单状态" default="{ON_THE_WAY}" enumTexts="骑行中,骑行完成,支付完成,已报修,锁定中" />
 				<toolbar:FillToolItem />
@@ -67,16 +81,16 @@
 			<grid:Grid ui:field="grid" store="{store}" cm="{columnModel}" view="{view}" loader="{loader}" borders="true" height="400"/>
 		</container:child>
 		<container:child layoutData="{pagingRow}">
-			<g:HorizontalPanel>
-			<toolbar:PagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
-				<toolbar:ToolBar />
-				<toolbar:ToolBar borders="true" height="41.8">
-					<toolbar:FillToolItem />
-					<g:Label text="总计:"/>
-					<g:Label ui:field="amount" text="&#160;&#160;&#160;&#160;"/>
-					<g:Label text="元"/>
-			</toolbar:ToolBar>
-			</g:HorizontalPanel>
+			<container:HorizontalLayoutContainer>
+				<container:child layoutData="{bottomLeftRow}">
+					<cc:CcPagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
+				</container:child>
+				<container:child layoutData="{bottomRightRow}">
+					<toolbar:ToolBar borders="true">
+						<g:Label ui:field="amount" text="总计：0.0元"/>
+					</toolbar:ToolBar>
+				</container:child>
+			</container:HorizontalLayoutContainer>
 		</container:child>
 
 	</container:VerticalLayoutContainer>

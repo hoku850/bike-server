@@ -7,8 +7,6 @@ import org.ccframe.client.module.article.view.ArticleInfMgrView;
 import org.ccframe.client.module.article.view.ArticleInfWindowView;
 import org.ccframe.client.module.bike.view.AgentAppListView;
 import org.ccframe.client.module.bike.view.AgentAppWindowView;
-import org.ccframe.client.module.bike.view.AgentListView;
-import org.ccframe.client.module.bike.view.AgentWindowView;
 import org.ccframe.client.module.bike.view.BikeTypeListView;
 import org.ccframe.client.module.bike.view.BikeTypeWindowView;
 import org.ccframe.client.module.bike.view.ChargeOrderListView;
@@ -16,6 +14,8 @@ import org.ccframe.client.module.bike.view.CyclingOrderListView;
 import org.ccframe.client.module.bike.view.CyclingOrderWindowView;
 import org.ccframe.client.module.bike.view.MemberAccountMgrView;
 import org.ccframe.client.module.bike.view.MemberAccountWindowView;
+import org.ccframe.client.module.bike.view.OrgListView;
+import org.ccframe.client.module.bike.view.OrgWindowView;
 import org.ccframe.client.module.bike.view.SmartLockGrantWindowView;
 import org.ccframe.client.module.bike.view.SmartLockImportWindowView;
 import org.ccframe.client.module.bike.view.SmartLockListView;
@@ -142,12 +142,12 @@ public class MenuConfig {
     
     // 运营商管理
     @Inject
-    public void setAgentListAsyncProvider(AsyncProvider<AgentListView> asyncProvider){
+    public void setAgentListAsyncProvider(AsyncProvider<OrgListView> asyncProvider){
     	viewRegistry.put(ViewResEnum.AGENT_LIST_LIST, asyncProvider);
     }
     
     @Inject
-    public void setAgentWindowAsyncProvider(AsyncProvider<AgentWindowView> asyncProvider){
+    public void setAgentWindowAsyncProvider(AsyncProvider<OrgWindowView> asyncProvider){
     	viewRegistry.put(ViewResEnum.AGENT_WINDOW, asyncProvider);
     }
     

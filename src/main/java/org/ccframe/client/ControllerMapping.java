@@ -163,13 +163,16 @@ public interface ControllerMapping {
 	//前端管理
 	String MEMBER_BASE = "member/";
 	String MEMBER_CHARGEAMOUNT_BASE = MEMBER_BASE + "chargeAmount";
-	String MEMBER_LOGIN_BASE = MEMBER_BASE + "login";
+	String MEMBER_LOGIN_BASE = MEMBER_BASE + "login"; //配置里排除用户检查
 	String MEMBER_TRAVEL_BASE = MEMBER_BASE + "travel";
 	String MEMBER_TRADEDETAIL_BASE = MEMBER_BASE + "tradeDetail";
 	String MEMBER_FIXREPORT_BASE = MEMBER_BASE + "fixReport";
 	String MEMBER_USINGBIKE_BASE = MEMBER_BASE + "usingBike";
 	String MEMBER_ORDER_PAY_BASE = MEMBER_BASE + "orderPay";
 	String MEMBER_INDEX_BASE = MEMBER_BASE + "index";
+	
+	//二维码扫码场景
+	String QR_CODE_SCAN_BASE = "scan"; //地址尽量短，实际请求为http://www.xxxx.com/scan/0432423423这样的方式
 	
 	//骑行订单管理
 	String CYCLING_ORDER_BASE = ADMIN_BASE + "cyclingOrder";
@@ -199,7 +202,4 @@ public interface ControllerMapping {
 	// 运营商管理
 	String ORG_BASE = ADMIN_BASE + "org";
 	String ORG_LIST = "findList";
-
-	String AGENT_BASE = ADMIN_BASE + "agent";
-	String AGENT_LIST = "findList";
 }

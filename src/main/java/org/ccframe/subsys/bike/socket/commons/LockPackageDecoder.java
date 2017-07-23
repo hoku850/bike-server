@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 /**
  * TCP解包类.
  * 传入 的内容是去掉标志位的数据，写回要带标志位
+ * 
  * @author JIM
  *
  */
@@ -35,7 +36,7 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 	private static final byte BLE_FLAG = 0x02;
 	private static final byte GPRS_FLAG = 0x03;
 	
-	ByteEscapeHelper byteEscapeHelper = new ByteEscapeHelper();
+	private ByteEscapeHelper byteEscapeHelper = new ByteEscapeHelper();
 	
 	public LockPackageDecoder(){
 		//初始化转码功能
@@ -108,7 +109,7 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			System.out.println("encode map  -> " + DataBlockEncodeUtil.decodeDataBlock(encodeDataBlock));
 			
 			//检查连接，如果没有则放入到channel池
-//			SmartLockChannelUtil.checkAndRegisterChannel(requestPackage.getLockerHardwareCode(), ctx.channel());
+			SmartLockChannelUtil.checkAndRegisterChannel(requestPackage.getLockerHardwareCode(), ctx.channel());
 
 			Map<DataBlockTypeEnum, Object> responseDataMap = null;
 			AnswerFlagEnum answerFlagEnum = AnswerFlagEnum.SUCCESS; //默认是成功
@@ -136,7 +137,7 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			//开始准备回写数据
 			responseDataOutputStream.write(requestPackage.getType());
 			responseDataOutputStream.write(requestPackage.getVersion());
-			responseDataOutputStream.writeLong(requestPackage.getLockerHardwareCode());
+			responseDataOutputStream.writeLongReverse(requestPackage.getLockerHardwareCode());
 			switch(requestPackage.getBykeTypeCodeEnum()){
 				case BLE_GPRS:
 					responseStream.write(BLE_GPRS_FLAG);
@@ -154,14 +155,19 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 				responseDataOutputStream.write(DataBlockEncodeUtil.encodeDataBlock(responseDataMap));
 			}
 			int crcData = CRC16Util.crc16(responseStream.toByteArray());
-			responseDataOutputStream.write(crcData >>> 8 & 0xff); //高位在先
-			responseDataOutputStream.write(crcData >>> 0 & 0xff);
+			responseDataOutputStream.writeIntReverse(crcData);
+			
+//			//TODO 测试encode
+//			byte[] encodeDataBlock = DataBlockEncodeUtil.encodeDataBlock(responseDataMap);
+//			System.out.println("encode      -> " + Hex.encodeHexString(encodeDataBlock));
+//			System.out.println("encode map  -> " + DataBlockEncodeUtil.decodeDataBlock(encodeDataBlock));
 			
 			//回写响应包
 			ctx.channel().write(NettyServerProcessor.BOUND_DELIMITER.array());
 			ctx.channel().write(responseStream.toByteArray());		
 			ctx.channel().write(NettyServerProcessor.BOUND_DELIMITER.array());
-		} catch (Exception e) {
+			ctx.channel().flush();
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}

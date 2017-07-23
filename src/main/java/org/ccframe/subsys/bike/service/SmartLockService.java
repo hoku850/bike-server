@@ -25,11 +25,12 @@ import org.ccframe.commons.util.BusinessException;
 import org.ccframe.commons.util.JsonBinder;
 import org.ccframe.commons.util.WebContextHolder;
 import org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum;
-import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.dto.SmartLockRowDto;
 import org.ccframe.subsys.bike.repository.SmartLockRepository;
+import org.ccframe.subsys.core.domain.entity.Org;
+import org.ccframe.subsys.core.service.OrgService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -236,13 +237,13 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			}
 
 			//运营商转换
-			int org = 1;
+			int orgId = 1;
 			
-			Agent agent = SpringContextHelper.getBean(AgentService.class).getByKey(Agent.ORG_NM, rowSmartLock.getOrgNm());
-			if(agent == null){
+			Org org = SpringContextHelper.getBean(OrgService.class).getByKey(Org.ORG_NM, rowSmartLock.getOrgNm());
+			if(org == null){
 				resultList.add(new ExcelReaderError(4, rowNum - 1, "运营商不存在"));
 			}else{
-				org = agent.getAgentId();
+				orgId = org.getOrgId();
 			}
 			
 			//单车类型转换
@@ -254,7 +255,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 				if(rowSmartLock.getBikeTypeNm().equals("标准单车")){
 					List<BikeType> listDbBikeType = SpringContextHelper.getBean(BikeTypeService.class).findByKey(BikeType.ORG_ID, org);
 					for (BikeType bikeType2 : listBikeType) {
-						if(org == bikeType2.getOrgId()){
+						if(orgId == bikeType2.getOrgId()){
 							bikeType = bikeType2.getBikeTypeId();
 						}
 					}
@@ -270,7 +271,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			if (dbSmartLock == null) {//add
 				dbSmartLock = new SmartLock();
 			}
-			dbSmartLock.setOrgId(org);
+			dbSmartLock.setOrgId(orgId);
 			dbSmartLock.setSmartLockStatCode(smartLockStatCode);
 			dbSmartLock.setBikeTypeId(bikeType);
 			dbSmartLock.setLockerHardwareCode(rowSmartLock.getLockerHardwareCode());
@@ -329,9 +330,9 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			data.put("bikePlateNumber", smartLock.getBikePlateNumber());
 			data.put("activeDateStr", smartLock.getActiveDateStr());
 
-			Agent org = SpringContextHelper.getBean(AgentService.class).getById(smartLock.getOrgId());
+			Org org = SpringContextHelper.getBean(OrgService.class).getById(smartLock.getOrgId());
 			if (org != null) {
-				data.put("orgId", org.getAgentNm());
+				data.put("orgId", org.getOrgNm());
 			}
 
 			BikeType bikeType = SpringContextHelper.getBean(BikeTypeService.class).getById(smartLock.getBikeTypeId());

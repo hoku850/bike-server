@@ -265,7 +265,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 			User oldUser = getById(user.getUserId());
 			user.setUserPsw(oldUser.getUserPsw());
 		}
-		save(user);
+		SpringContextHelper.getBean(this.getClass()).save(user);
 	}
 
 	

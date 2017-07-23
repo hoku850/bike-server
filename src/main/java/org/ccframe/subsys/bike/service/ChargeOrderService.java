@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.ccframe.client.Global;
-import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.commons.base.BaseService;
 import org.ccframe.commons.data.ListExcelWriter;
 import org.ccframe.commons.helper.SpringContextHelper;
@@ -16,10 +15,11 @@ import org.ccframe.commons.util.JsonBinder;
 import org.ccframe.commons.util.WebContextHolder;
 import org.ccframe.subsys.bike.domain.code.ChargeOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.code.PaymentTypeCodeEnum;
-import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
 import org.ccframe.subsys.bike.repository.ChargeOrderRepository;
+import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
+import org.ccframe.subsys.core.service.OrgService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,9 +61,9 @@ public class ChargeOrderService extends BaseService<ChargeOrder,java.lang.Intege
 			data.put("memberAccountId", chargeOrder.getMemberAccountId());
 			data.put("memberAccountLogId", chargeOrder.getMemberAccountLogId());
 			
-			Agent agent = SpringContextHelper.getBean(AgentService.class).getById(chargeOrder.getOrgId());
-			if (agent != null) {
-				data.put("orgId", agent.getAgentNm());
+			Org org = SpringContextHelper.getBean(OrgService.class).getById(chargeOrder.getOrgId());
+			if (org != null) {
+				data.put("orgId", org.getOrgNm());
 			}
 			
 			switch (PaymentTypeCodeEnum.fromCode(chargeOrder.getPaymentTypeCode())) {

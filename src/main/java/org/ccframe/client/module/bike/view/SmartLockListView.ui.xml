@@ -50,7 +50,7 @@
 				<button:TextButton text="导 出" ui:field="exportButton" />
 				
 				
-				<cc:CcLabelValueCombobox ui:field="orgId" width="150" defaultValue="0" searchAllText="全部运营商"  beanName="agentService" />
+				<cc:CcLabelValueCombobox ui:field="orgId" width="150" defaultValue="0" searchAllText="全部运营商"  beanName="orgService" />
 				<cc:CcEnumCombobox ui:field="smartLockStatCode" default="{ACTIVED}" width="110" searchAllText="全部状态" enumTexts="未生产,已生产,已发放,已激活,维修中,已废弃"/>
 				
 				<toolbar:FillToolItem/>
@@ -63,7 +63,7 @@
 			<grid:Grid ui:field="grid" store="{store}" cm="{columnModel}" view="{view}" loader="{loader}" borders="true" height="400"/>
 		</container:child>
 		<container:child layoutData="{pagingRow}">
-			<toolbar:PagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
+			<cc:CcPagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
 		</container:child>
 
 	</container:VerticalLayoutContainer>

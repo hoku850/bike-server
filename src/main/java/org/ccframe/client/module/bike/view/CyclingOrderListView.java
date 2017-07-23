@@ -1,5 +1,6 @@
 package org.ccframe.client.module.bike.view;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -166,11 +167,13 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 					public void onSuccess(Method method, ClientPage<CyclingOrderRowDto> response) {
 						loader.onLoad(response.getList(), response.getTotalLength(), response.getOffset());
 						List<CyclingOrderRowDto> list = response.getList();
-						double sum = 0;
+						BigDecimal oldValue = new BigDecimal(0);
+						BigDecimal changeValue;
 						for (CyclingOrderRowDto cyclingOrderRowDto : list) {
-							sum += cyclingOrderRowDto.getOrderAmmount();
+							changeValue = new BigDecimal(cyclingOrderRowDto.getOrderAmmount());
+							oldValue = oldValue.add(changeValue);
 						}
-						amount.setText(Double.toString(sum));
+						amount.setText("总计：" + oldValue.doubleValue() + "元");
 					}
 				});
 			}

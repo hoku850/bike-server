@@ -27,7 +27,7 @@
 	</ui:with>
 
 	<ui:with type="com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData" field="treePanelCol">
-		<ui:attributes width="300" height="1"/>
+		<ui:attributes width="280" height="1"/>
 	</ui:with>
 
 	<ui:with type="com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData" field="listPanelCol">
@@ -39,7 +39,7 @@
 		<container:child layoutData="{centerRow}">
 			<container:HorizontalLayoutContainer>
 				<container:child layoutData="{treePanelCol}">
-					<member:MemberAccountView ui:field="memberAccountView"/>
+					<member:MemberAccountListView ui:field="memberAccountListView"/>
 				</container:child>
 				<container:child layoutData="{listPanelCol}">
  					<member:MemberAccountLogListView ui:field="memberAccountLogListView"/>

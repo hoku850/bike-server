@@ -31,7 +31,7 @@
 			<cc:child layoutData="{vBoxLayoutData}">
 				<form:FieldLabel text="运营商">
 					<form:widget>
-						<cc:CcLabelValueCombobox ui:field="orgId" width="200" searchAllText="请选择" defaultValue="0" beanName="agentService"/>
+						<cc:CcLabelValueCombobox ui:field="orgId" width="200" searchAllText="请选择" defaultValue="0" beanName="orgService"/>
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>

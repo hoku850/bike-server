@@ -9,6 +9,8 @@ import org.ccframe.client.commons.ClientManager;
 import org.ccframe.client.commons.RestCallback;
 import org.fusesource.restygwt.client.Method;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -22,6 +24,7 @@ import com.sencha.gxt.widget.core.client.form.Radio;
  * 关联动态数据的Radio选择分组.
  * beanName是后端的service名称，该service必须实现ILabelValueListProvider接口。
  * @author JIM
+ * //TODO FIX 联动逻辑参考CcLabelValueCombobox
  *
  */
 public class CcLabelValueRadioField extends AdapterField<Integer>{
@@ -39,6 +42,11 @@ public class CcLabelValueRadioField extends AdapterField<Integer>{
 	 */
 	private boolean ready;
 	private String beanName;
+	private Runnable afterAsyncReset;
+
+	public void setAfterAsyncReset(Runnable afterAsyncReset){
+		this.afterAsyncReset = afterAsyncReset;
+	}
 
 	public CcLabelValueRadioField() {
 		super(new CssFloatLayoutContainer());
@@ -147,6 +155,14 @@ public class CcLabelValueRadioField extends AdapterField<Integer>{
 				}
 				ready = true;
 				setValue(pendingValue);
+				if(afterAsyncReset != null){
+					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+						@Override
+						public void execute() {
+							afterAsyncReset.run();							
+						}
+					});
+				}
 			}
 		});
 	}

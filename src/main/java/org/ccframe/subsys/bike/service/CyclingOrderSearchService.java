@@ -12,14 +12,15 @@ import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
-import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.dto.CyclingOrderListReq;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
 import org.ccframe.subsys.bike.search.CyclingOrderSearchRepository;
+import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
+import org.ccframe.subsys.core.service.OrgService;
 import org.ccframe.subsys.core.service.UserService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -87,9 +88,9 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 			CyclingOrderRowDto cyclingOrderRowDto = new CyclingOrderRowDto();
 			BeanUtils.copyProperties(cyclingOrder, cyclingOrderRowDto);
 			// 查询出运营商的信息
-			Agent org = SpringContextHelper.getBean(AgentService.class).getById(cyclingOrder.getOrgId());
+			Org org = SpringContextHelper.getBean(OrgService.class).getById(cyclingOrder.getOrgId());
 			if (org!=null) {
-				cyclingOrderRowDto.setOrgNm(org.getAgentNm());
+				cyclingOrderRowDto.setOrgNm(org.getOrgNm());
 			}
 			// 查询出智能锁硬件编号
 			SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(cyclingOrder.getSmartLockId());

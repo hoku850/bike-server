@@ -10,6 +10,7 @@ import org.ccframe.client.commons.ColumnConfigEx;
 import org.ccframe.client.commons.EventBusUtil;
 import org.ccframe.client.commons.RestCallback;
 import org.ccframe.client.commons.RestyGwtPagingLoader;
+import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.commons.RestyGwtPagingLoader.CallBack;
 import org.ccframe.client.commons.WindowEventCallback;
 import org.ccframe.client.module.core.event.LoadWindowEvent;
@@ -60,6 +61,10 @@ public class AdminUserListView extends BaseCrudListView<UserRowDto>{
 	@UiHandler("editUserPasswordButton")
 	public void editUserPasswordButtonClick(SelectEvent e){
 		UserRowDto selectedRow = grid.getSelectionModel().getSelectedItem();
+		if(selectedRow == null){
+			ViewUtil.error("系统信息", "请选择一条记录进行编辑");
+			return;
+		}
 		
 		EventBusUtil.fireEvent(new LoadWindowEvent<Integer, Void, EventHandler>(
 				ViewResEnum.USER_PASSWORD_WINDOW,

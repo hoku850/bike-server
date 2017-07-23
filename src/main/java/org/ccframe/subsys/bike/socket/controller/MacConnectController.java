@@ -1,5 +1,6 @@
 package org.ccframe.subsys.bike.socket.controller;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.ccframe.subsys.bike.socket.commons.ISocketController;
@@ -20,8 +21,9 @@ public class MacConnectController implements ISocketController {
 		//TODO 保存锁的状态和电量
 		System.out.println("电量="+requestDataMap.get(DataBlockTypeEnum.LOCK_BATTERY));
 		System.out.println("MAC="+requestDataMap.get(DataBlockTypeEnum.LOCK_MAC));
-		System.out.println("时间="+requestDataMap.get(DataBlockTypeEnum.SYS_TIME));
+		System.out.println("锁时间="+requestDataMap.get(DataBlockTypeEnum.SYS_TIME));
 		System.out.println("GPS="+requestDataMap.get(DataBlockTypeEnum.GPS_INFO));
+		requestDataMap.put(DataBlockTypeEnum.SYS_TIME, new Date());//要进行对时
 		//长连接事件，数据原封不动丢回去完事
 		return requestDataMap;
 	}

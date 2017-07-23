@@ -8,12 +8,13 @@ import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
-import org.ccframe.subsys.bike.domain.entity.Agent;
 import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
 import org.ccframe.subsys.bike.dto.ChargeOrderListReq;
 import org.ccframe.subsys.bike.dto.ChargeOrderRowDto;
 import org.ccframe.subsys.bike.search.ChargeOrderSearchRepository;
+import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
+import org.ccframe.subsys.core.service.OrgService;
 import org.ccframe.subsys.core.service.UserService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -72,9 +73,9 @@ public class ChargeOrderSearchService extends BaseSearchService<ChargeOrder, Int
 				chargeOrderRowDto.setLoginId(user.getLoginId());
 			}
 			// 查询出运营商的信息
-			Agent agent = SpringContextHelper.getBean(AgentService.class).getById(chargeOrder.getOrgId());
-			if (agent != null) {
-				chargeOrderRowDto.setOrgNm(agent.getAgentNm());
+			Org org = SpringContextHelper.getBean(OrgService.class).getById(chargeOrder.getOrgId());
+			if (org != null) {
+				chargeOrderRowDto.setOrgNm(org.getOrgNm());
 			}
 			resultList.add(chargeOrderRowDto);
 		}

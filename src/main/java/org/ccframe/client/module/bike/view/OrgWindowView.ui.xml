@@ -24,7 +24,7 @@
 			<cc:child layoutData="{vBoxLayoutData}">
 				<form:FieldLabel text="运营商名称">
 					<form:widget>
-						<cc:CcTextField ui:field="agentNm" allowBlank="false" width="200" maxLength="10" />
+						<cc:CcTextField ui:field="orgNm" allowBlank="false" width="200" maxLength="10" />
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>

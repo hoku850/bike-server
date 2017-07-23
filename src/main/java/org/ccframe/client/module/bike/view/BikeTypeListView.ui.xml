@@ -43,7 +43,7 @@
 				<button:TextButton text="添 加" ui:field="addButton" />
 				<button:TextButton text="修 改" ui:field="editButton" />
 				<button:TextButton text="删 除" ui:field="deleteButton" />
-				<cc:CcLabelValueCombobox ui:field="orgId" width="128" searchAllText="全部运营商" defaultValue="0" beanName="agentService"/>
+				<cc:CcLabelValueCombobox ui:field="orgId" width="128" searchAllText="全部运营商" defaultValue="0" beanName="orgService"/>
 				<toolbar:FillToolItem />
 			</toolbar:ToolBar>
 		</container:child>
@@ -52,7 +52,7 @@
 			<grid:Grid ui:field="grid" store="{store}" cm="{columnModel}" view="{view}" loader="{loader}" borders="true" height="400"/>
 		</container:child>
 		<container:child layoutData="{pagingRow}">
-			<toolbar:PagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
+			<cc:CcPagingToolBar pageSize="20" ui:field="pagingToolBar" borders="true"/>
 		</container:child>
 
 	</container:VerticalLayoutContainer>

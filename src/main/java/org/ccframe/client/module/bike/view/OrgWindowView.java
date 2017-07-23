@@ -8,8 +8,9 @@ import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.components.CcMobileField;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
-import org.ccframe.subsys.bike.domain.entity.Agent;
+import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
+import org.ccframe.subsys.core.dto.OrgDto;
 import org.fusesource.restygwt.client.Method;
 
 import com.google.gwt.core.client.GWT;
@@ -27,13 +28,13 @@ import com.sencha.gxt.widget.core.client.form.FormPanelHelper;
 import com.sencha.gxt.widget.core.client.info.Info;
 
 @Singleton
-public class AgentWindowView extends BaseWindowView<Integer, Agent> implements Editor<Agent>{
+public class OrgWindowView extends BaseWindowView<Integer, OrgDto> implements Editor<OrgDto>{
 
-	interface AgentUiBinder extends UiBinder<Component, AgentWindowView> {}
-	interface AgentDriver extends SimpleBeanEditorDriver<Agent, AgentWindowView> {}
+	interface OrgUiBinder extends UiBinder<Component, OrgWindowView> {}
+	interface OrgDriver extends SimpleBeanEditorDriver<OrgDto, OrgWindowView> {}
 	
-	private static AgentUiBinder uiBinder = GWT.create(AgentUiBinder.class);
-	private AgentDriver driver = GWT.create(AgentDriver.class);
+	private static OrgUiBinder uiBinder = GWT.create(OrgUiBinder.class);
+	private OrgDriver driver = GWT.create(OrgDriver.class);
 	
 	private Integer agentId;
 	
@@ -41,7 +42,7 @@ public class AgentWindowView extends BaseWindowView<Integer, Agent> implements E
 	CcVBoxLayoutContainer vBoxLayoutContainer;
 	
 	@UiField
-	CcTextField agentNm;
+	CcTextField orgNm;
 	
 	@UiField
 	CcTextField manager;
@@ -53,17 +54,17 @@ public class AgentWindowView extends BaseWindowView<Integer, Agent> implements E
 	public void handleSaveClick(SelectEvent e){
 		if(FormPanelHelper.isValid(vBoxLayoutContainer, false)){
 			
-			final Agent agent = driver.flush();
-			agent.setAgentId(agentId);
+			final OrgDto orgDto = driver.flush();
+			orgDto.setOrgId(agentId);
 			
 			final TextButton button = ((TextButton)(e.getSource()));
 			button.disable();
 
-			ClientManager.getAgentClient().saveOrUpdate(agent, new RestCallback<User>(){
+			ClientManager.getOrgClient().saveOrUpdate(orgDto, new RestCallback<User>(){
 				@Override
 				public void onSuccess(Method method, User response) {
 					Info.display("操作完成", "运营商" + (agentId == null ? "新增" : "修改") + "成功");
-					AgentWindowView.this.retCallBack.onClose(agent); //保存并回传结果数据
+					OrgWindowView.this.retCallBack.onClose(orgDto); //保存并回传结果数据
 					button.enable();
 					window.hide();
 					// 新增成功后提示该运营商的账户和密码
@@ -84,7 +85,7 @@ public class AgentWindowView extends BaseWindowView<Integer, Agent> implements E
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
 		driver.initialize(this);
-		driver.edit(new Agent());
+		driver.edit(new OrgDto());
 		return widget;
 	}
 
@@ -98,9 +99,9 @@ public class AgentWindowView extends BaseWindowView<Integer, Agent> implements E
 		if(agentId == null){
 			FormPanelHelper.reset(vBoxLayoutContainer);
 		}else{
-			ClientManager.getAgentClient().getById(agentId, new RestCallback<Agent>(){
+			ClientManager.getOrgClient().getById(agentId, new RestCallback<OrgDto>(){
 				@Override
-				public void onSuccess(Method method, Agent response) {
+				public void onSuccess(Method method, OrgDto response) {
 					driver.edit(response);
 				}
 			});

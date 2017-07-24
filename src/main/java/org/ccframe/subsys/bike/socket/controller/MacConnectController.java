@@ -23,6 +23,8 @@ public class MacConnectController implements ISocketController {
 		System.out.println("MAC="+requestDataMap.get(DataBlockTypeEnum.LOCK_MAC));
 		System.out.println("锁时间="+requestDataMap.get(DataBlockTypeEnum.SYS_TIME));
 		System.out.println("GPS="+requestDataMap.get(DataBlockTypeEnum.GPS_INFO));
+		System.out.println("版本信息="+requestDataMap.get(DataBlockTypeEnum.SOFTWARE_VERSION));
+		
 		requestDataMap.put(DataBlockTypeEnum.SYS_TIME, new Date());//要进行对时
 		//长连接事件，数据原封不动丢回去完事
 		return requestDataMap;

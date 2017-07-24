@@ -22,7 +22,9 @@ import org.ccframe.commons.util.WebContextHolder;
 import org.ccframe.sdk.bike.utils.DateDistanceUtil;
 import org.ccframe.sdk.bike.utils.PositionUtil;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
+import org.ccframe.subsys.bike.domain.code.LockSwitchStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
+import org.ccframe.subsys.bike.domain.entity.SmartLockStat;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
 import org.ccframe.subsys.bike.repository.CyclingOrderRepository;
 import org.ccframe.subsys.core.domain.entity.MemberAccount;
@@ -362,6 +364,13 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		cyclingOrder.setOrderAmmount(0.00);
 		
 		SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
+		
+		//更新智能锁状态表记录
+		List<SmartLockStat> statList = SpringContextHelper.getBean(SmartLockStatService.class).findByKey(SmartLockStat.SMART_LOCK_ID, cyclingOrder.getSmartLockId());
+		SmartLockStat smartLockStat = statList.get(0);
+		smartLockStat.setLockSwitchStatCode(LockSwitchStatCodeEnum.OPEN.toCode());
+		//未完待续
+		SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
 		
 		return map;
 	}

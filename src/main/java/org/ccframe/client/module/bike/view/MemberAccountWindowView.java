@@ -75,10 +75,10 @@ public class MemberAccountWindowView extends BaseWindowView<Integer, MemberAccou
 				memberAccountRowDto.setAccountTypeCode(AccountTypeCodeEnum.INTEGRAL.toCode());
 				break;
 			case "预存款":
-				memberAccountRowDto.setAccountTypeCode(AccountTypeCodeEnum.DEPOSIT.toCode());
+				memberAccountRowDto.setAccountTypeCode(AccountTypeCodeEnum.PRE_DEPOSIT.toCode());
 				break;
 			case "押金":
-				memberAccountRowDto.setAccountTypeCode(AccountTypeCodeEnum.INTEGRAL.toCode());
+				memberAccountRowDto.setAccountTypeCode(AccountTypeCodeEnum.DEPOSIT.toCode());
 				break;
 			default:
 				break;
@@ -111,7 +111,7 @@ public class MemberAccountWindowView extends BaseWindowView<Integer, MemberAccou
 
 	@Override
 	protected void onLoadData(Integer memberAccountId) {
-//		window.setHeadingText("充值/扣费");
+		window.setHeadingText("充值/扣费");
 		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
 		if(memberAccountId == null){
 			FormPanelHelper.reset(vBoxLayoutContainer);

@@ -3,10 +3,7 @@ package org.ccframe.subsys.bike.socket.commons;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -15,6 +12,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.ccframe.commons.util.UtilDateTime;
 import org.ccframe.subsys.bike.socket.tcpobj.DataBlockTypeEnum;
 
 public class DataBlockEncodeUtil {
@@ -26,8 +24,6 @@ public class DataBlockEncodeUtil {
 	private static final byte SIX_BYTES_HEAD_LENGTH = 0x09;
 	private static final byte TWENTY_BYTES_HEAD_LENGTH = 0x17;
 	private static final byte TIME_HEAD_LENGHT = 0x0A;
-	
-	private static final String TIME_FORMAT = "yyyyMMddHHmmss";//小写的mm表示的是分钟
 	
 	private static final String NORTH = "N";
 	private static final String SOUTH = "S";
@@ -83,17 +79,15 @@ public class DataBlockEncodeUtil {
 						stringBuf = new byte[size - HEAD_LENGTH];
 						dataInputStream.read(stringBuf);
 						String softwareVersion = new String(stringBuf);
-//						softwareVersion = softwareVersion.substring(0, softwareVersion.lastIndexOf("0")+1);
-//						dataBlockMap.put(dataBlockTypeEnum, softwareVersion);
-						dataBlockMap.put(dataBlockTypeEnum, trimnull(softwareVersion));
+						int zeroIndex = softwareVersion.indexOf('\0');
+						dataBlockMap.put(dataBlockTypeEnum, zeroIndex == -1 ? softwareVersion : softwareVersion.substring(0, zeroIndex));
 						break;
 					
 					// Date
 					case SYS_TIME:
 						stringBuf = new byte[size - HEAD_LENGTH];
 						dataInputStream.read(stringBuf);
-						SimpleDateFormat sdf=new SimpleDateFormat(TIME_FORMAT);
-						dataBlockMap.put(dataBlockTypeEnum, sdf.parse(Hex.encodeHexString(stringBuf)));
+						dataBlockMap.put(dataBlockTypeEnum, UtilDateTime.convertCompactStringToTime(Hex.encodeHexString(stringBuf)));
 						break;
 						
 					// Double
@@ -108,7 +102,7 @@ public class DataBlockEncodeUtil {
 						if (latLng.charAt(0) == SOUTH.charAt(0) || latLng.charAt(0) == WEST.charAt(0)) {
 							latLng = latLng.replace(latLng.charAt(0), '-');
 						}
-						latLng = trimnull(latLng);
+						latLng = latLng.substring(0, latLng.indexOf('\0'));
 						dataBlockMap.put(dataBlockTypeEnum, latLng.isEmpty() ? 0.0 : Double.valueOf(latLng));
 						break;
 						
@@ -124,8 +118,10 @@ public class DataBlockEncodeUtil {
 	}
 
 	public static byte[] encodeDataBlock(Map<DataBlockTypeEnum, Object> dataBlockMap) throws IOException, DecoderException{
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024); //包大小不会超过1k
-		DataOutputStreamEx dataOutputStream = new DataOutputStreamEx(byteArrayOutputStream);
+		try(
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024); //包大小不会超过1k
+			DataOutputStreamEx dataOutputStream = new DataOutputStreamEx(byteArrayOutputStream);
+		){
 		for(Entry<DataBlockTypeEnum, Object> entry: dataBlockMap.entrySet()){
 			switch(entry.getKey()){
 			// byte
@@ -172,11 +168,10 @@ public class DataBlockEncodeUtil {
 			
 			// Date
 			case SYS_TIME:
-				SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT);
-				String time = sdf.format((Date)dataBlockMap.get(entry.getKey()));
+				Date time = (Date)dataBlockMap.get(entry.getKey());
 				dataOutputStream.write(TIME_HEAD_LENGHT);
 				dataOutputStream.writeShortReverse(entry.getKey().toValue());
-				dataOutputStream.write(Hex.decodeHex(time.toCharArray()));
+				dataOutputStream.write(Hex.decodeHex(UtilDateTime.convertTimeToCompactString(time).toCharArray()));
 				break;
 			
 			// Double
@@ -200,27 +195,5 @@ public class DataBlockEncodeUtil {
 		}
 		return byteArrayOutputStream.toByteArray();
 	}
-
-	/**
-	 * 去除字符串中的NUL域（'口'字）
-	 * 
-	 * @param string
-	 * @return
-	 * @throws UnsupportedEncodingException
-	 */
-	public static String trimnull(String string) throws UnsupportedEncodingException {
-		ArrayList<Byte> list = new ArrayList<Byte>();
-		byte[] bytes = string.getBytes("UTF-8");
-		for (int i = 0; bytes != null && i < bytes.length; i++) {
-			if (0 != bytes[i]) {
-				list.add(bytes[i]);
-			}
-		}
-		byte[] newbytes = new byte[list.size()];
-		for (int i = 0; i < list.size(); i++) {
-			newbytes[i] = (Byte) list.get(i);
-		}
-		String str = new String(newbytes, "UTF-8");
-		return str;
 	}
 }

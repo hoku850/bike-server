@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ccframe.sdk.bike.utils.PositionUtil;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
+import org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
+import org.ccframe.subsys.bike.domain.entity.SmartLock;
+import org.ccframe.subsys.bike.domain.entity.SmartLockStat;
 import org.ccframe.subsys.bike.domain.entity.UserToRepairRecord;
 import org.ccframe.subsys.bike.repository.UserToRepairRecordRepository;
 import org.ccframe.subsys.core.domain.entity.User;
@@ -54,6 +57,21 @@ public class UserToRepairRecordService extends BaseService<UserToRepairRecord,ja
 		userToRepairRecord.setFinishFixTime(new Date());
 		
 		SpringContextHelper.getBean(UserToRepairRecordService.class).save(userToRepairRecord);
+		
+		//更新智能锁表记录
+		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(cyclingOrder.getSmartLockId());
+		smartLock.setSmartLockStatCode(SmartLockStatCodeEnum.TO_FIX.toCode());
+		smartLock.setLastUseDate(new Date());
+		SpringContextHelper.getBean(SmartLockService.class).saveOrUpdateSmartLock(smartLock);
+		
+		//更新智能锁状态表记录
+		List<SmartLockStat> statList = SpringContextHelper.getBean(SmartLockStatService.class).findByKey(SmartLockStat.SMART_LOCK_ID, cyclingOrder.getSmartLockId());
+		SmartLockStat smartLockStat = statList.get(0);
+		//未完待续
+		//smartLockStat.setLockLng(lockLng);
+		//smartLockStat.setLockLat(lockLat);
+		smartLockStat.setIfRepairIng("Y");
+		SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
 
 		return "success";
 	}

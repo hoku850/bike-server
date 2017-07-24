@@ -14,12 +14,10 @@ import com.google.common.primitives.Bytes;
  */
 public class ByteEscapeHelper {
 
-	private List<Byte> originalByteList;
-	private List<byte[]> escapedBytesList;
+	private List<Byte> originalByteList = new ArrayList<Byte>();
+	private List<byte[]> escapedBytesList = new ArrayList<byte[]>();
 
 	public ByteEscapeHelper() {
-		originalByteList = new ArrayList<Byte>();
-		escapedBytesList = new ArrayList<byte[]>();
 	}
 	
 	public void addRule(byte originalByte, byte[] escapedBytes){
@@ -32,19 +30,59 @@ public class ByteEscapeHelper {
 	 * @param originalBytes
 	 * @return
 	 */
-	public byte[] escapeBytes(byte[] originalBytes){
+	public byte[] escapeBytes(byte[] originalBytes) {
 		List<Byte> returnData = new ArrayList<Byte>();
 		for (int i = 0; i < originalBytes.length; i++) {
 			if (originalByteList.contains(originalBytes[i])) {
 				int index = originalByteList.indexOf(originalBytes[i]); //获取当前的索引
 				byte[] bs = escapedBytesList.get(index);
-				returnData.add(bs[0]);
-				returnData.add(bs[1]);
-//				for (byte b : bs) {
-//					returnData.add(b);
-//				}
+				for (byte b : bs) {
+					returnData.add(b);
+				}
 			} else {
 				returnData.add(originalBytes[i]);
+			}
+		}
+		return Bytes.toArray(returnData);
+	}
+	
+	/**
+	 * 转义解码.(优化完善中...)
+	 * @param escapedBytes
+	 * @return
+	 */
+	public byte[] testNewUnescapeBytes(byte[] escapedBytes) {
+		List<Byte> returnData = new ArrayList<Byte>();
+		int j = 0; // 辅助拿到originalByteList的索引
+		boolean isFind = true;
+
+		for (int i = 0; i < escapedBytes.length; i++) {
+ 			j = 0;
+ 			for (byte[] esBytes : escapedBytesList) {
+ 				if (escapedBytes[i] != esBytes[0]) { // 判断第一个byte是否相等
+					continue; // 结束该循环
+				}
+ 				// 判断后续是否继续匹配
+ 				isFind = true;
+ 				int k;
+ 				for (k = 1; k < esBytes.length; k++){ 
+ 					if (escapedBytes[i+k] != esBytes[k]){
+ 						isFind = false;
+ 						break; // 有一个不等则不用理余下的匹配，即esBytes余下的不匹配
+ 					}
+ 				}
+ 				// isFind为true时表示匹配
+ 				if (isFind){ 
+ 					i = i + k; // 跳过下次的外层for循环
+ 					returnData.add(originalByteList.get(j));
+ 					//System.out.print(Integer.toHexString(originalByteList.get(j)) + " ");
+ 					break;
+ 				}
+ 				j++;
+ 			} 
+ 			if (i < escapedBytes.length) { // 该判断是为了i = i + k;语句溢出
+ 				returnData.add(escapedBytes[i]);
+ 				//System.out.print(Integer.toHexString(escapedBytes[i]) + " ");
 			}
 		}
 		return Bytes.toArray(returnData);

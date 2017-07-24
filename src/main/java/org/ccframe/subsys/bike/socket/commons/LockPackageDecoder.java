@@ -60,12 +60,12 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 		byte[] packageData = byteEscapeHelper.unescapeBytes(msg);
 		
 		//CRC16Util检测CRC是否正确
-//		int expectCrcValue = (short)(((packageData[packageData.length - 2]) & 0xff) + ((packageData[packageData.length - 1]) << 8));
-//		int crcValue = CRC16Util.crc16(packageData, packageData.length - 2);
-//		if(crcValue != expectCrcValue){
-//			logger.error("CRC Error! Expected: {}, CRC Value: {}", expectCrcValue, crcValue);
-//			return; //TODO FIX CRC错，要返回包请求重发
-//		}
+		int expectCrcValue = (short)(((packageData[packageData.length - 2]) & 0xff) + ((packageData[packageData.length - 1]) << 8));
+		int crcValue = CRC16Util.crc16(packageData, packageData.length - 2);
+		if(crcValue != expectCrcValue){
+			logger.error("CRC Error! Expected: {}, CRC Value: {}", expectCrcValue, crcValue);
+			return; //TODO FIX CRC错，要返回包请求重发
+		}
 
 		try (
 			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(packageData);
@@ -134,6 +134,10 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 				}
 			}
 
+			if(responseDataMap == null){ //没数据，不回写
+				return;
+			}
+			
 			//开始准备回写数据
 			responseDataOutputStream.write(requestPackage.getType());
 			responseDataOutputStream.write(requestPackage.getVersion());
@@ -155,16 +159,11 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 				responseDataOutputStream.write(DataBlockEncodeUtil.encodeDataBlock(responseDataMap));
 			}
 			int crcData = CRC16Util.crc16(responseStream.toByteArray());
-			responseDataOutputStream.writeIntReverse(crcData);
-			
-//			//TODO 测试encode
-//			byte[] encodeDataBlock = DataBlockEncodeUtil.encodeDataBlock(responseDataMap);
-//			System.out.println("encode      -> " + Hex.encodeHexString(encodeDataBlock));
-//			System.out.println("encode map  -> " + DataBlockEncodeUtil.decodeDataBlock(encodeDataBlock));
+			responseDataOutputStream.writeShortReverse(crcData);
 			
 			//回写响应包
 			ctx.channel().write(NettyServerProcessor.BOUND_DELIMITER.array());
-			ctx.channel().write(responseStream.toByteArray());		
+			ctx.channel().write(byteEscapeHelper.escapeBytes(responseStream.toByteArray()));		
 			ctx.channel().write(NettyServerProcessor.BOUND_DELIMITER.array());
 			ctx.channel().flush();
 		} catch (Throwable e) {

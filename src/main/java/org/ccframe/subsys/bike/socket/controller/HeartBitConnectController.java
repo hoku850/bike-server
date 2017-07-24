@@ -8,7 +8,7 @@ import org.ccframe.subsys.bike.socket.tcpobj.DataBlockTypeEnum;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ImsiConnectController implements ISocketController {
+public class HeartBitConnectController implements ISocketController {
 
 	@Override
 	public CommandFlagEnum getCommand() {

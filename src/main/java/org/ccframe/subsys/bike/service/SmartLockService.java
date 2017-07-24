@@ -47,63 +47,43 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			smartLock.setActiveDate(null);
 			smartLock.setLastUseDate(null);
 		}
-		if (smartLock.getOrgId() == 0 || smartLock.getBikeTypeId() == 0) {
-			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "运营商或单车类型没选择！！！" });
-		} else {
-			SmartLock smartLockCheck = null;
-			SmartLock dbSmartLock = null;
-			if(smartLock.getSmartLockId() != null){//smartLockId已存在
-				smartLockCheck = SpringContextHelper.getBean(SmartLockService.class).getById(smartLock.getSmartLockId());
-				if(smartLockCheck != null){//数据库中smartLockId已存在,update
-					dbSmartLock = this.getByKey(SmartLock.LOCKER_HARDWARE_CODE, smartLock.getLockerHardwareCode());
-					if (dbSmartLock != null && !dbSmartLock.getLockerHardwareCode().equals(smartLockCheck.getLockerHardwareCode())) {// 硬件编码码存在,并且
-						throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "硬件编码重复！！！" });
-					}
-					if(StringUtils.isNotBlank(smartLock.getImeiCode())){
-						dbSmartLock = this.getByKey(SmartLock.IMEI_CODE, smartLock.getImeiCode());
-						if (dbSmartLock != null && !dbSmartLock.getImeiCode().equals(smartLockCheck.getImeiCode())) {// IMEI码存在
-							throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "IMEI码重复！！！" });
-						}
-					}
-					if(StringUtils.isNotBlank(smartLock.getMacAddress())){
-						dbSmartLock = this.getByKey(SmartLock.MAC_ADDRESS, smartLock.getMacAddress());
-						if (dbSmartLock != null && !dbSmartLock.getMacAddress().equals(smartLockCheck.getMacAddress())) {// MAC地址存在
-							throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "MAC地址重复！！！" });
-						}
-					}
-					if(StringUtils.isNotBlank(smartLock.getBikePlateNumber())){
-						dbSmartLock = this.getByKey(SmartLock.BIKE_PLATE_NUMBER, smartLock.getBikePlateNumber());
-						if (dbSmartLock != null && !dbSmartLock.getBikePlateNumber().equals(smartLockCheck.getBikePlateNumber())) {// 单车车牌号存在
-							throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "单车车牌号重复！！！" });
-						}
-					}
-				}
-			}else{//smartLockId不存在，add
-				dbSmartLock = this.getByKey(SmartLock.LOCKER_HARDWARE_CODE, smartLock.getLockerHardwareCode());
-				if (dbSmartLock != null) {// 硬件编码存在
-					throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "硬件编码重复！！！" });
-				}
-				if(StringUtils.isNotBlank(smartLock.getImeiCode())){
-					dbSmartLock = this.getByKey(SmartLock.IMEI_CODE, smartLock.getImeiCode());
-					if (dbSmartLock != null) {// IMEI码存在
-						throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "IMEI码重复！！！" });
-					}
-				}
-				if(StringUtils.isNotBlank(smartLock.getMacAddress())){
-					dbSmartLock = this.getByKey(SmartLock.MAC_ADDRESS, smartLock.getMacAddress());
-					if (dbSmartLock != null) {// MAC地址存在
-						throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "MAC地址重复！！！" });
-					}
-				}
-				if(StringUtils.isNotBlank(smartLock.getBikePlateNumber())){
-					dbSmartLock = this.getByKey(SmartLock.BIKE_PLATE_NUMBER, smartLock.getBikePlateNumber());
-					if (dbSmartLock != null) {// 单车车牌号存在
-						throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "单车车牌号重复！！！" });
-					}
+		
+		SmartLock dbSmartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, smartLock.getLockerHardwareCode());
+		if(dbSmartLock != null){
+			if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock.getSmartLockId() != smartLock.getSmartLockId()))){
+				throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "硬件编码重复！！！" });
+			}
+		}
+		
+		if(StringUtils.isNotBlank(smartLock.getImeiCode())){
+			SmartLock dbSmartLock1 = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.IMEI_CODE, smartLock.getImeiCode());
+			if(dbSmartLock1 != null){
+				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock1.getSmartLockId() != smartLock.getSmartLockId()))){
+					throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "IMEI码重复！！！" });
 				}
 			}
-			SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
 		}
+		
+		if(StringUtils.isNotBlank(smartLock.getMacAddress())){
+			SmartLock dbSmartLock1 = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.MAC_ADDRESS, smartLock.getMacAddress());
+			if(dbSmartLock1 != null){
+				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock1.getSmartLockId() != smartLock.getSmartLockId()))){
+					throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "MAC地址重复！！！" });
+				}
+			}
+		}
+		
+		if(StringUtils.isNotBlank(smartLock.getBikePlateNumber())){
+			SmartLock dbSmartLock1 = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.BIKE_PLATE_NUMBER, smartLock.getBikePlateNumber());
+			if(dbSmartLock1 != null){
+				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock1.getSmartLockId() != smartLock.getSmartLockId()))){
+					throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "单车车牌号重复！！！" });
+				}
+			}
+		}
+		
+		SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
+		
 	}
 
 	public Integer countSmartLockOfAgent(Integer agentId) {
@@ -152,8 +132,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 				continue;
 			}
 
-			SmartLock smartLock = null;
-			smartLock = this.getByKey(SmartLock.LOCKER_HARDWARE_CODE, rowSmartLock.getLockerHardwareCode());//数据库内容
+			SmartLock smartLock = this.getByKey(SmartLock.LOCKER_HARDWARE_CODE, rowSmartLock.getLockerHardwareCode());//数据库内容
 
 			// 判断重复
 			SmartLock check = null;

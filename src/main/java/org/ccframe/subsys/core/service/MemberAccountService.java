@@ -1,6 +1,5 @@
 package org.ccframe.subsys.core.service;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -47,31 +46,12 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 		
 		// 账户表
 		BeanUtils.copyProperties(memberAccountRowDto, memberAccount);
-//		BigDecimal oldValue = new BigDecimal(memberAccountRowDto.getAccountValue());
-//		BigDecimal changeValue = new BigDecimal(memberAccountRowDto.getChangeValue());
-//		BigDecimalUtil.add(memberAccountRowDto.getAccountValue(), memberAccountRowDto.getChangeValue()).doubleValue();
 		if (ChargeOperateCodeEnum.RECHARGE == chargeOperateCodeEnum) {
 			memberAccount.setAccountValue(BigDecimalUtil.add(memberAccountRowDto.getAccountValue(), memberAccountRowDto.getChangeValue()).doubleValue());
 		} else {
 			memberAccount.setAccountValue(BigDecimalUtil.subtract(memberAccountRowDto.getAccountValue(), memberAccountRowDto.getChangeValue()).doubleValue());
 		}
 		SpringContextHelper.getBean(MemberAccountService.class).save(memberAccount);
-		
-//		// 充值订单表
-//		if (ChargeOperateCodeEnum.RECHARGE == chargeOperateCodeEnum) {
-//			ChargeOrder chargeOrder = new ChargeOrder();
-//			chargeOrder.setChargeOrderNum("12345678");
-//			chargeOrder.setUserId(memberAccountRowDto.getUserId());
-//			chargeOrder.setMemberAccountId(memberAccountRowDto.getUserId());
-//			chargeOrder.setMemberAccountLogId(null);
-//			chargeOrder.setOrgId(memberAccountRowDto.getOrgId());
-//			chargeOrder.setPaymentTypeCode("0"); // 支付宝
-//			chargeOrder.setChargeAmmount(memberAccountRowDto.getChangeValue());
-//			chargeOrder.setChargeOrderStatCode("1"); // 充值成功
-//			chargeOrder.setCreateTime(new Date());
-//			chargeOrder.setChargeFinishTime(new Date());
-//			SpringContextHelper.getBean(ChargeOrderService.class).save(chargeOrder);
-//		}
 		
 		// 账户日志表
 		MemberAccountLog memberAccountLog = new MemberAccountLog();

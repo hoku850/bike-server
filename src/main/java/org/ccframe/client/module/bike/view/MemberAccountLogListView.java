@@ -15,7 +15,6 @@ import org.ccframe.client.commons.RestyGwtPagingLoader.CallBack;
 import org.ccframe.client.module.bike.event.MemberAccountSelectEvent;
 import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.subsys.core.domain.entity.MemberAccount;
-import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.dto.MemberAccountLogListReq;
 import org.ccframe.subsys.core.dto.MemberAccountLogRowDto;
@@ -71,9 +70,9 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 	protected void initColumnConfig(List<ColumnConfig<MemberAccountLogRowDto, ?>> configList) {
 		MemberAccountLogProperties props = GWT.create(MemberAccountLogProperties.class);
 		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.sysTimeStr(), 130, "交易时间", HasHorizontalAlignment.ALIGN_CENTER, true));
-		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.prevValue(), 65, "交易前", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.prevValue(), 70, "交易前", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.changeValue(), 90, "交易预存款", HasHorizontalAlignment.ALIGN_CENTER, true));
-		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.afterValue(), 65, "交易后", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.afterValue(), 70, "交易后", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.reason(), 260, "变更原因", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.operationMan(), 60, "操作员", HasHorizontalAlignment.ALIGN_CENTER, false));
 	}

@@ -1,10 +1,8 @@
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.util.Arrays;
 
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
-
-import com.alibaba.druid.sql.visitor.functions.If;
 
 public class HexTest {
 	public static void main(String[] args) throws Exception{
@@ -20,7 +18,7 @@ public class HexTest {
 	}
 	
 	@Test
-	public void testName() throws Exception {
+	public void testEscape() throws Exception {
 		
 		// mac 
 		String mac = "6c47a92c4cf8";
@@ -39,30 +37,37 @@ public class HexTest {
 		System.out.println(imei);
 		imei = new String(Hex.decodeHex(imei.toCharArray()));
 		System.out.println(imei);
-		System.out.println(trimnull(imei));
+		
 	}
-	
-	/** 
-     * 去除字符串中的null域 
-     * @param string 
-     * @return 
-     * @throws UnsupportedEncodingException  
-     */  
-    public String trimnull(String string) throws UnsupportedEncodingException  
-    {  
-        ArrayList<Byte> list = new ArrayList<Byte>();  
-        byte[] bytes = string.getBytes("UTF-8");  
-        for(int i=0;bytes!=null&&i<bytes.length;i++){  
-            if(0!=bytes[i]){  
-                list.add(bytes[i]);
-            }  
-        }  
-        byte[] newbytes = new byte[list.size()];  
-        for(int i = 0 ; i<list.size();i++){  
-            newbytes[i]=(Byte) list.get(i);   
-        }  
-        String str = new String(newbytes,"UTF-8");  
-        return str;  
-    }  
 
+	@Test
+	public void testTrimNull() throws DecoderException {
+		// 版本号
+		String ver = "5731323041455f57585f56312e31303000000000";
+		System.out.println(ver);
+
+		// indexOf('\0') 从String去NUL域
+		String softwareVersion = new String(Hex.decodeHex(ver.toCharArray()));
+		int zeroIndex = softwareVersion.indexOf('\0');
+		System.out.println(softwareVersion);
+		System.out.println(softwareVersion.substring(0, zeroIndex));
+
+		// 版本号 从byte[]去NUL域
+		byte[] input = Hex.decodeHex(ver.toCharArray());
+		System.out.println(Hex.encodeHexString(trimnull(input)));
+	}
+
+	/**
+	 * 去除字符串中的null域 
+	 * @param input
+	 * @return
+	 */
+	public byte[] trimnull(byte[] input){
+		int length = 0;
+		for (int i = input.length - 1; i >= 0; i--) {
+			if (input[i] != 0) break;
+			length++;
+		}
+		return Arrays.copyOf(input, input.length - length);
+	} 
 }

@@ -33,7 +33,6 @@ public class BikeTypeService extends BaseService<BikeType, Integer, BikeTypeRepo
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该类型已被使用，禁止删除"});
 		}
 	}
-
 	@Transactional
 	public void saveOrUpdateBikeType(BikeType bikeType) {
 		if (bikeType.getBikeTypeNm().length() > 10) {

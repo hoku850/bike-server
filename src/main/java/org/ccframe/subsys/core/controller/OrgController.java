@@ -33,7 +33,7 @@ public class OrgController{
 
 	@RequestMapping(value = ControllerMapping.ORG_LIST, method = RequestMethod.POST)
 	public ClientPage<OrgRowDto> findOrgList(@RequestBody OrgListReq agentListReq, int offset, int limit) {
-		return SpringContextHelper.getBean(OrgSearchService.class).findAgentList(agentListReq, offset, limit);
+		return SpringContextHelper.getBean(OrgSearchService.class).findList(agentListReq, offset, limit);
 	}
 
 	@RequestMapping(method=RequestMethod.POST)

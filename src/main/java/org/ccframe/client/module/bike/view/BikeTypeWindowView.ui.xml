@@ -24,7 +24,7 @@
 			<cc:child layoutData="{vBoxLayoutData}">
 				<form:FieldLabel text="类型名称">
 					<form:widget>
-						<cc:CcTextField ui:field="bikeTypeNm" allowBlank="false" width="200" maxLength="12" />
+						<cc:CcTextField ui:field="bikeTypeNm" allowBlank="false" width="200" maxLength="15" />
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>

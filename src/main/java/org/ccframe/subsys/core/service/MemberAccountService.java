@@ -34,12 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberAccountService extends BaseService<MemberAccount,java.lang.Integer, MemberAccountRepository>{
 
 	@Transactional
-	public void softDeleteById(Integer memberAccountId) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Transactional
 	public void saveOrUpdateMemberAccount(MemberAccountRowDto memberAccountRowDto) {
 		MemberAccount memberAccount = new MemberAccount();
 		ChargeOperateCodeEnum chargeOperateCodeEnum = ChargeOperateCodeEnum.fromCode(memberAccountRowDto.getChargeOperateTypeCode());
@@ -72,6 +66,7 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 		SpringContextHelper.getBean(MemberAccountLogService.class).save(memberAccountLog);
 	}
 
+	@Transactional(readOnly=true)
 	public MemberAccountRowDto getMemberAccountRowDto(Integer memberAccountId) {
 		MemberAccount memberAccount = this.getById(memberAccountId);
 		// 用DTO传输

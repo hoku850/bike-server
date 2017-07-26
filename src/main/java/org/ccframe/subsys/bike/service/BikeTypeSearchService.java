@@ -11,6 +11,7 @@ import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.dto.BikeTypeListReq;
 import org.ccframe.subsys.bike.dto.BikeTypeRowDto;
 import org.ccframe.subsys.bike.search.BikeTypeSearchRepository;
+import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.service.OrgService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -43,8 +44,8 @@ public class BikeTypeSearchService extends BaseSearchService<BikeType, Integer, 
 			BikeTypeRowDto bikeTypeRowDto = new BikeTypeRowDto();
 			BeanUtils.copyProperties(bikeType, bikeTypeRowDto);
 			// 查询出运营商的信息
-			String orgNm = SpringContextHelper.getBean(OrgService.class).getById(bikeType.getOrgId()).getOrgNm();
-			bikeTypeRowDto.setOrgNm(orgNm);
+			Org org = SpringContextHelper.getBean(OrgService.class).getById(bikeType.getOrgId());
+			if (org != null) bikeTypeRowDto.setOrgNm(org.getOrgNm());
 			resultList.add(bikeTypeRowDto); 
 		}
 		return new ClientPage<BikeTypeRowDto>((int)bikeTypePage.getTotalElements(), offset / limit, limit, resultList);

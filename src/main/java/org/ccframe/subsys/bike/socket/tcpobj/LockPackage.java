@@ -2,7 +2,7 @@ package org.ccframe.subsys.bike.socket.tcpobj;
 
 import java.util.Map;
 
-import org.ccframe.subsys.bike.domain.code.BykeTypeCodeEnum;
+import org.ccframe.subsys.bike.domain.code.BikeTypeCodeEnum;
 
 /**
  * 智能锁通讯包协议：
@@ -21,7 +21,7 @@ public class LockPackage {
 	
 	private long lockerHardwareCode;
 	
-	private BykeTypeCodeEnum bykeTypeCodeEnum;
+	private BikeTypeCodeEnum bykeTypeCodeEnum;
 	
 	private CommandFlagEnum commandFlagEnum;
 	
@@ -62,11 +62,11 @@ public class LockPackage {
 		this.lockerHardwareCode = lockerHardwareCode;
 	}
 
-	public BykeTypeCodeEnum getBykeTypeCodeEnum() {
+	public BikeTypeCodeEnum getBykeTypeCodeEnum() {
 		return bykeTypeCodeEnum;
 	}
 
-	public void setBykeTypeEnum(BykeTypeCodeEnum bykeTypeCodeEnum) {
+	public void setBykeTypeEnum(BikeTypeCodeEnum bykeTypeCodeEnum) {
 		this.bykeTypeCodeEnum = bykeTypeCodeEnum;
 	}
 

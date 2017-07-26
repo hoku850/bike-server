@@ -74,7 +74,7 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.changeValue(), 90, "交易预存款", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, Double>(props.afterValue(), 70, "交易后", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.reason(), 260, "变更原因", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.operationMan(), 60, "操作员", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<MemberAccountLogRowDto, String>(props.operationMan(), 110, "操作员", HasHorizontalAlignment.ALIGN_CENTER, true));
 	}
 	
 	@Override
@@ -83,14 +83,16 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 			@Override
 			public void call(int offset, int limit,final RestyGwtPagingLoader<MemberAccountLogRowDto> loader) {
 				MemberAccountLogListReq memberAccountLogListReq = new MemberAccountLogListReq();
-				memberAccountLogListReq.setUserId(userId);
-				ClientManager.getMemberAccountLogClient().findList(memberAccountLogListReq, offset, limit, new RestCallback<ClientPage<MemberAccountLogRowDto>>(){
-
-					@Override
-					public void onSuccess(Method method, ClientPage<MemberAccountLogRowDto> response) {
-						loader.onLoad(response.getList(), response.getTotalLength(), response.getOffset());
-					}
-				});
+				if (userId != null) {
+					memberAccountLogListReq.setUserId(userId);
+					ClientManager.getMemberAccountLogClient().findList(memberAccountLogListReq, offset, limit, new RestCallback<ClientPage<MemberAccountLogRowDto>>(){
+						
+						@Override
+						public void onSuccess(Method method, ClientPage<MemberAccountLogRowDto> response) {
+							loader.onLoad(response.getList(), response.getTotalLength(), response.getOffset());
+						}
+					});
+				}
 			}
 		};
 	}
@@ -110,14 +112,16 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 						@Override
 						public void onSuccess(Method method, User response) {
 							// 改变title的值
-							title.setText(response.getUserNm() + "账户交易日志");
+							title.setText(response.getLoginId() + "账户交易日志");
 							
 							// 总平台登陆
 							if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
 								ClientManager.getOrgClient().getById(mAccount.getOrgId(), new RestCallback<OrgDto>() {
 									@Override
 									public void onSuccess(Method method, OrgDto response) {
-										title.setText(title.getText() +  "(" + response.getOrgNm() + "预存款)");
+										if (!title.getText().contains("预存款")) {
+											title.setText(title.getText() +  "(" + response.getOrgNm() + "预存款)");
+										}
 									}
 								});
 							}

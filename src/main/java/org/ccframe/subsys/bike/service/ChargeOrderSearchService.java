@@ -83,6 +83,10 @@ public class ChargeOrderSearchService extends BaseSearchService<ChargeOrder, Int
 	}
 
 	public List<ChargeOrder> findByUserIdAndOrgIdOrderByChargeFinishTimeDesc(Integer userId, Integer orgId) {
-		return this.getRepository().findByUserIdAndOrgIdOrderByChargeFinishTimeDesc(userId, orgId);
+		if(userId!=null && orgId!=null) {
+			return this.getRepository().findByUserIdAndOrgIdOrderByChargeFinishTimeDesc(userId, orgId);
+		}
+		
+		return null;
 	}
 }

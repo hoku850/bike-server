@@ -49,7 +49,7 @@ public class MemberAccountSearchService extends BaseSearchService<MemberAccount,
 			if (user != null) {
 				boolQueryBuilder.must(QueryBuilders.termQuery(MemberAccount.USER_ID, user.getUserId()));
 			} else {
-				boolQueryBuilder.must(QueryBuilders.termQuery(MemberAccount.USER_ID, 0));
+				return new ClientPage<MemberAccountRowDto>(0, offset / limit, limit, new ArrayList<MemberAccountRowDto>());
 			}
 		}
 		

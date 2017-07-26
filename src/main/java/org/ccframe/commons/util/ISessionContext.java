@@ -20,7 +20,7 @@ public interface ISessionContext {
 	 * @param key
 	 * @return
 	 */
-	Object getServerValue(String key);
+	<T>T getServerValue(String key);
 
 	/**
 	 * 获取会话请求参数.

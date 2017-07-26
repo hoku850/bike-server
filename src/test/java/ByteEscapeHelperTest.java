@@ -26,7 +26,7 @@ public class ByteEscapeHelperTest {
 
 	@Test
 	public void testUnescapeBytes() throws Exception {
-//		originalBytes = new byte[] { 0x5e, 0x7D };
+
 		System.out.println("0x5E， 0x5D 来代替 0x5E, 0x5E， 0x7D 来代替 0x7E");
 		for (int i = 0; i < originalBytes.length; i++) {
 			System.out.print(Integer.toHexString((byte) originalBytes[i]) + " ");
@@ -38,13 +38,5 @@ public class ByteEscapeHelperTest {
 			System.out.print(Integer.toHexString((byte) unescapeBytes[i]) + " ");
 		}
 		System.out.println();
-	}
-	
-	@After
-	public void testName() throws Exception {
-		byte[] test1 = byteEscapeHelper.testNewUnescapeBytes(byteEscapeHelper.escapeBytes(originalBytes));
-		for (int i = 0; i < test1.length; i++) {
-			System.out.print(Integer.toHexString((byte) test1[i]) + " ");
-		}
 	}
 }

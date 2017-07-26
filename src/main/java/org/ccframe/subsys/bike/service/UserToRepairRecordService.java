@@ -1,10 +1,13 @@
 package org.ccframe.subsys.bike.service;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.ccframe.sdk.bike.utils.DateDistanceUtil;
 import org.ccframe.sdk.bike.utils.PositionUtil;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum;
@@ -33,36 +36,45 @@ public class UserToRepairRecordService extends BaseService<UserToRepairRecord,ja
 		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), 1);
 		CyclingOrder cyclingOrder = list.get(0);
 		cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.TO_BE_REPAIRED.toCode());
-		cyclingOrder.setEndTime(new Date());
+		Date nowDate = new Date();
+		cyclingOrder.setEndTime(nowDate);
 		
 		//------------未完待续
 		String[] splits = PositionUtil.splitPos(position);
 		cyclingOrder.setEndLocationLng(Double.valueOf(splits[0]));
 		cyclingOrder.setEndLocationLat(Double.valueOf(splits[1]));
-		SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
+		long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder.getStartTime(), new Date());
+		long min = sec / 60;
+
+		cyclingOrder.setCyclingContinousSec((int)sec);
+
+		//更新骑行距离
+		Integer meter = SpringContextHelper.getBean(CyclingOrderService.class).countMeter(cyclingOrder.getCyclingOrderId());
+		cyclingOrder.setCyclingDistanceMeter(meter);
 		
+		cyclingOrder.setOrderAmmount(0.00);
+		SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 		
 		//生成报修记录
 		UserToRepairRecord userToRepairRecord = new UserToRepairRecord();
-		userToRepairRecord.setSmartLockId(1);
-		userToRepairRecord.setBikePlateNumber("123");
+		userToRepairRecord.setSmartLockId(60001);
+		userToRepairRecord.setBikePlateNumber(cyclingOrder.getBikePlateNumber());
 		userToRepairRecord.setUserId(user.getUserId());
 		userToRepairRecord.setOrgId(1);
-		userToRepairRecord.setToRepairTime(new Date());
-		userToRepairRecord.setToRepairLocationLng(116.0);
-		userToRepairRecord.setToRepairLocationLat(40.0);
+		userToRepairRecord.setToRepairTime(nowDate);
+		userToRepairRecord.setToRepairLocationLng(Double.valueOf(splits[0]));
+		userToRepairRecord.setToRepairLocationLat(Double.valueOf(splits[1]));
 		userToRepairRecord.setToRepairLocationCode(posCode);
 		userToRepairRecord.setToRepairReasonId(reasonID);
 		userToRepairRecord.setIfFinishFix("N");
-		userToRepairRecord.setFinishFixTime(new Date());
 		
 		SpringContextHelper.getBean(UserToRepairRecordService.class).save(userToRepairRecord);
 		
 		//更新智能锁表记录
 		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(cyclingOrder.getSmartLockId());
 		smartLock.setSmartLockStatCode(SmartLockStatCodeEnum.TO_FIX.toCode());
-		smartLock.setLastUseDate(new Date());
-		SpringContextHelper.getBean(SmartLockService.class).saveOrUpdateSmartLock(smartLock);
+		smartLock.setLastUseDate(nowDate);
+		SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
 		
 		//更新智能锁状态表记录
 		List<SmartLockStat> statList = SpringContextHelper.getBean(SmartLockStatService.class).findByKey(SmartLockStat.SMART_LOCK_ID, cyclingOrder.getSmartLockId());

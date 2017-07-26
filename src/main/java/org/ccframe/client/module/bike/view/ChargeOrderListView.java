@@ -136,19 +136,6 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
-		// 运营商登陆
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
-			this.orgNm.hide();
-			this.columnModel.getColumn(1).setHidden(true);
-		} else {
-			orgNm.reset();
-			orgNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-				@Override
-				public void onValueChange(ValueChangeEvent<Integer> event) {
-					loader.load();
-				}
-			});
-		}
 		chargeState.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
@@ -167,9 +154,19 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
-		// 总平台登陆
-		if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
-			orgNm.setValue(0);
+		// 运营商登陆
+		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+			this.orgNm.hide();
+			this.columnModel.getColumn(1).setHidden(true);
+		} else {
+			orgNm.setValue(Global.COMBOBOX_ALL_VALUE);
+			orgNm.reset();
+			orgNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<Integer> event) {
+					loader.load();
+				}
+			});
 		}
 		search.setValue(null);
 	}

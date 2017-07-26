@@ -1,0 +1,103 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:container="urn:import:com.sencha.gxt.widget.core.client.container"
+	xmlns:gxt="urn:import:com.sencha.gxt.widget.core.client"
+	xmlns:button="urn:import:com.sencha.gxt.widget.core.client.button"
+	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
+	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
+	xmlns:cc="urn:import:org.ccframe.client.components"
+	xmlns:grid="urn:import:com.sencha.gxt.widget.core.client.grid">
+	
+	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="rowMargins">
+		<ui:attributes top="5" right="5" bottom="0" left="5" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.core.client.util.Padding" field="vBoxPaddings">
+		<ui:attributes top="5" right="15" bottom="5" left="15" />
+	</ui:with>
+	<ui:with type="com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutData" field="vBoxLayoutData">
+		<ui:attributes margins="{rowMargins}"/>
+	</ui:with>
+
+	<gxt:Window ui:field="window" width="380" modal="true" headingText="强制结束骑行订单" focusWidget="{closeButton}" buttonAlign="CENTER" resizable="false">
+		<cc:CcVBoxLayoutContainer ui:field="vBoxLayoutContainer" padding="{vBoxPaddings}">
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="订单编号">
+					<form:widget>
+						<cc:CcIntegerField ui:field="cyclingOrderId"  width="160"  readOnly="true"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="运营商">
+					<form:widget>
+						<cc:CcTextField ui:field="orgNm"  width="160"  readOnly="true"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="登陆ID">
+					<form:widget>
+						<cc:CcTextField ui:field="loginId"  width="160"  readOnly="true"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="硬件编号">
+					<form:widget>
+						<cc:CcTextField ui:field="lockerHardwareCode"  width="160"  readOnly="true"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="单车车牌号">
+					<form:widget>
+						<cc:CcTextField ui:field="bikePlateNumber"  width="160"  readOnly="true"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="单车类型">
+					<form:widget>
+						<cc:CcTextField ui:field="bikeTypeNm"  width="160"  readOnly="true"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="状态">
+					<form:widget>
+						<cc:CcTextField ui:field="cyclingOrderStatCode"  width="160" readOnly="true"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="开始时间">
+					<form:widget>
+						<cc:CcTextField ui:field="startTimeStr"  width="160" readOnly="true"/>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="金额">
+					<form:widget>
+						<cc:CcCurrencyField ui:field="orderAmmount"  width="160" />
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
+			<!-- <cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel text="结束时间">
+					<form:widget>
+						<cc:CcDateField ui:field="endTimeStr"  width="160" />
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child> -->
+		</cc:CcVBoxLayoutContainer>
+		<gxt:button>
+			<button:TextButton ui:field="saveButton" text="结束订单"/>
+		</gxt:button>
+		<gxt:button>
+			<button:TextButton ui:field="closeButton" text="取消"/>
+		</gxt:button>
+	</gxt:Window>
+
+</ui:UiBinder> 

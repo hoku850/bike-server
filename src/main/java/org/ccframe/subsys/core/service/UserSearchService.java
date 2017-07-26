@@ -79,7 +79,7 @@ public class UserSearchService extends BaseSearchService<User, Integer, UserSear
 		for(User user:userPage.getContent()){
 			UserRowDto rowRecord = new UserRowDto();
 			BeanUtils.copyProperties(user, rowRecord);
-			user.setUserPsw("");//列表返回屏蔽用户密码
+			user.setUserPsw(Global.FAKE_PASSWORD);//列表返回屏蔽用户密码
 			resultList.add(rowRecord);
 		}
 		return new ClientPage<UserRowDto>((int)userPage.getTotalElements(), offset / limit, limit, resultList);

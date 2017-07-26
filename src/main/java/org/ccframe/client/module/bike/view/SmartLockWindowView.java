@@ -30,10 +30,10 @@ import com.sencha.gxt.widget.core.client.info.Info;
 @Singleton
 public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> implements Editor<SmartLock>{
 
-	interface SmartLockUiBinderUiBinder extends UiBinder<Component, SmartLockWindowView> {}
+	interface SmartLockUiBinder extends UiBinder<Component, SmartLockWindowView> {}
 	interface SmartLockDriver extends SimpleBeanEditorDriver<SmartLock, SmartLockWindowView> {}
 	
-	private static SmartLockUiBinderUiBinder uiBinder = GWT.create(SmartLockUiBinderUiBinder.class);
+	private static SmartLockUiBinder uiBinder = GWT.create(SmartLockUiBinder.class);
 	private SmartLockDriver driver = GWT.create(SmartLockDriver.class);
 	
 	private Integer smartLockId;

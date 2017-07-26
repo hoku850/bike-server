@@ -7,7 +7,6 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 
 public interface ChargeOrderSearchRepository extends ElasticsearchRepository<ChargeOrder, Integer>{
 
-	List<ChargeOrder> findByUserIdAndOrgIdOrderByChargeFinishTimeDesc(
-			Integer userId, Integer orgId);
+	List<ChargeOrder> findByUserIdAndOrgIdOrderByChargeFinishTimeDesc(Integer userId, Integer orgId);
 
 }

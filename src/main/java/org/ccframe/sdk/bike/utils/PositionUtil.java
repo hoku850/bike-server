@@ -7,11 +7,9 @@ import org.apache.commons.lang.StringUtils;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.sdk.bike.dto.Position;
 import org.ccframe.subsys.bike.domain.entity.CyclingTrajectoryRecord;
-import org.ccframe.subsys.bike.service.CyclingTrajectoryRecordService;
+import org.ccframe.subsys.bike.service.CyclingTrajectoryRecordSearchService;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
-
-import com.google.gwt.dev.jjs.Correlation.Literal;
 
 /**
  * @author zjm
@@ -114,7 +112,7 @@ public class PositionUtil {
 	}
 
 	public static StringBuffer getPolylinePath(Integer orderId) {
-		List<CyclingTrajectoryRecord> list = SpringContextHelper.getBean(CyclingTrajectoryRecordService.class).findByKey(CyclingTrajectoryRecord.CYCLING_ORDER_ID, orderId, new Order(Direction.ASC, CyclingTrajectoryRecord.RECORD_TIME));
+		List<CyclingTrajectoryRecord> list = SpringContextHelper.getBean(CyclingTrajectoryRecordSearchService.class).findByCyclingOrderIdOrderByRecordTimeAsc(orderId);
 		StringBuffer sBuffer = new StringBuffer("");
 		if(list!=null && list.size()>0) {
 			

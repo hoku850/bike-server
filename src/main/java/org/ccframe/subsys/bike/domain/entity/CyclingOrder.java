@@ -266,5 +266,17 @@ public class CyclingOrder implements Serializable{
 			.append(getCyclingOrderId(),other.getCyclingOrderId())
 			.isEquals();
 	}
+
+	@Override
+	public String toString() {
+		return "CyclingOrder [cyclingOrderId=" + cyclingOrderId + ", userId=" + userId + ", orgId=" + orgId
+				+ ", smartLockId=" + smartLockId + ", bikePlateNumber=" + bikePlateNumber + ", startTime=" + startTime
+				+ ", startLocationLng=" + startLocationLng + ", startLocationLat=" + startLocationLat + ", endTime="
+				+ endTime + ", endLocationLng=" + endLocationLng + ", endLocationLat=" + endLocationLat
+				+ ", cyclingOrderStatCode=" + cyclingOrderStatCode + ", cyclingContinousSec=" + cyclingContinousSec
+				+ ", cyclingDistanceMeter=" + cyclingDistanceMeter + ", orderAmmount=" + orderAmmount + "]";
+	}
+	
+	
 }
 

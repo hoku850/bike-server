@@ -28,16 +28,15 @@ public class ChargeOrderService extends BaseService<ChargeOrder,java.lang.Intege
 
 	@Transactional
 	public void softDeleteById(Integer chargeOrderId) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Transactional
 	public void saveOrUpdateBikeType(ChargeOrder chargeOrder) {
-		// TODO Auto-generated method stub
 		
 	}
 
+	@Transactional(readOnly=true)
 	public String doExport(Integer orgId) throws IOException {
 		//生成一个EXCEL导入文件到TEMP,并且文件名用UUID
     	String filePathString = WebContextHolder.getWarPath()+"/exceltemplate/chargeOrderListExcel.xls";//"war/exceltemplate/goodsInfListExcel.xls";
@@ -145,6 +144,4 @@ public class ChargeOrderService extends BaseService<ChargeOrder,java.lang.Intege
 		
 		return list;
 	}
-	
-
 }

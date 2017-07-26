@@ -25,13 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OrgService extends BaseService<Org, Integer, OrgRepository> implements ILabelValueListProvider {
 
-	@Transactional(readOnly = true)
-	@CacheEvictBy({Org.class})
-	@Cacheable(value=Global.EH_CACHE_AUTO_CACHE, cacheResolver = Global.EH_CACHE_RESOLVER)
-	public Org getOrgByNm(String orgNm){
-        return this.getByKey(Org.ORG_NM, orgNm);
-    }
-
+	private static final int TEMP_ORG_ID = 2;
+	
 	@Override
 	@Transactional(readOnly = true)
 	public List<LabelValue> getLabelValueList(String beanName, String extraParam) {
@@ -57,7 +52,7 @@ public class OrgService extends BaseService<Org, Integer, OrgRepository> impleme
 		if (org.getOrgId() == null) {
 			
 			org.setIfDelete(BoolCodeEnum.NO.toCode());
-			org.setRoleId(2); // TODO 先设管理员 后期再修改
+			org.setRoleId(TEMP_ORG_ID); // TODO 先设管理员 后面再修改
 			SpringContextHelper.getBean(this.getClass()).save(org);
 			
 			Role role = new Role();

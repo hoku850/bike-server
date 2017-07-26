@@ -1,9 +1,5 @@
 package org.ccframe.subsys.bike.socket.commons;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -13,12 +9,12 @@ import org.apache.commons.codec.binary.Hex;
 import org.ccframe.commons.util.CRC16Util;
 import org.ccframe.commons.util.UtilDateTime;
 import org.ccframe.subsys.bike.processor.NettyServerProcessor;
-import org.ccframe.subsys.bike.socket.tcpobj.AnswerFlagEnum;
-import org.ccframe.subsys.bike.socket.tcpobj.LockPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.HashBiMap;
+
+import io.netty.channel.Channel;
 
 /**
  * netty长连接反向推送工具.
@@ -29,11 +25,14 @@ public class SmartLockChannelUtil {
 	
 	private static final int MAX_CONNECTION=10000; /* 默认10000个长连接 */
 	
-	private static final int READ_TIMEOUT_MILLIS=10*1000; /* 10秒内将数据发出去 */
+	private static final int READ_TIMEOUT_MILLIS=15*1000; /* 15秒内将数据发出去 */
 
 	private static final int UNLOCKING_SIZE = 1000;
 	
 	private static LinkedHashMap<Long, Boolean> openMessageMap = new LinkedHashMap<Long, Boolean>(){ //开锁消息队列
+
+		private static final long serialVersionUID = -657968168039482524L;
+
 		protected boolean removeEldestEntry(Map.Entry<Long, Boolean> eldest) {
 		    // 当前记录数大于设置的最大的记录数，删除最旧记录（即最近访问最少的记录）
 		    return size() > UNLOCKING_SIZE;

@@ -27,13 +27,8 @@ public class MemberAccountLogSearchService extends BaseSearchService<MemberAccou
 
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		
-		// 过滤 登陆ID/订单号码]
-		if (memberAccountLogListReq.getUserId()!= null) {
-			boolQueryBuilder.must(QueryBuilders.termQuery(MemberAccountLog.USER_ID, memberAccountLogListReq.getUserId()));
-		} else {
-			List<MemberAccountLogRowDto> resultList = new ArrayList<MemberAccountLogRowDto>();
-			return new ClientPage<MemberAccountLogRowDto>(0, offset / limit, limit, resultList);
-		}
+		// 过滤 GWT已经判空处理
+		boolQueryBuilder.must(QueryBuilders.termQuery(MemberAccountLog.USER_ID, memberAccountLogListReq.getUserId()));
 				
 		// 查询
 		Page<MemberAccountLog> cPage = this.getRepository().search(
@@ -49,7 +44,7 @@ public class MemberAccountLogSearchService extends BaseSearchService<MemberAccou
 			// 查询出运营商的信息
 			User user = SpringContextHelper.getBean(UserService.class).getById(memberAccountLog.getUserId());
 			if (user!=null) {
-				memberAccountLogRowDto.setOperationMan(user.getUserNm());
+				memberAccountLogRowDto.setOperationMan(user.getLoginId());
 			}
 			resultList.add(memberAccountLogRowDto);
 		}

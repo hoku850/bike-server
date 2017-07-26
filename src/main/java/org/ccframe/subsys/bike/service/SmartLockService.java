@@ -86,9 +86,9 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		
 	}
 
+	@Transactional(readOnly=true)
 	public Integer countSmartLockOfAgent(Integer agentId) {
-		List<SmartLock> list = this.getRepository()
-				.findAll(new Criteria<SmartLock>().add(Restrictions.eq(SmartLock.ORG_ID, agentId)));
+		List<SmartLock> list = this.getRepository().findAll(new Criteria<SmartLock>().add(Restrictions.eq(SmartLock.ORG_ID, agentId)));
 		if (list != null) {
 			return list.size();
 		} else {
@@ -302,46 +302,46 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		
 		for (SmartLock smartLock : smartLocks) {
 			Map<String, Object> data = new HashMap<String, Object>();
-			data.put("smartLockId", smartLock.getSmartLockId());
-			data.put("imeiCode", smartLock.getImeiCode());
-			data.put("macAddress", smartLock.getMacAddress());
-			data.put("lockerHardwareCode", smartLock.getLockerHardwareCode());
-			data.put("bikePlateNumber", smartLock.getBikePlateNumber());
-			data.put("activeDateStr", smartLock.getActiveDateStr());
+			data.put(SmartLock.SMART_LOCK_ID, smartLock.getSmartLockId());
+			data.put(SmartLock.IMEI_CODE, smartLock.getImeiCode());
+			data.put(SmartLock.MAC_ADDRESS, smartLock.getMacAddress());
+			data.put(SmartLock.LOCKER_HARDWARE_CODE, smartLock.getLockerHardwareCode());
+			data.put(SmartLock.BIKE_PLATE_NUMBER, smartLock.getBikePlateNumber());
+			data.put(SmartLock.ACTIVE_DATE_STR, smartLock.getActiveDateStr());
 
 			Org org = SpringContextHelper.getBean(OrgService.class).getById(smartLock.getOrgId());
 			if (org != null) {
-				data.put("orgId", org.getOrgNm());
+				data.put(SmartLock.ORG_ID, org.getOrgNm());
 			}
 
 			BikeType bikeType = SpringContextHelper.getBean(BikeTypeService.class).getById(smartLock.getBikeTypeId());
 			if (bikeType != null) {
-				data.put("bikeTypeId", bikeType.getBikeTypeNm());
+				data.put(SmartLock.BIKE_TYPE_ID, bikeType.getBikeTypeNm());
 			}
 			switch (SmartLockStatCodeEnum.fromCode(smartLock.getSmartLockStatCode())) {
 			case UNPRODUCE:
-				data.put("smartLockStatCode", "未生产");
+				data.put(SmartLock.SMART_LOCK_STAT_CODE, "未生产");
 				break;
 			case PRODUCED:
-				data.put("smartLockStatCode", "已生产");
+				data.put(SmartLock.SMART_LOCK_STAT_CODE, "已生产");
 				break;
 			case GRANTED:
-				data.put("smartLockStatCode", "已发放");
+				data.put(SmartLock.SMART_LOCK_STAT_CODE, "已发放");
 				break;
 			case ACTIVED:
-				data.put("smartLockStatCode", "已激活");
+				data.put(SmartLock.SMART_LOCK_STAT_CODE, "已激活");
 				break;
 			case TO_FIX:
-				data.put("smartLockStatCode", "维修中");
+				data.put(SmartLock.SMART_LOCK_STAT_CODE, "维修中");
 				break;
 			case DESERTED:
-				data.put("smartLockStatCode", "已废弃");
+				data.put(SmartLock.SMART_LOCK_STAT_CODE, "已废弃");
 				break;
 			default:
-				data.put("smartLockStatCode", "NULL");
+				data.put(SmartLock.SMART_LOCK_STAT_CODE, "NULL");
 				break;
 			}
-			data.put("lastUseDateStr", smartLock.getLastUseDateStr());
+			data.put(SmartLock.LAST_USE_DATE_STR, smartLock.getLastUseDateStr());
 			dataList.add(data);
 		}
 		String fileName = "temp/" + UUID.randomUUID() + ".xls";

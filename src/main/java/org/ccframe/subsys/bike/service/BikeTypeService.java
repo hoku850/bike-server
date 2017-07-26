@@ -21,13 +21,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class BikeTypeService extends BaseService<BikeType, Integer, BikeTypeRepository> implements ILabelValueListProvider{
 	
+	/**
+	 * 1 检测智能锁的单车类型字段有没有引用该字段，没有则删除，有则抛异常
+	 * 2 删除操作需要检查没有被自行车使用才能删除，否则抛出异常
+	 * @param bikeTypeId
+	 */
 	@Transactional
-	public void softDeleteById(Integer bikeTypeId) {
-		// 1 检测智能锁的单车类型字段有没有引用该字段，没有则删除，有则抛异常
-		// 2 删除操作需要检查没有被自行车使用才能删除，否则抛出异常
+	public void deleteBikeTypeById(Integer bikeTypeId) {
 		BikeType bikeType = getById(bikeTypeId);
 		List<SmartLock> list = SpringContextHelper.getBean(SmartLockService.class).findByKey(SmartLock.BIKE_TYPE_ID, bikeType.getBikeTypeId());
-		if (list.size() == 0) {
+		if (list == null || list.size() == 0) {
 			SpringContextHelper.getBean(BikeTypeService.class).delete(bikeType);
 		} else {
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该类型已被使用，禁止删除"});
@@ -35,9 +38,7 @@ public class BikeTypeService extends BaseService<BikeType, Integer, BikeTypeRepo
 	}
 	@Transactional
 	public void saveOrUpdateBikeType(BikeType bikeType) {
-		if (bikeType.getBikeTypeNm().length() > 10) {
-			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"单车类型的输入长度应小于10"});
-		} else if (bikeType.getOrgId() == 0) {
+		if (bikeType.getOrgId() == Global.COMBOBOX_ALL_VALUE) {
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"请选择一个运营商"});
 		} else {
 			SpringContextHelper.getBean(BikeTypeService.class).save(bikeType);
@@ -58,7 +59,7 @@ public class BikeTypeService extends BaseService<BikeType, Integer, BikeTypeRepo
 		if (extraParam == null) {
 			return resultList;
 		}
-		if (Integer.parseInt(extraParam) == 0) {
+		if (Integer.parseInt(extraParam) == Global.COMBOBOX_ALL_VALUE) {
 			for(BikeType bikeType: ((BikeTypeService)SpringContextHelper.getBean(this.getClass())).listAll()){
 				resultList.add(new LabelValue(bikeType.getBikeTypeNm(), bikeType.getBikeTypeId()));
 			}

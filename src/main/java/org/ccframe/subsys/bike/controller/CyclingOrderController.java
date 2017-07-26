@@ -26,7 +26,17 @@ public class CyclingOrderController{
 	public CyclingOrderRowDto getDtoById(@PathVariable(Global.ID_BINDER_ID) Integer cyclingOrderId) {
 		return SpringContextHelper.getBean(CyclingOrderService.class).getDtoById(cyclingOrderId);
 	}
+	
+	@RequestMapping(value = "/"+ ControllerMapping.CYCLING_ORDER_FINISH + Global.ID_BINDER_PATH)
+	public CyclingOrderRowDto getById(@PathVariable(Global.ID_BINDER_ID) Integer cyclingOrderId) {
+		return SpringContextHelper.getBean(CyclingOrderService.class).finishGetById(cyclingOrderId);
+	}
 
+	@RequestMapping(value = "/"+ ControllerMapping.CYCLING_ORDER_FINISH, method=RequestMethod.POST)
+	public int finish(@RequestBody CyclingOrderRowDto cyclingOrderRowDto){
+		return SpringContextHelper.getBean(CyclingOrderService.class).finish(cyclingOrderRowDto);
+	}
+	
 	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.DELETE)
 	public void delete(@PathVariable(Global.ID_BINDER_ID) Integer cyclingOrderId){
 		SpringContextHelper.getBean(CyclingOrderService.class).softDeleteById(cyclingOrderId);

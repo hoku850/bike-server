@@ -130,9 +130,4 @@ public class AgentAppListView extends BaseCrudListView<AgentAppRowDto>{
 		Widget widget = uiBinder.createAndBindUi(this);
 		return widget;
 	}
-	
-	@Override
-	public void onModuleReload(BodyContentEvent event) {
-		super.onModuleReload(event);
-	}
 }

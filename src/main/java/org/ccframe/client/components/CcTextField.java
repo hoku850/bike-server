@@ -30,7 +30,9 @@ public class CcTextField extends TextField{
 			@Override
 			public void execute() {
 				InputElement ie = getCell().getAppearance().getInputElement(getElement()).cast();
-				ie.setMaxLength(maxLength);
+				if(maxLength != null){
+					ie.setMaxLength(maxLength);
+				}
 			}
 		});
 	}
@@ -42,7 +44,9 @@ public class CcTextField extends TextField{
 			@Override
 			public void execute() {
 				InputElement ie = getCell().getAppearance().getInputElement(getElement()).cast();
-				ie.setMaxLength(maxLength);
+				if(maxLength != null){
+					ie.setMaxLength(maxLength);
+				}
 			}
 		});
 	}

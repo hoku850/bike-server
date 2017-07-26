@@ -34,8 +34,8 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 @Singleton
 public class OrgListView extends BaseCrudListView<OrgRowDto>{
 
-	interface AgentListUiBinder extends UiBinder<Component, OrgListView> {}
-	private static AgentListUiBinder uiBinder = GWT.create(AgentListUiBinder.class);
+	interface OrgListUiBinder extends UiBinder<Component, OrgListView> {}
+	private static OrgListUiBinder uiBinder = GWT.create(OrgListUiBinder.class);
 	
 	@Override
 	public void handleAddClick(SelectEvent e) {

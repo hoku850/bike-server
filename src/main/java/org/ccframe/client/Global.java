@@ -14,6 +14,8 @@ public interface Global {
 	//数据模型常量
 	String ISO_8601_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZZ";
 	String FIELD_AS_STRING_SUFFIX = "Str"; //时间和日期的字符串转换方法后缀
+	String ES_DEFAULT_INDEX = "default_index";
+	String ES_DEFAULT_ANALYSER = "elasticsearch-analyser.json";
 
 	//框架常量
 	String SESSION_VALIDATE_CODE = "org_ccframe_ValidateCode";
@@ -39,6 +41,7 @@ public interface Global {
 	String EH_CACHE_AUTO_CACHE = "auto";
 	String EH_CACHE_RESOLVER = "ehCacheResolver";
 
+	String FAKE_PASSWORD = "ABCD1234"; //涉及用户密码的返回统一的假密码
 	
 	String UPLOAD_DIR = "upload";
 	String TEMP_DIR = "temp";

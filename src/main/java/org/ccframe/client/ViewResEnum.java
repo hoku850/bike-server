@@ -270,6 +270,11 @@ public enum ViewResEnum{
 	MEMBER_ACCOUNT_WINDOW, 
 	
 	/**
+	 * 强制结束骑行订单窗口
+	 */
+	CYCLING_ORDER_FINISH_WINDOW,
+	
+	/**
 	 * 运营商管理
 	 */
 	AGENT_LIST_LIST,

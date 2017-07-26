@@ -1,9 +1,5 @@
 package org.ccframe.client.module.bike.view;
 
-import java.text.DecimalFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
-import java.util.List;
 
 import org.ccframe.client.Global;
 import org.ccframe.client.base.BaseWindowView;
@@ -20,9 +16,7 @@ import org.fusesource.restygwt.client.Method;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;
-import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.editor.client.SimpleBeanEditorDriver;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -31,19 +25,16 @@ import com.google.inject.Singleton;
 import com.sencha.gxt.widget.core.client.Component;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.form.DoubleField;
 import com.sencha.gxt.widget.core.client.form.FormPanelHelper;
-import com.sencha.gxt.widget.core.client.form.Validator;
-import com.sencha.gxt.widget.core.client.form.validator.RegExValidator;
 import com.sencha.gxt.widget.core.client.info.Info;
 
 @Singleton
 public class BikeTypeWindowView extends BaseWindowView<Integer, BikeType> implements Editor<BikeType>{
 
-	interface BikeTypeUiBinderUiBinder extends UiBinder<Component, BikeTypeWindowView> {}
+	interface BikeTypeUiBinder extends UiBinder<Component, BikeTypeWindowView> {}
 	interface BikeTypeDriver extends SimpleBeanEditorDriver<BikeType, BikeTypeWindowView> { }
 	
-	private static BikeTypeUiBinderUiBinder uiBinder = GWT.create(BikeTypeUiBinderUiBinder.class);
+	private static BikeTypeUiBinder uiBinder = GWT.create(BikeTypeUiBinder.class);
 	private BikeTypeDriver driver = GWT.create(BikeTypeDriver.class);
 	
 	private Integer bikeTypeId;

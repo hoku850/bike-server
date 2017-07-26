@@ -50,7 +50,6 @@ public class SmartLock implements Serializable{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	//elasticsearch
 	@org.springframework.data.annotation.Id
-	@Field(type = FieldType.Integer, analyzer="ik")
 	@Column(name = "SMART_LOCK_ID", nullable = false, length = 10)
 	private java.lang.Integer smartLockId;
 	

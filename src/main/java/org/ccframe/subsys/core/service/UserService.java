@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,7 +53,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gwt.i18n.client.NumberFormat;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 
 @Service
@@ -459,25 +457,22 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 	 * @author zjm
 	 */
 	@Transactional
-	public void login(String phoneNumber, String iMEI) {
+	public void login(String phoneNumber, String iMEI, String validateCode, int orgId) {
 
 		List<User> list = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(phoneNumber, iMEI);
+		User user = null;
 		
-		User user2 = null;
-		if(list!= null && list.size()>0){
-			user2 = list.get(0);
-			
-			List<MemberAccount> listAccounts = SpringContextHelper.getBean(MemberAccountSearchService.class).findByUserIdAndOrgIdAndAccountTypeCode(user2.getUserId(), 1, AccountTypeCodeEnum.DEPOSIT.toCode());
-			
-			if(listAccounts == null || listAccounts.size()==0) {
-				this.newAccount(user2);
+		if (list != null && list.size() > 0) {
+			user = list.get(0);
+			List<MemberAccount> listAccounts = SpringContextHelper.getBean(MemberAccountSearchService.class).findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), orgId, AccountTypeCodeEnum.DEPOSIT.toCode());
+			if (listAccounts == null || listAccounts.size() == 0) {
+				this.createAccount(user, orgId);
 			}
 		} else {
-			User user = null;
-			List<User> findByKey = SpringContextHelper.getBean(UserService.class).findByKey(User.LOGIN_ID, phoneNumber);
-			if(findByKey!=null && findByKey.size()>0) {
-				//更新用户的UserPsw(IMEI).
-				user = findByKey.get(0);
+			List<User> users = SpringContextHelper.getBean(UserService.class).findByKey(User.LOGIN_ID, phoneNumber);
+			if (users != null && users.size() > 0) {
+				// 更新用户的UserPsw(IMEI).
+				user = users.get(0);
 				user.setUserPsw(iMEI);
 			} else {
 				//新建用户
@@ -490,38 +485,35 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 				user.setCreateDate(new Date());
 				user.setUserStatCode(UserStatCodeEnum.NORMAL.toCode());
 			}
-
-			user2 = SpringContextHelper.getBean(UserService.class).save(user);
-			
-			this.newAccount(user2);
+			user = SpringContextHelper.getBean(UserService.class).save(user);
+			this.createAccount(user, orgId);
 		}
-		
-		WebContextHolder.getSessionContextStore().setServerValue(Global.SESSION_LOGIN_MEMBER_USER, user2);
+		WebContextHolder.getSessionContextStore().setServerValue(Global.SESSION_LOGIN_MEMBER_USER, user);
 	}
 	
 	/**
 	 * 新建用户的押金、预存款和积分账户
 	 * @author zjm
 	 */
-	public void newAccount(User user2) {
+	public void createAccount(User user, int orgId) {
 		//新建用户积分账户
 		MemberAccount memberAccount = new MemberAccount();
-		memberAccount.setUserId(user2.getUserId());
-		memberAccount.setOrgId(1);
+		memberAccount.setUserId(user.getUserId());
+		memberAccount.setOrgId(orgId);
 		memberAccount.setAccountTypeCode(AccountTypeCodeEnum.INTEGRAL.toCode());
 		memberAccount.setAccountValue(0.00);
 		SpringContextHelper.getBean(MemberAccountService.class).save(memberAccount);
 		//新建用户预存款账户
 		MemberAccount memberAccount2 = new MemberAccount();
-		memberAccount2.setUserId(user2.getUserId());
-		memberAccount2.setOrgId(1);
+		memberAccount2.setUserId(user.getUserId());
+		memberAccount2.setOrgId(orgId);
 		memberAccount2.setAccountTypeCode(AccountTypeCodeEnum.PRE_DEPOSIT.toCode());
 		memberAccount2.setAccountValue(0.00);
 		SpringContextHelper.getBean(MemberAccountService.class).save(memberAccount2);
 		//新建用户押金账户
 		MemberAccount memberAccount3 = new MemberAccount();
-		memberAccount3.setUserId(user2.getUserId());
-		memberAccount3.setOrgId(1);
+		memberAccount3.setUserId(user.getUserId());
+		memberAccount3.setOrgId(orgId);
 		memberAccount3.setAccountTypeCode(AccountTypeCodeEnum.DEPOSIT.toCode());
 		memberAccount3.setAccountValue(0.00);
 		SpringContextHelper.getBean(MemberAccountService.class).save(memberAccount3);

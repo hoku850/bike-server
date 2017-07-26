@@ -32,10 +32,10 @@ import com.sencha.gxt.widget.core.client.info.Info;
 @Singleton
 public class MemberAccountWindowView extends BaseWindowView<Integer, MemberAccountRowDto> implements Editor<MemberAccountRowDto>{
 
-	interface MemberAccountUiBinderUiBinder extends UiBinder<Component, MemberAccountWindowView> {}
+	interface MemberAccountUiBinder extends UiBinder<Component, MemberAccountWindowView> {}
 	interface MemberAccountDriver extends SimpleBeanEditorDriver<MemberAccountRowDto, MemberAccountWindowView> { }
 	
-	private static MemberAccountUiBinderUiBinder uiBinder = GWT.create(MemberAccountUiBinderUiBinder.class);
+	private static MemberAccountUiBinder uiBinder = GWT.create(MemberAccountUiBinder.class);
 	private MemberAccountDriver driver = GWT.create(MemberAccountDriver.class);
 	
 	@UiField

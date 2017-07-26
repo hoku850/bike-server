@@ -14,8 +14,11 @@ public class SmartLockStatSearchService extends BaseSearchService<SmartLockStat,
 
 	public List<SmartLockStat> findByLockSwitchStatCodeAndIfRepairIngAndLockLatBetweenAndLockLngBetween(String code, String string,
 			double d, double e, double f, double g) {
-		return this.getRepository().findByLockSwitchStatCodeAndIfRepairIngAndLockLatBetweenAndLockLngBetween(code, string,
-				d, e, f, g);
+		if(code!=null && string!=null) {
+			return this.getRepository().findByLockSwitchStatCodeAndIfRepairIngAndLockLatBetweenAndLockLngBetween(code, string,
+					d, e, f, g);
+		}
+		return null;
 	}
 
 

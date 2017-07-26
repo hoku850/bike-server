@@ -15,6 +15,7 @@ import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
+import org.ccframe.subsys.bike.domain.entity.UserToRepairRecord;
 import org.ccframe.subsys.bike.dto.CyclingOrderListReq;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
 import org.ccframe.subsys.bike.search.CyclingOrderSearchRepository;
@@ -32,7 +33,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, Integer, CyclingOrderSearchRepository>{
+public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, Integer, CyclingOrderSearchRepository> {
 
 	public ClientPage<CyclingOrderRowDto> findList(CyclingOrderListReq cyclingOrderListReq, int offset, int limit) {
 		
@@ -87,6 +88,11 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 			
 			CyclingOrderRowDto cyclingOrderRowDto = new CyclingOrderRowDto();
 			BeanUtils.copyProperties(cyclingOrder, cyclingOrderRowDto);
+			// 查询出登陆ID
+			User user = SpringContextHelper.getBean(UserService.class).getById(cyclingOrder.getUserId());
+			if (user != null) {
+				cyclingOrderRowDto.setLoginId(user.getLoginId());
+			}
 			// 查询出运营商的信息
 			Org org = SpringContextHelper.getBean(OrgService.class).getById(cyclingOrder.getOrgId());
 			if (org!=null) {
@@ -112,46 +118,110 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 	 */
 	public List<CyclingOrder> findByUserIdAndOrgIdOrderByEndTimeDesc(
 			Integer userId, Integer orgId) {
-		return this.getRepository().findByUserIdAndOrgIdOrderByEndTimeDesc(userId, orgId);
+
+		if (userId != null && orgId != null) {
+			return this.getRepository().findByUserIdAndOrgIdOrderByEndTimeDesc(
+					userId, orgId);
+		}
+		return null;
+
 	}
-	
+
+	/**
+	 * @author yjz
+	 */
+	public List<CyclingOrder> findBySmartLockIdOrderByStartTimeDesc(
+			Integer smartLockId) {
+		return this.getRepository().findBySmartLockIdOrderByStartTimeDesc(
+				smartLockId);
+	}
+
 	/**
 	 * @author zjm
 	 */
-	public List<CyclingOrder> findByUserIdAndOrgIdOrderByStartTimeDesc(Integer userId, Integer orgId) {
-		return this.getRepository().findByUserIdAndOrgIdOrderByStartTimeDesc(userId, orgId);
+
+	public List<CyclingOrder> findByUserIdAndOrgIdOrderByStartTimeDesc(
+			Integer userId, Integer orgId) {
+		if (userId != null && orgId != null) {
+
+			return this.getRepository()
+					.findByUserIdAndOrgIdOrderByStartTimeDesc(userId, orgId);
+		}
+		return null;
+
 	}
-	
+
 	/**
 	 * @author lzh
 	 */
-	public Map<String, String> getOrderPayDetail(String loginId) {
-		Map<String, String> map = new HashMap<String, String>(); 
-		User user = SpringContextHelper.getBean(UserService.class).getByKey(User.LOGIN_ID, loginId);
-//		CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderService.class).findByKey(CyclingOrder.USER_ID, user.getUserId(), orders)ByKey(,);
-		//查询未完成的唯一订单
+	public Map<String, String> getOrderPayDetail(User user) {
+		final int TO_REPAIR_WAIT_TIME = 60 * 1000 * 3;// 3分钟转换成毫秒
+		Map<String, String> map = new HashMap<String, String>();
+		// 查询未完成的唯一订单
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-		boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.USER_ID, user.getUserId()));
-		boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.CYCLING_ORDER_STAT_CODE, CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode()));
-		Iterable<CyclingOrder> content = this.getRepository().search(boolQueryBuilder);
+		boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.USER_ID,
+				user.getUserId()));
+		boolQueryBuilder.must(QueryBuilders.termQuery(
+				CyclingOrder.CYCLING_ORDER_STAT_CODE,
+				CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode()));
+		Iterable<CyclingOrder> content = this.getRepository().search(
+				boolQueryBuilder);
 		CyclingOrder cyclingOrder;
-		if(content.iterator().hasNext()){
-			 cyclingOrder = content.iterator().next();
-		}
-		else {
+		if (content.iterator().hasNext()) {
+			cyclingOrder = content.iterator().next();
+		} else {
 			return null;
 		}
-		//查询单车类型
+
+		HashMap<String, Double> discount = new HashMap<String, Double>();
+		if ((cyclingOrder.getEndTime().getTime() - cyclingOrder.getStartTime()
+				.getTime()) < TO_REPAIR_WAIT_TIME) {
+			UserToRepairRecord userToRepairRecord = SpringContextHelper
+					.getBean(UserToRepairRecordSearchService.class)
+					.getLatestUserToRepairRecord(user.getUserId(),
+							cyclingOrder.getBikePlateNumber());
+			if (userToRepairRecord != null
+					&& userToRepairRecord.getToRepairTime().getTime() > cyclingOrder
+							.getStartTime().getTime()) {
+				Double subAmmount = cyclingOrder.getOrderAmmount() * -1.0;
+
+				discount.put("报修金额减免", subAmmount);
+
+				cyclingOrder.setOrderAmmount(0.00);
+				this.save(cyclingOrder);
+
+			}
+
+		}
+
+		// 查询单车类型
 		BikeType bikeType;
-		bikeType = SpringContextHelper.getBean(BikeTypeService.class).getByKey(BikeType.BIKE_TYPE_ID, 
-				SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.BIKE_PLATE_NUMBER, cyclingOrder.getBikePlateNumber()).getBikeTypeId());
-		//以后还需要考虑优惠
+		bikeType = SpringContextHelper.getBean(BikeTypeService.class).getByKey(
+				BikeType.BIKE_TYPE_ID,
+				SpringContextHelper
+						.getBean(SmartLockService.class)
+						.getByKey(SmartLock.BIKE_PLATE_NUMBER,
+								cyclingOrder.getBikePlateNumber())
+						.getBikeTypeId());
+		// 以后还需要考虑优惠
 		map.put("time", cyclingOrder.getCyclingContinousSec().toString());
 		map.put("price", cyclingOrder.getOrderAmmount().toString());
 		map.put("pricePerHalfHour", bikeType.getHalfhourAmmount().toString());
 		map.put("cyclingOriderId", cyclingOrder.getCyclingOrderId().toString());
+		map.put("discount", discount.toString());
 		return map;
 	}
 
+	public List<CyclingOrder> findBySmartLockIdAndCyclingOrderStatCodeOrderByStartTimeDesc(
+			Integer smartLockId, String code) {
+		if (smartLockId != null && code != null) {
+
+			return this
+					.getRepository()
+					.findBySmartLockIdAndCyclingOrderStatCodeOrderByStartTimeDesc(
+							smartLockId, code);
+		}
+		return null;
+	}
 
 }

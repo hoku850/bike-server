@@ -178,6 +178,7 @@ public interface ControllerMapping {
 	String CYCLING_ORDER_BASE = ADMIN_BASE + "cyclingOrder";
 	String CYCLING_ORDER_LIST = "findList";
 	String CYCLING_ORDER_EXPORT = "doExport"; //导出
+	String CYCLING_ORDER_FINISH = "finish";
 
 	//运营商APP管理
 	String AGENT_APP_BASE = ADMIN_BASE + "agentApp";

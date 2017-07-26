@@ -10,7 +10,7 @@ import org.ccframe.client.commons.ICodeEnum;
  *
  * @author wj
  */
-public enum BykeTypeCodeEnum implements ICodeEnum{
+public enum BikeTypeCodeEnum implements ICodeEnum{
 
     /**
      * 蓝牙和GRPS
@@ -25,7 +25,7 @@ public enum BykeTypeCodeEnum implements ICodeEnum{
 	 */
 	GPRS;
 
-	public static BykeTypeCodeEnum fromCode(String code) {
+	public static BikeTypeCodeEnum fromCode(String code) {
 		try {
 			return values()[Integer.parseInt(code)];
 		} catch (Exception e) {
@@ -41,7 +41,7 @@ public enum BykeTypeCodeEnum implements ICodeEnum{
 	@Override
 	public List<ICodeEnum> valueList() {
 		List<ICodeEnum> result = new ArrayList<ICodeEnum>();
-		for(BykeTypeCodeEnum value: values()){
+		for(BikeTypeCodeEnum value: values()){
 			result.add(value);
 		}
 		return result;

@@ -64,4 +64,19 @@ public class UserToRepairRecordSearchService extends BaseSearchService<UserToRep
 				return new ClientPage<UserToRepairRecordRowDto>((int)userToRepairRecordPage.getTotalElements(), offset / limit, limit, resultList);
 			}
 
+	/**
+	 * @author lzh
+	 */
+	public UserToRepairRecord getLatestUserToRepairRecord(Integer UserId, String bikePlateNumber){
+		UserToRepairRecord userToRepairRecord = null;;
+		List<UserToRepairRecord> list = this.getRepository().findByUserIdAndBikePlateNumberOrderByToRepairTime(UserId, bikePlateNumber);
+		if(list.isEmpty()){
+			return null;
+		} else {
+			userToRepairRecord = list.get(0);
+		}
+		
+		
+		return userToRepairRecord;
+	}
 }

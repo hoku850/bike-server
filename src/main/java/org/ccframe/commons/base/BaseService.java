@@ -54,8 +54,8 @@ public abstract class BaseService <E extends Serializable,PK extends Serializabl
     		}
     	}
     }
-  
-    public Class<E> getEntityClass(){
+
+	public Class<E> getEntityClass(){
     	return entityClass;
     }
     

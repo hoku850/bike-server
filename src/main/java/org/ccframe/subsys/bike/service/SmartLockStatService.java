@@ -1,6 +1,7 @@
 package org.ccframe.subsys.bike.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,14 +10,43 @@ import org.ccframe.commons.base.BaseService;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.sdk.bike.utils.PositionUtil;
 import org.ccframe.subsys.bike.domain.code.LockSwitchStatCodeEnum;
+import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.domain.entity.SmartLockStat;
 import org.ccframe.subsys.bike.repository.SmartLockStatRepository;
+import org.ccframe.subsys.bike.socket.tcpobj.DataBlockTypeEnum;
+import org.ccframe.subsys.core.domain.code.BoolCodeEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SmartLockStatService extends BaseService<SmartLockStat,java.lang.Integer, SmartLockStatRepository>{
 
+	/**
+	 * @author lqz
+	 */
+	@Transactional
+	public SmartLockStat saveOrUpdateSmartLock(SmartLock smartLock, Map<DataBlockTypeEnum, Object> requestDataMap){
+
+		SmartLockStatService smartLockStatService = SpringContextHelper.getBean(SmartLockStatService.class);
+		
+		SmartLockStat smartLockStat = smartLockStatService.getByKey(SmartLockStat.SMART_LOCK_ID, smartLock.getSmartLockId());
+		if (smartLockStat == null) {
+			smartLockStat = new SmartLockStat();
+			smartLockStat.setSmartLockId(smartLock.getSmartLockId());
+			smartLockStat.setOrgId(smartLock.getOrgId());
+			smartLockStat.setIfRepairIng(BoolCodeEnum.NO.toCode());
+		}
+		smartLockStat.setLockSwitchStatCode(Byte.toString((byte)requestDataMap.get(DataBlockTypeEnum.LOCK_STATUS)));
+		smartLockStat.setLockBattery((int)(byte)requestDataMap.get(DataBlockTypeEnum.LOCK_BATTERY));
+		smartLockStat.setLockLat((Double)requestDataMap.get(DataBlockTypeEnum.LOCK_LNG));
+		smartLockStat.setLockLng((Double)requestDataMap.get(DataBlockTypeEnum.LOCK_LAT));
+		smartLockStat.setLastLocationUpdTime((Date)requestDataMap.get(DataBlockTypeEnum.SYS_TIME));
+		
+		smartLockStatService.save(smartLockStat);
+		
+		return smartLockStat;
+	}
+	
 	/**
 	 * @author zjm
 	 */

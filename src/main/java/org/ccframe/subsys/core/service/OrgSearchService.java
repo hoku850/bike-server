@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class OrgSearchService extends BaseSearchService<Org, Integer, OrgSearchRepository>{
 
-	public ClientPage<OrgRowDto> findAgentList(OrgListReq agentListReq,	int offset, int limit) {
+	public ClientPage<OrgRowDto> findList(OrgListReq agentListReq,	int offset, int limit) {
 
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		

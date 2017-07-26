@@ -11,5 +11,10 @@ public interface CyclingOrderSearchRepository extends ElasticsearchRepository<Cy
 			Integer orgId);
 
 	List<CyclingOrder> findByUserIdAndOrgIdOrderByStartTimeDesc(Integer userId,
-			Integer orgId);	
+			Integer orgId);
+
+	List<CyclingOrder> findBySmartLockIdAndCyclingOrderStatCodeOrderByStartTimeDesc(Integer smartLockId, String code);	
+	
+	List<CyclingOrder> findBySmartLockIdOrderByStartTimeDesc(Integer smartLockId);	
+	
 }

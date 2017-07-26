@@ -46,7 +46,7 @@ public class BikeType implements Serializable{
 	
 	//elasticsearch 
 	//@Field(type = FieldType.String, analyzer="ik")
-	@Column(name = "BIKE_TYPE_NM", nullable = false, length = 20)
+	@Column(name = "BIKE_TYPE_NM", nullable = false, length = 15)
 	private java.lang.String bikeTypeNm;
 	
 	@Column(name = "HALFHOUR_AMMOUNT", nullable = false, length = 10)

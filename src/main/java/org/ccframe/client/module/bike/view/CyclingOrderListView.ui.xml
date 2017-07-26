@@ -58,6 +58,7 @@
 				<g:Label text="骑行订单管理"/>
 				<button:TextButton text="查看轨迹" ui:field="findTrajectory" />
 				<button:TextButton text="导 出" ui:field="exportButton" />
+				<button:TextButton text="强制结束订单" ui:field="finishButton" />
 				<toolbar:FillToolItem />
 			</toolbar:ToolBar>
 		</container:child>

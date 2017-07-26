@@ -51,7 +51,7 @@ public class ByteEscapeHelper {
 	 * @param escapedBytes
 	 * @return
 	 */
-	public byte[] testNewUnescapeBytes(byte[] escapedBytes) {
+	public byte[] unescapeBytes(byte[] escapedBytes) {
 		List<Byte> returnData = new ArrayList<Byte>();
 		int j = 0; // 辅助拿到originalByteList的索引
 		boolean isFind = true;
@@ -93,28 +93,28 @@ public class ByteEscapeHelper {
 	 * @param escapedBytes
 	 * @return
 	 */
-	public byte[] unescapeBytes(byte[] escapedBytes){
-		
-		List<Byte> returnData = new ArrayList<Byte>();
- 		int j = 0; // 辅助拿到originalByteList的值
- 		boolean isFind = false;
- 		
- 		for (int i = 0; i < escapedBytes.length; i++) {
-			j = 0;
-			isFind = false;
-			for (byte[] esByte : escapedBytesList) {
-				if (escapedBytes[i] == esByte[0] && escapedBytes[i+1] == esByte[1]) { //TODO lqz，写死成了2个规则，不对。
-					returnData.add(originalByteList.get(j));
-					isFind = true;
-					i++; // 跳过下一次判断
-					break;
-				} 
-				j++;
-			}
-			if (!isFind) {
-				returnData.add(escapedBytes[i]);
-			}
-		}
-		return Bytes.toArray(returnData);
-	}
+//	public byte[] unescapeBytes(byte[] escapedBytes){
+//		
+//		List<Byte> returnData = new ArrayList<Byte>();
+// 		int j = 0; // 辅助拿到originalByteList的值
+// 		boolean isFind = false;
+// 		
+// 		for (int i = 0; i < escapedBytes.length; i++) {
+//			j = 0;
+//			isFind = false;
+//			for (byte[] esByte : escapedBytesList) {
+//				if (escapedBytes[i] == esByte[0] && escapedBytes[i+1] == esByte[1]) { //TODO lqz，写死成了2个规则，不对。
+//					returnData.add(originalByteList.get(j));
+//					isFind = true;
+//					i++; // 跳过下一次判断
+//					break;
+//				} 
+//				j++;
+//			}
+//			if (!isFind) {
+//				returnData.add(escapedBytes[i]);
+//			}
+//		}
+//		return Bytes.toArray(returnData);
+//	}
 }

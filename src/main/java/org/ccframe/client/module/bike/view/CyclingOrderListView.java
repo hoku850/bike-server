@@ -23,6 +23,7 @@ import org.ccframe.client.components.CcLabelValueCombobox;
 import org.ccframe.client.module.core.event.BodyContentEvent;
 import org.ccframe.client.module.core.event.LoadWindowEvent;
 import org.ccframe.client.module.core.view.MainFrame;
+import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.dto.CyclingOrderListReq;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
 import org.fusesource.restygwt.client.Method;
@@ -71,6 +72,7 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 	
 	@UiField
 	public Label amount;
+	
 	
 	@UiHandler("searchButton")
 	public void searchButtonClick(SelectEvent e){
@@ -121,7 +123,7 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 		
 		ValueProvider<CyclingOrderRowDto, Integer> cyclingOrderId();
 		ValueProvider<CyclingOrderRowDto, String> orgNm();
-		ValueProvider<CyclingOrderRowDto, Integer> userId();
+		ValueProvider<CyclingOrderRowDto, String> loginId();
 		ValueProvider<CyclingOrderRowDto, String> lockerHardwareCode();
 		ValueProvider<CyclingOrderRowDto, String> bikePlateNumber();
 		ValueProvider<CyclingOrderRowDto, String> bikeTypeNm();
@@ -136,7 +138,7 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 		
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Integer>(props.cyclingOrderId(), 130, "订单编号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.orgNm(), 100, "运营商", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Integer>(props.userId(), 120, "登陆ID", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.loginId(), 120, "登陆ID", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.lockerHardwareCode(), 150, "智能锁硬件编号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.bikePlateNumber(), 150, "单车车牌号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.bikeTypeNm(), 100, "单车类型", HasHorizontalAlignment.ALIGN_CENTER, false));
@@ -251,5 +253,25 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 			bikeTypeNm.setExtraParam(Integer.toString(0));
 			bikeTypeNm.reset();
 		}
+	}
+	
+	@UiHandler("finishButton")
+	protected void doFinishClick(SelectEvent e) {
+		if(grid.getSelectionModel().getSelectedItems().size() != 1){
+			ViewUtil.error("系统信息", "请选择一条记录进行编辑");
+			return;
+		}
+		CyclingOrderRowDto selectedRow = grid.getSelectionModel().getSelectedItem();
+		
+		EventBusUtil.fireEvent(new LoadWindowEvent<Integer, CyclingOrder, EventHandler>(
+				ViewResEnum.CYCLING_ORDER_FINISH_WINDOW,
+				selectedRow.getCyclingOrderId(), 
+				new WindowEventCallback<CyclingOrder>(){
+			@Override
+			public void onClose(CyclingOrder returnData) {
+				loader.load(); //保存完毕后刷新，可能有过滤条件，因此采用刷新方式
+			}
+		}));
+		
 	}
 }

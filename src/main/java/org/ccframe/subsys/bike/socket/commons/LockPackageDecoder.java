@@ -10,7 +10,7 @@ import java.util.Map;
 import org.apache.commons.codec.binary.Hex;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.CRC16Util;
-import org.ccframe.subsys.bike.domain.code.BykeTypeCodeEnum;
+import org.ccframe.subsys.bike.domain.code.BikeTypeCodeEnum;
 import org.ccframe.subsys.bike.processor.NettyServerProcessor;
 import org.ccframe.subsys.bike.socket.tcpobj.AnswerFlagEnum;
 import org.ccframe.subsys.bike.socket.tcpobj.CommandFlagEnum;
@@ -60,12 +60,12 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 		byte[] packageData = byteEscapeHelper.unescapeBytes(msg);
 		
 		//CRC16Util检测CRC是否正确
-		int expectCrcValue = (short)(((packageData[packageData.length - 2]) & 0xff) + ((packageData[packageData.length - 1]) << 8));
-		int crcValue = CRC16Util.crc16(packageData, packageData.length - 2);
-		if(crcValue != expectCrcValue){
-			logger.error("CRC Error! Expected: {}, CRC Value: {}", expectCrcValue, crcValue);
-			return; //TODO FIX CRC错，要返回包请求重发
-		}
+//		int expectCrcValue =S (short)(((packageData[packageData.length - 2]) & 0xff) + ((packageData[packageData.length - 1]) << 8));
+//		int crcValue = CRC16Util.crc16(packageData, packageData.length - 2);
+//		if(crcValue != expectCrcValue){
+//			logger.error("CRC Error! Expected: {}, CRC Value: {}", expectCrcValue, crcValue);
+//			return; //TODO FIX CRC错，要返回包请求重发
+//		}
 
 		try (
 			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(packageData);
@@ -81,13 +81,13 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			byte bykeType = dataInputStream.readByte();
 			switch(bykeType){
 				case BLE_GPRS_FLAG:
-					requestPackage.setBykeTypeEnum(BykeTypeCodeEnum.BLE_GPRS);
+					requestPackage.setBykeTypeEnum(BikeTypeCodeEnum.BLE_GPRS);
 					break;
 				case BLE_FLAG:
-					requestPackage.setBykeTypeEnum(BykeTypeCodeEnum.BLE);
+					requestPackage.setBykeTypeEnum(BikeTypeCodeEnum.BLE);
 					break;
 				case GPRS_FLAG:
-					requestPackage.setBykeTypeEnum(BykeTypeCodeEnum.GPRS);
+					requestPackage.setBykeTypeEnum(BikeTypeCodeEnum.GPRS);
 					break;
 				default:
 			}

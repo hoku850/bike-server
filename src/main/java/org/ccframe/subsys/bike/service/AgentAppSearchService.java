@@ -37,7 +37,9 @@ public class AgentAppSearchService extends BaseSearchService<AgentApp, Integer, 
 			AgentAppRowDto rowRecord = new AgentAppRowDto();
 			BeanUtils.copyProperties(agentApp, rowRecord);
 			Org org = SpringContextHelper.getBean(OrgService.class).getById(agentApp.getOrgId());
-			rowRecord.setOrgNm(org.getOrgNm());
+			if (org != null) {
+				rowRecord.setOrgNm(org.getOrgNm());
+			}
 			resultList.add(rowRecord);
 		}
 		return new ClientPage<AgentAppRowDto>((int)agentAppPage.getTotalElements(), offset / limit, limit, resultList);

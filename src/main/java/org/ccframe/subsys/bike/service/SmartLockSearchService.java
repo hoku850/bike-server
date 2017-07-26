@@ -60,9 +60,13 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 		for(SmartLock smartLock:smartLockPage.getContent()){
 			SmartLockRowDto rowRecord = new SmartLockRowDto();
 			Org org = SpringContextHelper.getBean(OrgService.class).getById(smartLock.getOrgId());
-			rowRecord.setOrgNm(org.getOrgNm());
+			if (org != null) {
+				rowRecord.setOrgNm(org.getOrgNm());
+			}
 			BikeType bikeType = SpringContextHelper.getBean(BikeTypeService.class).getById(smartLock.getBikeTypeId());
-			rowRecord.setBikeTypeNm(bikeType.getBikeTypeNm());
+			if (bikeType != null) {
+				rowRecord.setBikeTypeNm(bikeType.getBikeTypeNm());
+			}
 			BeanUtils.copyProperties(smartLock, rowRecord);
 			resultList.add(rowRecord);
 		}

@@ -16,6 +16,7 @@ import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.commons.WindowEventCallback;
 import org.ccframe.client.components.CcLabelValueCombobox;
 import org.ccframe.client.module.bike.event.MemberAccountSelectEvent;
+import org.ccframe.client.module.core.event.BodyContentEvent;
 import org.ccframe.client.module.core.event.LoadWindowEvent;
 import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.subsys.core.dto.MemberAccountListReq;
@@ -74,7 +75,7 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 	@UiHandler("chargeButton")
 	public void chargeButtononClick(SelectEvent e){
 		if(grid.getSelectionModel().getSelectedItems().size() != 1){
-			ViewUtil.error("系统信息", "请选择一条记录进行编辑");
+			ViewUtil.error("系统信息", "请选择一个账户进行充值/扣费");
 			return;
 		}
 		MemberAccountRowDto memberAccountRowDto = grid.getSelectionModel().getSelectedItem();
@@ -82,7 +83,6 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 			@Override
 			public void onClose(MemberAccountRowDto returnData) {
 				loader.load(); //保存完毕后刷新
-				EventBusUtil.fireEvent(new MemberAccountSelectEvent(returnData == null ? null : returnData));
 			}
 		}));
 	}
@@ -118,20 +118,8 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 			
 			@Override
 			public void onSelection(SelectionEvent<Widget> event) {
-				switch(statusTabPanel.getWidgetIndex(event.getSelectedItem())){
-					case 0:
-						tabFlag = 0;
-						loader.load();
-						break;
-					case 1:
-						tabFlag = 1;
-						loader.load();
-						break;
-					case 2:
-						tabFlag = 2;
-						loader.load();
-						break;
-				}
+				tabFlag = statusTabPanel.getWidgetIndex(event.getSelectedItem());
+				loader.load();
 			}
 		});
 		grid.getSelectionModel().addSelectionHandler(new SelectionHandler<MemberAccountRowDto>() {
@@ -148,6 +136,12 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 				chargeButton.fireEvent(new SelectEvent());
 			}
 		});
+		return widget;
+	}
+
+	@Override
+	public void onModuleReload(BodyContentEvent event) {
+		super.onModuleReload(event);
 		// 运营商登陆
 		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
 			orgNm.hide();
@@ -160,9 +154,8 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 				}
 			});
 		}
-		return widget;
 	}
-
+	
 	@Override
 	protected CallBack<MemberAccountRowDto> getRestReq() {
 		return new CallBack<MemberAccountRowDto>(){
@@ -181,7 +174,10 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 					@Override
 					public void onSuccess(Method method, ClientPage<MemberAccountRowDto> response) {
 						loader.onLoad(response.getList(), response.getTotalLength(), response.getOffset());
-						grid.getSelectionModel().select(0, false);
+						if (response.getList().size() != 0) {
+							grid.getSelectionModel().select(0, false);
+							EventBusUtil.fireEvent(new MemberAccountSelectEvent(response.getList().get(0)));
+						}
 					}
 				});
 			}

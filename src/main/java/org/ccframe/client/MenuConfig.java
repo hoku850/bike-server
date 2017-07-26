@@ -10,6 +10,7 @@ import org.ccframe.client.module.bike.view.AgentAppWindowView;
 import org.ccframe.client.module.bike.view.BikeTypeListView;
 import org.ccframe.client.module.bike.view.BikeTypeWindowView;
 import org.ccframe.client.module.bike.view.ChargeOrderListView;
+import org.ccframe.client.module.bike.view.CyclingOrderFinishWindowView;
 import org.ccframe.client.module.bike.view.CyclingOrderListView;
 import org.ccframe.client.module.bike.view.CyclingOrderWindowView;
 import org.ccframe.client.module.bike.view.MemberAccountMgrView;
@@ -189,6 +190,11 @@ public class MenuConfig {
 	@Inject
     public void setUserToRepairRecordWindowAsyncProvider(AsyncProvider<UserToRepairWindowView> asyncProvider){
     	viewRegistry.put(ViewResEnum.USER_TO_REPAIR_WINDOW, asyncProvider);
+    }
+	
+	@Inject
+    public void setCyclingOrderFinishWindowAsyncProvider(AsyncProvider<CyclingOrderFinishWindowView> asyncProvider){
+    	viewRegistry.put(ViewResEnum.CYCLING_ORDER_FINISH_WINDOW, asyncProvider);
     }
 }
 

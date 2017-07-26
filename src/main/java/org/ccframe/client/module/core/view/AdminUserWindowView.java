@@ -87,7 +87,7 @@ public class AdminUserWindowView extends BaseWindowView<Integer, User> implement
 			ClientManager.getAdminUserClient().saveOrUpdate(adminUser, new RestCallback<Void>(){
 				@Override
 				public void onSuccess(Method method, Void response) {
-					Info.display("操作完成", "用户" + (loginId == null ? "新增" : "修改") + "成功");
+					Info.display("操作完成", "用户" + (loginId.getValue() == null ? "新增" : "修改") + "成功");
 					AdminUserWindowView.this.retCallBack.onClose(adminUser); //保存并回传结果数据
 					button.enable();
 					window.hide();

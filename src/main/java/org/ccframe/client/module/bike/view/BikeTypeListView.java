@@ -136,10 +136,17 @@ public class BikeTypeListView extends BaseCrudListView<BikeTypeRowDto> {
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
+		return widget;
+	}
+
+	@Override
+	public void onModuleReload(BodyContentEvent event) {
+		super.onModuleReload(event);
 		// 运营商登陆
 		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
 			orgId.hide();
 		} else {
+			orgId.setValue(Global.COMBOBOX_ALL_VALUE);
 			orgId.reset();
 			orgId.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 				@Override
@@ -147,15 +154,6 @@ public class BikeTypeListView extends BaseCrudListView<BikeTypeRowDto> {
 					loader.load();
 				}
 			});
-		}
-		return widget;
-	}
-
-	@Override
-	public void onModuleReload(BodyContentEvent event) {
-		super.onModuleReload(event);
-		if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
-			orgId.setValue(0);
 		}
 	}
 }

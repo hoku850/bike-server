@@ -1,14 +1,15 @@
 package org.ccframe.subsys.bike.socket.controller;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.domain.entity.SmartLockStat;
-import org.ccframe.subsys.bike.search.SmartLockSearchRepository;
+import org.ccframe.subsys.bike.service.CyclingOrderSearchService;
+import org.ccframe.subsys.bike.service.CyclingOrderService;
 import org.ccframe.subsys.bike.service.SmartLockService;
 import org.ccframe.subsys.bike.service.SmartLockStatService;
 import org.ccframe.subsys.bike.socket.commons.ISocketController;
@@ -27,20 +28,35 @@ public class GpsConnectController implements ISocketController {
 	@Override
 	public Map<DataBlockTypeEnum, Object> execute(long lockerHardwareCode, Map<DataBlockTypeEnum, Object> requestDataMap) {
 		//TODO 保存锁的状态和电量
-		System.out.println("经度"+(Double)requestDataMap.get(DataBlockTypeEnum.LOCK_LNG));
-		System.out.println("纬度"+(Double)requestDataMap.get(DataBlockTypeEnum.LOCK_LAT));
-		System.out.println("时间="+(Date)requestDataMap.get(DataBlockTypeEnum.SYS_TIME));
-//		System.out.println("GPS卫星个数="+requestDataMap.get(DataBlockTypeEnum.CPRS_SATELLITE_NUM));
-//		System.out.println("用户ID="+requestDataMap.get(DataBlockTypeEnum.USER_ID));
-//		System.out.println("GPS上报类型="+requestDataMap.get(DataBlockTypeEnum.GPS_REPORT_TYPE));
+		Double lockLng = (Double)requestDataMap.get(DataBlockTypeEnum.LOCK_LNG);
+		Double lockLat = (Double)requestDataMap.get(DataBlockTypeEnum.LOCK_LAT);
+		Date date = (Date)requestDataMap.get(DataBlockTypeEnum.SYS_TIME);
+//		Integer userId = (Integer)requestDataMap.get(DataBlockTypeEnum.USER_ID);
 		
 		SmartLock smartLock= SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, String.valueOf(lockerHardwareCode));
+		Integer smartLockId = smartLock.getSmartLockId();
+		
+		
+		//更新骑行订单经纬度
+		List<CyclingOrder> cyclingOrderList = SpringContextHelper.getBean(CyclingOrderSearchService.class).findBySmartLockIdOrderByStartTimeDesc(smartLockId);
+		CyclingOrder cyclingOrder = cyclingOrderList.get(0);
+		
+		if(date.getTime() - cyclingOrder.getStartTime().getTime() <= 10*1000){//10秒内有新订单
+			cyclingOrder.setStartLocationLng(lockLng);
+			cyclingOrder.setStartLocationLat(lockLat);
+			cyclingOrder.setEndLocationLng(lockLng);
+			cyclingOrder.setEndLocationLat(lockLat);
+			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
+		}
+		
+		//更新智能锁状态
 		if(smartLock != null){
 			SmartLockStat smartLockStat = SpringContextHelper.getBean(SmartLockStatService.class).getByKey(SmartLockStat.SMART_LOCK_ID, smartLock.getSmartLockId());
+			
 			if(smartLockStat != null){
-				smartLockStat.setLockLng((Double)requestDataMap.get(DataBlockTypeEnum.LOCK_LNG));
-				smartLockStat.setLockLat((Double)requestDataMap.get(DataBlockTypeEnum.LOCK_LAT));
-				smartLockStat.setLastLocationUpdTime((Date)requestDataMap.get(DataBlockTypeEnum.SYS_TIME));
+				smartLockStat.setLockLng(lockLng);
+				smartLockStat.setLockLat(lockLat);
+				smartLockStat.setLastLocationUpdTime(date);
 				SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
 			}
 		}

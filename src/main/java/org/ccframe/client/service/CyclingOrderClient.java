@@ -21,6 +21,12 @@ public interface CyclingOrderClient extends RestService{
 	@GET @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.CYCLING_ORDER_BASE + Global.ID_BINDER_PATH + Global.REST_REQUEST_URL_SUFFIX)
 	void getDtoById(@PathParam(Global.ID_BINDER_ID) Integer cyclingOrderId, RestCallback<CyclingOrderRowDto> callback);
 	
+	@GET @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.CYCLING_ORDER_BASE + "/"+ ControllerMapping.CYCLING_ORDER_FINISH + Global.ID_BINDER_PATH + Global.REST_REQUEST_URL_SUFFIX)
+	void finishGetById(@PathParam(Global.ID_BINDER_ID) Integer cyclingOrderId, RestCallback<CyclingOrderRowDto> callback);
+	
+	@POST @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.CYCLING_ORDER_BASE + "/"+ ControllerMapping.CYCLING_ORDER_FINISH + Global.REST_REQUEST_URL_SUFFIX)
+	void finish(CyclingOrderRowDto cyclingOrderRowDto, RestCallback<Integer> restCallback);
+	
 	@DELETE @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.CYCLING_ORDER_BASE + Global.ID_BINDER_PATH + Global.REST_REQUEST_URL_SUFFIX)
 	void delete(@PathParam(Global.ID_BINDER_ID) Integer cyclingOrderId, RestCallback<Void> callback);
 
@@ -29,7 +35,7 @@ public interface CyclingOrderClient extends RestService{
 
 	@POST @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.CYCLING_ORDER_BASE + Global.REST_REQUEST_URL_SUFFIX)
 	void saveOrUpdate(CyclingOrder cyclingOrder, RestCallback<Void> restCallback);
-
+	
 	@POST @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.CYCLING_ORDER_BASE + "/"+ ControllerMapping.CYCLING_ORDER_EXPORT + Global.REST_REQUEST_URL_SUFFIX)
 	void exportUrl(Integer orgId, RestCallback<String> restCallback);
 

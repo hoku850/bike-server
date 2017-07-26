@@ -8,7 +8,6 @@ import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.components.CcMobileField;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
-import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.dto.OrgDto;
 import org.fusesource.restygwt.client.Method;

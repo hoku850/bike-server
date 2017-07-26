@@ -39,8 +39,8 @@ import com.flipthebird.gwthashcodeequals.HashCodeBuilder;
 @Entity
 @Table(name = "SYS_USER")
 //elasticsearch
-@Document(indexName = "default_index", type = "user")
-@Setting(settingPath = "elasticsearch-analyser.json")
+@Document(indexName = Global.ES_DEFAULT_INDEX, type = "user")
+@Setting(settingPath = Global.ES_DEFAULT_ANALYSER)
 @AutoCacheConfig
 public class User implements Serializable{
 

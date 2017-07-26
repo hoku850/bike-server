@@ -33,8 +33,8 @@ import org.ccframe.subsys.bike.domain.*;
 @Table(name = "prd_cycling_trajectory_record")
 @AutoCacheConfig
 //elasticsearch
-//@Document(indexName = "cycling_trajectory_record_index", type = "cyclingTrajectoryRecord")
-//@Setting(settingPath = "elasticsearch-analyser.json")
+@Document(indexName = "cycling_trajectory_record_index", type = "cyclingTrajectoryRecord")
+@Setting(settingPath = "elasticsearch-analyser.json")
 public class CyclingTrajectoryRecord implements Serializable{
 	
 	public static final String CYCLING_TRAJECTORY_RECORD_ID = "cyclingTrajectoryRecordId";
@@ -51,7 +51,7 @@ public class CyclingTrajectoryRecord implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	//elasticsearch
-	//@org.springframework.data.annotation.Id
+	@org.springframework.data.annotation.Id
 	@Column(name = "CYCLING_TRAJECTORY_RECORD_ID", nullable = false, length = 10)
 	private java.lang.Integer cyclingTrajectoryRecordId;
 	

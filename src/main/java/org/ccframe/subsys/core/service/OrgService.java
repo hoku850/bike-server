@@ -25,9 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrgService extends BaseService<Org, Integer, OrgRepository> implements ILabelValueListProvider {
 
 	private static final int TEMP_ORG_ID = 2;
+	private static final int ADMIN_ROLE_ID = 2;
 	
 	private static final String ADMIN_DEFAULT_NM = "默认管理员";
 	private static final String LOGIN_NM = "admin";
+	private static final String LOGIN_PASSWORD = "admin";
 	
 	private static final String DEFAULT_BIKE_TYPR_NM = "标准单车";
 	private static final Double DEFAULT_BIKE_TYPR_HALFHOURAMMOUNT = 0.5;
@@ -90,7 +92,7 @@ public class OrgService extends BaseService<Org, Integer, OrgRepository> impleme
 				user.setLoginId(loginId);
 				// 管理员名称使用运营商名称+"默认管理员"例如叫："小蓝单车默认管理员"
 				user.setUserNm(org.getOrgNm() + ADMIN_DEFAULT_NM);
-				user.setUserPsw("ee26b0dd4af7e749aa1a8ee3c10ae9923f618980772e473f8819a5d4940e0db27ac185f8a0e1d5f84f88bc887fd67b143732c304cc5fa9ad8e6f57f50028a8ff");
+				user.setUserPsw(LOGIN_PASSWORD);
 				user.setIfAdmin(BoolCodeEnum.YES.toCode());
 				user.setCreateDate(new Date());
 				user.setUserStatCode(UserStatCodeEnum.NORMAL.toCode());
@@ -98,11 +100,11 @@ public class OrgService extends BaseService<Org, Integer, OrgRepository> impleme
 				
 				UserRoleRel userRoleRel = new UserRoleRel();
 				userRoleRel.setUserId(user.getUserId());
-				userRoleRel.setRoleId(TEMP_ORG_ID);
+				userRoleRel.setRoleId(role.getRoleId());
 				SpringContextHelper.getBean(UserRoleRelService.class).save(userRoleRel);
 				userRoleRel = new UserRoleRel();
 				userRoleRel.setUserId(user.getUserId());
-				userRoleRel.setRoleId(role.getRoleId());
+				userRoleRel.setRoleId(ADMIN_ROLE_ID);
 				SpringContextHelper.getBean(UserRoleRelService.class).save(userRoleRel);
 				
 				return user;

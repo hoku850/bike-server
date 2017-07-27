@@ -11,6 +11,8 @@ import javax.persistence.Table;
 
 import com.flipthebird.gwthashcodeequals.EqualsBuilder;
 import com.flipthebird.gwthashcodeequals.HashCodeBuilder;
+
+import org.ccframe.client.Global;
 import org.ccframe.client.commons.UtilDateTimeClient;
 import org.ccframe.commons.cache.AutoCacheConfig;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
@@ -25,8 +27,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Table(name = "prd_smart_lock")
 @AutoCacheConfig
 //elasticsearch
-@Document(indexName = "smart_lock_index", type = "smartLock")
-@Setting(settingPath = "elasticsearch-analyser.json")
+@Document(indexName = Global.ES_DEFAULT_INDEX, type = "smartLock")
+@Setting(settingPath = Global.ES_DEFAULT_ANALYSER)
 public class SmartLock implements Serializable{
 	
 	public static final String SMART_LOCK_ID = "smartLockId";

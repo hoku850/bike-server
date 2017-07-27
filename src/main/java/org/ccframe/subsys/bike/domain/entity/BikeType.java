@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.ccframe.client.Global;
 import org.ccframe.commons.cache.AutoCacheConfig;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Setting;
@@ -20,8 +21,8 @@ import com.flipthebird.gwthashcodeequals.HashCodeBuilder;
 @Table(name = "prd_bike_type")
 @AutoCacheConfig
 //elasticsearch
-@Document(indexName = "bike_type_index", type = "bikeType")
-@Setting(settingPath = "elasticsearch-analyser.json")
+@Document(indexName = Global.ES_DEFAULT_INDEX, type = "bikeType")
+@Setting(settingPath = Global.ES_DEFAULT_ANALYSER)
 public class BikeType implements Serializable{
 	
 	public static final String BIKE_TYPE_ID = "bikeTypeId";

@@ -14,7 +14,6 @@ import javax.persistence.TemporalType;
 
 import org.ccframe.client.commons.UtilDateTimeClient;
 import org.ccframe.commons.cache.AutoCacheConfig;
-import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flipthebird.gwthashcodeequals.EqualsBuilder;

@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.commons.UtilDateTimeClient;
 import org.ccframe.commons.cache.AutoCacheConfig;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
@@ -25,8 +26,8 @@ import com.flipthebird.gwthashcodeequals.HashCodeBuilder;
 @Table(name = "SYS_MEMBER_ACCOUNT_LOG")
 @AutoCacheConfig(1) //日志表不cache
 //elasticsearch
-@Document(indexName = "member_account_log_index", type = "memberAccountLog")
-@Setting(settingPath = "elasticsearch-analyser.json")
+@Document(indexName = Global.ES_DEFAULT_INDEX, type = "memberAccountLog")
+@Setting(settingPath = Global.ES_DEFAULT_ANALYSER)
 public class MemberAccountLog implements Serializable{
 	
 	public static final String MEMBER_ACCOUNT_LOG_ID = "memberAccountLogId";

@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.commons.UtilDateTimeClient;
 import org.ccframe.commons.cache.AutoCacheConfig;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
@@ -25,8 +26,8 @@ import com.flipthebird.gwthashcodeequals.HashCodeBuilder;
 @Table(name = "prd_user_to_repair_record")
 @AutoCacheConfig
 //elasticsearch
-@Document(indexName = "user_to_repair_record_index", type = "userToRepairRecord")
-@Setting(settingPath = "elasticsearch-analyser.json")
+@Document(indexName = Global.ES_DEFAULT_INDEX, type = "userToRepairRecord")
+@Setting(settingPath = Global.ES_DEFAULT_ANALYSER)
 public class UserToRepairRecord implements Serializable{
 	
 	public static final String USER_TO_REPAIR_RECORD_ID = "userToRepairRecordId";

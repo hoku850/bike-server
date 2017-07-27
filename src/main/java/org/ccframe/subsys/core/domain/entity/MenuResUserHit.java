@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.ccframe.client.Global;
 import org.ccframe.commons.cache.AutoCacheConfig;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -25,8 +26,8 @@ import com.flipthebird.gwthashcodeequals.HashCodeBuilder;
 
 @Entity
 @Table(name = "SYS_MENU_RES_USER_HIT")
-@Document(indexName = "default_index", type = "menuResUserHit")
-@Setting(settingPath = "elasticsearch-analyser.json")
+@Document(indexName = Global.ES_DEFAULT_INDEX, type = "menuResUserHit")
+@Setting(settingPath = Global.ES_DEFAULT_ANALYSER)
 @AutoCacheConfig
 public class MenuResUserHit implements Serializable{
 

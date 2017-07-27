@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.ccframe.client.Global;
 import org.ccframe.commons.cache.AutoCacheConfig;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Setting;
@@ -18,8 +19,8 @@ import com.flipthebird.gwthashcodeequals.HashCodeBuilder;
 
 @Entity
 @Table(name = "SYS_USER_ROLE_REL")
-@Document(indexName = "default_index", type = "userRoleRel")
-@Setting(settingPath = "elasticsearch-analyser.json")
+@Document(indexName = Global.ES_DEFAULT_INDEX, type = "userRoleRel")
+@Setting(settingPath = Global.ES_DEFAULT_ANALYSER)
 @AutoCacheConfig
 public class UserRoleRel implements Serializable{
 

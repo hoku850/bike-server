@@ -1,40 +1,33 @@
 package org.ccframe.subsys.bike.domain.entity;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+import org.ccframe.client.Global;
+import org.ccframe.client.commons.UtilDateTimeClient;
+import org.ccframe.commons.cache.AutoCacheConfig;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.Setting;
-import com.flipthebird.gwthashcodeequals.EqualsBuilder;
-import com.flipthebird.gwthashcodeequals.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.ccframe.client.commons.UtilDateTimeClient;
-
-
-
-
-
-
-
-import org.ccframe.commons.cache.AutoCacheConfig;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
-import org.ccframe.subsys.bike.domain.*;
+import com.flipthebird.gwthashcodeequals.EqualsBuilder;
+import com.flipthebird.gwthashcodeequals.HashCodeBuilder;
 
 @Entity
 @Table(name = "prd_bike_locked_stat")
 @AutoCacheConfig
 //elasticsearch
-//@Document(indexName = "bike_locked_stat_index", type = "bikeLockedStat")
-//@Setting(settingPath = "elasticsearch-analyser.json")
+@Document(indexName = Global.ES_DEFAULT_INDEX, type = "bikeLockedStat")
+@Setting(settingPath = Global.ES_DEFAULT_ANALYSER)
 public class BikeLockedStat implements Serializable{
 	
 	public static final String BIKE_LOCKED_STAT_ID = "bikeLockedStatId";
@@ -52,7 +45,7 @@ public class BikeLockedStat implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	//elasticsearch
-	//@org.springframework.data.annotation.Id
+	@org.springframework.data.annotation.Id
 	@Column(name = "BIKE_LOCKED_STAT_ID", nullable = false, length = 10)
 	private java.lang.Integer bikeLockedStatId;
 	

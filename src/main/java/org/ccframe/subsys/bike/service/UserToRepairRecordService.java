@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.sdk.bike.utils.DateDistanceUtil;
 import org.ccframe.sdk.bike.utils.PositionUtil;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
@@ -31,9 +32,9 @@ public class UserToRepairRecordService extends BaseService<UserToRepairRecord,ja
 	@Transactional
 	public String saveRepairRecord(String posCode, Integer reasonID, String position) {
 		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-		
+		Integer orgId = 2;
 		//更新骑行订单状态
-		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), 1);
+		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), orgId);
 		CyclingOrder cyclingOrder = list.get(0);
 		cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.TO_BE_REPAIRED.toCode());
 		Date nowDate = new Date();
@@ -44,7 +45,7 @@ public class UserToRepairRecordService extends BaseService<UserToRepairRecord,ja
 		cyclingOrder.setEndLocationLng(Double.valueOf(splits[0]));
 		cyclingOrder.setEndLocationLat(Double.valueOf(splits[1]));
 		long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder.getStartTime(), new Date());
-		long min = sec / 60;
+		long min = sec / AppConstant.EVERY_MIN;
 
 		cyclingOrder.setCyclingContinousSec((int)sec);
 
@@ -52,7 +53,7 @@ public class UserToRepairRecordService extends BaseService<UserToRepairRecord,ja
 		Integer meter = SpringContextHelper.getBean(CyclingOrderService.class).countMeter(cyclingOrder.getCyclingOrderId());
 		cyclingOrder.setCyclingDistanceMeter(meter);
 		
-		cyclingOrder.setOrderAmmount(0.00);
+		cyclingOrder.setOrderAmmount(AppConstant.DOUBLE_ZERO);
 		SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 		
 		//生成报修记录
@@ -66,7 +67,7 @@ public class UserToRepairRecordService extends BaseService<UserToRepairRecord,ja
 		userToRepairRecord.setToRepairLocationLat(Double.valueOf(splits[1]));
 		userToRepairRecord.setToRepairLocationCode(posCode);
 		userToRepairRecord.setToRepairReasonId(reasonID);
-		userToRepairRecord.setIfFinishFix("N");
+		userToRepairRecord.setIfFinishFix(AppConstant.NO);
 		
 		SpringContextHelper.getBean(UserToRepairRecordService.class).save(userToRepairRecord);
 		
@@ -82,7 +83,7 @@ public class UserToRepairRecordService extends BaseService<UserToRepairRecord,ja
 		//未完待续
 		//smartLockStat.setLockLng(lockLng);
 		//smartLockStat.setLockLat(lockLat);
-		smartLockStat.setIfRepairIng("Y");
+		smartLockStat.setIfRepairIng(AppConstant.YES);
 		SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
 
 		return "success";

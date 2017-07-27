@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ControllerMapping.MEMBER_INDEX_BASE)
 public class IndexController {
 
-	@RequestMapping(value = "getBikeLocation")
+	@RequestMapping(value = ControllerMapping.GET_BIKE_LOCATION)
 	@ResponseBody
 	public Map<String, Object> getBikeLocation(String position) {
 

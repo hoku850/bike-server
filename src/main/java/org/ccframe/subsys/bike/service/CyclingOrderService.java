@@ -19,6 +19,7 @@ import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.BigDecimalUtil;
 import org.ccframe.commons.util.JsonBinder;
 import org.ccframe.commons.util.WebContextHolder;
+import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.sdk.bike.utils.DateDistanceUtil;
 import org.ccframe.sdk.bike.utils.PositionUtil;
 import org.ccframe.sdk.bike.websocket.WebsocketEndPoint;
@@ -27,6 +28,7 @@ import org.ccframe.subsys.bike.domain.code.LockSwitchStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.domain.entity.CyclingTrajectoryRecord;
+import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.domain.entity.SmartLockStat;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
@@ -169,15 +171,16 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	 */
 	@Transactional(readOnly=true)
 	public List<CyclingOrder> getPayDetail() {
-		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByEndTimeDesc(user.getUserId(), 1);
+		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+		
+		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByEndTimeDesc(user.getUserId(), user.getOrgId());
 		List<CyclingOrder> list2 = null;
 		if(list != null && list.size()>0){
 			list2 = new ArrayList<CyclingOrder>();
 			for(CyclingOrder cyclingOrder : list){
 				String code = cyclingOrder.getCyclingOrderStatCode();
 				if(code.equals(CyclingOrderStatCodeEnum.PAY_FINISH.toCode())){
-					cyclingOrder.setCyclingOrderStatCode("行程消费");
+					cyclingOrder.setCyclingOrderStatCode(AppConstant.Travel_Pay);
 					list2.add(cyclingOrder);
 				}
 			}
@@ -191,10 +194,10 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	 */
 	@Transactional(readOnly=true)
 	public List<CyclingOrder> getTravelList() {
-		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-
+		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+		
 		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class)
-				.findByUserIdAndOrgIdOrderByEndTimeDesc(user.getUserId(), 1);
+				.findByUserIdAndOrgIdOrderByEndTimeDesc(user.getUserId(), user.getOrgId());
 
 		List<CyclingOrder> list2 = null;
 		if(list != null && list.size()>0){
@@ -202,17 +205,17 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			for(CyclingOrder cyclingOrder : list){
 				String code = cyclingOrder.getCyclingOrderStatCode();
 				if(code.equals(CyclingOrderStatCodeEnum.TO_BE_REPAIRED.toCode())){
-					cyclingOrder.setCyclingOrderStatCode("已报修");
+					cyclingOrder.setCyclingOrderStatCode(AppConstant.ORDER_FIXED);
 					
-					BigDecimal result = new BigDecimal(cyclingOrder.getCyclingContinousSec()).divide(new BigDecimal(60), MathContext.DECIMAL32);
+					BigDecimal result = new BigDecimal(cyclingOrder.getCyclingContinousSec()).divide(new BigDecimal(AppConstant.EVERY_MIN), MathContext.DECIMAL32);
 					Double min = result.setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
 					//用来保存骑行时长（分钟）
 					cyclingOrder.setBikePlateNumber(min+"");
 					list2.add(cyclingOrder);
 				} else if(code.equals(CyclingOrderStatCodeEnum.PAY_FINISH.toCode())){
-					cyclingOrder.setCyclingOrderStatCode("已完成");
+					cyclingOrder.setCyclingOrderStatCode(AppConstant.ORDER_FINISHED);
 					
-					BigDecimal result = new BigDecimal(cyclingOrder.getCyclingContinousSec()).divide(new BigDecimal(60), MathContext.DECIMAL32);
+					BigDecimal result = new BigDecimal(cyclingOrder.getCyclingContinousSec()).divide(new BigDecimal(AppConstant.EVERY_MIN), MathContext.DECIMAL32);
 					Double min = result.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 					//用来保存骑行时长（分钟）
 					cyclingOrder.setBikePlateNumber(min+"");
@@ -231,9 +234,9 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	public Map<String, Object> getTravelDetail(Integer cyclingOrderId) {
 		
 		CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderService.class).getById(cyclingOrderId);
-		BigDecimal result = new BigDecimal(cyclingOrder.getCyclingDistanceMeter()).divide(new BigDecimal(1000), MathContext.DECIMAL32);
+		BigDecimal result = new BigDecimal(cyclingOrder.getCyclingDistanceMeter()).divide(new BigDecimal(AppConstant.EVERY_KM), MathContext.DECIMAL32);
 		Double km = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-		BigDecimal result2 = new BigDecimal(cyclingOrder.getCyclingContinousSec()).divide(new BigDecimal(60), MathContext.DECIMAL32);
+		BigDecimal result2 = new BigDecimal(cyclingOrder.getCyclingContinousSec()).divide(new BigDecimal(AppConstant.EVERY_MIN), MathContext.DECIMAL32);
 		Double min = result2.setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
 		
 		//不含计算，只是指定格式
@@ -253,13 +256,13 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			polylinePath = polylinePath.insert(polylinePath.length()-1, ","+endPos);
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("list", polylinePath);
-		map.put("km", km+"");
-		map.put("min", min+"");
-		map.put("payMoney", orderAmmount+"");
-		map.put("startPos", startPos);
-		map.put("endPos", endPos);
-		map.put("bikeNumber", bikeNumber);
+		map.put(AppConstant.LIST, polylinePath);
+		map.put(AppConstant.KM, km+"");
+		map.put(AppConstant.MIN, min+"");
+		map.put(AppConstant.PAY_MONEY, orderAmmount+"");
+		map.put(AppConstant.START_POS, startPos);
+		map.put(AppConstant.END_POS, endPos);
+		map.put(AppConstant.BIKE_NUMBER, bikeNumber);
 
 		return map;
 	}
@@ -269,34 +272,37 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	 */
 	@Transactional
 	public Map<String, Object> getUsingBikeData() {
-		User user = (User)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), 1);
+		MemberUser user = (MemberUser)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+
+		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		if(list!=null && list.size()>0) {
-			//更新骑行订单
+			
 			CyclingOrder cyclingOrder = list.get(0);
 			long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder.getStartTime(), new Date());
-			long min = sec / 60;
+			long min = sec / AppConstant.EVERY_MIN;
 			System.out.println("开始时间" + cyclingOrder.getStartTime());
 			System.out.println("已骑行" + min + "分钟");
 			//写死 每半小时支付0.5元
-			Integer count = (int) (min/30.0) + 1;
+			Integer count = (int) (min/AppConstant.EVERY_HALF_HOUR) + 1;
 			//Integer count = (int) (31/30.0);
-			BigDecimal result = new BigDecimal(0.5).multiply(new BigDecimal(count), MathContext.DECIMAL32);
+			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder.getSmartLockId());
+			BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(smartLock.getBikeTypeId());
+			
+			Double halfHourAmmount = bikeType.getHalfhourAmmount();
+			
+			BigDecimal result = new BigDecimal(halfHourAmmount).multiply(new BigDecimal(count), MathContext.DECIMAL32);
 			Double payMoney = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 			
-			cyclingOrder.setCyclingContinousSec((int)sec);
-			cyclingOrder.setOrderAmmount(payMoney);
 			//更新骑行距离
-			Integer meter = this.countMeter(cyclingOrder.getCyclingOrderId());
-			cyclingOrder.setCyclingDistanceMeter(meter);
-			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
+			/*Integer meter = this.countMeter(cyclingOrder.getCyclingOrderId());
+			cyclingOrder.setCyclingDistanceMeter(meter);*/
 
-			map.put("min", min+"");
-			map.put("bikeNumber", cyclingOrder.getBikePlateNumber());
-			map.put("payMoney", payMoney+"");
-		}
+			map.put(AppConstant.MIN, min+"");
+			map.put(AppConstant.BIKE_NUMBER, cyclingOrder.getBikePlateNumber());
+			map.put(AppConstant.PAY_MONEY, payMoney+""); 
+		} 
 
 
 		return map;
@@ -320,9 +326,9 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	 */
 	@Transactional
 	public String closeLock(String paths) {
-		User user = (User)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-		
-		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), 1);
+		MemberUser user = (MemberUser)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+
+		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
 		
 		if(list!=null && list.size()>0) {
 			//更新骑行订单记录
@@ -334,12 +340,15 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode());
 			
 			long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder.getStartTime(), new Date());
-			long min = sec / 60;
+			long min = sec / AppConstant.EVERY_MIN;
 			System.out.println("已骑行" + min + "分钟");
 			//写死 每半小时支付0.5元
-			Integer count = (int) (min/30.0) + 1;
+			Integer count = (int) (min/AppConstant.EVERY_HALF_HOUR) + 1;
 			//Integer count = (int) (31/30.0);
-			BigDecimal result = new BigDecimal(0.5).multiply(new BigDecimal(count), MathContext.DECIMAL32);
+			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder.getSmartLockId());
+			BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(smartLock.getBikeTypeId());
+			Double halfHourAmmount = bikeType.getHalfhourAmmount();
+			BigDecimal result = new BigDecimal(halfHourAmmount).multiply(new BigDecimal(count), MathContext.DECIMAL32);
 			Double payMoney = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 			
 			cyclingOrder.setCyclingContinousSec((int)sec);
@@ -350,7 +359,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 		}
 			
-		return "success";
+		return AppConstant.SUCCESS;
 	}
 	
 	
@@ -360,21 +369,26 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	 */
 	@Transactional
 	public Map<String, Object> newCyclingOrder(String nowPos) {
-		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), 1);
+		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+
+		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
 		Map<String, Object> map = new HashMap<String, Object>();
-		if(list!=null && list.size()>0) {
-			if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode())) {
+		if(list!=null && list.size()>0 && list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode())) {
+			
 				//用车中显示在前台时执行
 				CyclingOrder cyclingOrder2 = list.get(0);
 				
 				long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder2.getStartTime(), new Date());
-				long min = sec / 60;
+				long min = sec / AppConstant.EVERY_MIN;
 				//System.out.println("已骑行" + min + "分钟");
 				//写死 每半小时支付0.5元
-				Integer count = (int) (min/30.0) + 1;
+				Integer count = (int) (min/AppConstant.EVERY_HALF_HOUR) + 1;
 				//Integer count = (int) (31/30.0);
-				BigDecimal result = new BigDecimal(0.5).multiply(new BigDecimal(count), MathContext.DECIMAL32);
+				SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder2.getSmartLockId());
+				BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(smartLock.getBikeTypeId());
+				
+				Double halfHourAmmount = bikeType.getHalfhourAmmount();
+				BigDecimal result = new BigDecimal(halfHourAmmount).multiply(new BigDecimal(count), MathContext.DECIMAL32);
 				Double payMoney = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 				
 				StringBuffer polylinePath = PositionUtil.getPolylinePath(cyclingOrder2.getCyclingOrderId());
@@ -388,17 +402,16 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 				}
 				
 				
-				map.put("min", min+"");
-				map.put("bikeNumber", cyclingOrder2.getBikePlateNumber());
-				map.put("payMoney", payMoney+"");
-				map.put("firstPos", firstPos);
-				map.put("polylinePath", polylinePath+"");
+				map.put(AppConstant.MIN, min+"");
+				map.put(AppConstant.BIKE_NUMBER, cyclingOrder2.getBikePlateNumber());
+				map.put(AppConstant.PAY_MONEY, payMoney+"");
+				map.put(AppConstant.FIRST_POS, firstPos);
+				map.put(AppConstant.POLYLINE_PATH, polylinePath+"");
 				System.out.println("firstPos:"+firstPos+" polylinePath:"+polylinePath);
-				return map;
-			}
+	
 		}
 		//生成骑行订单
-		CyclingOrder cyclingOrder = new CyclingOrder();
+		/*CyclingOrder cyclingOrder = new CyclingOrder();
 		cyclingOrder.setSmartLockId(60001);
 		cyclingOrder.setBikePlateNumber("SZCT00323424");
 		cyclingOrder.setUserId(user.getUserId());
@@ -435,8 +448,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		map.put("bikeNumber", cyclingOrder.getBikePlateNumber());
 		map.put("payMoney", "0.00");
 		map.put("firstPos", "["+nowPos+"]");
-		map.put("polylinePath", "[["+nowPos+"]]");
-		System.out.println("firstPos:"+"["+nowPos+"]"+" polylinePath:"+"[["+nowPos+"]]");
+		map.put("polylinePath", "[["+nowPos+"]]");*/
 		return map;
 	}
 

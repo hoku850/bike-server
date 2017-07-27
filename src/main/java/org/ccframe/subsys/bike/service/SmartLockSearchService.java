@@ -113,7 +113,7 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 			PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery(SmartLock.BIKE_PLATE_NUMBER, smartLockGrant.getBikePlateNumberPrefixText().toLowerCase());
 			boolQueryBuilder.must(prefixQueryBuilder);
 		}
-		boolQueryBuilder.mustNot(QueryBuilders.termQuery(SmartLock.SMART_LOCK_STAT_CODE, SmartLockStatCodeEnum.GRANTED.toCode()));
+		boolQueryBuilder.mustNot(QueryBuilders.termQuery(SmartLock.SMART_LOCK_STAT_CODE, SmartLockStatCodeEnum.UNPRODUCE.toCode()));
 		
 		Page<SmartLock> smartLockPage = this.getRepository().search(boolQueryBuilder, null);
 		smartLockGrantDto.setTotalLock(smartLockPage.getTotalElements());

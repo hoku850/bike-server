@@ -21,7 +21,7 @@ public interface SmartLockClient extends RestService{
 	void getById(@PathParam(Global.ID_BINDER_ID) Integer smartLockId, RestCallback<SmartLock> callback);
 
 	@DELETE @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.SMART_LOCK_BASE + Global.ID_BINDER_PATH + Global.REST_REQUEST_URL_SUFFIX)
-	void delete(@PathParam(Global.ID_BINDER_ID) Integer smartLockId, RestCallback<Void> callback);
+	void decideDeleteById(@PathParam(Global.ID_BINDER_ID) Integer smartLockId, RestCallback<Void> callback);
 
 	@POST @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.SMART_LOCK_BASE + "/"+ ControllerMapping.SMART_LOCK_LIST + Global.REST_REQUEST_URL_SUFFIX)
 	void findSmartLockList(SmartLockListReq smartLockListReq, @QueryParam("offset") int offset, @QueryParam("limit") int limit, RestCallback<ClientPage<SmartLockRowDto>> callback);

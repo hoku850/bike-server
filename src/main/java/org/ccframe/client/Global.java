@@ -98,4 +98,7 @@ public interface Global {
 
 	//停止定时器的CRON
 	String DISABLED_SCHEDULED_CRON = "1 1 1 1 JAN *";
+	
+	// 运营商默认管理密码
+	String AGRNT_DEFAULT_PASSWORD = "admin";
 }

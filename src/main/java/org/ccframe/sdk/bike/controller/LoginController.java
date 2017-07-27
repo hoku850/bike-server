@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.ccframe.client.ControllerMapping;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.sdk.bike.utils.ValidateCodeUtil;
 import org.ccframe.subsys.core.service.UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,22 +15,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ControllerMapping.MEMBER_LOGIN_BASE)
 public class LoginController {
 
-	@RequestMapping(value = "nofilter/login")
+	@RequestMapping(value = ControllerMapping.NOFILTER_LOGIN)
 	@ResponseBody
 	public String login(String phoneName, String IMEI, String validateCode, Integer orgId) {
-		
-		orgId = 1;
+
 		SpringContextHelper.getBean(UserService.class).login(phoneName, IMEI, validateCode, orgId);
-		return "success";
+		return AppConstant.SUCCESS;
 	}
 
-	@RequestMapping(value = "checkState")
+	@RequestMapping(value = ControllerMapping.CHECK_STATE)
 	@ResponseBody
 	public String checkState(HttpServletRequest httpRequest) {
 		return SpringContextHelper.getBean(UserService.class).checkState(httpRequest);
 	}
 	
-	@RequestMapping(value = "nofilter/validateCode")
+	@RequestMapping(value = ControllerMapping.NOFILTER_VALIDATECODE)
 	@ResponseBody
 	public String getValidateCode(Integer loginId) {
 		System.out.println(loginId);

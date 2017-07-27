@@ -133,7 +133,6 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 			}
 		});
 
-
 		driver.initialize(this);
 		driver.edit(new SmartLock());
 		return widget;
@@ -143,14 +142,6 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 	protected void onLoadData(Integer smartLockId) {
 		this.smartLockId = smartLockId;
 		window.setHeadingText("智能锁" + (smartLockId == null ? "增加" : "修改"));
-		
-//		if(smartLockId != null){
-//			orgId.setReadOnly(false);
-//			bikeTypeId.setReadOnly(false);
-//		}else{
-//			orgId.setReadOnly(true);
-//			bikeTypeId.setReadOnly(true);
-//		}
 		
 		orgId.reset();
 		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);

@@ -8,6 +8,7 @@ import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.components.CcLabelValueCombobox;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
+import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.dto.SmartLockGrant;
 import org.ccframe.subsys.bike.dto.SmartLockGrantDto;
 import org.fusesource.restygwt.client.Method;
@@ -65,7 +66,6 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 	@UiField
 	CcTextField bikePlateNumberPrefixText;
 	
-	@Editor.Ignore
     @UiField
     CcLabelValueCombobox orgId;
 	
@@ -79,21 +79,17 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 		toggle.add(bikePlateNumberPrefix);
 		LockerHardwareCodeScope.setValue(true);
 		bikePlateNumberPrefixText.disable();
-//		bikePlateNumberPrefixText.setValue("");
 		startLockerHardwareCode.enable();
 		endLockerHardwareCode.enable();
 		toggle.addValueChangeHandler(new ValueChangeHandler<HasValue<Boolean>>(){
 			@Override
 			public void onValueChange(ValueChangeEvent<HasValue<Boolean>> event) {
 				if(LockerHardwareCodeScope.getValue()==true){
-//					bikePlateNumberPrefixText.setValue("");
 					bikePlateNumberPrefixText.disable();
 					startLockerHardwareCode.enable();
 					endLockerHardwareCode.enable();
 				}else{
 					bikePlateNumberPrefixText.enable();
-//					startLockerHardwareCode.setValue("");
-//					endLockerHardwareCode.setValue("");
 					startLockerHardwareCode.disable();
 					endLockerHardwareCode.disable();
 				}
@@ -116,6 +112,8 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 			}
 			
 		});
+		driver.initialize(this);
+		driver.edit(new SmartLockGrant());
 		return widget;
 	}
 
@@ -132,15 +130,15 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 	@UiHandler("grantButton")
 	public void handleGrantClick(SelectEvent e){
 		if(FormPanelHelper.isValid(vBoxLayoutContainer, false)){
-			final SmartLockGrant smartLockGrant = new SmartLockGrant();
+			final SmartLockGrant smartLockGrant = driver.flush();
 			if(LockerHardwareCodeScope.getValue()==true){
 				smartLockGrant.setStartLockerHardwareCode(startLockerHardwareCode.getValue());
 				smartLockGrant.setEndLockerHardwareCode(endLockerHardwareCode.getValue());
 			}else{
 				smartLockGrant.setBikePlateNumberPrefixText(bikePlateNumberPrefixText.getValue());
 			}
-			smartLockGrant.setOrgId(orgId.getValue());
-			smartLockGrant.setBikeTypeId(bikeTypeId.getValue());
+//			smartLockGrant.setOrgId(orgId.getValue());
+//			smartLockGrant.setBikeTypeId(bikeTypeId.getValue());
 			final TextButton button = ((TextButton)(e.getSource()));
 //			button.disable();
 			

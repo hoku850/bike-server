@@ -12,12 +12,14 @@ import org.ccframe.subsys.core.service.MemberAccountService;
 
 public class SaveLogUtil {
 	public static Integer saveLog(Integer memberAccount, Double preVaule, Double afterVaule, Double changeVaule, String reason){
+		
+		Integer orgId = 2;
 		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
 		MemberAccountLog memberAccountLog = new MemberAccountLog();
 		memberAccountLog.setUserId(user.getUserId());
 		memberAccountLog.setMemberAccountId(memberAccount);
 		memberAccountLog.setOperationManId(user.getUserId());
-		memberAccountLog.setOrgId(1);
+		memberAccountLog.setOrgId(orgId);
 		memberAccountLog.setPrevValue(preVaule);
 		memberAccountLog.setReason(reason);
 		memberAccountLog.setChangeValue(changeVaule);

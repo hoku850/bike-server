@@ -10,10 +10,15 @@ import org.ccframe.commons.base.BaseService;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.BigDecimalUtil;
 import org.ccframe.commons.util.WebContextHolder;
+import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.sdk.bike.utils.SaveLogUtil;
 import org.ccframe.subsys.bike.domain.code.ChargeOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.code.PaymentTypeCodeEnum;
+import org.ccframe.subsys.bike.domain.entity.AgentApp;
 import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
+import org.ccframe.subsys.bike.domain.entity.MemberUser;
+import org.ccframe.subsys.bike.service.AgentAppSearchService;
+import org.ccframe.subsys.bike.service.AgentAppService;
 import org.ccframe.subsys.bike.service.ChargeOrderSearchService;
 import org.ccframe.subsys.bike.service.ChargeOrderService;
 import org.ccframe.subsys.core.domain.code.AccountTypeCodeEnum;
@@ -86,14 +91,13 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 	 */
 	@Transactional
 	public Map<String, Object> chargeAccount(Double chargeMoney, String payType) {
-		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-		//chargeMoney = 100.00;
-		//payType = "wechat";
-		List<MemberAccount> list1 = SpringContextHelper.getBean(MemberAccountSearchService.class)
-				.findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), 1, AccountTypeCodeEnum.PRE_DEPOSIT.toCode());
+		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
 
-		Double amount = 0.00;
-		Double total = 0.00;
+		List<MemberAccount> list1 = SpringContextHelper.getBean(MemberAccountSearchService.class)
+				.findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), user.getOrgId(), AccountTypeCodeEnum.PRE_DEPOSIT.toCode());
+
+		Double amount = AppConstant.DOUBLE_ZERO;
+		Double total = AppConstant.DOUBLE_ZERO;
 		if(list1 != null && list1.size()>0){
 			
 			//保存系统会员账户表
@@ -106,24 +110,24 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 			SpringContextHelper.getBean(MemberAccountService.class).save(memberAccount);
 			
 			//保存日志表
-			Integer logId = SaveLogUtil.saveLog(memberAccount.getMemberAccountId(), amount, total, chargeMoney, "1");
+			Integer logId = SaveLogUtil.saveLog(memberAccount.getMemberAccountId(), amount, total, chargeMoney, "保存系统会员账户表");
 			
 			//保存充值订单表
 			ChargeOrder chargeOrder = new ChargeOrder();
-			chargeOrder.setChargeOrderNum("123");
+			chargeOrder.setChargeOrderNum(AppConstant.CHARGE_ORDER_NUM);
 			chargeOrder.setUserId(user.getUserId());
 			chargeOrder.setMemberAccountId(memberAccount.getMemberAccountId());
 			chargeOrder.setMemberAccountLogId(logId);
-			chargeOrder.setOrgId(1);
-			chargeOrder.setPaymentTransactionalNumber("123");
+			chargeOrder.setOrgId(user.getOrgId());
+			chargeOrder.setPaymentTransactionalNumber(AppConstant.PAYMENT_TRANSACTIONAL_NUMBER);
 			chargeOrder.setChargeAmmount(chargeMoney);
 			chargeOrder.setChargeOrderStatCode(ChargeOrderStatCodeEnum.CHARGE_SUCCESS.toCode());
 			chargeOrder.setCreateTime(new Date());
 			chargeOrder.setChargeFinishTime(new Date());
 			
-			if(payType.equals("alipay")) {
+			if(payType.equals(AppConstant.ALIPAY)) {
 				chargeOrder.setPaymentTypeCode(PaymentTypeCodeEnum.ALIPAY.toCode());
-			} else if(payType.equals("wechat")){
+			} else if(payType.equals(AppConstant.WECHAT)){
 				chargeOrder.setPaymentTypeCode(PaymentTypeCodeEnum.WECHAT.toCode());
 			}
 			
@@ -132,8 +136,8 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		map.put("result", "ok");
-		map.put("amount", total);
+		map.put(AppConstant.RESULT, AppConstant.OK);
+		map.put(AppConstant.AMOUNT, total);
 		
 		return map;
 	}
@@ -143,26 +147,26 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 	 */
 	@Transactional
 	public Map<String, Object> returnDeposit() {
-		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-		
-		List<MemberAccount> list1 = SpringContextHelper.getBean(MemberAccountSearchService.class)
-				.findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), 1, AccountTypeCodeEnum.DEPOSIT.toCode());
+		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
 
-		Double deposit = 0.00;
+		List<MemberAccount> list1 = SpringContextHelper.getBean(MemberAccountSearchService.class)
+				.findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), user.getOrgId(), AccountTypeCodeEnum.DEPOSIT.toCode());
+
+		Double deposit = AppConstant.DOUBLE_ZERO;
 		if(list1 != null && list1.size()>0){
 			
 			//更新账户表
 			MemberAccount memberAccount = list1.get(0);
 			deposit = memberAccount.getAccountValue();
 			
-			memberAccount.setAccountValue(0.00);
+			memberAccount.setAccountValue(AppConstant.DOUBLE_ZERO);
 			SpringContextHelper.getBean(MemberAccountService.class).save(memberAccount);
 			
-			Integer logId = SaveLogUtil.saveLog(memberAccount.getMemberAccountId(), deposit, 0.00, deposit, "1");
+			Integer logId = SaveLogUtil.saveLog(memberAccount.getMemberAccountId(), deposit, AppConstant.DOUBLE_ZERO, deposit, "更新账户表");
 			
 			//更新充值订单表
 			List<MemberAccount> list = SpringContextHelper.getBean(MemberAccountSearchService.class)
-			.findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), 1, AccountTypeCodeEnum.DEPOSIT.toCode());
+			.findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), user.getOrgId(), AccountTypeCodeEnum.DEPOSIT.toCode());
 			
 			if(list!=null && list.size()>0) {
 				MemberAccount memberAccount2 = list.get(0);
@@ -183,8 +187,8 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		map.put("result", "ok");
-		map.put("deposit", deposit);
+		map.put(AppConstant.RESULT, AppConstant.OK);
+		map.put(AppConstant.DEPOSIT, deposit);
 		
 		return map;
 	}
@@ -194,37 +198,38 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 	 */
 	@Transactional
 	public Map<String, Object> chargeDeposit(String payType) {
-		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
 		
 		List<MemberAccount> list1 = SpringContextHelper.getBean(MemberAccountSearchService.class)
-				.findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), 1, AccountTypeCodeEnum.DEPOSIT.toCode());
+				.findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), user.getOrgId(), AccountTypeCodeEnum.DEPOSIT.toCode());
 
-		Double deposit = 99.00;
+		List<AgentApp> list = SpringContextHelper.getBean(AgentAppSearchService.class).findByKey(AgentApp.ORG_ID, user.getOrgId());
+		Double deposit = list.get(0).getChargeDeposit();
 		MemberAccount memberAccount = null;
 		if(list1 != null && list1.size()>0){
 			memberAccount = list1.get(0);
 			memberAccount.setAccountValue(deposit);
 			SpringContextHelper.getBean(MemberAccountService.class).save(memberAccount);
 			
-			Integer logId = SaveLogUtil.saveLog(memberAccount.getMemberAccountId(), 0.00, deposit, deposit, "充值押金");
+			Integer logId = SaveLogUtil.saveLog(memberAccount.getMemberAccountId(), AppConstant.DOUBLE_ZERO, deposit, deposit, "充值押金");
 			
 			//保存充值订单表
 			ChargeOrder chargeOrder = new ChargeOrder();
-			chargeOrder.setChargeOrderNum("123");
+			chargeOrder.setChargeOrderNum(AppConstant.CHARGE_ORDER_NUM);
 			chargeOrder.setUserId(user.getUserId());
 			chargeOrder.setMemberAccountId(memberAccount.getMemberAccountId());
 			chargeOrder.setMemberAccountLogId(logId);
 			chargeOrder.setOrgId(1);
-			chargeOrder.setPaymentTransactionalNumber("123");
+			chargeOrder.setPaymentTransactionalNumber(AppConstant.PAYMENT_TRANSACTIONAL_NUMBER);
 			chargeOrder.setChargeAmmount(deposit);
 			chargeOrder.setChargeOrderStatCode(ChargeOrderStatCodeEnum.CHARGE_SUCCESS.toCode());
 			Date nowDate = new Date();
 			chargeOrder.setCreateTime(nowDate);
 			chargeOrder.setChargeFinishTime(nowDate);
 			
-			if(payType.equals("alipay")) {
+			if(payType.equals(AppConstant.ALIPAY)) {
 				chargeOrder.setPaymentTypeCode(PaymentTypeCodeEnum.ALIPAY.toCode());
-			} else if(payType.equals("wechat")){
+			} else if(payType.equals(AppConstant.WECHAT)){
 				chargeOrder.setPaymentTypeCode(PaymentTypeCodeEnum.WECHAT.toCode());
 			}
 			
@@ -233,8 +238,8 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 	
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		map.put("result", "ok");
-		map.put("deposit", deposit);
+		map.put(AppConstant.RESULT, AppConstant.OK);
+		map.put(AppConstant.DEPOSIT, deposit);
 		
 		return map;
 	}

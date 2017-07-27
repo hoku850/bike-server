@@ -92,7 +92,7 @@
             <description>过滤的URL</description>
             <param-name>excludeUrls</param-name>
             <param-value>
-                /admin/mainFrame/nofilter/*
+                /admin/mainFrame/doLogin.json
             </param-value>
         </init-param>
         <init-param>

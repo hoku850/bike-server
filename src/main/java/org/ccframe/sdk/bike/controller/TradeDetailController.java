@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ControllerMapping.MEMBER_TRADEDETAIL_BASE)
 public class TradeDetailController{
 	
-	@RequestMapping(value = "getChargeDetail")
+	@RequestMapping(value = ControllerMapping.GET_CHARGE_DETAIL)
 	@ResponseBody
 	public List<ChargeOrder> getChargeDetail() {
 		
 		return SpringContextHelper.getBean(ChargeOrderService.class).getChargeDetail();
 	}
 	
-	@RequestMapping(value = "getPayDetail")
+	@RequestMapping(value = ControllerMapping.GET_PAY_DETAIL)
 	@ResponseBody
 	public List<CyclingOrder> getPayDetail() {
 		

@@ -170,11 +170,15 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 				UserToRepairRecordListReq userToRepairRecordListReq = new UserToRepairRecordListReq();
 				userToRepairRecordListReq.setSearchText(searchText.getValue());
 				userToRepairRecordListReq.setOrgId(orgId.getValue());
-				userToRepairRecordListReq.setFixStatCode(fixStatCode.getValue()==""?null:fixStatCode.getValue());
+				if(!fixStatCode.getValue().equals(CcEnumCombobox.ENUM_ALL.toCode())){
+					userToRepairRecordListReq.setFixStatCode(fixStatCode.getValue());
+				}else{
+					userToRepairRecordListReq.setFixStatCode(null);
+				}
+				
 				
 				if(isAgent){
 					userToRepairRecordListReq.setOrgId(MainFrame.adminUser.getOrgId());
-//					userToRepairRecordListReq.setOrgId(502);
 				}else{
 					userToRepairRecordListReq.setOrgId(orgId.getValue());
 				}

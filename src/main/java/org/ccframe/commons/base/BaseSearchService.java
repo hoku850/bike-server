@@ -6,6 +6,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import javax.persistence.Id;
@@ -14,13 +15,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.ccframe.client.Global;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +46,28 @@ public abstract class BaseSearchService <E extends Serializable,ID extends Seria
 
     private static final int FIND_BY_KEY_MAX = 10000; //result_window最大值
     
+    private ElasticsearchTemplate elasticsearchTemplate;
+    
+	public void setElasticsearchTemplate(ElasticsearchTemplate elasticsearchTemplate) {
+		this.elasticsearchTemplate = elasticsearchTemplate;
+	}
+
+	public ElasticsearchTemplate getElasticsearchTemplate() {
+		return elasticsearchTemplate;
+	}
+	
+	public Map<String,Object> AggregationQuery(QueryBuilders query, AbstractAggregationBuilder[] aggregations){
+		return null;
+//		elasticsearchTemplate.
+//		
+//		SearchRequestBuilder searchRequestBuilder = elasticsearchTemplate.client.prepareSearch("index_name")
+//	            .setIndices("index_name")
+//	            .setTypes("type_name").setQuery(searchQuery).addAggregation(AggregationBuilders.stats("sum_of_price").field("price"))
+//	            .addAggregation(AggregationBuilders.sum("sum_of_qty").field("qty"))
+//	    SearchResponse searchResponse = searchRequestBuilder.execute().actionGet()
+
+	}
+
 	@SuppressWarnings("unchecked") //NOSONAR
     public BaseSearchService() {
         Class typeCls = getClass();

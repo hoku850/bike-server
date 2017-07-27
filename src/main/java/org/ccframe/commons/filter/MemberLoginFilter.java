@@ -15,6 +15,7 @@ import org.ccframe.client.Global;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.helper.SysInitBeanHelper;
 import org.ccframe.commons.util.WebContextHolder;
+import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.UserSearchService;
 
@@ -37,11 +38,12 @@ private static String backendLoginUri;
         HttpServletResponse httpResponse = (HttpServletResponse) response;   // NOSONAR
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         
-        User user = (User)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-        System.out.println("user: " + user);
-        if(user == null) { 
+        MemberUser memberUser = (MemberUser)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+        System.out.println("memberUser: " + memberUser);
+        if(memberUser == null) { 
         		String phoneNumber = httpRequest.getParameter("phoneName");
         		String IMEI = httpRequest.getParameter("IMEI");
+        		String orgId = httpRequest.getParameter("orgId");
         		
         		if(phoneNumber==null || phoneNumber.equals("") || IMEI==null || IMEI.equals("")) {
         			httpResponse.getWriter().print("checkPhone");
@@ -51,7 +53,8 @@ private static String backendLoginUri;
         			 List<User> users = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(phoneNumber, IMEI);
         			 if(users!=null && users.size()>0) {
         				 //自动登录
-        				 WebContextHolder.getSessionContextStore().setServerValue(Global.SESSION_LOGIN_MEMBER_USER, users.get(0));
+        				 memberUser = new MemberUser(users.get(0).getUserId(), Integer.valueOf(orgId));
+        				 WebContextHolder.getSessionContextStore().setServerValue(Global.SESSION_LOGIN_MEMBER_USER, memberUser);
  
         			 } else {
         				 httpResponse.getWriter().print("checkPhone");

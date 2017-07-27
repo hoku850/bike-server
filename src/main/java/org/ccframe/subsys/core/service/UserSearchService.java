@@ -27,8 +27,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
 @Service
 public class UserSearchService extends BaseSearchService<User, Integer, UserSearchRepository>{
 

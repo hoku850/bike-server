@@ -1,5 +1,6 @@
 package org.ccframe.client.module.bike.view;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.base.BaseWindowView;
 import org.ccframe.client.commons.CcFormPanelHelper;
 import org.ccframe.client.commons.ClientManager;
@@ -67,9 +68,9 @@ public class OrgWindowView extends BaseWindowView<Integer, OrgDto> implements Ed
 					button.enable();
 					window.hide();
 					// 新增成功后提示该运营商的账户和密码
-					if (response != null && agentId == null) {
-						String message = "管理员账户: " + response.getLoginId() + "   密码: test";
-						ViewUtil.messageBox("运营商默认管理员账号", message);
+					if (agentId == null && response != null) {
+						String message = "成功添加运营商：" + orgDto.getOrgNm() + "<br>运营商默认管理员帐号：" + response.getLoginId() + "<br>运营商默认管理员密码：" + Global.AGRNT_DEFAULT_PASSWORD;
+						ViewUtil.messageBox("成功添加运营商", message);
 					}
 				}
 				@Override

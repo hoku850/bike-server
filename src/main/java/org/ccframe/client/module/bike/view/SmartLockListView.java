@@ -171,7 +171,7 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 	
 	@Override
 	protected void doDeleteClick(SelectEvent e) {
-		ClientManager.getSmartLockClient().delete(grid.getSelectionModel().getSelectedItem().getSmartLockId(), new RestCallback<Void>(){
+		ClientManager.getSmartLockClient().decideDeleteById(grid.getSelectionModel().getSelectedItem().getSmartLockId(), new RestCallback<Void>(){
 			@Override
 			public void onSuccess(Method method, Void response) {
 				Info.display("操作完成", "智能锁删除成功");
@@ -259,7 +259,11 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 				SmartLockListReq smartLockListReq = new SmartLockListReq();
 				
 				smartLockListReq.setSearchText(searchText.getValue());
-				smartLockListReq.setSmartLockStatCode(smartLockStatCode.getValue()==""?null:smartLockStatCode.getValue());
+				if(!smartLockStatCode.getValue().equals(CcEnumCombobox.ENUM_ALL.toCode())){
+					smartLockListReq.setSmartLockStatCode(smartLockStatCode.getValue());
+				}else{
+					smartLockListReq.setSmartLockStatCode(null);
+				}
 				
 				if(isAgent){
 					smartLockListReq.setOrgId(MainFrame.adminUser.getOrgId());
@@ -280,22 +284,6 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
-		if(MainFrame.adminUser.getOrgId() != Global.PLATFORM_ORG_ID){
-			isAgent = true;
-		}else{
-			isAgent = false;
-		}
-		if(isAgent){
-			this.columnModel.getColumn(4).setHidden(true);
-			this.addButton.hide();
-			this.editButton.hide();
-			this.deleteButton.hide();
-			this.grantButton.hide();
-			this.importButton.hide();
-			this.orgId.hide();
-		}else{
-			this.desertButton.hide();
-		}
 		return widget;
 	}
 	

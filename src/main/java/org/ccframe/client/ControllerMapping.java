@@ -171,6 +171,29 @@ public interface ControllerMapping {
 	String MEMBER_ORDER_PAY_BASE = MEMBER_BASE + "orderPay";
 	String MEMBER_INDEX_BASE = MEMBER_BASE + "index";
 	
+	String GET_CHARGE_AMOUNT = "getChargeAmount";
+	String GET_DEPOSIT = "getDeposit";
+	String CHARGE_ACCOUNT = "chargeAccount";
+	String RETURN_DEPOSIT = "returnDeposit";
+	String CHARGE_DEPOSIT = "chargeDeposit";
+	String GET_FIX_REASON = "getFixReason";
+	String SAVE_REPAIR_RECORD = "saveRepairRecord";
+	String GET_BIKE_LOCATION = "getBikeLocation";
+	String GET_MENU_DATA = "getMenuData";
+	String NOFILTER_LOGIN = "nofilter/login";
+	String CHECK_STATE = "checkState";
+	String NOFILTER_VALIDATECODE = "nofilter/validateCode";
+	String GET_PAY_DATA = "getPayData";
+	String ORDER_PAY_SUBMIT = "orderPaySubmit";
+	String GET_CHARGE_DETAIL = "getChargeDetail";
+	String GET_PAY_DETAIL = "getPayDetail";
+	String GET_TRAVEL_LIST = "getTravelList";
+	String GET_TRAVEL_DETAIL = "getTravelDetail";
+	String GET_USING_BIKE_DATA = "getUsingBikeData";
+	String NEW_CYCLING_ORDER = "newCyclingOrder";
+	String SAVE_POSITION = "savePosition";
+	String CLOSE_LOCK = "closeLock";
+	
 	//二维码扫码场景
 	String QR_CODE_SCAN_BASE = "scan"; //地址尽量短，实际请求为http://www.xxxx.com/scan/0432423423这样的方式
 	
@@ -203,4 +226,5 @@ public interface ControllerMapping {
 	// 运营商管理
 	String ORG_BASE = ADMIN_BASE + "org";
 	String ORG_LIST = "findList";
+
 }

@@ -31,6 +31,7 @@ import org.ccframe.subsys.bike.dto.SmartLockRowDto;
 import org.ccframe.subsys.bike.repository.SmartLockRepository;
 import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.service.OrgService;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +51,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		
 		SmartLock dbSmartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, smartLock.getLockerHardwareCode());
 		if(dbSmartLock != null){
-			if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock.getSmartLockId() != smartLock.getSmartLockId()))){
+			if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock.getLockerHardwareCode() != smartLock.getLockerHardwareCode()))){
 				throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "硬件编码重复！！！" });
 			}
 		}
@@ -58,7 +59,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		if(StringUtils.isNotBlank(smartLock.getImeiCode())){
 			SmartLock dbSmartLock1 = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.IMEI_CODE, smartLock.getImeiCode());
 			if(dbSmartLock1 != null){
-				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock1.getSmartLockId() != smartLock.getSmartLockId()))){
+				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock1.getImeiCode() != smartLock.getImeiCode()))){
 					throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "IMEI码重复！！！" });
 				}
 			}
@@ -67,7 +68,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		if(StringUtils.isNotBlank(smartLock.getMacAddress())){
 			SmartLock dbSmartLock1 = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.MAC_ADDRESS, smartLock.getMacAddress());
 			if(dbSmartLock1 != null){
-				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock1.getSmartLockId() != smartLock.getSmartLockId()))){
+				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock1.getMacAddress() != smartLock.getMacAddress()))){
 					throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "MAC地址重复！！！" });
 				}
 			}
@@ -76,7 +77,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		if(StringUtils.isNotBlank(smartLock.getBikePlateNumber())){
 			SmartLock dbSmartLock1 = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.BIKE_PLATE_NUMBER, smartLock.getBikePlateNumber());
 			if(dbSmartLock1 != null){
-				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock1.getSmartLockId() != smartLock.getSmartLockId()))){
+				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock1.getBikePlateNumber() != smartLock.getBikePlateNumber()))){
 					throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "单车车牌号重复！！！" });
 				}
 			}
@@ -97,11 +98,11 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 	}
 
 	@Transactional
-	public void myDeleteById(Integer smartLockId) {
+	public void decideDeleteById(Integer smartLockId) {
 		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(smartLockId);
 
 		if (SpringContextHelper.getBean(CyclingOrderService.class).getById(smartLock.getBikeTypeId()) == null) {
-			deleteById(smartLockId);
+			SpringContextHelper.getBean(SmartLockService.class).deleteById(smartLockId);
 		} else {
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "骑行订单表中使用到该记录，暂时不能删除！！！" });
 		}
@@ -119,6 +120,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		return resultList;
 	}
 
+	@Transactional
 	@Override
 	public List<ExcelReaderError> importBatch(int rowBase, List<SmartLockRowDto> importList, boolean isLastRow,
 			Map<String, Object> importParam) {
@@ -221,26 +223,28 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			Org org = SpringContextHelper.getBean(OrgService.class).getByKey(Org.ORG_NM, rowSmartLock.getOrgNm());
 			if(org == null){
 				resultList.add(new ExcelReaderError(4, rowNum - 1, "运营商不存在"));
+				continue;
 			}else{
 				orgId = org.getOrgId();
 			}
 			
 			//单车类型转换
-			int bikeType = 60000;
+			int bikeTypeId = 60000;
 			List<BikeType> listBikeType = SpringContextHelper.getBean(BikeTypeService.class).findByKey(BikeType.BIKE_TYPE_NM, rowSmartLock.getBikeTypeNm());
 			if(listBikeType.size()==0){
 				resultList.add(new ExcelReaderError(6, rowNum - 1, "单车类型不存在"));
+				continue;
 			}else{
 				if(rowSmartLock.getBikeTypeNm().equals("标准单车")){
-					List<BikeType> listDbBikeType = SpringContextHelper.getBean(BikeTypeService.class).findByKey(BikeType.ORG_ID, org);
+					List<BikeType> listDbBikeType = SpringContextHelper.getBean(BikeTypeService.class).findByKey(BikeType.ORG_ID, orgId);
 					for (BikeType bikeType2 : listBikeType) {
 						if(orgId == bikeType2.getOrgId()){
-							bikeType = bikeType2.getBikeTypeId();
+							bikeTypeId = bikeType2.getBikeTypeId();
 						}
 					}
 				}else{
 					BikeType db2 = SpringContextHelper.getBean(BikeTypeService.class).getByKey(BikeType.BIKE_TYPE_NM, rowSmartLock.getBikeTypeNm());
-					bikeType = db2.getBikeTypeId();
+					bikeTypeId = db2.getBikeTypeId();
 				}
 			}
 			
@@ -252,7 +256,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			}
 			dbSmartLock.setOrgId(orgId);
 			dbSmartLock.setSmartLockStatCode(smartLockStatCode);
-			dbSmartLock.setBikeTypeId(bikeType);
+			dbSmartLock.setBikeTypeId(bikeTypeId);
 			dbSmartLock.setLockerHardwareCode(rowSmartLock.getLockerHardwareCode());
 			dbSmartLock.setImeiCode(rowSmartLock.getImeiCode());
 			dbSmartLock.setMacAddress(rowSmartLock.getMacAddress());
@@ -265,6 +269,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		return resultList;
 	}
 
+	@Async
 	@Override
 	public void doImport(String filePath, Map<String, Object> importParam) {
 		ListExcelReader<SmartLockRowDto> listExcelReader = new ListExcelReader<>(WebContextHolder.getWarPath()
@@ -287,7 +292,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 	 */
 	public String doExport(Integer orgId) throws IOException {
 		// 生成一个EXCEL导入文件到TEMP,并且文件名用UUID
-		String filePathString = WebContextHolder.getWarPath() + "/exceltemplate/smartLockListExcel.xls";// "war/exceltemplate/goodsInfListExcel.xls";
+		String filePathString = WebContextHolder.getWarPath() + File.separator + Global.EXCEL_TEMPLATE_DIR + File.separator + "smartLockListExcel.xls";// "war/exceltemplate/goodsInfListExcel.xls";
 
 		ListExcelWriter writer = new ListExcelWriter(filePathString); // GWT.getHostPageBaseURL()+
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
@@ -344,8 +349,8 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			data.put(SmartLock.LAST_USE_DATE_STR, smartLock.getLastUseDateStr());
 			dataList.add(data);
 		}
-		String fileName = "temp/" + UUID.randomUUID() + ".xls";
-		String outFileName = WebContextHolder.getWarPath() + "/" + fileName;
+		String fileName = Global.TEMP_DIR + "/" + UUID.randomUUID() + ".xls";
+		String outFileName = WebContextHolder.getWarPath() + File.separator + fileName;
 		writer.fillToFile(dataList, outFileName);
 
 		return JsonBinder.buildNormalBinder().toJson(fileName);

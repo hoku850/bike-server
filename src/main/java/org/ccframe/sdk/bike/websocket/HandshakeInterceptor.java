@@ -31,7 +31,7 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
 		HttpServletRequest request2 = servletRequest.getServletRequest();
 		String IMEI = request2.getParameter("IMEI");
 		String phoneNumber = request2.getParameter("phoneNumber");
-		List<User> users = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(null, IMEI);
+		List<User> users = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(phoneNumber, IMEI);
 		 if(users!=null && users.size()>0) {
 			 User user = users.get(0);
 			 attributes.put("user", user);

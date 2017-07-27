@@ -28,7 +28,7 @@ public class SmartLockController{
 
 	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.DELETE)
 	public void delete(@PathVariable(Global.ID_BINDER_ID) java.lang.Integer smartLockId){
-		SpringContextHelper.getBean(SmartLockService.class).myDeleteById(smartLockId);
+		SpringContextHelper.getBean(SmartLockService.class).decideDeleteById(smartLockId);
 	}
 
 	@RequestMapping(value = ControllerMapping.SMART_LOCK_LIST, method = RequestMethod.POST)

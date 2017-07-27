@@ -69,7 +69,7 @@ public class WebsocketEndPoint extends TextWebSocketHandler {
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
         if(session.isOpen()){session.close();}
         //logger.debug("websocket connection closed......");
-        User user = (User)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+        User user = (User) session.getAttributes().get("user");
         users.remove(user.getUserId());
     }
 

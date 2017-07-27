@@ -13,6 +13,8 @@ import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.WebContextHolder;
+import org.ccframe.sdk.bike.utils.AppConstant;
+import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.core.domain.code.AccountTypeCodeEnum;
 import org.ccframe.subsys.core.domain.entity.MemberAccount;
 import org.ccframe.subsys.core.domain.entity.User;
@@ -85,14 +87,14 @@ public class MemberAccountSearchService extends BaseSearchService<MemberAccount,
 	 * @author zjm
 	 */
 	public Map<String, String> getChargeAmount() {
-		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
 		
 		List<MemberAccount> list1 = SpringContextHelper.getBean(MemberAccountSearchService.class)
-				.findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), 1, AccountTypeCodeEnum.PRE_DEPOSIT.toCode());
+				.findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), user.getOrgId(), AccountTypeCodeEnum.PRE_DEPOSIT.toCode());
 		
-		String amount = "0.00";
-		String ifChargeDeposit = "no";
-		String deposit = "0.00";
+		String amount = AppConstant.INIT_AMOUNT;
+		String ifChargeDeposit = AppConstant.INIT_IFCHARGEDEPOSIT;
+		String deposit = AppConstant.INIT_DEPOSIT;
 		DecimalFormat df = new DecimalFormat("#0.00");  
 		if(list1 != null && list1.size()>0){
 			
@@ -101,17 +103,17 @@ public class MemberAccountSearchService extends BaseSearchService<MemberAccount,
 		
 		
 		List<MemberAccount> list2 = SpringContextHelper.getBean(MemberAccountSearchService.class)
-				.findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), 1, AccountTypeCodeEnum.DEPOSIT.toCode());
+				.findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), user.getOrgId(), AccountTypeCodeEnum.DEPOSIT.toCode());
 		if(list2!= null && list2.size()>0 && list2.get(0).getAccountValue()>0){
-			ifChargeDeposit = "yes";
+			ifChargeDeposit = AppConstant.IFCHARGEDEPOSIT_YES;
 			
 			deposit = df.format(list2.get(0).getAccountValue())+"";
 		}
 		
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("amount", amount);
-		map.put("deposit", deposit);
-		map.put("ifChargeDeposit", ifChargeDeposit);
+		map.put(AppConstant.AMOUNT, amount);
+		map.put(AppConstant.DEPOSIT, deposit);
+		map.put(AppConstant.IFCHARGEDEPOSIT, ifChargeDeposit);
 		
 		return map;
 	}

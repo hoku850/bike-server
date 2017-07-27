@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(ControllerMapping.MEMBER_INDEX_BASE)
 public class IndexMenuController {
-	@RequestMapping(value = "getMenuData")
+	@RequestMapping(value = ControllerMapping.GET_MENU_DATA)
 	@ResponseBody
 	public Map<String, String> gerMenuData(Integer orgId){
 		User user = (User)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);

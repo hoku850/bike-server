@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ControllerMapping.MEMBER_TRAVEL_BASE)
 public class TravelController{
 	
-	@RequestMapping(value = "getTravelList")
+	@RequestMapping(value = ControllerMapping.GET_TRAVEL_LIST)
 	@ResponseBody
 	public List<CyclingOrder> getTravelList() {
 		return SpringContextHelper.getBean(CyclingOrderService.class).getTravelList();
 	}
 	
-	@RequestMapping(value = "getTravelDetail")
+	@RequestMapping(value = ControllerMapping.GET_TRAVEL_DETAIL)
 	@ResponseBody
 	public Map<String, Object> getTravelDetail(Integer cyclingOrderId) {
 		return SpringContextHelper.getBean(CyclingOrderService.class).getTravelDetail(cyclingOrderId);

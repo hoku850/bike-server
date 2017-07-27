@@ -22,14 +22,22 @@ import org.ccframe.subsys.bike.search.CyclingOrderSearchRepository;
 import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.OrgService;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchType;
 import org.ccframe.subsys.core.service.UserService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
+import org.elasticsearch.search.aggregations.metrics.sum.Sum;
+import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,7 +46,6 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 	public ClientPage<CyclingOrderRowDto> findList(CyclingOrderListReq cyclingOrderListReq, int offset, int limit) {
 		
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-		
 		// 过滤运营商
 		Integer orgId = cyclingOrderListReq.getOrgId();
 		if(orgId != null && orgId != 0){
@@ -225,6 +232,46 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 							smartLockId, code);
 		}
 		return null;
+	}
+
+	public List<CyclingOrder> findByUserIdAndOrgIdAndCyclingOrderStatCode(Integer userId, Integer orgId,
+			String code) {
+		if(userId!=null && orgId!=null && code!=null) {
+			return this
+					.getRepository().findByUserIdAndOrgIdAndCyclingOrderStatCode(userId, orgId, code);
+		}
+			
+		return null;
+	}
+
+	public Double testCountByOrgId(Integer orgId, String cyclingOrderStatCode){
+
+//		QueryBuilder query
+//		
+//		SearchRequestBuilder searchRequestBuilder = elasticsearchTemplate.client.prepareSearch("index_name")
+//	            .setIndices("index_name")
+//	            .setTypes("type_name").setQuery(searchQuery).addAggregation(AggregationBuilders.stats("sum_of_price").field("price"))
+//	            .addAggregation(AggregationBuilders.sum("sum_of_qty").field("qty"))
+//	    SearchResponse searchResponse = searchRequestBuilder.execute().actionGet()
+//	    Integer priceTotal = (searchResponse.getAggregations().getAsMap().get("sum_of_price").getSum())
+//	    
+	    
+		
+//		SearchQuery searchQuery = new NativeSearchQueryBuilder().withIndices("index_name").withQuery(queryBuilder).withQuery(null).addAggregation(AggregationBuilders.sum("sum_of_xxx").field("xxx")).build()
+//				;
+		
+//		SearchRequestBuilder srb = client.prepareSearch("orgId")
+//                .setTypes("CyclingOrder")
+//                .setSearchType(SearchType.QUERY_THEN_FETCH);
+//		TermsBuilder tb= AggregationBuilders.terms("group_by_org").field("orgId");
+//		tb.subAggregation(AggregationBuilders.sum("sum_orderAmmount").field("orderAmmount"));
+//		srb.addAggregation(tb);
+//		int a = srb.get().getAggregations().get("sum_orderAmmount");
+		return this.getRepository().countByOrgId(orgId, cyclingOrderStatCode);
+	}
+	
+	public Integer countByOrgIdAndCyclingOrderStatCode(Integer orgId, String cyclingOrderStatCode){
+		return this.getRepository().countByOrgIdAndCyclingOrderStatCode(orgId, cyclingOrderStatCode);
 	}
 
 }

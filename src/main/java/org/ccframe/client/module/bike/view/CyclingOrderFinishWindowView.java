@@ -9,10 +9,8 @@ import org.ccframe.client.components.CcIntegerField;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
-import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
 import org.fusesource.restygwt.client.Method;
-import org.springframework.beans.BeanUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor;

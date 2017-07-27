@@ -35,7 +35,7 @@ public class OrgSearchService extends BaseSearchService<Org, Integer, OrgSearchR
 		
 		Page<Org> page = this.getRepository().search(
 			boolQueryBuilder,
-			new OffsetBasedPageRequest(offset, limit, new Order(Direction.DESC, Org.ORG_ID))
+			new OffsetBasedPageRequest(offset, limit, new Order(Direction.ASC, Org.ORG_ID))
 		);
 
 		List<OrgRowDto> resultList = new ArrayList<OrgRowDto>();

@@ -7,15 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.poi.ss.formula.IStabilityClassifier;
 import org.ccframe.client.Global;
 import org.ccframe.commons.base.BaseService;
 import org.ccframe.commons.data.ListExcelWriter;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.JsonBinder;
 import org.ccframe.commons.util.WebContextHolder;
+import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.subsys.bike.domain.code.ChargeOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.code.PaymentTypeCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
+import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.repository.ChargeOrderRepository;
 import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
@@ -125,19 +128,20 @@ public class ChargeOrderService extends BaseService<ChargeOrder,java.lang.Intege
 	 */
 	@Transactional(readOnly=true)
 	public List<ChargeOrder> getChargeDetail(){
-		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+		
 		List<ChargeOrder> list = SpringContextHelper.getBean(ChargeOrderSearchService.class)
-				.findByUserIdAndOrgIdOrderByChargeFinishTimeDesc(user.getUserId(), 1);
+				.findByUserIdAndOrgIdOrderByChargeFinishTimeDesc(user.getUserId(), user.getOrgId());
 		 
 		if(list != null && list.size()>0){
 			for(ChargeOrder chargeOrder : list){
 				String code = chargeOrder.getPaymentTypeCode();
 				if(code.equals(PaymentTypeCodeEnum.ALIPAY.toCode())){
-					chargeOrder.setPaymentTypeCode("支付宝充值");
+					chargeOrder.setPaymentTypeCode(AppConstant.ALIPAY_CHARGE);
 				} else if(code.equals(PaymentTypeCodeEnum.UNIONPAY.toCode())){
-					chargeOrder.setPaymentTypeCode("银联充值");
+					chargeOrder.setPaymentTypeCode(AppConstant.YINLIAN_CHARGE);
 				} else if(code.equals(PaymentTypeCodeEnum.WECHAT.toCode())){
-					chargeOrder.setPaymentTypeCode("微信充值");
+					chargeOrder.setPaymentTypeCode(AppConstant.WECHAT_CHARGE);
 				}
 			}
 		}

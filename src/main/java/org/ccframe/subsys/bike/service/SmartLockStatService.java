@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.ccframe.commons.base.BaseService;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.sdk.bike.utils.PositionUtil;
 import org.ccframe.subsys.bike.domain.code.LockSwitchStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.SmartLockStat;
@@ -28,18 +29,18 @@ public class SmartLockStatService extends BaseService<SmartLockStat,java.lang.In
 	    Double lng = Double.valueOf(splitPos[0]);
 	    Double lat = Double.valueOf(splitPos[1]);
 	    //半径为500米
-	    double[] around = PositionUtil.getAround(lat, lng, 500);
+	    double[] around = PositionUtil.getAround(lat, lng, AppConstant.RADIUS);
 		
 		List<SmartLockStat> list = SpringContextHelper.getBean(SmartLockStatSearchService.class).
 		findByLockSwitchStatCodeAndIfRepairIngAndLockLatBetweenAndLockLngBetween(
-				LockSwitchStatCodeEnum.CLOCK.toCode(),"N",around[0],around[2],
+				LockSwitchStatCodeEnum.CLOCK.toCode(),AppConstant.NO,around[0],around[2],
 				around[1],around[3]);
 		
 		if(list!=null && list.size()>0) {
 			StringBuffer posString = new StringBuffer("");
 			for(SmartLockStat smartLockStat : list) {
 				double distance = PositionUtil.getDistanceByLongNLat(lng, lat, smartLockStat.getLockLng(), smartLockStat.getLockLat());
-				if(distance <= 500) {
+				if(distance <= AppConstant.RADIUS) {
 					posString = posString.append("[").append(smartLockStat.getLockLng())
 							.append(",").append(smartLockStat.getLockLat()).append("]");
 					bikeLocationList.add(posString.toString());
@@ -52,7 +53,7 @@ public class SmartLockStatService extends BaseService<SmartLockStat,java.lang.In
 		bikeLocationList.add("[113.370700,23.133100]");*/
 		
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("bikeLocationList", bikeLocationList);
+		map.put(AppConstant.BIKE_LOCATION_LIST, bikeLocationList);
 		
 		return map;
 	}

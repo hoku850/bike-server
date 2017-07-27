@@ -19,7 +19,7 @@ public class OrderPayController {
 	// 测试用，正式使用设置debug为false
 	final boolean DEBUG = false;
 
-	@RequestMapping(value = "getPayData")
+	@RequestMapping(value = ControllerMapping.GET_PAY_DATA)
 	@ResponseBody
 	public Map<String, String> getPayData(Integer orderId, Integer orgId) {
 
@@ -41,7 +41,7 @@ public class OrderPayController {
 
 	}
 
-	@RequestMapping(value = "orderPaySubmit")
+	@RequestMapping(value = ControllerMapping.ORDER_PAY_SUBMIT)
 	@ResponseBody
 	public String orderPaySubmit(Integer orderId) {
 		User user;

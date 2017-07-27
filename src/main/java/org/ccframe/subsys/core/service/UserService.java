@@ -28,8 +28,10 @@ import org.ccframe.commons.jpaquery.Criteria;
 import org.ccframe.commons.jpaquery.Restrictions;
 import org.ccframe.commons.util.BusinessException;
 import org.ccframe.commons.util.WebContextHolder;
+import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
+import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.service.CyclingOrderSearchService;
 import org.ccframe.subsys.core.domain.code.AccountTypeCodeEnum;
 import org.ccframe.subsys.core.domain.code.BoolCodeEnum;
@@ -461,7 +463,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 
 		List<User> list = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(phoneNumber, iMEI);
 		User user = null;
-		
+		MemberUser memberUser = null;
 		if (list != null && list.size() > 0) {
 			user = list.get(0);
 			List<MemberAccount> listAccounts = SpringContextHelper.getBean(MemberAccountSearchService.class).findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), orgId, AccountTypeCodeEnum.DEPOSIT.toCode());
@@ -481,14 +483,16 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 				user.setUserNm(phoneNumber);
 				user.setUserMobile(phoneNumber);
 				user.setUserPsw(iMEI);
-				user.setIfAdmin("N");
+				user.setIfAdmin(AppConstant.NO);
 				user.setCreateDate(new Date());
 				user.setUserStatCode(UserStatCodeEnum.NORMAL.toCode());
 			}
 			user = SpringContextHelper.getBean(UserService.class).save(user);
 			this.createAccount(user, orgId);
 		}
-		WebContextHolder.getSessionContextStore().setServerValue(Global.SESSION_LOGIN_MEMBER_USER, user);
+		memberUser.setUserId(user.getUserId());
+		memberUser.setOrgId(orgId);
+		WebContextHolder.getSessionContextStore().setServerValue(Global.SESSION_LOGIN_MEMBER_USER, memberUser);
 	}
 	
 	/**
@@ -524,20 +528,20 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 	 */
 	@Transactional(readOnly=true)
 	public String checkState(HttpServletRequest httpRequest) {
-		
-		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+	
+		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
 		String state = "";
-		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), 1);
+		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
 		if(list!=null && list.size()>0) {
 			if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode())) {
-				return "onTheWay";
+				return AppConstant.ON_THE_WAY;
 			} else if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode())) {
-				return "waitPay";
+				return AppConstant.WAIT_PAY;
 			}
 		}
-		 String flag = httpRequest.getParameter("flag");
-		 if(flag!=null && flag.equals("onCreate")) {
-			 return "first";
+		 String flag = httpRequest.getParameter(AppConstant.FLAG);
+		 if(flag!=null && flag.equals(AppConstant.ON_CREATE)) {
+			 return AppConstant.FIRST;
 			 //return "";
 		 }
 		

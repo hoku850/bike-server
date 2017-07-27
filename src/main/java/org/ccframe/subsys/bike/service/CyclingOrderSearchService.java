@@ -154,7 +154,7 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 	/**
 	 * @author lzh
 	 */
-	public Map<String, String> getOrderPayDetail(User user) {
+	public Map<String, String> getOrderPayDetail(User user, Integer orgId) {
 		final int TO_REPAIR_WAIT_TIME = 60 * 1000 * 3;// 3分钟转换成毫秒
 		Map<String, String> map = new HashMap<String, String>();
 		// 查询未完成的唯一订单
@@ -164,6 +164,9 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 		boolQueryBuilder.must(QueryBuilders.termQuery(
 				CyclingOrder.CYCLING_ORDER_STAT_CODE,
 				CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode()));
+		boolQueryBuilder.must(QueryBuilders.termQuery(
+				CyclingOrder.ORG_ID,
+				orgId));
 		Iterable<CyclingOrder> content = this.getRepository().search(
 				boolQueryBuilder);
 		CyclingOrder cyclingOrder;

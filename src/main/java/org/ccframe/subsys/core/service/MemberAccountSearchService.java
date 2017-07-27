@@ -55,7 +55,7 @@ public class MemberAccountSearchService extends BaseSearchService<MemberAccount,
 		
 		// 过滤机构
 		Integer orgId = memberAccountListReq.getOrgId();
-		if (orgId != null && orgId != 0) {
+		if (orgId != null && orgId != Global.COMBOBOX_ALL_VALUE) {
 			boolQueryBuilder.must(QueryBuilders.termQuery(MemberAccount.ORG_ID, orgId));
 		}
 				
@@ -72,8 +72,10 @@ public class MemberAccountSearchService extends BaseSearchService<MemberAccount,
 			BeanUtils.copyProperties(memberAccount, memberAccountRowDto);
 			// 查询用户信息
 			User user = SpringContextHelper.getBean(UserService.class).getById(memberAccount.getUserId());
-			memberAccountRowDto.setUserNm(user==null ? null : (user.getLoginId() + "(" + user.getUserNm() + ")"));
-
+			if (user != null) {
+				memberAccountRowDto.setUserNm(user.getUserNm());
+				memberAccountRowDto.setLoginId(user.getLoginId());
+			}
 			resultList.add(memberAccountRowDto);
 		}
 		return new ClientPage<MemberAccountRowDto>((int)cPage.getTotalElements(), offset / limit, limit, resultList);

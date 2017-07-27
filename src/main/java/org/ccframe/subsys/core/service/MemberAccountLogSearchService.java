@@ -27,7 +27,7 @@ public class MemberAccountLogSearchService extends BaseSearchService<MemberAccou
 
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		
-		// 过滤 GWT已经判空处理
+		// 过滤 USER_ID
 		boolQueryBuilder.must(QueryBuilders.termQuery(MemberAccountLog.USER_ID, memberAccountLogListReq.getUserId()));
 				
 		// 查询

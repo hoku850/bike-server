@@ -44,6 +44,7 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.Component;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -55,24 +56,32 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 
 	interface CyclingOrderListUiBinder extends UiBinder<Component, CyclingOrderListView> {	}
 	private static CyclingOrderListUiBinder uiBinder = GWT.create(CyclingOrderListUiBinder.class);
-
+	
+	private static final long ONE_MONTH = (long)30 * 24 * 60 * 60 * 1000;
+	
     @UiField
     public CcLabelValueCombobox orgNm;
+    
     @UiField
-    public CcLabelValueCombobox bikeTypeNm;    
+    public CcLabelValueCombobox bikeTypeNm;  
+    
     @UiField
     public CcEnumCombobox orderState;
 	
 	@UiField
 	public CcDateField startTime;
+	
 	@UiField
 	public CcDateField endTime;
+	
 	@UiField
 	public TextField searchField;
 	
 	@UiField
 	public Label amount;
 	
+   @UiField
+    public TextButton findTrajectory;
 	
 	@UiHandler("searchButton")
 	public void searchButtonClick(SelectEvent e){
@@ -97,7 +106,6 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 			return;
 		}
 		CyclingOrderRowDto selectedItem = grid.getSelectionModel().getSelectedItem();
-		
 		EventBusUtil.fireEvent(new LoadWindowEvent<Integer, CyclingOrderRowDto, EventHandler>(
 				ViewResEnum.CYCLING_ORDER_WINDOW, 
 				selectedItem.getCyclingOrderId(), 
@@ -185,28 +193,14 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
-		// 时间范围默认为当前至前30天
-		startTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date(new Date().getTime() - (long)30 * 24 * 60 * 60 * 1000)));
-		endTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date()));
-		// 运营商登陆 <- 用户登陆的ID跟总平台ID不同
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
-			this.columnModel.getColumn(1).setHidden(true);
-			this.orgNm.hide();
-			bikeTypeNm.setExtraParam(MainFrame.adminUser.getOrgId().toString());
-			bikeTypeNm.reset();
-		} else {
-			orgNm.reset();
-			orgNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-				@Override
-				public void onValueChange(ValueChangeEvent<Integer> event) {
-					bikeTypeNm.setExtraParam(event.getValue().toString());
-					bikeTypeNm.reset();
-					loader.load();
-				}
-			});
-			bikeTypeNm.setExtraParam(Integer.toString(0));
-			bikeTypeNm.reset();
-		}
+		orgNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Integer> event) {
+				bikeTypeNm.setExtraParam(event.getValue().toString());
+				bikeTypeNm.reset();
+				loader.load();
+			}
+		});
 		bikeTypeNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Integer> event) {
@@ -220,20 +214,9 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 			}
 		});
 		grid.addCellDoubleClickHandler(new CellDoubleClickHandler() {
-			
 			@Override
 			public void onCellClick(CellDoubleClickEvent event) {
-				CyclingOrderRowDto selectedItem = grid.getSelectionModel().getSelectedItem();
-				
-				EventBusUtil.fireEvent(new LoadWindowEvent<Integer, CyclingOrderRowDto, EventHandler>(
-						ViewResEnum.CYCLING_ORDER_WINDOW, 
-						selectedItem.getCyclingOrderId(), 
-						new WindowEventCallback<CyclingOrderRowDto>(){
-							@Override
-							public void onClose(CyclingOrderRowDto returnData) {
-								loader.load(); //保存完毕后刷新
-							}
-				}));
+				findTrajectory.fireEvent(new SelectEvent());
 			}
 		});
 		return widget;
@@ -243,14 +226,18 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
 		// 时间范围默认为当前至前30天
-		startTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date(new Date().getTime() - (long)30 * 24 * 60 * 60 * 1000)));
+		startTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date(new Date().getTime() - ONE_MONTH)));
 		endTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date()));
+		// 运营商登陆
 		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+			this.columnModel.getColumn(1).setHidden(true);
+			this.orgNm.hide();
 			bikeTypeNm.setExtraParam(MainFrame.adminUser.getOrgId().toString());
 			bikeTypeNm.reset();
 		} else {
-			orgNm.setValue(0);
-			bikeTypeNm.setExtraParam(Integer.toString(0));
+			orgNm.reset();
+			orgNm.setValue(Global.COMBOBOX_ALL_VALUE);
+			bikeTypeNm.setExtraParam(Integer.toString(Global.COMBOBOX_ALL_VALUE));
 			bikeTypeNm.reset();
 		}
 	}
@@ -262,7 +249,6 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 			return;
 		}
 		CyclingOrderRowDto selectedRow = grid.getSelectionModel().getSelectedItem();
-		
 		EventBusUtil.fireEvent(new LoadWindowEvent<Integer, CyclingOrder, EventHandler>(
 				ViewResEnum.CYCLING_ORDER_FINISH_WINDOW,
 				selectedRow.getCyclingOrderId(), 

@@ -82,11 +82,10 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 		return new CallBack<MemberAccountLogRowDto>(){
 			@Override
 			public void call(int offset, int limit,final RestyGwtPagingLoader<MemberAccountLogRowDto> loader) {
-				MemberAccountLogListReq memberAccountLogListReq = new MemberAccountLogListReq();
 				if (userId != null) {
+					MemberAccountLogListReq memberAccountLogListReq = new MemberAccountLogListReq();
 					memberAccountLogListReq.setUserId(userId);
 					ClientManager.getMemberAccountLogClient().findList(memberAccountLogListReq, offset, limit, new RestCallback<ClientPage<MemberAccountLogRowDto>>(){
-						
 						@Override
 						public void onSuccess(Method method, ClientPage<MemberAccountLogRowDto> response) {
 							loader.onLoad(response.getList(), response.getTotalLength(), response.getOffset());
@@ -108,12 +107,11 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 				if (mAccount != null) {
 					userId = mAccount.getUserId();
 					loader.load();
+					// 改变title的值
 					ClientManager.getAdminUserClient().getById(userId, new RestCallback<User>() {
 						@Override
 						public void onSuccess(Method method, User response) {
-							// 改变title的值
 							title.setText(response.getLoginId() + "账户交易日志");
-							
 							// 总平台登陆
 							if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
 								ClientManager.getOrgClient().getById(mAccount.getOrgId(), new RestCallback<OrgDto>() {

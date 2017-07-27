@@ -36,6 +36,7 @@ public class BikeTypeService extends BaseService<BikeType, Integer, BikeTypeRepo
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该类型已被使用，禁止删除"});
 		}
 	}
+	
 	@Transactional
 	public void saveOrUpdateBikeType(BikeType bikeType) {
 		if (bikeType.getOrgId() == Global.COMBOBOX_ALL_VALUE) {
@@ -59,11 +60,12 @@ public class BikeTypeService extends BaseService<BikeType, Integer, BikeTypeRepo
 		if (extraParam == null) {
 			return resultList;
 		}
+		// 查询所有
 		if (Integer.parseInt(extraParam) == Global.COMBOBOX_ALL_VALUE) {
 			for(BikeType bikeType: ((BikeTypeService)SpringContextHelper.getBean(this.getClass())).listAll()){
 				resultList.add(new LabelValue(bikeType.getBikeTypeNm(), bikeType.getBikeTypeId()));
 			}
-		} else {
+		} else { // 级联查询
 			for(BikeType bikeType: ((BikeTypeService)SpringContextHelper.getBean(this.getClass())).listAll()){
 				if(bikeType.getOrgId() == Integer.parseInt(extraParam)){
 					resultList.add(new LabelValue(bikeType.getBikeTypeNm(), bikeType.getBikeTypeId()));

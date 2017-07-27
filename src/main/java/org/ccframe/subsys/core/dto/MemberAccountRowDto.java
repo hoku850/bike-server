@@ -9,8 +9,18 @@ public class MemberAccountRowDto extends MemberAccount {
 	 */
 	private static final long serialVersionUID = 4008428849530824828L;
 
+	// 表格列表使用
+	private String loginId;
 	private String userNm;
 	
+	public String getLoginId() {
+		return loginId;
+	}
+
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
+	}
+
 	public String getUserNm() {
 		return userNm;
 	}

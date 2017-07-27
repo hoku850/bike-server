@@ -1,5 +1,6 @@
 package org.ccframe.subsys.bike.socket.controller;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.ccframe.commons.helper.SpringContextHelper;
@@ -11,6 +12,7 @@ import org.ccframe.subsys.bike.service.SmartLockStatService;
 import org.ccframe.subsys.bike.socket.commons.ISocketController;
 import org.ccframe.subsys.bike.socket.tcpobj.CommandFlagEnum;
 import org.ccframe.subsys.bike.socket.tcpobj.DataBlockTypeEnum;
+import org.ccframe.subsys.core.domain.code.BoolCodeEnum;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,18 +30,29 @@ public class CloseLockConnectController implements ISocketController {
 		if (smartLock!= null) {
 			
 			//保存或更新智能锁状态表
-			SmartLockStat smartLockStat = SpringContextHelper.getBean(SmartLockStatService.class).saveOrUpdateSmartLock(smartLock, requestDataMap);
+			SmartLockStatService smartLockStatService = SpringContextHelper.getBean(SmartLockStatService.class);
+			SmartLockStat smartLockStat = smartLockStatService.getByKey(SmartLockStat.SMART_LOCK_ID, smartLock.getSmartLockId());
+			if (smartLockStat == null) {
+				smartLockStat = new SmartLockStat();
+				smartLockStat.setSmartLockId(smartLock.getSmartLockId());
+				smartLockStat.setOrgId(smartLock.getOrgId());
+				smartLockStat.setIfRepairIng(BoolCodeEnum.NO.toCode());
+			}
+			smartLockStat.setLockSwitchStatCode(Byte.toString((byte)requestDataMap.get(DataBlockTypeEnum.LOCK_STATUS)));
+			smartLockStat.setLockBattery((int)(byte)requestDataMap.get(DataBlockTypeEnum.LOCK_BATTERY));
+			Double lng =(Double)requestDataMap.get(DataBlockTypeEnum.LOCK_LNG);
+			Double lat =(Double)requestDataMap.get(DataBlockTypeEnum.LOCK_LAT);
+			smartLockStat.setLockLat(lng);
+			smartLockStat.setLockLng(lat);
+			smartLockStat.setLastLocationUpdTime((Date)requestDataMap.get(DataBlockTypeEnum.SYS_TIME));
+			smartLockStat = smartLockStatService.save(smartLockStat);
 			
 			if (smartLockStat != null) {
-				Double lng = smartLockStat.getLockLng();
-				Double lat = smartLockStat.getLockLat();
 				Integer battery = smartLockStat.getLockBattery();
 				//更新骑行订单和智能锁状态表记录
 				SpringContextHelper.getBean(CyclingOrderService.class).updateCyclingOrderAndLockStat(smartLock.getSmartLockId(), lng, lat, battery);
 			}
-			
 		}
-		
 		return requestDataMap;
 	}
 }

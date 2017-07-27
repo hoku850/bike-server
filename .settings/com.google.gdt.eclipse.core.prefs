@@ -1,6 +1,6 @@
 eclipse.preferences.version=1
 jarsExcludedFromWebInfLib=
-lastWarOutDir=D\:/ccframe/eclipse/projects/bikeserver/war
+lastWarOutDir=./war
 launchConfigExternalUrlPrefix=http\://localhost\:8080
 warSrcDir=war
 warSrcDirIsOutput=false

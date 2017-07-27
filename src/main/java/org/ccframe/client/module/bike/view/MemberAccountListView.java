@@ -19,16 +19,19 @@ import org.ccframe.client.module.bike.event.MemberAccountSelectEvent;
 import org.ccframe.client.module.core.event.BodyContentEvent;
 import org.ccframe.client.module.core.event.LoadWindowEvent;
 import org.ccframe.client.module.core.view.MainFrame;
+import org.ccframe.subsys.core.domain.code.AccountTypeCodeEnum;
 import org.ccframe.subsys.core.dto.MemberAccountListReq;
 import org.ccframe.subsys.core.dto.MemberAccountRowDto;
 import org.fusesource.restygwt.client.Method;
 
+import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -42,8 +45,8 @@ import com.sencha.gxt.widget.core.client.Component;
 import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 
@@ -53,7 +56,7 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 	interface MemberAccountListUiBinder extends UiBinder<Component, MemberAccountListView> {}
 	private static MemberAccountListUiBinder uiBinder = GWT.create(MemberAccountListUiBinder.class);
 	
-	private Integer tabFlag = 0;
+	private AccountTypeCodeEnum acCodeEnum = AccountTypeCodeEnum.INTEGRAL;
 	
 	@UiField
 	public TextField searchField;
@@ -100,14 +103,23 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 	interface MemberAccountProperties extends PropertyAccess<MemberAccountRowDto> {
 		
 		ValueProvider<MemberAccountRowDto, Integer> memberAccountId();
-		ValueProvider<MemberAccountRowDto, String> userNm();
+		ValueProvider<MemberAccountRowDto, String> loginId();
 		ValueProvider<MemberAccountRowDto, Double> accountValue();
 	}
 
 	@Override
 	protected void initColumnConfig(List<ColumnConfig<MemberAccountRowDto, ?>> configList) {
 		MemberAccountProperties props = GWT.create(MemberAccountProperties.class);
-		configList.add(new ColumnConfigEx<MemberAccountRowDto, String>(props.userNm(), 50, "会员用户", HasHorizontalAlignment.ALIGN_CENTER, false));
+		
+		ColumnConfigEx<MemberAccountRowDto, String> nmColumn = new ColumnConfigEx<MemberAccountRowDto, String>(props.loginId(), 50, "会员用户", HasHorizontalAlignment.ALIGN_CENTER, false);
+		nmColumn.setCell(new AbstractCell<String>() {
+			@Override
+			public void render(com.google.gwt.cell.client.Cell.Context context,	String value, SafeHtmlBuilder sb) {
+				MemberAccountRowDto memberAccountRowDto = store.get(context.getIndex());
+				sb.appendEscaped(memberAccountRowDto.getLoginId() +"("+ memberAccountRowDto.getUserNm() + ")");
+			}
+		});
+		configList.add(nmColumn);
 		configList.add(new ColumnConfigEx<MemberAccountRowDto, Double>(props.accountValue(), 20, "余额", HasHorizontalAlignment.ALIGN_CENTER, false));
 	}
 	
@@ -115,15 +127,14 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
 		statusTabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
-			
 			@Override
 			public void onSelection(SelectionEvent<Widget> event) {
-				tabFlag = statusTabPanel.getWidgetIndex(event.getSelectedItem());
+				int index = statusTabPanel.getWidgetIndex(event.getSelectedItem());
+				acCodeEnum = AccountTypeCodeEnum.fromCode(String.valueOf(index));
 				loader.load();
 			}
 		});
 		grid.getSelectionModel().addSelectionHandler(new SelectionHandler<MemberAccountRowDto>() {
-
 			@Override
 			public void onSelection(SelectionEvent<MemberAccountRowDto> event) {
 				MemberAccountRowDto selectedItem = event.getSelectedItem();
@@ -163,7 +174,8 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 			public void call(int offset, int limit,final RestyGwtPagingLoader<MemberAccountRowDto> loader) {
 				MemberAccountListReq memberAccountListReq = new MemberAccountListReq();
 				memberAccountListReq.setSearchText(searchField.getValue());
-				memberAccountListReq.setAccountTypeCode(tabFlag.toString());
+				memberAccountListReq.setAccountTypeCode(acCodeEnum.toCode());
+				// 运营商登陆
 				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
 					memberAccountListReq.setOrgId(MainFrame.adminUser.getOrgId());
 				} else {
@@ -174,6 +186,7 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 					@Override
 					public void onSuccess(Method method, ClientPage<MemberAccountRowDto> response) {
 						loader.onLoad(response.getList(), response.getTotalLength(), response.getOffset());
+						// 默认选择第一条数据
 						if (response.getList().size() != 0) {
 							grid.getSelectionModel().select(0, false);
 							EventBusUtil.fireEvent(new MemberAccountSelectEvent(response.getList().get(0)));

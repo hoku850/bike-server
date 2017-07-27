@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ControllerMapping.MEMBER_ORDER_PAY_BASE)
 public class OrderPayController {
 	// 测试用，正式使用设置debug为false
-	final boolean DEBUG = true;
+	final boolean DEBUG = false;
 
 	@RequestMapping(value = "getPayData")
 	@ResponseBody
-	public Map<String, String> getPayData(Integer orderId) {
+	public Map<String, String> getPayData(Integer orderId, Integer orgId) {
 
 		User user = (User) WebContextHolder.getSessionContextStore()
 				.getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
@@ -32,11 +32,11 @@ public class OrderPayController {
 			}
 				return SpringContextHelper.getBean(
 						CyclingOrderSearchService.class).getOrderPayDetail(
-						user);
+						user, orgId);
 
 		} else {
 			return SpringContextHelper.getBean(CyclingOrderSearchService.class)
-					.getOrderPayDetail(user);
+					.getOrderPayDetail(user, orgId);
 		}
 
 	}

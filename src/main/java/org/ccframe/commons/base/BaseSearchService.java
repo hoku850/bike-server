@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -15,17 +16,26 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.ccframe.client.Global;
 import org.ccframe.commons.helper.SpringContextHelper;
-import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
+import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.metrics.avg.Avg;
+import org.elasticsearch.search.aggregations.metrics.max.Max;
+import org.elasticsearch.search.aggregations.metrics.min.Min;
+import org.elasticsearch.search.aggregations.metrics.sum.Sum;
+import org.elasticsearch.search.aggregations.metrics.valuecount.ValueCount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ResultsExtractor;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +56,15 @@ public abstract class BaseSearchService <E extends Serializable,ID extends Seria
 
     private static final int FIND_BY_KEY_MAX = 10000; //result_window最大值
     
+    //简单统计的字段前缀约定
+	private static final String MAX_OF_PERFIX = "maxOf";
+	private static final String MIN_OF_PERFIX = "minOf";
+	private static final String AVG_OF_PERFIX = "avgOf";
+	private static final String SUM_OF_PERFIX = "sumOf";
+	private static final String COUNT_OF_PERFIX = "countOf";
+	
+	private static final String Aggregation_FIELD = "aggregation_";
+    
     private ElasticsearchTemplate elasticsearchTemplate;
     
 	public void setElasticsearchTemplate(ElasticsearchTemplate elasticsearchTemplate) {
@@ -55,17 +74,130 @@ public abstract class BaseSearchService <E extends Serializable,ID extends Seria
 	public ElasticsearchTemplate getElasticsearchTemplate() {
 		return elasticsearchTemplate;
 	}
-	
-	public Map<String,Object> AggregationQuery(QueryBuilders query, AbstractAggregationBuilder[] aggregations){
-		return null;
-//		elasticsearchTemplate.
-//		
-//		SearchRequestBuilder searchRequestBuilder = elasticsearchTemplate.client.prepareSearch("index_name")
-//	            .setIndices("index_name")
-//	            .setTypes("type_name").setQuery(searchQuery).addAggregation(AggregationBuilders.stats("sum_of_price").field("price"))
-//	            .addAggregation(AggregationBuilders.sum("sum_of_qty").field("qty"))
-//	    SearchResponse searchResponse = searchRequestBuilder.execute().actionGet()
 
+	
+	public Double sumQuery(QueryBuilder queryBuilder,String fieldName){
+		return aggregationQuery(
+			queryBuilder, 
+			new AggregationField[]{new AggregationField(Aggregation_FIELD + fieldName, fieldName, AggregationField.AggregationType.SUM)}
+		).get(Aggregation_FIELD + fieldName);
+	}
+
+	public Double maxQuery(QueryBuilder queryBuilder,String fieldName){
+		return aggregationQuery(
+			queryBuilder, 
+			new AggregationField[]{new AggregationField(Aggregation_FIELD + fieldName, fieldName, AggregationField.AggregationType.MAX)}
+		).get(Aggregation_FIELD + fieldName);
+	}
+
+	public Double minQuery(QueryBuilder queryBuilder,String fieldName){
+		return aggregationQuery(
+			queryBuilder, 
+			new AggregationField[]{new AggregationField(Aggregation_FIELD + fieldName, fieldName, AggregationField.AggregationType.MIN)}
+		).get(Aggregation_FIELD + fieldName);
+	}
+
+	public Double avgQuery(QueryBuilder queryBuilder,String fieldName){
+		return aggregationQuery(
+			queryBuilder, 
+			new AggregationField[]{new AggregationField(Aggregation_FIELD + fieldName, fieldName, AggregationField.AggregationType.AVG)}
+		).get(Aggregation_FIELD + fieldName);
+	}
+
+	public Long countQuery(QueryBuilder queryBuilder,String fieldName){
+		return aggregationQuery(
+			queryBuilder, 
+			new AggregationField[]{new AggregationField(Aggregation_FIELD + fieldName, fieldName, AggregationField.AggregationType.COUNT)}
+		).get(Aggregation_FIELD + fieldName).longValue();
+	}
+
+	/**
+	 * 执行统计请求，注意count和整数字段的sum等也是使用double来处理，返回时要注意类型处理.
+	 * @param queryBuilder
+	 * @param aggregationFields
+	 * @return
+	 */
+	public Map<String, Double> aggregationQuery(QueryBuilder queryBuilder,final AggregationField[] aggregationFields){
+		
+		NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder()
+			.withQuery(queryBuilder)
+			.withSearchType(SearchType.DEFAULT)
+			.withIndices(Global.ES_DEFAULT_INDEX)
+			.withTypes(StringUtils.uncapitalize(entityClass.getSimpleName())); //ES类型名用于path，因此首字符是小写
+
+		for(AggregationField aggregationField: aggregationFields){
+			switch(aggregationField.getAggregationType()){
+				case MAX:
+					builder.addAggregation(AggregationBuilders.max(aggregationField.getAggregationFieldName()).field(aggregationField.getFieldName()));
+					break;
+				case MIN:
+					builder.addAggregation(AggregationBuilders.min(aggregationField.getAggregationFieldName()).field(aggregationField.getFieldName()));
+					break;
+				case AVG:
+					builder.addAggregation(AggregationBuilders.avg(aggregationField.getAggregationFieldName()).field(aggregationField.getFieldName()));
+					break;
+				case SUM:
+					builder.addAggregation(AggregationBuilders.sum(aggregationField.getAggregationFieldName()).field(aggregationField.getFieldName()));
+					break;
+				case COUNT:
+					builder.addAggregation(AggregationBuilders.count(aggregationField.getAggregationFieldName()).field(aggregationField.getFieldName()));
+					break;
+				default:
+			}
+		}
+		return elasticsearchTemplate.query(builder.build(), new ResultsExtractor<Map<String, Double>>() {
+			@Override
+			public Map<String, Double> extract(SearchResponse response) {
+				Map<String, Aggregation> aggregationMap = response.getAggregations().asMap();
+				
+				Map<String, Double> resultMap = new HashMap<String, Double>();
+				for (AggregationField aggregationField: aggregationFields) {
+						switch(aggregationField.getAggregationType()){
+						case MAX:
+							resultMap.put(aggregationField.getAggregationFieldName(), ((Max)aggregationMap.get(aggregationField.getAggregationFieldName())).getValue());
+							break;
+						case MIN:
+							resultMap.put(aggregationField.getAggregationFieldName(), ((Min)aggregationMap.get(aggregationField.getAggregationFieldName())).getValue());
+							break;
+						case AVG:
+							resultMap.put(aggregationField.getAggregationFieldName(), ((Avg)aggregationMap.get(aggregationField.getAggregationFieldName())).getValue());
+							break;
+						case SUM:
+							resultMap.put(aggregationField.getAggregationFieldName(), ((Sum)aggregationMap.get(aggregationField.getAggregationFieldName())).getValue());
+							break;
+						case COUNT:
+							resultMap.put(aggregationField.getAggregationFieldName(), Long.valueOf(((ValueCount)aggregationMap.get(aggregationField.getAggregationFieldName())).getValue()).doubleValue());
+							break;
+						default:
+					}
+				}
+				return resultMap;
+			}
+		});		
+	}
+
+	/**
+	 * 简单统计查询，通常用于分页列表底部的汇总.
+	 * 
+	 * classOfAggregationObj需要具备字段前缀约定的字段，系统会自动根据这些字段进行汇总处理.
+	 * 例如classOfAggregationObj有一个countOfUserId，那么查询就会针对这个字段进行汇总后返回到该值。也就是UserId不为NULL的符合条件的总数
+	 * 
+	 * @param queryBuilder
+	 * @param fieldNames
+	 * @return
+	 */
+	public Object aggregationQuery(QueryBuilder queryBuilder,Object classOfAggregationObj){
+		
+		//TODO 继续开发，使用简单统计的字段前缀约定反射来填充对象字段
+
+//		for(PropertyDescriptor propertyDescriptors: BeanUtils.getPropertyDescriptors(classOfAggregationObj.getClass())){
+//			System.out.println(propertyDescriptors.getName());
+//		};
+//		StringUtils.uncapitalize(str);
+		
+		return null;
+	
+		
 	}
 
 	@SuppressWarnings("unchecked") //NOSONAR

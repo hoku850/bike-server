@@ -18,7 +18,6 @@ import org.ccframe.subsys.bike.domain.entity.AgentApp;
 import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
 import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.service.AgentAppSearchService;
-import org.ccframe.subsys.bike.service.AgentAppService;
 import org.ccframe.subsys.bike.service.ChargeOrderSearchService;
 import org.ccframe.subsys.bike.service.ChargeOrderService;
 import org.ccframe.subsys.core.domain.code.AccountTypeCodeEnum;
@@ -29,7 +28,6 @@ import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.dto.MemberAccountRowDto;
 import org.ccframe.subsys.core.repository.MemberAccountRepository;
-import org.omg.CORBA.UserException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
@@ -74,7 +72,7 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 
 	@Transactional(readOnly=true)
 	public MemberAccountRowDto getMemberAccountRowDto(Integer memberAccountId) {
-		MemberAccount memberAccount = this.getById(memberAccountId);
+		MemberAccount memberAccount = SpringContextHelper.getBean(MemberAccountSearchService.class).getById(memberAccountId);
 		// 用DTO传输
 		MemberAccountRowDto memberAccountRowDto = new MemberAccountRowDto();
 		BeanUtils.copyProperties(memberAccount, memberAccountRowDto);

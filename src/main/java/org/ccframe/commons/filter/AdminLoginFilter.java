@@ -14,7 +14,6 @@ import org.ccframe.client.Global;
 import org.ccframe.client.commons.AdminUser;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.helper.SysInitBeanHelper;
-import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.UserService;
 
 /**

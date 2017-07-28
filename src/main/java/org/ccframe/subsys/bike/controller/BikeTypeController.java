@@ -26,7 +26,7 @@ public class BikeTypeController{
 	
 	@RequestMapping(value = Global.ID_BINDER_PATH)
 	public BikeType getById(@PathVariable(Global.ID_BINDER_ID) Integer bikeTypeId) {
-		return SpringContextHelper.getBean(BikeTypeService.class).getById(bikeTypeId);
+		return SpringContextHelper.getBean(BikeTypeSearchService.class).getById(bikeTypeId);
 	}
 
 	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.DELETE)

@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ccframe.client.Global;
-import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
@@ -18,13 +17,14 @@ import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.domain.entity.UserToRepairRecord;
+import org.ccframe.subsys.bike.dto.CyclingOrderClientPage;
 import org.ccframe.subsys.bike.dto.CyclingOrderListReq;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
 import org.ccframe.subsys.bike.search.CyclingOrderSearchRepository;
 import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
-import org.ccframe.subsys.core.service.OrgService;
-import org.ccframe.subsys.core.service.UserService;
+import org.ccframe.subsys.core.service.OrgSearchService;
+import org.ccframe.subsys.core.service.UserSearchService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -37,9 +37,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, Integer, CyclingOrderSearchRepository> {
 
-	public ClientPage<CyclingOrderRowDto> findList(CyclingOrderListReq cyclingOrderListReq, int offset, int limit) {
+	public CyclingOrderClientPage<CyclingOrderRowDto> findList(CyclingOrderListReq cyclingOrderListReq, int offset, int limit) {
 		
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+		
 		// 过滤运营商
 		Integer orgId = cyclingOrderListReq.getOrgId();
 		if(orgId != null && orgId != 0){
@@ -54,7 +55,7 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 				boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.SMART_LOCK_ID, smartLock.getSmartLockId()));
 			}
 			if (locks.size() == 0) {
-				boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.SMART_LOCK_ID, 0));
+				return new CyclingOrderClientPage<CyclingOrderRowDto>(0, offset / limit, limit, new ArrayList<CyclingOrderRowDto>());
 			}
 		}
 		
@@ -64,7 +65,7 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 		}
 		
 		// 过滤时间  GWT设有默认时间，不会为空
-		RangeQueryBuilder builder = QueryBuilders.rangeQuery(CyclingOrder.START_TIME);
+		RangeQueryBuilder builder = QueryBuilders.rangeQuery(CyclingOrder.END_TIME);
 		builder.gte(cyclingOrderListReq.getStartTime() == null ? Global.MIN_SEARCH_DATE : cyclingOrderListReq.getStartTime());
 		builder.lte(cyclingOrderListReq.getEndTime() == null ? Global.MAX_SEARCH_DATE : cyclingOrderListReq.getEndTime());
 		boolQueryBuilder.must(builder);
@@ -78,6 +79,9 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 			boolQueryBuilder.must(shouldQueryBuilder);
 		}
 		
+		// 统计骑行总金额
+		Double totalAmount = SpringContextHelper.getBean(CyclingOrderSearchService.class).sumQuery(boolQueryBuilder, CyclingOrder.ORDER_AMMOUNT);
+		
 		// 查询
 		Page<CyclingOrder> cPage = this.getRepository().search(
 			boolQueryBuilder,
@@ -90,28 +94,30 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 			CyclingOrderRowDto cyclingOrderRowDto = new CyclingOrderRowDto();
 			BeanUtils.copyProperties(cyclingOrder, cyclingOrderRowDto);
 			// 查询出登陆ID
-			User user = SpringContextHelper.getBean(UserService.class).getById(cyclingOrder.getUserId());
+			User user = SpringContextHelper.getBean(UserSearchService.class).getById(cyclingOrder.getUserId());
 			if (user != null) {
 				cyclingOrderRowDto.setLoginId(user.getLoginId());
 			}
 			// 查询出运营商的信息
-			Org org = SpringContextHelper.getBean(OrgService.class).getById(cyclingOrder.getOrgId());
+			Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(cyclingOrder.getOrgId());
 			if (org!=null) {
 				cyclingOrderRowDto.setOrgNm(org.getOrgNm());
 			}
 			// 查询出智能锁硬件编号
-			SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(cyclingOrder.getSmartLockId());
+			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder.getSmartLockId());
 			if (smartLock != null) {
 				cyclingOrderRowDto.setLockerHardwareCode(smartLock.getLockerHardwareCode());
 				// 查询出单车类型
-				BikeType bikeType = SpringContextHelper.getBean(BikeTypeService.class).getById(smartLock.getBikeTypeId());
+				BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(smartLock.getBikeTypeId());
 				if (bikeType != null) {
 					cyclingOrderRowDto.setBikeTypeNm(bikeType.getBikeTypeNm());
 				}
 			}
-			resultList.add(cyclingOrderRowDto); 
+			resultList.add(cyclingOrderRowDto);
 		}
-		return new ClientPage<CyclingOrderRowDto>((int)cPage.getTotalElements(), offset / limit, limit, resultList);
+		CyclingOrderClientPage<CyclingOrderRowDto> clientPage = new CyclingOrderClientPage<CyclingOrderRowDto>((int)cPage.getTotalElements(), offset / limit, limit, resultList);
+		clientPage.setCyclingOrderTotalAmount(totalAmount);
+		return clientPage;
 	}
 
 	/**
@@ -236,32 +242,6 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 		}
 			
 		return null;
-	}
-
-	public Double testCountByOrgId(Integer orgId, String cyclingOrderStatCode){
-
-//		QueryBuilder query
-//		
-//		SearchRequestBuilder searchRequestBuilder = elasticsearchTemplate.client.prepareSearch("index_name")
-//	            .setIndices("index_name")
-//	            .setTypes("type_name").setQuery(searchQuery).addAggregation(AggregationBuilders.stats("sum_of_price").field("price"))
-//	            .addAggregation(AggregationBuilders.sum("sum_of_qty").field("qty"))
-//	    SearchResponse searchResponse = searchRequestBuilder.execute().actionGet()
-//	    Integer priceTotal = (searchResponse.getAggregations().getAsMap().get("sum_of_price").getSum())
-//	    
-	    
-		
-//		SearchQuery searchQuery = new NativeSearchQueryBuilder().withIndices("index_name").withQuery(queryBuilder).withQuery(null).addAggregation(AggregationBuilders.sum("sum_of_xxx").field("xxx")).build()
-//				;
-		
-//		SearchRequestBuilder srb = client.prepareSearch("orgId")
-//                .setTypes("CyclingOrder")
-//                .setSearchType(SearchType.QUERY_THEN_FETCH);
-//		TermsBuilder tb= AggregationBuilders.terms("group_by_org").field("orgId");
-//		tb.subAggregation(AggregationBuilders.sum("sum_orderAmmount").field("orderAmmount"));
-//		srb.addAggregation(tb);
-//		int a = srb.get().getAggregations().get("sum_orderAmmount");
-		return this.getRepository().countByOrgId(orgId, cyclingOrderStatCode);
 	}
 	
 	public Integer countByOrgIdAndCyclingOrderStatCode(Integer orgId, String cyclingOrderStatCode){

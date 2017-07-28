@@ -14,7 +14,8 @@ import org.ccframe.subsys.bike.dto.ChargeOrderRowDto;
 import org.ccframe.subsys.bike.search.ChargeOrderSearchRepository;
 import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
-import org.ccframe.subsys.core.service.OrgService;
+import org.ccframe.subsys.core.service.OrgSearchService;
+import org.ccframe.subsys.core.service.UserSearchService;
 import org.ccframe.subsys.core.service.UserService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -68,12 +69,12 @@ public class ChargeOrderSearchService extends BaseSearchService<ChargeOrder, Int
 			ChargeOrderRowDto chargeOrderRowDto = new ChargeOrderRowDto();
 			BeanUtils.copyProperties(chargeOrder, chargeOrderRowDto);
 			
-			User user = SpringContextHelper.getBean(UserService.class).getById(chargeOrder.getUserId());
+			User user = SpringContextHelper.getBean(UserSearchService.class).getById(chargeOrder.getUserId());
 			if (user != null) {
 				chargeOrderRowDto.setLoginId(user.getLoginId());
 			}
 			// 查询出运营商的信息
-			Org org = SpringContextHelper.getBean(OrgService.class).getById(chargeOrder.getOrgId());
+			Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(chargeOrder.getOrgId());
 			if (org != null) {
 				chargeOrderRowDto.setOrgNm(org.getOrgNm());
 			}

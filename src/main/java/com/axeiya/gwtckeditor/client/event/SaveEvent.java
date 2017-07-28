@@ -1,7 +1,6 @@
 package com.axeiya.gwtckeditor.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.GwtEvent.Type;
 
 public class SaveEvent<T> extends GwtEvent<SaveHandler<T>> {
 	

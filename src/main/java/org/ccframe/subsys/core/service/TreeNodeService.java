@@ -5,16 +5,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.ccframe.client.ResGlobal;
-import org.ccframe.client.commons.TreeNodeTree;
 import org.ccframe.commons.base.BaseService;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.BusinessException;
 import org.ccframe.subsys.core.domain.code.TreeNodeTypeCodeEnum;
 import org.ccframe.subsys.core.domain.entity.TreeNode;
 import org.ccframe.subsys.core.repository.TreeNodeRepository;
-import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

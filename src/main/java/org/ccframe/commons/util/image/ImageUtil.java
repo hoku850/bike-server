@@ -1,35 +1,10 @@
 package org.ccframe.commons.util.image;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.awt.image.renderable.ParameterBlock;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-import javax.imageio.stream.ImageOutputStream;
+import org.apache.log4j.Logger;
 //import javax.media.jai.Interpolation;
 //import javax.media.jai.JAI;
 //import javax.media.jai.PlanarImage;
 //import javax.media.jai.RenderedOp;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-import org.ccframe.commons.util.BusinessException;
 
 //import com.sun.imageio.plugins.jpeg.JPEGImageWriter;
 //import com.sun.media.jai.codec.FileSeekableStream;

@@ -12,7 +12,7 @@ import org.ccframe.subsys.bike.dto.AgentAppListReq;
 import org.ccframe.subsys.bike.dto.AgentAppRowDto;
 import org.ccframe.subsys.bike.search.AgentAppSearchRepository;
 import org.ccframe.subsys.core.domain.entity.Org;
-import org.ccframe.subsys.core.service.OrgService;
+import org.ccframe.subsys.core.service.OrgSearchService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.BeanUtils;
@@ -32,11 +32,12 @@ public class AgentAppSearchService extends BaseSearchService<AgentApp, Integer, 
 			boolQueryBuilder,
 			new OffsetBasedPageRequest(offset, limit, new Order(Direction.ASC, AgentApp.AGENT_APP_ID))
 		);
+		
 		List<AgentAppRowDto> resultList = new ArrayList<AgentAppRowDto>();
 		for(AgentApp agentApp:agentAppPage.getContent()){
 			AgentAppRowDto rowRecord = new AgentAppRowDto();
 			BeanUtils.copyProperties(agentApp, rowRecord);
-			Org org = SpringContextHelper.getBean(OrgService.class).getById(agentApp.getOrgId());
+			Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(agentApp.getOrgId());
 			if (org != null) {
 				rowRecord.setOrgNm(org.getOrgNm());
 			}

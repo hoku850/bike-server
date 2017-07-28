@@ -43,9 +43,28 @@ public interface Global {
 
 	String FAKE_PASSWORD = "ABCD1234"; //涉及用户密码的返回统一的假密码
 	
+	// 经纬度使用
+	String NORTH = "N";
+	String SOUTH = "S";
+	String EAST = "E";
+	String WEST = "W";
+	String COMMA = ", ";
+	
+	// 时间
+	String HOUR = "时";
+	String MINUTE = "分";
+	String SECOND = "秒";
+	
+	// EXCEL导出使用
 	String UPLOAD_DIR = "upload";
-	String TEMP_DIR = "temp";
-	String EXCEL_TEMPLATE_DIR = "exceltemplate";
+	String EXCEL_EXPORT_TEMPLATE_DIR = "exceltemplate";
+	String EXCEL_EXPORT_TEMP_DIR = "temp/";
+	String EXCEL_EXPORT_POSTFIX = ".xls";
+	String EXCEL_EXPORT_CYCLING_ORDER = "cyclingOrderListExcel" + EXCEL_EXPORT_POSTFIX;
+	String EXCEL_EXPORT_SMART_LOCK = "smartLockListExcel" + EXCEL_EXPORT_POSTFIX;
+	
+	// 单位
+	String KM = " km";
 	
 	String SPRING_MVC_JSON_SUCCESS = "OK.";
 	
@@ -101,4 +120,8 @@ public interface Global {
 	
 	// 运营商默认管理密码
 	String AGRNT_DEFAULT_PASSWORD = "admin";
+	
+	//天安门经纬度
+	public static final Double BIEJING_LNG = 39.54;
+	public static final Double BIEJING_LAT = 116.23;
 }

@@ -68,7 +68,7 @@ public abstract class ImportBaseWindowView extends BaseWindowView<Void, Void>{
 	 * 需要在init后再调用一次reset
 	 */
 	protected void reset(boolean includeUploadResult) {
-		templateLink.setHref(GWT.getHostPageBaseURL() + Global.EXCEL_TEMPLATE_DIR + "/" + getTemplateFileName());
+		templateLink.setHref(GWT.getHostPageBaseURL() + Global.EXCEL_EXPORT_TEMPLATE_DIR + "/" + getTemplateFileName());
 		if(includeUploadResult){
 			processCardLayoutContainer.setActiveWidget(uploadResult);
 			uploadResult.setHTML("请上传文件后点击“导入”按钮开始");

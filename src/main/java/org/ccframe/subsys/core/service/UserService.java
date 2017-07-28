@@ -348,7 +348,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 
 	@Async
 	public void doImport(String filePath, Map<String, Object> importParam) { //批量导入进行事务控制，因此无需要添加事务
-		ListExcelReader<User> listExcelReader= new ListExcelReader<>(WebContextHolder.getWarPath() + File.separator + Global.EXCEL_TEMPLATE_DIR + File.separator + USER_IMPORT_TEMPLATE_FILE_NAME, User.class);
+		ListExcelReader<User> listExcelReader= new ListExcelReader<>(WebContextHolder.getWarPath() + File.separator + Global.EXCEL_EXPORT_TEMPLATE_DIR + File.separator + USER_IMPORT_TEMPLATE_FILE_NAME, User.class);
 		listExcelReader.readFromFile(filePath, SpringContextHelper.getBean(UserService.class), importParam);
 	}
 

@@ -12,7 +12,6 @@ import org.ccframe.client.Global;
 import org.ccframe.client.ResGlobal;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.BusinessException;
-import org.ccframe.commons.util.WebContextHolder;
 import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum;
@@ -76,7 +75,7 @@ public class QRCodeScanController {
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车正在被人使用，请更换一辆单车"});
 		}
 		
-		String phoneNumber = httpRequest.getParameter("phoneName");
+		String phoneNumber = httpRequest.getParameter("phoneNumber");
 		String IMEI = httpRequest.getParameter("IMEI");
 		String orgId = httpRequest.getParameter("orgId");
 		List<User> users = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(phoneNumber, IMEI);

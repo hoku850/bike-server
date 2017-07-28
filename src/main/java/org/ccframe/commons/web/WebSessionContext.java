@@ -1,8 +1,6 @@
 package org.ccframe.commons.web;
 
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -11,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ccframe.commons.util.ISessionContext;
-import org.springframework.util.CollectionUtils;
 
 
 public class WebSessionContext implements ISessionContext {

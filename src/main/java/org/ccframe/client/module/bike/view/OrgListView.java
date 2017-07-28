@@ -85,7 +85,7 @@ public class OrgListView extends BaseCrudListView<OrgRowDto>{
 		ValueProvider<OrgRowDto, String> manager();
 		ValueProvider<OrgRowDto, String> managerTel();
 		ValueProvider<OrgRowDto, Double> chargeTotalValue();
-		ValueProvider<OrgRowDto, Integer> cyclingNum();
+		ValueProvider<OrgRowDto, Long> cyclingNum();
 		ValueProvider<OrgRowDto, Double> cyclingIncome();
 	}
 	
@@ -99,7 +99,7 @@ public class OrgListView extends BaseCrudListView<OrgRowDto>{
 		configList.add(new ColumnConfigEx<OrgRowDto, String>(props.manager(), 100, "联系人", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<OrgRowDto, String>(props.managerTel(), 120, "联系电话", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<OrgRowDto, Double>(props.chargeTotalValue(), 100, "充值总金额", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<OrgRowDto, Integer>(props.cyclingNum(), 100, "骑行订单数", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<OrgRowDto, Long>(props.cyclingNum(), 100, "骑行订单数", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<OrgRowDto, Double>(props.cyclingIncome(), 100, "骑行总收入", HasHorizontalAlignment.ALIGN_CENTER, false));
 	}
 	
@@ -109,7 +109,7 @@ public class OrgListView extends BaseCrudListView<OrgRowDto>{
 			@Override
 			public void call(int offset, int limit,final RestyGwtPagingLoader<OrgRowDto> loader) {
 				OrgListReq agentListReq = new OrgListReq();
-				ClientManager.getOrgClient().findAgentList(agentListReq, offset, limit, new RestCallback<ClientPage<OrgRowDto>>(){
+				ClientManager.getOrgClient().findOrgList(agentListReq, offset, limit, new RestCallback<ClientPage<OrgRowDto>>(){
 					@Override
 					public void onSuccess(Method method, ClientPage<OrgRowDto> response) {
 						loader.onLoad(response.getList(), response.getTotalLength(), response.getOffset());

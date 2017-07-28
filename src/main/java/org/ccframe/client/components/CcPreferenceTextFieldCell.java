@@ -11,7 +11,6 @@ import org.ccframe.client.module.core.event.LoadWindowEvent;
 import org.fusesource.restygwt.client.Method;
 
 import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.logical.shared.SelectionEvent;

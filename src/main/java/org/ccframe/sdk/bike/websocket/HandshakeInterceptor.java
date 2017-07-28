@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.ccframe.client.Global;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.UserSearchService;

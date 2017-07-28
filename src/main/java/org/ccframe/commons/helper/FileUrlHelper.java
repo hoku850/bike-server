@@ -1,6 +1,5 @@
 package org.ccframe.commons.helper;
 
-import org.ccframe.client.Global;
 import org.ccframe.commons.util.WebContextHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

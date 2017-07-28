@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.ccframe.client.Global;
 import org.ccframe.commons.util.UtilDateTime;
 import org.ccframe.subsys.bike.socket.tcpobj.DataBlockTypeEnum;
 
@@ -24,11 +25,6 @@ public class DataBlockEncodeUtil {
 	private static final byte SIX_BYTES_HEAD_LENGTH = 0x09;
 	private static final byte TWENTY_BYTES_HEAD_LENGTH = 0x17;
 	private static final byte TIME_HEAD_LENGHT = 0x0A;
-	
-	private static final String NORTH = "N";
-	private static final String SOUTH = "S";
-	private static final String EAST = "E";
-	private static final String WEST = "W";
 	
 	private DataBlockEncodeUtil(){}
 	
@@ -96,10 +92,10 @@ public class DataBlockEncodeUtil {
 						stringBuf = new byte[size - HEAD_LENGTH];
 						dataInputStream.read(stringBuf);
 						String latLng = new String(stringBuf);
-						if (latLng.charAt(0) == NORTH.charAt(0) || latLng.charAt(0) == EAST.charAt(0)) {
+						if (latLng.charAt(0) == Global.NORTH.charAt(0) || latLng.charAt(0) == Global.EAST.charAt(0)) {
 							latLng = latLng.replace(latLng.charAt(0), '+');
 						}
-						if (latLng.charAt(0) == SOUTH.charAt(0) || latLng.charAt(0) == WEST.charAt(0)) {
+						if (latLng.charAt(0) == Global.SOUTH.charAt(0) || latLng.charAt(0) == Global.WEST.charAt(0)) {
 							latLng = latLng.replace(latLng.charAt(0), '-');
 						}
 						latLng = latLng.substring(0, latLng.indexOf('\0'));
@@ -180,10 +176,10 @@ public class DataBlockEncodeUtil {
 				Double d = (Double)dataBlockMap.get(entry.getKey());
 				String latLng = null;
 				if (entry.getKey() == DataBlockTypeEnum.LOCK_LAT) {
-					latLng = d >= 0 ? (NORTH + d) : (SOUTH + d);
+					latLng = d >= 0 ? (Global.NORTH + d) : (Global.SOUTH + d);
 				}
 				if (entry.getKey() == DataBlockTypeEnum.LOCK_LNG) {
-					latLng = d >= 0 ? (EAST + d) : (WEST + d);
+					latLng = d >= 0 ? (Global.EAST + d) : (Global.WEST + d);
 				}
 				dataOutputStream.write(TWENTY_BYTES_HEAD_LENGTH);
 				dataOutputStream.writeShortReverse(entry.getKey().toValue());

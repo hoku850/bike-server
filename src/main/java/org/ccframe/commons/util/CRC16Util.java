@@ -1,6 +1,4 @@
 package org.ccframe.commons.util;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 
 /** 
  * CRC-CCITT 算法校验类 

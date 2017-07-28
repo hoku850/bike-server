@@ -12,7 +12,7 @@ import org.ccframe.subsys.bike.dto.BikeTypeListReq;
 import org.ccframe.subsys.bike.dto.BikeTypeRowDto;
 import org.ccframe.subsys.bike.search.BikeTypeSearchRepository;
 import org.ccframe.subsys.core.domain.entity.Org;
-import org.ccframe.subsys.core.service.OrgService;
+import org.ccframe.subsys.core.service.OrgSearchService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.BeanUtils;
@@ -27,6 +27,7 @@ public class BikeTypeSearchService extends BaseSearchService<BikeType, Integer, 
 	public ClientPage<BikeTypeRowDto> findBikeTypeList(BikeTypeListReq bikeTypeListReq, int offset, int limit) {
 	
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+		
 		//过滤运营商ID
 		Integer orgId = bikeTypeListReq.getOrgId();
 		if(orgId != null && orgId != 0){
@@ -44,7 +45,7 @@ public class BikeTypeSearchService extends BaseSearchService<BikeType, Integer, 
 			BikeTypeRowDto bikeTypeRowDto = new BikeTypeRowDto();
 			BeanUtils.copyProperties(bikeType, bikeTypeRowDto);
 			// 查询出运营商的信息
-			Org org = SpringContextHelper.getBean(OrgService.class).getById(bikeType.getOrgId());
+			Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(bikeType.getOrgId());
 			if (org != null) bikeTypeRowDto.setOrgNm(org.getOrgNm());
 			resultList.add(bikeTypeRowDto); 
 		}

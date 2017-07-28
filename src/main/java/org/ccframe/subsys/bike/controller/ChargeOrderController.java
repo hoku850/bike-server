@@ -23,12 +23,7 @@ public class ChargeOrderController{
 	
 	@RequestMapping(value = Global.ID_BINDER_PATH)
 	public ChargeOrder getById(@PathVariable(Global.ID_BINDER_ID) Integer chargeOrderId) {
-		return SpringContextHelper.getBean(ChargeOrderService.class).getById(chargeOrderId);
-	}
-
-	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.DELETE)
-	public void delete(@PathVariable(Global.ID_BINDER_ID) Integer chargeOrderId){
-		SpringContextHelper.getBean(ChargeOrderService.class).softDeleteById(chargeOrderId);
+		return SpringContextHelper.getBean(ChargeOrderSearchService.class).getById(chargeOrderId);
 	}
 
 	@RequestMapping(value = ControllerMapping.CHARGE_ORDER_LIST, method = RequestMethod.POST)
@@ -36,11 +31,6 @@ public class ChargeOrderController{
 		return SpringContextHelper.getBean(ChargeOrderSearchService.class).findChargeOrderList(chargeOrderListReq, offset, limit);
 	}
 
-	@RequestMapping(method=RequestMethod.POST)
-	public void saveOrUpdate(@RequestBody ChargeOrder chargeOrder){
-		SpringContextHelper.getBean(ChargeOrderService.class).saveOrUpdateBikeType(chargeOrder);
-	}
-	
 	@RequestMapping(value = ControllerMapping.CHARGE_ORDER_EXPORT, method=RequestMethod.POST)
 	public String doExport(@RequestBody Integer orgId) throws IOException{
 		return SpringContextHelper.getBean(ChargeOrderService.class).doExport(orgId);

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AgentAppController{
 	@RequestMapping(value = Global.ID_BINDER_PATH)
 	public AgentApp getAgentApp(@PathVariable(Global.ID_BINDER_ID) Integer agentAppId) {
-		return SpringContextHelper.getBean(AgentAppService.class).getById(agentAppId);
+		return SpringContextHelper.getBean(AgentAppSearchService.class).getById(agentAppId);
 	}
 
 	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.DELETE)

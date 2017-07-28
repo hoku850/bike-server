@@ -6,8 +6,8 @@ import java.util.List;
 import org.ccframe.client.commons.ICcModule;
 import org.ccframe.client.commons.ICcWindow;
 import org.ccframe.client.commons.RestyGwtPagingLoader;
-import org.ccframe.client.commons.WindowEventCallback;
 import org.ccframe.client.commons.RestyGwtPagingLoader.CallBack;
+import org.ccframe.client.commons.WindowEventCallback;
 import org.ccframe.client.module.core.event.BodyContentEvent;
 import org.ccframe.client.module.core.event.LoadWindowEvent;
 

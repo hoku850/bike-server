@@ -1,5 +1,7 @@
 package org.ccframe.client.components.fileupload;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.widget.core.client.ProgressBar;
 import com.sencha.gxt.widget.core.client.button.IconButton;
@@ -7,8 +9,6 @@ import com.sencha.gxt.widget.core.client.button.IconButton.IconConfig;
 import com.sencha.gxt.widget.core.client.container.VBoxLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.dom.client.Style;
 
 public class CCBarFileUpload extends CcBaseFileUpload {
 

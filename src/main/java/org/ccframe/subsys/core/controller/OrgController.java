@@ -23,7 +23,7 @@ public class OrgController{
 	
 	@RequestMapping(value = Global.ID_BINDER_PATH)
 	public Org getOrg(@PathVariable(Global.ID_BINDER_ID) Integer agentId) {
-		return SpringContextHelper.getBean(OrgService.class).getById(agentId);
+		return SpringContextHelper.getBean(OrgSearchService.class).getById(agentId);
 	}
 
 	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.DELETE)

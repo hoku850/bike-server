@@ -12,7 +12,7 @@ import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.service.ChargeOrderSearchService;
-import org.ccframe.subsys.bike.service.CyclingOrderService;
+import org.ccframe.subsys.bike.service.CyclingOrderSearchService;
 import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.dto.OrgListReq;
 import org.ccframe.subsys.core.dto.OrgRowDto;
@@ -40,7 +40,6 @@ public class OrgSearchService extends BaseSearchService<Org, Integer, OrgSearchR
 
 		List<OrgRowDto> resultList = new ArrayList<OrgRowDto>();
 		for(Org org : page.getContent()){
-			//this.SumQuery(queryBuilder, fieldNames)
 			
 			OrgRowDto orgRowDto = new OrgRowDto();
 			BeanUtils.copyProperties(org, orgRowDto);
@@ -50,31 +49,14 @@ public class OrgSearchService extends BaseSearchService<Org, Integer, OrgSearchR
 			boolQueryBuilder.must(QueryBuilders.termQuery(ChargeOrder.CHARGE_ORDER_STAT_CODE, ChargeOrderStatCodeEnum.CHARGE_SUCCESS.toCode()));
 			boolQueryBuilder.must(QueryBuilders.termQuery(ChargeOrder.ORG_ID, org.getOrgId()));
 			orgRowDto.setChargeTotalValue(SpringContextHelper.getBean(ChargeOrderSearchService.class).sumQuery(boolQueryBuilder, ChargeOrder.CHARGE_AMMOUNT));
-
-			//TODO yjz完成其它查询
 			
-//			List<ChargeOrder> chargeOrders = SpringContextHelper.getBean(ChargeOrderService.class).findByKey(ChargeOrder.ORG_ID, org.getOrgId());
-//			Double chargeTotalValue = 0.0;
-//			for (ChargeOrder chargeOrder : chargeOrders) {
-//				// 充值成功的状态
-//				if (ChargeOrderStatCodeEnum.CHARGE_SUCCESS.toCode().equals(chargeOrder.getChargeOrderStatCode())) {
-//					chargeTotalValue += chargeOrder.getChargeAmmount();
-//				}
-//			}
-//			orgRowDto.setChargeTotalValue(chargeTotalValue);
-			// 查询出骑行订单
-			List<CyclingOrder> cyclingOrders = SpringContextHelper.getBean(CyclingOrderService.class).findByKey(CyclingOrder.ORG_ID, org.getOrgId());
-			Double cyclingIncome = 0.0;
-			Integer cyclingNum = 0;
-			for (CyclingOrder cyclingOrder : cyclingOrders) {
-				// 骑行完成的状态
-				if (CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode().equals(cyclingOrder.getCyclingOrderStatCode())) {
-					cyclingIncome += cyclingOrder.getOrderAmmount();
-					cyclingNum++;
-				}
-			}
-			orgRowDto.setCyclingIncome(cyclingIncome);
-			orgRowDto.setCyclingNum(cyclingNum);
+			// 查询出骑行订单数、骑行总收入
+			boolQueryBuilder = QueryBuilders.boolQuery();
+			boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.CYCLING_ORDER_STAT_CODE, CyclingOrderStatCodeEnum.PAY_FINISH.toCode()));
+			boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.ORG_ID, org.getOrgId()));
+			orgRowDto.setCyclingNum(SpringContextHelper.getBean(CyclingOrderSearchService.class).countQuery(boolQueryBuilder, CyclingOrder.CYCLING_ORDER_ID));
+			orgRowDto.setCyclingIncome(SpringContextHelper.getBean(CyclingOrderSearchService.class).sumQuery(boolQueryBuilder, CyclingOrder.ORDER_AMMOUNT));
+			
 			resultList.add(orgRowDto); 
 		}
 		return new ClientPage<OrgRowDto>((int)page.getTotalElements(), offset / limit, limit, resultList);

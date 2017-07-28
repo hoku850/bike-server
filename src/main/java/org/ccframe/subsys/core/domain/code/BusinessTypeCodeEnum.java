@@ -1,7 +1,6 @@
 package org.ccframe.subsys.core.domain.code;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.ccframe.client.commons.ICodeEnum;

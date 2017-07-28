@@ -5,10 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.ccframe.client.Global;
-import org.ccframe.commons.util.WebContextHolder;
 import org.ccframe.subsys.core.domain.entity.User;
-import org.elasticsearch.snapshots.RestoreService.UpdateIndexShardRestoreStatusRequest;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;

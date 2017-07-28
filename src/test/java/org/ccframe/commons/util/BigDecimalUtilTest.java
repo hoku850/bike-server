@@ -1,7 +1,5 @@
 package org.ccframe.commons.util;
 
-import org.ccframe.commons.util.BigDecimalUtil;
-
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -3,10 +3,8 @@ package org.ccframe.client.base;
 import org.ccframe.client.Global;
 import org.ccframe.client.commons.ClientManager;
 import org.ccframe.client.commons.RestCallback;
-import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.components.CcSimpleFileUpload;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
-import org.ccframe.subsys.core.dto.FileInfDto;
 import org.fusesource.restygwt.client.Method;
 
 import com.google.gwt.core.client.GWT;
@@ -14,12 +12,10 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.ProgressBar;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.CardLayoutContainer;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
 
 /**
  * @author JIM

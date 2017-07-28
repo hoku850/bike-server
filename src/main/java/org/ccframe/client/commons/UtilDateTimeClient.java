@@ -2,8 +2,6 @@ package org.ccframe.client.commons;
 
 import java.util.Date;
 
-import com.google.gwt.core.shared.GWT;
-
 /**
  * 
  * GWT Client的时间辅助工具.

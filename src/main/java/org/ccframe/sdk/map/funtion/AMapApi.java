@@ -2,6 +2,7 @@ package org.ccframe.sdk.map.funtion;
 
 import java.util.List;
 
+import org.ccframe.client.Global;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.BigDecimalUtil;
 import org.ccframe.sdk.map.domain.AMapData;
@@ -14,13 +15,16 @@ import org.ccframe.subsys.bike.service.UserToRepairRecordService;
 
 public class AMapApi {
 	
-	private static final String BIEJING = "[116.397428, 39.90923]";
-	private static final Integer ZOOM = 14;
-	
 	private static final String BRACKET_LEFT = "[";
 	private static final String BRACKET_RIGHT = "]";
-	private static final String SEPARATOR = ", ";
+	private static final String BIEJING = BRACKET_LEFT + Global.BIEJING_LNG + Global.COMMA + Global.BIEJING_LAT + BRACKET_RIGHT;
+	private static final Integer ZOOM = 14;
 	
+	/**
+	 * 返回天安门的数据
+	 * @return
+	 */
+	@SuppressWarnings("unused")
 	private static AMapData getDefaultData(){
 		AMapData aMapData = new AMapData();
 		
@@ -40,10 +44,10 @@ public class AMapApi {
 			for (CyclingTrajectoryRecord cyclingTrajectoryRecord : list) {
 				lineArr.append(BRACKET_LEFT);
 				lineArr.append(cyclingTrajectoryRecord.getRecordLocationLng());
-				lineArr.append(SEPARATOR);
+				lineArr.append(Global.COMMA);
 				lineArr.append(cyclingTrajectoryRecord.getRecordLocationLat());
 				lineArr.append(BRACKET_RIGHT);
-				lineArr.append(SEPARATOR);
+				lineArr.append(Global.COMMA);
 			}
 			lineArr.deleteCharAt(lineArr.length() - 1);
 			lineArr.append(BRACKET_RIGHT);
@@ -59,7 +63,7 @@ public class AMapApi {
 			String startPosition = lngLatFormat(cyclingOrder.getStartLocationLng(), cyclingOrder.getStartLocationLat());
 			String endPosition = lngLatFormat(cyclingOrder.getEndLocationLng(), cyclingOrder.getEndLocationLat());
 			
-			aMapData.setLineArr(BRACKET_LEFT + startPosition + SEPARATOR + endPosition + BRACKET_RIGHT);
+			aMapData.setLineArr(BRACKET_LEFT + startPosition + Global.COMMA + endPosition + BRACKET_RIGHT);
 			aMapData.setStartPosition(startPosition);
 			aMapData.setEndPosition(endPosition);
 			
@@ -88,6 +92,6 @@ public class AMapApi {
 	}
 	
 	private static String lngLatFormat(Double lng, Double lat ){
-		return BRACKET_LEFT + lng + SEPARATOR + lat + BRACKET_RIGHT;
+		return BRACKET_LEFT + lng + Global.COMMA + lat + BRACKET_RIGHT;
 	}
 }

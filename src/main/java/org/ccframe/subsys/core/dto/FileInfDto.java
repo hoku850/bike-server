@@ -1,5 +1,7 @@
 package org.ccframe.subsys.core.dto;
 
+import org.ccframe.subsys.core.domain.entity.FileInf;
+
 /**
  * 文件资源对应数据结构.
  * @author JIM

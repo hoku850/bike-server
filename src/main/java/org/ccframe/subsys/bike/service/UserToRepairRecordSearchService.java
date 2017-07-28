@@ -14,7 +14,7 @@ import org.ccframe.subsys.bike.dto.UserToRepairRecordListReq;
 import org.ccframe.subsys.bike.dto.UserToRepairRecordRowDto;
 import org.ccframe.subsys.bike.search.UserToRepairRecordSearchRepository;
 import org.ccframe.subsys.core.domain.entity.Org;
-import org.ccframe.subsys.core.service.OrgService;
+import org.ccframe.subsys.core.service.OrgSearchService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.BeanUtils;
@@ -53,9 +53,9 @@ public class UserToRepairRecordSearchService extends BaseSearchService<UserToRep
 				for(UserToRepairRecord userToRepairRecord:userToRepairRecordPage.getContent()){
 					UserToRepairRecordRowDto rowRecord = new UserToRepairRecordRowDto();
 					
-					Org org = SpringContextHelper.getBean(OrgService.class).getById(userToRepairRecord.getOrgId());
+					Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(userToRepairRecord.getOrgId());
 					rowRecord.setOrgNm(org.getOrgNm());
-					SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(userToRepairRecord.getSmartLockId());
+					SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(userToRepairRecord.getSmartLockId());
 					rowRecord.setLockerHardwareCode(smartLock.getLockerHardwareCode());
 					BeanUtils.copyProperties(userToRepairRecord, rowRecord);
 					

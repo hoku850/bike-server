@@ -1,5 +1,8 @@
 package org.ccframe.commons.util;
 
+import java.sql.SQLException;
+import java.util.List;
+
 import org.ccframe.commons.util.DbUnitUtils.DBTYPE;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
@@ -7,9 +10,6 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.ITableMetaData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.SQLException;
-import java.util.List;
 
 public class ReplacementTable implements ITable{
 

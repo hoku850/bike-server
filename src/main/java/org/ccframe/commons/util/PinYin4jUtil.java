@@ -1,8 +1,8 @@
 package org.ccframe.commons.util;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pinyin4j.PinyinHelper;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class PinYin4jUtil {
 

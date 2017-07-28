@@ -12,8 +12,6 @@ import javax.persistence.Table;
 import org.ccframe.client.Global;
 import org.ccframe.commons.cache.AutoCacheConfig;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.Setting;
 
 import com.flipthebird.gwthashcodeequals.EqualsBuilder;
@@ -40,15 +38,15 @@ public class AgentApp implements Serializable{
 	
 	//columns START
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY) //hibernate 5 的 MYSQL 下 AUTO 策略无法对应自增，等修复
 	//elasticsearch
 	@org.springframework.data.annotation.Id
-	@Field(type = FieldType.Integer, analyzer="ik")
+//	@Field(type = FieldType.Integer, analyzer="ik")
 	@Column(name = "AGENT_APP_ID", nullable = false, length = 10)
 	private java.lang.Integer agentAppId;
 	
 	//elasticsearch 
-	@Field(type = FieldType.String, analyzer="ik") //浣跨敤ik鍒嗚瘝鍣ㄨ繘琛屽垎璇�
+//	@Field(type = FieldType.String, analyzer="ik") //浣跨敤ik鍒嗚瘝鍣ㄨ繘琛屽垎璇�
 	@Column(name = "APP_NM", nullable = false, length = 10)
 	private java.lang.String appNm;
 	

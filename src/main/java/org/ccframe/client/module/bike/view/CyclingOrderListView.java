@@ -1,6 +1,5 @@
 package org.ccframe.client.module.bike.view;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import org.ccframe.client.Global;
 import org.ccframe.client.ViewResEnum;
 import org.ccframe.client.base.BasePagingListView;
 import org.ccframe.client.commons.ClientManager;
-import org.ccframe.client.commons.ClientPage;
 import org.ccframe.client.commons.ColumnConfigEx;
 import org.ccframe.client.commons.EventBusUtil;
 import org.ccframe.client.commons.RestCallback;
@@ -24,6 +22,7 @@ import org.ccframe.client.module.core.event.BodyContentEvent;
 import org.ccframe.client.module.core.event.LoadWindowEvent;
 import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
+import org.ccframe.subsys.bike.dto.CyclingOrderClientPage;
 import org.ccframe.subsys.bike.dto.CyclingOrderListReq;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
 import org.fusesource.restygwt.client.Method;
@@ -78,7 +77,7 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 	public TextField searchField;
 	
 	@UiField
-	public Label amount;
+	public Label totalOrderAmmount;
 	
    @UiField
     public TextButton findTrajectory;
@@ -171,19 +170,12 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 				cyclingOrderListReq.setStartTimeStr(startTime.getValue());
 				cyclingOrderListReq.setEndTimeStr(endTime.getValue());
 				cyclingOrderListReq.setSearchField(searchField.getValue());
-				ClientManager.getCyclingOrderClient().findList(cyclingOrderListReq, offset, limit, new RestCallback<ClientPage<CyclingOrderRowDto>>(){
+				ClientManager.getCyclingOrderClient().findList(cyclingOrderListReq, offset, limit, new RestCallback<CyclingOrderClientPage<CyclingOrderRowDto>>(){
 
 					@Override
-					public void onSuccess(Method method, ClientPage<CyclingOrderRowDto> response) {
+					public void onSuccess(Method method, CyclingOrderClientPage<CyclingOrderRowDto> response) {
 						loader.onLoad(response.getList(), response.getTotalLength(), response.getOffset());
-						List<CyclingOrderRowDto> list = response.getList();
-						BigDecimal oldValue = new BigDecimal(0);
-						BigDecimal changeValue;
-						for (CyclingOrderRowDto cyclingOrderRowDto : list) {
-							changeValue = new BigDecimal(cyclingOrderRowDto.getOrderAmmount());
-							oldValue = oldValue.add(changeValue);
-						}
-						amount.setText("总计：" + oldValue.doubleValue() + "元");
+						totalOrderAmmount.setText("总计：" + response.getCyclingOrderTotalAmount() + "元");
 					}
 				});
 			}

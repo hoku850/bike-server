@@ -1,7 +1,6 @@
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.ccframe.commons.util.CRC16Util;
-import org.junit.Assert;
 import org.junit.Test;
 
 //import sun.misc.CRC16;

@@ -3,23 +3,23 @@ package org.ccframe.subsys.bike.service;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.ccframe.client.Global;
+import org.ccframe.commons.base.BaseService;
+import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.commons.util.WebContextHolder;
 import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.sdk.bike.utils.DateDistanceUtil;
 import org.ccframe.sdk.bike.utils.PositionUtil;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
+import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.domain.entity.SmartLockStat;
 import org.ccframe.subsys.bike.domain.entity.UserToRepairRecord;
 import org.ccframe.subsys.bike.repository.UserToRepairRecordRepository;
-import org.ccframe.subsys.core.domain.entity.User;
-import org.ccframe.client.Global;
-import org.ccframe.commons.base.BaseService;
-import org.ccframe.commons.helper.SpringContextHelper;
-import org.ccframe.commons.util.WebContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserToRepairRecordService extends BaseService<UserToRepairRecord,java.lang.Integer, UserToRepairRecordRepository>{
@@ -29,10 +29,10 @@ public class UserToRepairRecordService extends BaseService<UserToRepairRecord,ja
 	 */
 	@Transactional
 	public String saveRepairRecord(String posCode, Integer reasonID, String position) {
-		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-		Integer orgId = 2;
+		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+	
 		//更新骑行订单状态
-		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), orgId);
+		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
 		CyclingOrder cyclingOrder = list.get(0);
 		cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.TO_BE_REPAIRED.toCode());
 		Date nowDate = new Date();

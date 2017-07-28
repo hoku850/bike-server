@@ -73,7 +73,7 @@ public class MemberAccountSearchService extends BaseSearchService<MemberAccount,
 			MemberAccountRowDto memberAccountRowDto = new MemberAccountRowDto();
 			BeanUtils.copyProperties(memberAccount, memberAccountRowDto);
 			// 查询用户信息
-			User user = SpringContextHelper.getBean(UserService.class).getById(memberAccount.getUserId());
+			User user = SpringContextHelper.getBean(UserSearchService.class).getById(memberAccount.getUserId());
 			if (user != null) {
 				memberAccountRowDto.setUserNm(user.getUserNm());
 				memberAccountRowDto.setLoginId(user.getLoginId());

@@ -54,7 +54,7 @@ public class SmartLockStat implements Serializable{
 
 	//columns START
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY) //hibernate 5 的 MYSQL 下 AUTO 策略无法对应自增，等修复
 	//elasticsearch
 	@org.springframework.data.annotation.Id
 	@Column(name = "PRD_SMART_LOCK_STAT_ID", nullable = false, length = 10)

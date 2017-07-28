@@ -3,7 +3,6 @@ package org.ccframe.client.commons;
 import org.ccframe.client.service.AdminRoleClient;
 import org.ccframe.client.service.AdminUserClient;
 import org.ccframe.client.service.AgentAppClient;
-import org.ccframe.client.service.OrgClient;
 import org.ccframe.client.service.ArticleInfClient;
 import org.ccframe.client.service.BikeTypeClient;
 import org.ccframe.client.service.CacheInfClient;
@@ -13,6 +12,7 @@ import org.ccframe.client.service.FileInfClient;
 import org.ccframe.client.service.MainFrameClient;
 import org.ccframe.client.service.MemberAccountClient;
 import org.ccframe.client.service.MemberAccountLogClient;
+import org.ccframe.client.service.OrgClient;
 import org.ccframe.client.service.ParamClient;
 import org.ccframe.client.service.SimpleLabelValueClient;
 import org.ccframe.client.service.SmartLockClient;
@@ -180,4 +180,5 @@ public class ClientManager {
 		}
 		return orgClient;
 	}
+	
 }

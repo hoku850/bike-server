@@ -2,7 +2,6 @@ package org.ccframe.client.components;
 
 import java.util.List;
 
-import org.ccframe.client.Global;
 import org.ccframe.client.commons.ClientManager;
 import org.ccframe.client.commons.RestCallback;
 import org.ccframe.client.commons.StringUtils;

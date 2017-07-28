@@ -31,7 +31,7 @@ public interface OrgClient extends RestService{
 	void delete(@PathParam(Global.ID_BINDER_ID) Integer agentId, RestCallback<Void> callback);
 
 	@POST @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.ORG_BASE + "/"+ ControllerMapping.ORG_LIST + Global.REST_REQUEST_URL_SUFFIX)
-	void findAgentList(OrgListReq agentListReq, @QueryParam("offset") int offset, @QueryParam("limit") int limit, RestCallback<ClientPage<OrgRowDto>> callback);
+	void findOrgList(OrgListReq agentListReq, @QueryParam("offset") int offset, @QueryParam("limit") int limit, RestCallback<ClientPage<OrgRowDto>> callback);
 
 	@POST @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.ORG_BASE + Global.REST_REQUEST_URL_SUFFIX)
 	void saveOrUpdate(OrgDto orgDto, RestCallback<User> restCallback);

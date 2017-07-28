@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.ccframe.client.Global;
 import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
@@ -20,6 +21,7 @@ import org.ccframe.subsys.bike.dto.SmartLockRowDto;
 import org.ccframe.subsys.bike.search.SmartLockSearchRepository;
 import org.ccframe.subsys.core.domain.code.BoolCodeEnum;
 import org.ccframe.subsys.core.domain.entity.Org;
+import org.ccframe.subsys.core.service.OrgSearchService;
 import org.ccframe.subsys.core.service.OrgService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.PrefixQueryBuilder;
@@ -60,11 +62,11 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 		List<SmartLockRowDto> resultList = new ArrayList<SmartLockRowDto>();
 		for(SmartLock smartLock:smartLockPage.getContent()){
 			SmartLockRowDto rowRecord = new SmartLockRowDto();
-			Org org = SpringContextHelper.getBean(OrgService.class).getById(smartLock.getOrgId());
+			Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(smartLock.getOrgId());
 			if (org != null) {
 				rowRecord.setOrgNm(org.getOrgNm());
 			}
-			BikeType bikeType = SpringContextHelper.getBean(BikeTypeService.class).getById(smartLock.getBikeTypeId());
+			BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(smartLock.getBikeTypeId());
 			if (bikeType != null) {
 				rowRecord.setBikeTypeNm(bikeType.getBikeTypeNm());
 			}
@@ -138,8 +140,8 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 				smartLockStat.setSmartLockId(smartLock.getSmartLockId());
 			}
 			smartLockStat.setOrgId(smartLock.getOrgId());
-			smartLockStat.setLockLng(39.54);//天安门经纬度
-			smartLockStat.setLockLat(116.23);
+			smartLockStat.setLockLng(Global.BIEJING_LNG);//天安门经纬度
+			smartLockStat.setLockLat(Global.BIEJING_LAT);
 			smartLockStat.setLockSwitchStatCode(LockSwitchStatCodeEnum.NO_USE.toCode());
 			smartLockStat.setIfRepairIng(BoolCodeEnum.NO.toCode());
 			SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);

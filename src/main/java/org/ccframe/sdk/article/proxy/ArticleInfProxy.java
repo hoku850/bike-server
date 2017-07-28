@@ -4,20 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.ccframe.client.Global;
 import org.ccframe.client.commons.TreeNodeTree;
 import org.ccframe.client.commons.UtilDateTimeClient;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.subsys.article.domain.entity.ArticleInf;
 import org.ccframe.subsys.article.dto.ArticleInfRowDto;
 import org.ccframe.subsys.article.service.ArticleInfSearchService;
-import org.ccframe.subsys.article.service.ArticleInfService;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.TreeNodeSearchService;
-import org.ccframe.subsys.core.service.TreeNodeService;
 import org.ccframe.subsys.core.service.UserService;
-
-import com.sencha.gxt.widget.core.client.tree.Tree.TreeNode;
 
 
 public class ArticleInfProxy extends ArticleInf{

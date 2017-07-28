@@ -69,7 +69,7 @@ public class CyclingOrderWindowView extends BaseWindowView<Integer, CyclingOrder
 		}else{
 			frame.setUrl(GWT.getHostPageBaseURL() + "map/cmap.jsp?cyclingOrderId=" + id);
 			frame.setPixelSize(550, 495);
-			ClientManager.getCyclingOrderClient().getDtoById(id, new RestCallback<CyclingOrderRowDto>(){
+			ClientManager.getCyclingOrderClient().getCyclingOrderDtoById(id, new RestCallback<CyclingOrderRowDto>(){
 				@Override
 				public void onSuccess(Method method, CyclingOrderRowDto response) {
 					driver.edit(response);

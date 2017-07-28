@@ -1,13 +1,11 @@
-
 package org.ccframe.subsys.bike.controller;
 
 import java.io.IOException;
 
 import org.ccframe.client.ControllerMapping;
 import org.ccframe.client.Global;
-import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.helper.SpringContextHelper;
-import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
+import org.ccframe.subsys.bike.dto.CyclingOrderClientPage;
 import org.ccframe.subsys.bike.dto.CyclingOrderListReq;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
 import org.ccframe.subsys.bike.service.CyclingOrderSearchService;
@@ -24,7 +22,7 @@ public class CyclingOrderController{
 	
 	@RequestMapping(value = Global.ID_BINDER_PATH)
 	public CyclingOrderRowDto getDtoById(@PathVariable(Global.ID_BINDER_ID) Integer cyclingOrderId) {
-		return SpringContextHelper.getBean(CyclingOrderService.class).getDtoById(cyclingOrderId);
+		return SpringContextHelper.getBean(CyclingOrderService.class).getCyclingOrderDtoById(cyclingOrderId);
 	}
 	
 	@RequestMapping(value = "/"+ ControllerMapping.CYCLING_ORDER_FINISH + Global.ID_BINDER_PATH)
@@ -36,20 +34,10 @@ public class CyclingOrderController{
 	public int finish(@RequestBody CyclingOrderRowDto cyclingOrderRowDto){
 		return SpringContextHelper.getBean(CyclingOrderService.class).finish(cyclingOrderRowDto);
 	}
-	
-	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.DELETE)
-	public void delete(@PathVariable(Global.ID_BINDER_ID) Integer cyclingOrderId){
-		SpringContextHelper.getBean(CyclingOrderService.class).softDeleteById(cyclingOrderId);
-	}
 
 	@RequestMapping(value = ControllerMapping.CYCLING_ORDER_LIST, method = RequestMethod.POST)
-	public ClientPage<CyclingOrderRowDto> findBikeTypeList(@RequestBody CyclingOrderListReq cyclingOrderListReq, int offset, int limit) {
+	public CyclingOrderClientPage<CyclingOrderRowDto> findBikeTypeList(@RequestBody CyclingOrderListReq cyclingOrderListReq, int offset, int limit) {
 		return SpringContextHelper.getBean(CyclingOrderSearchService.class).findList(cyclingOrderListReq, offset, limit);
-	}
-
-	@RequestMapping(method=RequestMethod.POST)
-	public void saveOrUpdate(@RequestBody CyclingOrder cyclingOrder){
-		SpringContextHelper.getBean(CyclingOrderService.class).saveOrUpdateCyclingOrder(cyclingOrder);
 	}
 	
 	@RequestMapping(value = ControllerMapping.CYCLING_ORDER_EXPORT, method=RequestMethod.POST)

@@ -85,16 +85,6 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		
 	}
 
-//	@Transactional(readOnly=true)
-//	public Integer countSmartLockOfAgent(Integer agentId) {
-//		List<SmartLock> list = this.getRepository().findAll(new Criteria<SmartLock>().add(Restrictions.eq(SmartLock.ORG_ID, agentId)));
-//		if (list != null) {
-//			return list.size();
-//		} else {
-//			return 0;
-//		}
-//	}
-
 	@Transactional
 	public void decideDeleteById(Integer smartLockId) {
 		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(smartLockId);
@@ -271,7 +261,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 	@Override
 	public void doImport(String filePath, Map<String, Object> importParam) {
 		ListExcelReader<SmartLockRowDto> listExcelReader = new ListExcelReader<>(WebContextHolder.getWarPath()
-				+ File.separator + Global.EXCEL_TEMPLATE_DIR + File.separator + SMART_LOCK_IMPORT_TEMPLATE_FILE_NAME,
+				+ File.separator + Global.EXCEL_EXPORT_TEMPLATE_DIR + File.separator + SMART_LOCK_IMPORT_TEMPLATE_FILE_NAME,
 				SmartLockRowDto.class);
 		listExcelReader.readFromFile(filePath, SpringContextHelper.getBean(SmartLockService.class), importParam);
 	}
@@ -290,7 +280,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 	 */
 	public String doExport(Integer orgId) throws IOException {
 		// 生成一个EXCEL导入文件到TEMP,并且文件名用UUID
-		String filePathString = WebContextHolder.getWarPath() + File.separator + Global.EXCEL_TEMPLATE_DIR + File.separator + "smartLockListExcel.xls";// "war/exceltemplate/goodsInfListExcel.xls";
+		String filePathString = WebContextHolder.getWarPath() + File.separator + Global.EXCEL_EXPORT_TEMPLATE_DIR + File.separator + Global.EXCEL_EXPORT_SMART_LOCK;// "war/exceltemplate/goodsInfListExcel.xls";
 
 		ListExcelWriter writer = new ListExcelWriter(filePathString); // GWT.getHostPageBaseURL()+
 		List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
@@ -347,7 +337,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			data.put(SmartLock.LAST_USE_DATE_STR, smartLock.getLastUseDateStr());
 			dataList.add(data);
 		}
-		String fileName = Global.TEMP_DIR + "/" + UUID.randomUUID() + ".xls";
+		String fileName = Global.EXCEL_EXPORT_TEMP_DIR + UUID.randomUUID() + Global.EXCEL_EXPORT_POSTFIX;
 		String outFileName = WebContextHolder.getWarPath() + File.separator + fileName;
 		writer.fillToFile(dataList, outFileName);
 
@@ -359,5 +349,5 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		smartLock.setSmartLockStatCode(SmartLockStatCodeEnum.DESERTED.toCode());
 		SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
 	}
-
+	
 }

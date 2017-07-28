@@ -226,5 +226,7 @@ public interface ControllerMapping {
 	// 运营商管理
 	String ORG_BASE = ADMIN_BASE + "org";
 	String ORG_LIST = "findList";
-
+	
+	//测试
+	String TEST_BASE = ADMIN_BASE + "test";
 }

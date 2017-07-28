@@ -41,7 +41,7 @@ private static String backendLoginUri;
         MemberUser memberUser = (MemberUser)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
         System.out.println("memberUser: " + memberUser);
         if(memberUser == null) { 
-        		String phoneNumber = httpRequest.getParameter("phoneName");
+        		String phoneNumber = httpRequest.getParameter("phoneNumber");
         		String IMEI = httpRequest.getParameter("IMEI");
         		String orgId = httpRequest.getParameter("orgId");
         		

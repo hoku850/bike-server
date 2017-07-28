@@ -1,15 +1,15 @@
 package org.ccframe.commons.util;
 
-import org.dbunit.dataset.DataSetException;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.ITableMetaData;
-import org.dbunit.dataset.xml.FlatXmlWriter;
-
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.dbunit.dataset.DataSetException;
+import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.ITableMetaData;
+import org.dbunit.dataset.xml.FlatXmlWriter;
 
 
 public class FlatXmlWriterEx extends FlatXmlWriter {

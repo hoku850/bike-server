@@ -1,5 +1,12 @@
 package org.ccframe.commons.util;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
+import java.util.Arrays;
+
 import org.apache.tools.ant.Project;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.ant.Export;
@@ -13,13 +20,6 @@ import org.dbunit.dataset.xml.FlatDtdDataSet;
 import org.dbunit.dataset.xml.XmlDataSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
-import java.util.Arrays;
 
 
 /**

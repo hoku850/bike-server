@@ -3,8 +3,6 @@ package org.ccframe.client.commons;
 import java.io.Serializable;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 /**
  * 
  * 1.兼容GXT的返回数据格式

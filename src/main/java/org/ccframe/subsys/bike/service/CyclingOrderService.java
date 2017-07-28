@@ -1,5 +1,6 @@
 package org.ccframe.subsys.bike.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -41,8 +42,8 @@ import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.MemberAccountLogService;
 import org.ccframe.subsys.core.service.MemberAccountSearchService;
 import org.ccframe.subsys.core.service.MemberAccountService;
-import org.ccframe.subsys.core.service.OrgService;
-import org.ccframe.subsys.core.service.UserService;
+import org.ccframe.subsys.core.service.OrgSearchService;
+import org.ccframe.subsys.core.service.UserSearchService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,29 +51,23 @@ import org.springframework.web.socket.TextMessage;
 
 @Service
 public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Integer, CyclingOrderRepository>{
-
-	@Transactional
-	public void softDeleteById(Integer cyclingOrderId) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Transactional
-	public void saveOrUpdateCyclingOrder(CyclingOrder cyclingOrder) {
-		// TODO Auto-generated method stub
-		
-	}
 	
-	//获取需要强制结束的骑行订单 
+	/**
+	 * 获取需要强制结束的骑行订单 
+	 * @param cyclingOrderId
+	 * @return
+	 */
 	@Transactional(readOnly=true)
 	public CyclingOrderRowDto finishGetById(Integer cyclingOrderId){
-		CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderService.class).getById(cyclingOrderId);
+		
+		CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderSearchService.class).getById(cyclingOrderId);
 		CyclingOrderRowDto cyclingOrderRowDto = new CyclingOrderRowDto();
 		BeanUtils.copyProperties(cyclingOrder, cyclingOrderRowDto);
-		User user = SpringContextHelper.getBean(UserService.class).getById(cyclingOrder.getUserId());
-		Org org = SpringContextHelper.getBean(OrgService.class).getById(cyclingOrder.getOrgId());
-		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(cyclingOrder.getSmartLockId());
-		BikeType bikeType = SpringContextHelper.getBean(BikeTypeService.class).getById(smartLock.getBikeTypeId());
+		
+		User user = SpringContextHelper.getBean(UserSearchService.class).getById(cyclingOrder.getUserId());
+		Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(cyclingOrder.getOrgId());
+		SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder.getSmartLockId());
+		BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(smartLock.getBikeTypeId());
 		cyclingOrderRowDto.setOrgNm(org.getOrgNm());
 		cyclingOrderRowDto.setLoginId(user.getLoginId());
 		cyclingOrderRowDto.setLockerHardwareCode(smartLock.getLockerHardwareCode());
@@ -81,33 +76,42 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		return cyclingOrderRowDto;
 	}
 
-	// 返回骑行轨迹的窗口
+	/**
+	 * 返回骑行轨迹窗口的需要数据
+	 * @param cyclingOrderId
+	 * @return
+	 */
 	@Transactional(readOnly=true)
-	public CyclingOrderRowDto getDtoById(Integer cyclingOrderId) {
-		CyclingOrder cyclingOrder = getById(cyclingOrderId);
+	public CyclingOrderRowDto getCyclingOrderDtoById(Integer cyclingOrderId) {
+		CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderSearchService.class).getById(cyclingOrderId);
 		CyclingOrderRowDto cyclingOrderRowDto = new CyclingOrderRowDto();
 		
 		BeanUtils.copyProperties(cyclingOrder, cyclingOrderRowDto);
 		
-		User user = SpringContextHelper.getBean(UserService.class).getById(cyclingOrder.getUserId());
+		User user = SpringContextHelper.getBean(UserSearchService.class).getById(cyclingOrder.getUserId());
 		cyclingOrderRowDto.setUserNm(user == null ? null : user.getUserNm());
 		if (cyclingOrder.getStartTime() != null && cyclingOrder.getEndTime() != null) {
 			long time = cyclingOrder.getStartTime().getTime() - cyclingOrder.getEndTime().getTime();
 			String timeStr = UtilDateTimeClient.convertDateTimeToString(new Date(time)).substring(11, 19);
-			String data = timeStr.substring(0, 2) + "时 " + timeStr.substring(3, 5) + "分 " + timeStr.substring(6, 8) + "秒";
-			cyclingOrderRowDto.setContinueTimeStr(data);
+			timeStr = timeStr.substring(0, 2) + Global.HOUR + timeStr.substring(3, 5) + Global.MINUTE + timeStr.substring(6, 8) + Global.SECOND;
+			cyclingOrderRowDto.setContinueTimeStr(timeStr);
 		}
 		if (cyclingOrder.getCyclingDistanceMeter() != null) {
-			Double cyclingDistanceMeter =  (double)cyclingOrder.getCyclingDistanceMeter() / 1000;
-			cyclingOrderRowDto.setCyclingDistanceMeterStr(cyclingDistanceMeter + " km");
+			cyclingOrderRowDto.setCyclingDistanceMeterStr(BigDecimalUtil.divide(cyclingOrder.getCyclingDistanceMeter(), 1000) + Global.KM);
 		}
 		return cyclingOrderRowDto;
 	}
 	
+	/**
+	 * EXCEL导出
+	 * @param orgId
+	 * @return
+	 * @throws IOException
+	 */
 	@Transactional(readOnly=true)
 	public String doExport(Integer orgId) throws IOException {
 		//生成一个EXCEL导入文件到TEMP,并且文件名用UUID
-    	String filePathString = WebContextHolder.getWarPath()+"/exceltemplate/cyclingOrderListExcel.xls";//"war/exceltemplate/goodsInfListExcel.xls";
+		String filePathString = WebContextHolder.getWarPath() + File.separator + Global.EXCEL_EXPORT_TEMPLATE_DIR + File.separator + Global.EXCEL_EXPORT_CYCLING_ORDER;//"war/exceltemplate/goodsInfListExcel.xls";
         
     	ListExcelWriter writer = new ListExcelWriter(filePathString);   //GWT.getHostPageBaseURL()+     
         List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
@@ -122,20 +126,27 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put(CyclingOrder.CYCLING_ORDER_ID, cyclingOrder.getCyclingOrderId());
-			data.put(CyclingOrder.USER_ID, cyclingOrder.getUserId());
 			
-			Org org = SpringContextHelper.getBean(OrgService.class).getById(cyclingOrder.getOrgId());
-			if (org != null) {
-				data.put(CyclingOrder.ORG_ID, org.getOrgNm());
-			}
-			data.put(CyclingOrder.SMART_LOCK_ID, cyclingOrder.getSmartLockId());
+			User user = SpringContextHelper.getBean(UserSearchService.class).getById(cyclingOrder.getUserId());
+			if (user != null) data.put(User.LOGIN_ID, user.getLoginId());
+			
+			Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(cyclingOrder.getOrgId());
+			if (org != null) data.put(Org.ORG_NM, org.getOrgNm());
+			
+			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder.getSmartLockId());
+			if (smartLock != null) data.put(SmartLock.LOCKER_HARDWARE_CODE, smartLock.getLockerHardwareCode());
+			
 			data.put(CyclingOrder.BIKE_PLATE_NUMBER, cyclingOrder.getBikePlateNumber());
 			data.put(CyclingOrder.START_TIME_STR, cyclingOrder.getStartTimeStr());
-			data.put(CyclingOrder.START_LOCATION_LNG, cyclingOrder.getStartLocationLng());
-			data.put(CyclingOrder.START_LOCATION_LAT, cyclingOrder.getStartLocationLat());
+			 
+			String startLngLat = lngLatFormat(cyclingOrder.getStartLocationLng(), cyclingOrder.getStartLocationLat());
+			data.put(CyclingOrder.START_LOCATION_LNG, startLngLat);
+
 			data.put(CyclingOrder.END_TIME_STR, cyclingOrder.getEndTimeStr());
-			data.put(CyclingOrder.END_LOCATION_LNG, cyclingOrder.getEndLocationLng());
-			data.put(CyclingOrder.END_LOCATION_LAT, cyclingOrder.getEndLocationLat());
+			
+			String endLngLat = lngLatFormat(cyclingOrder.getEndLocationLng(), cyclingOrder.getEndLocationLat());
+			data.put(CyclingOrder.END_LOCATION_LNG, endLngLat);
+
 			switch (CyclingOrderStatCodeEnum.fromCode(cyclingOrder.getCyclingOrderStatCode())) {
 			case ON_THE_WAY:
 				data.put(CyclingOrder.CYCLING_ORDER_STAT_CODE, "骑行中");
@@ -156,16 +167,26 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 				data.put(CyclingOrder.CYCLING_ORDER_STAT_CODE, "NULL");
 				break;
 			}
-			data.put(CyclingOrder.CYCLING_CONTINOUS_SEC, cyclingOrder.getCyclingContinousSec());
-			data.put(CyclingOrder.CYCLING_DISTANCE_METER, cyclingOrder.getCyclingDistanceMeter());
+			data.put(CyclingOrder.CYCLING_CONTINOUS_SEC, timeFormat(cyclingOrder.getCyclingContinousSec()));
+			data.put(CyclingOrder.CYCLING_DISTANCE_METER, BigDecimalUtil.divide(cyclingOrder.getCyclingDistanceMeter(), 1000));
 			data.put(CyclingOrder.ORDER_AMMOUNT, cyclingOrder.getOrderAmmount());
 			dataList.add(data);
 		}
-		String fileName =  "temp/" + UUID.randomUUID() + ".xls";
-     	String outFileName = WebContextHolder.getWarPath() +"/"+ fileName;
+		String fileName = Global.EXCEL_EXPORT_TEMP_DIR + UUID.randomUUID() + Global.EXCEL_EXPORT_POSTFIX;
+     	String outFileName = WebContextHolder.getWarPath() + File.separator + fileName;
         writer.fillToFile(dataList, outFileName);
      	
 		return JsonBinder.buildNormalBinder().toJson(fileName);
+	}
+	
+	private String lngLatFormat(Double lng, Double lat) {
+		String lngStr = lng >= 0 ? (Global.EAST + lng) : (Global.WEST + lng);
+		String latStr = lat >= 0 ? (Global.NORTH + lat) : (Global.SOUTH + lat);
+		return lngStr + Global.COMMA + latStr;
+	}
+	
+	private String timeFormat(Integer time){
+		return String.format("%02d:%02d:%02d", time/60/60, time/60%60, time%60);
 	}
 	
 	/**

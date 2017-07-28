@@ -1,15 +1,5 @@
 package org.ccframe.subsys.bike.processor;
 
-import javax.annotation.PreDestroy;
-
-import org.apache.log4j.Logger;
-import org.ccframe.commons.base.IProcesser;
-import org.ccframe.commons.helper.SysInitBeanHelper;
-import org.ccframe.subsys.bike.socket.commons.LockPackageDecoder;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -22,6 +12,16 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
+
+import javax.annotation.PreDestroy;
+
+import org.apache.log4j.Logger;
+import org.ccframe.commons.base.IProcesser;
+import org.ccframe.commons.helper.SysInitBeanHelper;
+import org.ccframe.subsys.bike.socket.commons.LockPackageDecoder;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 @Component
 public class NettyServerProcessor implements IProcesser{

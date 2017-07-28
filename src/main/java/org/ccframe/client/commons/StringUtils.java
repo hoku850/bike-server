@@ -17,12 +17,9 @@
 package org.ccframe.client.commons;
 
 import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.ccframe.client.Global;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.regexp.shared.RegExp;
 
 

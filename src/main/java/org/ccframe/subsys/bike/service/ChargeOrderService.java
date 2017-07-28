@@ -1,5 +1,6 @@
 package org.ccframe.subsys.bike.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,27 +21,17 @@ import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
 import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.repository.ChargeOrderRepository;
 import org.ccframe.subsys.core.domain.entity.Org;
-import org.ccframe.subsys.core.service.OrgService;
+import org.ccframe.subsys.core.service.OrgSearchService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ChargeOrderService extends BaseService<ChargeOrder,java.lang.Integer, ChargeOrderRepository>{
 
-	@Transactional
-	public void softDeleteById(Integer chargeOrderId) {
-		
-	}
-
-	@Transactional
-	public void saveOrUpdateBikeType(ChargeOrder chargeOrder) {
-		
-	}
-
 	@Transactional(readOnly=true)
 	public String doExport(Integer orgId) throws IOException {
 		//生成一个EXCEL导入文件到TEMP,并且文件名用UUID
-    	String filePathString = WebContextHolder.getWarPath()+"/exceltemplate/chargeOrderListExcel.xls";//"war/exceltemplate/goodsInfListExcel.xls";
+    	String filePathString = WebContextHolder.getWarPath() + File.separator + Global.EXCEL_EXPORT_TEMPLATE_DIR + File.separator + "chargeOrderListExcel.xls";//"war/exceltemplate/goodsInfListExcel.xls";
         
     	ListExcelWriter writer = new ListExcelWriter(filePathString);   //GWT.getHostPageBaseURL()+     
         List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
@@ -55,15 +46,15 @@ public class ChargeOrderService extends BaseService<ChargeOrder,java.lang.Intege
 		
 		for (ChargeOrder chargeOrder : chargeOrders) {
 			Map<String, Object> data = new HashMap<String, Object>();
-			data.put("chargeOrderId", chargeOrder.getChargeOrderId());
-			data.put("chargeOrderNum", chargeOrder.getChargeOrderNum());
-			data.put("userId", chargeOrder.getUserId());
-			data.put("memberAccountId", chargeOrder.getMemberAccountId());
-			data.put("memberAccountLogId", chargeOrder.getMemberAccountLogId());
+			data.put(ChargeOrder.CHARGE_ORDER_ID, chargeOrder.getChargeOrderId());
+			data.put(ChargeOrder.CHARGE_ORDER_NUM, chargeOrder.getChargeOrderNum());
+			data.put(ChargeOrder.USER_ID, chargeOrder.getUserId());
+			data.put(ChargeOrder.MEMBER_ACCOUNT_ID, chargeOrder.getMemberAccountId());
+			data.put(ChargeOrder.MEMBER_ACCOUNT_LOG_ID, chargeOrder.getMemberAccountLogId());
 			
-			Org org = SpringContextHelper.getBean(OrgService.class).getById(chargeOrder.getOrgId());
+			Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(chargeOrder.getOrgId());
 			if (org != null) {
-				data.put("orgId", org.getOrgNm());
+				data.put(Org.ORG_ID, org.getOrgNm());
 			}
 			
 			switch (PaymentTypeCodeEnum.fromCode(chargeOrder.getPaymentTypeCode())) {

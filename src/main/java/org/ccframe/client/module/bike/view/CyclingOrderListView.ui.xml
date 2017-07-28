@@ -88,7 +88,7 @@
 				</container:child>
 				<container:child layoutData="{bottomRightRow}">
 					<toolbar:ToolBar borders="true">
-						<g:Label ui:field="amount" text="总计：0.0元"/>
+						<g:Label ui:field="totalOrderAmmount" text="总计：0.0元"/>
 					</toolbar:ToolBar>
 				</container:child>
 			</container:HorizontalLayoutContainer>

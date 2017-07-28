@@ -1,11 +1,11 @@
 package org.ccframe.commons.util;
 
-import org.ccframe.commons.util.DbUnitUtils.DBTYPE;
-import org.dbunit.database.IDatabaseConnection;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import org.ccframe.commons.util.DbUnitUtils.DBTYPE;
+import org.dbunit.database.IDatabaseConnection;
 
 public class DBSequenceReplacementProcessor implements ReplacementProcessor {
 

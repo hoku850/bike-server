@@ -1,17 +1,9 @@
 package org.ccframe.subsys.core.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.ccframe.commons.base.BaseService;
-import org.ccframe.commons.jpaquery.Criteria;
-import org.ccframe.commons.jpaquery.Criterion;
-import org.ccframe.commons.jpaquery.Restrictions;
 import org.ccframe.subsys.core.domain.entity.RoleMenuResRel;
 import org.ccframe.subsys.core.repository.RoleMenuResRelRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RoleMenuResRelService extends BaseService<RoleMenuResRel, Integer, RoleMenuResRelRepository> {

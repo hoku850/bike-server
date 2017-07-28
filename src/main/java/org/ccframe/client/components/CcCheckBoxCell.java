@@ -16,11 +16,11 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.sencha.gxt.cell.core.client.form.CheckBoxCell.CheckBoxAppearance;
+import com.sencha.gxt.cell.core.client.form.CheckBoxCell.CheckBoxCellOptions;
 import com.sencha.gxt.cell.core.client.form.ValueBaseInputCell;
 import com.sencha.gxt.core.client.GXT;
 import com.sencha.gxt.core.client.dom.XDOM;
 import com.sencha.gxt.core.client.dom.XElement;
-import com.sencha.gxt.cell.core.client.form.CheckBoxCell.CheckBoxCellOptions;
 
 /**
  * 绑定BoolCodeEnum类型值的checkbox cell

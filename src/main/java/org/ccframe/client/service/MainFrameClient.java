@@ -1,6 +1,5 @@
 package org.ccframe.client.service;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -12,7 +11,6 @@ import org.ccframe.subsys.core.domain.entity.MenuRes;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.dto.MainFrameResp;
 import org.fusesource.restygwt.client.RestService;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * URL请求资源定义

@@ -7,7 +7,6 @@ import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.WebContextHolder;
 import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.core.domain.entity.MemberAccountLog;
-import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.MemberAccountLogService;
 
 public class SaveLogUtil {

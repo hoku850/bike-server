@@ -1,7 +1,6 @@
 package org.ccframe.commons.util;
-import org.junit.Test;
-
 import org.junit.Assert;
+import org.junit.Test;
 
 public class PinYin4jUtilTest {
 	@Test

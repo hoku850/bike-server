@@ -3,15 +3,14 @@ package org.ccframe.client.module.article.view;
 import java.util.List;
 
 import org.ccframe.client.ViewResEnum;
-import org.ccframe.client.base.BaseHandler;
 import org.ccframe.client.base.BaseCrudListView;
+import org.ccframe.client.base.BaseHandler;
 import org.ccframe.client.commons.ClientManager;
+import org.ccframe.client.commons.ClientPage;
 import org.ccframe.client.commons.ColumnConfigEx;
 import org.ccframe.client.commons.EventBusUtil;
-import org.ccframe.client.commons.ClientPage;
 import org.ccframe.client.commons.RestCallback;
 import org.ccframe.client.commons.RestyGwtPagingLoader;
-import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.commons.RestyGwtPagingLoader.CallBack;
 import org.ccframe.client.commons.TreeNodeTree;
 import org.ccframe.client.commons.WindowEventCallback;
@@ -33,14 +32,12 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.widget.client.TextButton;
 import com.google.inject.Singleton;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.Component;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 
 @Singleton

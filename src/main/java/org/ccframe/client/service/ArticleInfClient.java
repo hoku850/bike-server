@@ -11,7 +11,6 @@ import org.ccframe.client.ControllerMapping;
 import org.ccframe.client.Global;
 import org.ccframe.client.commons.ClientPage;
 import org.ccframe.client.commons.RestCallback;
-import org.ccframe.subsys.article.domain.entity.ArticleInf;
 import org.ccframe.subsys.article.dto.ArticleInfDto;
 import org.ccframe.subsys.article.dto.ArticleInfListReq;
 import org.ccframe.subsys.article.dto.ArticleInfRowDto;

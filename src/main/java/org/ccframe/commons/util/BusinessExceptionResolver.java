@@ -1,22 +1,15 @@
 package org.ccframe.commons.util;
 
-import org.apache.log4j.Logger;
-import org.springframework.context.support.AbstractMessageSource;
-import org.springframework.web.servlet.HandlerExceptionResolver;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver;
-import org.springframework.web.util.WebUtils;
-import org.ccframe.client.ResGlobal;
-import org.ccframe.commons.helper.SpringContextHelper;
-import org.ccframe.subsys.core.dto.ErrorObjectResp;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import org.apache.log4j.Logger;
+import org.ccframe.client.ResGlobal;
+import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.subsys.core.dto.ErrorObjectResp;
+import org.springframework.context.support.AbstractMessageSource;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
 
 public class BusinessExceptionResolver implements HandlerExceptionResolver  {
 

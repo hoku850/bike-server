@@ -2,10 +2,7 @@ package org.ccframe.commons.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ccframe.commons.data.PdfAreaPrintData;
-import org.ccframe.commons.data.PdfBatchPrintWriter;
 import org.ccframe.commons.data.PdfBatchPrintWriter.Zoom;
-import org.ccframe.commons.data.PdfCellPrintData;
 import org.ccframe.commons.data.PdfCellPrintData.BorderMode;
 import org.ccframe.commons.data.PdfCellPrintData.VerticalAlign;
 import org.ccframe.commons.data.PdfPrintData.HorizontalAlign;
@@ -13,7 +10,6 @@ import org.ccframe.commons.util.WebContextHolder;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 
 //@Ignore("本地测试")

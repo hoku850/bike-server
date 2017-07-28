@@ -22,6 +22,8 @@ public interface AppConstant {
 	Integer RADIUS = 500;
 	String BIKE_LOCATION_LIST = "bikeLocationList";
 	String SUCCESS = "success";
+	String FAIL = "fail";
+	String ERROR = "error";
 	String ON_THE_WAY = "onTheWay";
 	String WAIT_PAY = "waitPay";
 	String FLAG = "flag";
@@ -44,5 +46,7 @@ public interface AppConstant {
 	String FIRST_POS = "firstPos";
 	String POLYLINE_PATH = "polylinePath";
 	String TO_REPAIR_DREE = "保修金额减免";
+	String BURN_CALORIES = "burnCalories";
+	String REDUCE_EMISSIONS = "reduceEmissions";
 	
 }

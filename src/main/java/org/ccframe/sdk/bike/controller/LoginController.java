@@ -17,14 +17,17 @@ public class LoginController {
 	@RequestMapping(value = ControllerMapping.NOFILTER_LOGIN)
 	@ResponseBody
 	public String login(String phoneNum, String IMEI, String validateCode, Integer orgId) {
-		System.out.println("login:" + orgId);
-		if(UserService.Validate(phoneNum, validateCode)) {
+//		System.out.println(UserService.Validate(phoneNum, validateCode));
+		switch (UserService.Validate(phoneNum, validateCode)) {
+		case PASS:
 			SpringContextHelper.getBean(UserService.class).login(phoneNum, IMEI, validateCode, orgId);
-			return AppConstant.SUCCESS;			
-		} else {
-			return "codeError";
-			
-		}
+			return AppConstant.SUCCESS;		
+		case TIMEOUT:
+			return "timeout";
+		default:
+			System.out.println(AppConstant.FAIL);
+			return AppConstant.FAIL;
+		}	
 	}
 
 	@RequestMapping(value = ControllerMapping.CHECK_STATE)

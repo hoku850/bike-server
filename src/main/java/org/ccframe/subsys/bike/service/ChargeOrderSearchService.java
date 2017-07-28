@@ -16,7 +16,6 @@ import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.OrgSearchService;
 import org.ccframe.subsys.core.service.UserSearchService;
-import org.ccframe.subsys.core.service.UserService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.BeanUtils;
@@ -49,7 +48,7 @@ public class ChargeOrderSearchService extends BaseSearchService<ChargeOrder, Int
 		if (StringUtils.isNotBlank(chargeOrderListReq.getSearchText())) {
 			BoolQueryBuilder shouldQueryBuilder = QueryBuilders.boolQuery();
 			
-			User user = SpringContextHelper.getBean(UserService.class).getByKey(User.LOGIN_ID, chargeOrderListReq.getSearchText());
+			User user = SpringContextHelper.getBean(UserSearchService.class).getByKey(User.LOGIN_ID, chargeOrderListReq.getSearchText());
 			if(user != null){
 				shouldQueryBuilder.should(QueryBuilders.termQuery(ChargeOrder.USER_ID, user.getUserId()));
 			}

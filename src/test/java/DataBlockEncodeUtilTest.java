@@ -18,8 +18,8 @@ public class DataBlockEncodeUtilTest {
 	@Before
 	public void init(){
 		dataBlockMap = new LinkedHashMap<>();
-		dataBlockMap.put(DataBlockTypeEnum.LOCK_LNG, 113.0);
-		dataBlockMap.put(DataBlockTypeEnum.LOCK_LAT, 23.0);
+		dataBlockMap.put(DataBlockTypeEnum.LOCK_LNG, 113.4);
+		dataBlockMap.put(DataBlockTypeEnum.LOCK_LAT, 23.2);
 	}
 	
 	@Test

@@ -77,7 +77,7 @@ public class FileInfService extends BaseService<FileInf, Integer, FileInfReposit
 		try{
 			String fileTypeNm = FilenameUtils.getExtension(fileName);
 			String fileUUID = UUID.randomUUID().toString();
-			String filePath = new StringBuilder(Global.EXCEL_EXPORT_TEMP_DIR).append(File.separator).append(fileUUID).append(".").append(fileTypeNm).toString();
+			String filePath = new StringBuilder(Global.TEMP_DIR).append(File.separator).append(fileUUID).append(".").append(fileTypeNm).toString();
 			StringBuilder outputFilePath = new StringBuilder(WebContextHolder.getWarPath()).append(File.separator).append(filePath);
 			fileOutputStream = new FileOutputStream(outputFilePath.toString());
 			IOUtils.copy(fileStream, fileOutputStream);
@@ -85,7 +85,7 @@ public class FileInfService extends BaseService<FileInf, Integer, FileInfReposit
 			fileInfBarDto.setFileNm(fileName);
 			fileInfBarDto.setFilePath(filePath);
 			fileInfBarDto.setFileTypeNm(fileTypeNm);
-			fileInfBarDto.setFileUrl(new StringBuilder(WebContextHolder.getContextPath()).append("/").append(Global.EXCEL_EXPORT_TEMP_DIR).append("/").append(fileUUID).append(".").append(fileTypeNm).toString());
+			fileInfBarDto.setFileUrl(new StringBuilder(WebContextHolder.getContextPath()).append("/").append(Global.TEMP_DIR).append("/").append(fileUUID).append(".").append(fileTypeNm).toString());
 			return fileInfBarDto;
 		}catch(IOException ex){
 			throw new RuntimeException(ex);

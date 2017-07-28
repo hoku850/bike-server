@@ -337,11 +337,11 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			data.put(SmartLock.LAST_USE_DATE_STR, smartLock.getLastUseDateStr());
 			dataList.add(data);
 		}
-		String fileName = Global.EXCEL_EXPORT_TEMP_DIR + UUID.randomUUID() + Global.EXCEL_EXPORT_POSTFIX;
-		String outFileName = WebContextHolder.getWarPath() + File.separator + fileName;
-		writer.fillToFile(dataList, outFileName);
-
-		return JsonBinder.buildNormalBinder().toJson(fileName);
+		String fileName = UUID.randomUUID() + Global.EXCEL_EXPORT_POSTFIX;
+     	String outFileName = WebContextHolder.getWarPath() + File.separator + Global.TEMP_DIR + File.separator + fileName;
+        writer.fillToFile(dataList, outFileName);
+     	
+		return JsonBinder.buildNormalBinder().toJson(Global.TEMP_DIR + "/" + fileName);
 	}
 	
 	public void doDesert(SmartLockRowDto selectedRow){

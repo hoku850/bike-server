@@ -36,7 +36,7 @@ public class MemberAccount implements Serializable{
 	
 	//columns START
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	//elasticsearch
 	@org.springframework.data.annotation.Id
 	@Column(name = "MEMBER_ACCOUNT_ID", nullable = false, length = 10)

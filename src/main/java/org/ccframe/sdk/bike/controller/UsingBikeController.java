@@ -38,6 +38,11 @@ public class UsingBikeController{
 		return SpringContextHelper.getBean(CyclingOrderService.class).closeLock(paths);
 	}
 	
+	@RequestMapping(value = "lunxun")
+	@ResponseBody
+	public String lunxun() {
 
+		return SpringContextHelper.getBean(CyclingOrderService.class).lunxun();
+	}
 	
 }

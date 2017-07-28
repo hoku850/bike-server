@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.commons.StringUtils;
 import org.ccframe.client.components.fileupload.CcBaseFileUpload;
 import org.ccframe.client.components.fileupload.FileUploadCompleteHandler;
@@ -208,7 +209,7 @@ public class CcSimpleFileUpload extends CcBaseFileUpload implements IsField<File
 		previewButton.addSelectHandler(new SelectHandler(){
 			@Override
 			public void onSelect(SelectEvent event) {
-				String fileNameString = "/temp/"+fileInfDto.getFilePath().substring(5);
+				String fileNameString = "/" + Global.TEMP_DIR +fileInfDto.getFilePath().substring(5);
 				Window.open(GWT.getHostPageBaseURL() + (GWT.getHostPageBaseURL().endsWith("/") ?  fileNameString.substring(1) : fileNameString), "", "");
 			}
 		});

@@ -213,7 +213,6 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 						.getByKey(SmartLock.BIKE_PLATE_NUMBER,
 								cyclingOrder.getBikePlateNumber())
 						.getBikeTypeId());
-		// 以后还需要考虑优惠
 		map.put("time", cyclingOrder.getCyclingContinousSec().toString());
 		map.put("price", cyclingOrder.getOrderAmmount().toString());
 		map.put("pricePerHalfHour", bikeType.getHalfhourAmmount().toString());

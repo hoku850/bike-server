@@ -229,4 +229,6 @@ public interface ControllerMapping {
 	
 	//测试
 	String TEST_BASE = ADMIN_BASE + "test";
+	String TEST_SAVE_SMARTLOCK = "testSaveSmartLock";
+	String TEST_SAVE_USER = "testSaveUser";
 }

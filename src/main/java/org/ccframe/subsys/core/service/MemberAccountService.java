@@ -176,7 +176,7 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 				if(list2!=null && list2.size()>0) {
 					ChargeOrder chargeOrder = list2.get(0);
 					chargeOrder.setChargeOrderStatCode(ChargeOrderStatCodeEnum.REFUND_SUCCESS.toCode());
-					chargeOrder.setOrgId(logId);
+					chargeOrder.setMemberAccountLogId(logId);
 					chargeOrder.setRefundFinishTime(new Date());
 					SpringContextHelper.getBean(ChargeOrderService.class).save(chargeOrder);
 				}

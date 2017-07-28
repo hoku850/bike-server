@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +33,7 @@ import org.ccframe.commons.util.BusinessException;
 import org.ccframe.commons.util.WebContextHolder;
 import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
+import org.ccframe.subsys.bike.domain.code.ValidateCodeStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.service.CyclingOrderSearchService;
@@ -63,7 +66,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 
 	private static final String USER_IMPORT_TEMPLATE_FILE_NAME = "userImport.xls";
 	private static Map<String, String> validateCodeMap = new HashMap<String, String>();
-	
+	private static Timer timer = new Timer();
 	private Map<String, Double> importStatusMap = new ConcurrentHashMap<String, Double>();
 	
 	/**
@@ -555,19 +558,27 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 	 * @author lqz
 	 * update by lzh
 	 */
-	public static String getValidateCode(String loginId) {
-//		String validateCode = (int)((Math.random()*9+1)*100000)+"";
+	public static String getValidateCode(final String loginId) {
 		String validateCode = Double.toString(Math.random()).substring(2, 8);
 		validateCodeMap.put(loginId, validateCode);
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				validateCodeMap.remove(loginId);
+			}
+		}, 60 * 1000); //测试时间 10秒
 		return validateCode;
 	}
 
-	public static boolean Validate(String loginId, String validateCode) {
+	public static ValidateCodeStatCodeEnum Validate(String loginId, String validateCode) {
 //		return true;
-		if(validateCodeMap.get(loginId).equals(validateCode)){
-			return true;
+		String code = validateCodeMap.get(loginId);
+		if(code == null){
+			return ValidateCodeStatCodeEnum.TIMEOUT;
+		} else if(code.equals(validateCode)){
+			return ValidateCodeStatCodeEnum.PASS;
 		} else {
-			return false;
+			return ValidateCodeStatCodeEnum.ERROR;
 		}
 	}
 

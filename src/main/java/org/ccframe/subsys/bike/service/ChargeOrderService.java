@@ -20,8 +20,12 @@ import org.ccframe.subsys.bike.domain.code.PaymentTypeCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
 import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.repository.ChargeOrderRepository;
+import org.ccframe.subsys.core.domain.entity.MemberAccount;
 import org.ccframe.subsys.core.domain.entity.Org;
+import org.ccframe.subsys.core.domain.entity.User;
+import org.ccframe.subsys.core.service.MemberAccountSearchService;
 import org.ccframe.subsys.core.service.OrgSearchService;
+import org.ccframe.subsys.core.service.UserSearchService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +35,7 @@ public class ChargeOrderService extends BaseService<ChargeOrder,java.lang.Intege
 	@Transactional(readOnly=true)
 	public String doExport(Integer orgId) throws IOException {
 		//生成一个EXCEL导入文件到TEMP,并且文件名用UUID
-    	String filePathString = WebContextHolder.getWarPath() + File.separator + Global.EXCEL_EXPORT_TEMPLATE_DIR + File.separator + "chargeOrderListExcel.xls";//"war/exceltemplate/goodsInfListExcel.xls";
+    	String filePathString = WebContextHolder.getWarPath() + File.separator + Global.EXCEL_EXPORT_TEMPLATE_DIR + File.separator + Global.EXCEL_EXPORT_CHARGE_ORDER;//"war/exceltemplate/goodsInfListExcel.xls";
         
     	ListExcelWriter writer = new ListExcelWriter(filePathString);   //GWT.getHostPageBaseURL()+     
         List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
@@ -48,68 +52,73 @@ public class ChargeOrderService extends BaseService<ChargeOrder,java.lang.Intege
 			Map<String, Object> data = new HashMap<String, Object>();
 			data.put(ChargeOrder.CHARGE_ORDER_ID, chargeOrder.getChargeOrderId());
 			data.put(ChargeOrder.CHARGE_ORDER_NUM, chargeOrder.getChargeOrderNum());
-			data.put(ChargeOrder.USER_ID, chargeOrder.getUserId());
-			data.put(ChargeOrder.MEMBER_ACCOUNT_ID, chargeOrder.getMemberAccountId());
+			
+			User user = SpringContextHelper.getBean(UserSearchService.class).getById(chargeOrder.getUserId());
+			if (user != null) data.put(User.LOGIN_ID, user.getLoginId());
+			
+			MemberAccount memberAccount = SpringContextHelper.getBean(MemberAccountSearchService.class).getById(chargeOrder.getMemberAccountId());
+			if (memberAccount != null) {
+				user = SpringContextHelper.getBean(UserSearchService.class).getById(memberAccount.getUserId());
+				if (user != null) data.put(ChargeOrder.MEMBER_ACCOUNT_ID, user.getUserNm());
+			}
 			data.put(ChargeOrder.MEMBER_ACCOUNT_LOG_ID, chargeOrder.getMemberAccountLogId());
 			
 			Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(chargeOrder.getOrgId());
-			if (org != null) {
-				data.put(Org.ORG_ID, org.getOrgNm());
-			}
+			if (org != null) data.put(Org.ORG_ID, org.getOrgNm());
 			
 			switch (PaymentTypeCodeEnum.fromCode(chargeOrder.getPaymentTypeCode())) {
 				case ALIPAY:
-					data.put("paymentTypeCodeStr", "支付宝");
+					data.put(ChargeOrder.PAYMENT_TYPE_CODE, "支付宝");
 					break;
 				case WECHAT:
-					data.put("paymentTypeCodeStr", "微信");
+					data.put(ChargeOrder.PAYMENT_TYPE_CODE, "微信");
 					break;
 				case UNIONPAY:
-					data.put("paymentTypeCodeStr", "中国银联");
+					data.put(ChargeOrder.PAYMENT_TYPE_CODE, "中国银联");
 					break;
 				default:
-					data.put("paymentTypeCodeStr", "NULL");
+					data.put(ChargeOrder.PAYMENT_TYPE_CODE, "NULL");
 					break;
 			}
 			
-			data.put("paymentTransactionalNumber", chargeOrder.getPaymentTransactionalNumber());
-			data.put("chargeAmmount", chargeOrder.getChargeAmmount());
+			data.put(ChargeOrder.PAYMENT_TRANSACTIONAL_NUMBER, chargeOrder.getPaymentTransactionalNumber());
+			data.put(ChargeOrder.CHARGE_AMMOUNT, chargeOrder.getChargeAmmount());
 			
 			switch (ChargeOrderStatCodeEnum.fromCode(chargeOrder.getChargeOrderStatCode())) {
 				case UNPAID:
-					data.put("chargeOrderStatCodeStr", "待支付");
+					data.put(ChargeOrder.CHARGE_ORDER_STAT_CODE, "待支付");
 					break;
 				case CHARGE_SUCCESS:
-					data.put("chargeOrderStatCodeStr", "充值成功");
+					data.put(ChargeOrder.CHARGE_ORDER_STAT_CODE, "充值成功");
 					break;
 				case CHARGE_FAILED:
-					data.put("chargeOrderStatCodeStr", "充值失败");
+					data.put(ChargeOrder.CHARGE_ORDER_STAT_CODE, "充值失败");
 					break;
 				case REFUNDING:
-					data.put("chargeOrderStatCodeStr", "退款中");
+					data.put(ChargeOrder.CHARGE_ORDER_STAT_CODE, "退款中");
 					break;
 				case REFUND_SUCCESS:
-					data.put("chargeOrderStatCodeStr", "退款成功");
+					data.put(ChargeOrder.CHARGE_ORDER_STAT_CODE, "退款成功");
 					break;
 				case REFUND_FAILED:
-					data.put("chargeOrderStatCodeStr", "退款失败");
+					data.put(ChargeOrder.CHARGE_ORDER_STAT_CODE, "退款失败");
 					break;
 				default:
-					data.put("chargeOrderStatCodeStr", "NULL");
+					data.put(ChargeOrder.CHARGE_ORDER_STAT_CODE, "NULL");
 					break;
 			}
 
-			data.put("createTimeStr", chargeOrder.getCreateTimeStr());
-			data.put("chargeFinishTimeStr", chargeOrder.getChargeFinishTimeStr());
-			data.put("refundFinishTimeStr", chargeOrder.getRefundFinishTimeStr());
+			data.put(ChargeOrder.CREATE_TIME_STR, chargeOrder.getCreateTimeStr());
+			data.put(ChargeOrder.CHARGE_FINISH_TIME_STR, chargeOrder.getChargeFinishTimeStr());
+			data.put(ChargeOrder.REFUND_FINISH_TIME_STR, chargeOrder.getRefundFinishTimeStr());
 			
 			dataList.add(data);
 		}
-		String fileName =  "temp/" + UUID.randomUUID() + ".xls";
-     	String outFileName = WebContextHolder.getWarPath() +"/"+ fileName;
+		String fileName = UUID.randomUUID() + Global.EXCEL_EXPORT_POSTFIX;
+     	String outFileName = WebContextHolder.getWarPath() + File.separator + Global.TEMP_DIR + File.separator + fileName;
         writer.fillToFile(dataList, outFileName);
      	
-		return JsonBinder.buildNormalBinder().toJson(fileName);
+		return JsonBinder.buildNormalBinder().toJson(Global.TEMP_DIR + "/" + fileName);
 	}
 	
 	/**

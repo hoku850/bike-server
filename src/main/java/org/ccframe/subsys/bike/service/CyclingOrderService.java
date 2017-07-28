@@ -172,11 +172,11 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			data.put(CyclingOrder.ORDER_AMMOUNT, cyclingOrder.getOrderAmmount());
 			dataList.add(data);
 		}
-		String fileName = Global.EXCEL_EXPORT_TEMP_DIR + UUID.randomUUID() + Global.EXCEL_EXPORT_POSTFIX;
-     	String outFileName = WebContextHolder.getWarPath() + File.separator + fileName;
+		String fileName = UUID.randomUUID() + Global.EXCEL_EXPORT_POSTFIX;
+     	String outFileName = WebContextHolder.getWarPath() + File.separator + Global.TEMP_DIR + File.separator + fileName;
         writer.fillToFile(dataList, outFileName);
      	
-		return JsonBinder.buildNormalBinder().toJson(fileName);
+		return JsonBinder.buildNormalBinder().toJson(Global.TEMP_DIR + "/" + fileName);
 	}
 	
 	private String lngLatFormat(Double lng, Double lat) {
@@ -250,6 +250,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		return list2;
 	}
 
+
 	/**
 	 * @author zjm
 	 */
@@ -259,9 +260,11 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderService.class).getById(cyclingOrderId);
 		BigDecimal result = new BigDecimal(cyclingOrder.getCyclingDistanceMeter()).divide(new BigDecimal(AppConstant.EVERY_KM), MathContext.DECIMAL32);
 		Double km = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-		BigDecimal result2 = new BigDecimal(cyclingOrder.getCyclingContinousSec()).divide(new BigDecimal(AppConstant.EVERY_MIN), MathContext.DECIMAL32);
-		Double min = result2.setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
+
+		long min = cyclingOrder.getCyclingContinousSec() / AppConstant.EVERY_MIN;
 		
+		double burnCalories = this.countBurnCalories(cyclingOrder.getCyclingDistanceMeter());
+		double reduceEmissions = burnCalories * 2.7;
 		//不含计算，只是指定格式
 		DecimalFormat df = new DecimalFormat("#0.00");  
 		String orderAmmount = df.format(cyclingOrder.getOrderAmmount());
@@ -286,6 +289,8 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		map.put(AppConstant.START_POS, startPos);
 		map.put(AppConstant.END_POS, endPos);
 		map.put(AppConstant.BIKE_NUMBER, bikeNumber);
+		map.put(AppConstant.BURN_CALORIES, ""+burnCalories);
+		map.put(AppConstant.REDUCE_EMISSIONS, ""+reduceEmissions);
 
 		return map;
 	}
@@ -307,7 +312,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			long min = sec / AppConstant.EVERY_MIN;
 			System.out.println("开始时间" + cyclingOrder.getStartTime());
 			System.out.println("已骑行" + min + "分钟");
-			//写死 每半小时支付0.5元
+			
 			Integer count = (int) (min/AppConstant.EVERY_HALF_HOUR) + 1;
 			//Integer count = (int) (31/30.0);
 			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder.getSmartLockId());
@@ -365,7 +370,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder.getStartTime(), new Date());
 			long min = sec / AppConstant.EVERY_MIN;
 			System.out.println("已骑行" + min + "分钟");
-			//写死 每半小时支付0.5元
+			
 			Integer count = (int) (min/AppConstant.EVERY_HALF_HOUR) + 1;
 			//Integer count = (int) (31/30.0);
 			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder.getSmartLockId());
@@ -486,20 +491,26 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		for (CyclingOrder cyclingOrder : list) { //TODO Fly 1.更改为数据库运算？ 2.米的问题
 			cyclingDistace += cyclingOrder.getCyclingDistanceMeter();
 		}
-		map.put("item0", cyclingDistace.toString());
-		map.put("item1", Double.toString((cyclingDistace / 16) * 413.27));
+//		map.put("item0", new DecimalFormat("#.00").format(cyclingDistace * 0.001));
+		map.put("item0", String.format("%.2f",cyclingDistace * 0.001));
+		map.put("item1", Double.toString(this.countBurnCalories(cyclingDistace)));
 		map.put("item2", SpringContextHelper.getBean(MemberAccountSearchService.class).findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), user.getOrgId(), AccountTypeCodeEnum.PRE_DEPOSIT.toCode()).get(0).getAccountValue().toString());
 		map.put("item3", Integer.toString(list.size()));
 		map.put("item4", "0");
 		
 		return map;
 	}
+	
+	public double countBurnCalories(Integer distance) {
+		return (distance / 16.0) * 413.27 / 1000.0;
+	}
+	
 	/**
 	 * 骑行
 	 * @author lzh
 	 */
 	public String orderPay(Integer orderId, MemberUser user){
-		CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderService.class).getById(orderId);
+		CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderSearchService.class).getById(orderId);
 		cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.PAY_FINISH.toCode());
 		MemberAccount memberAccount = SpringContextHelper.getBean(MemberAccountSearchService.class).findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), user.getOrgId(), AccountTypeCodeEnum.PRE_DEPOSIT.toCode()).get(0);
 		//构造并添加账户日志
@@ -518,7 +529,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		//设置用户数值
 		memberAccount.setAccountValue(memberAccountLog.getAfterValue());
 		//保存数据
-		SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
+		SpringContextHelper.getBean(CyclingOrderSearchService.class).save(cyclingOrder);
 		SpringContextHelper.getBean(MemberAccountService.class).save(memberAccount);
 		SpringContextHelper.getBean(MemberAccountLogService.class).save(memberAccountLog);
 		
@@ -611,5 +622,16 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		WebsocketEndPoint.sendMessageToUser(cyclingOrder.getUserId(),new TextMessage("success"));
 		
 		return cyclingOrder.getCyclingOrderId();
+	}
+
+	public String lunxun() {
+		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
+	    if(list!=null && list.size()>0 && list.get(0).getCyclingOrderStatCode()
+	    		.equals(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode())) {
+	    	return "success";
+	    }
+		//System.out.println("轮询返回：fail");
+		return "fail";
 	}
 }

@@ -57,11 +57,13 @@ public interface Global {
 	
 	// EXCEL导出使用
 	String UPLOAD_DIR = "upload";
+	String TEMP_DIR = "temp";
+	
 	String EXCEL_EXPORT_TEMPLATE_DIR = "exceltemplate";
-	String EXCEL_EXPORT_TEMP_DIR = "temp/";
 	String EXCEL_EXPORT_POSTFIX = ".xls";
 	String EXCEL_EXPORT_CYCLING_ORDER = "cyclingOrderListExcel" + EXCEL_EXPORT_POSTFIX;
 	String EXCEL_EXPORT_SMART_LOCK = "smartLockListExcel" + EXCEL_EXPORT_POSTFIX;
+	String EXCEL_EXPORT_CHARGE_ORDER = "chargeOrderListExcel" + EXCEL_EXPORT_POSTFIX;
 	
 	// 单位
 	String KM = " km";

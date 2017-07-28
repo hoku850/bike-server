@@ -11,9 +11,11 @@ import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
+import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.domain.entity.UserToRepairRecord;
 import org.ccframe.subsys.bike.dto.CyclingOrderListReq;
@@ -22,22 +24,14 @@ import org.ccframe.subsys.bike.search.CyclingOrderSearchRepository;
 import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.OrgService;
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchType;
 import org.ccframe.subsys.core.service.UserService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
-import org.elasticsearch.search.aggregations.metrics.sum.Sum;
-import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -161,19 +155,19 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 	/**
 	 * @author lzh
 	 */
-	public Map<String, String> getOrderPayDetail(User user, Integer orgId) {
+	public Map<String, String> getOrderPayDetail(MemberUser memberUser) {
 		final int TO_REPAIR_WAIT_TIME = 60 * 1000 * 3;// 3分钟转换成毫秒
 		Map<String, String> map = new HashMap<String, String>();
 		// 查询未完成的唯一订单
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.USER_ID,
-				user.getUserId()));
+				memberUser.getUserId()));
 		boolQueryBuilder.must(QueryBuilders.termQuery(
 				CyclingOrder.CYCLING_ORDER_STAT_CODE,
 				CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode()));
 		boolQueryBuilder.must(QueryBuilders.termQuery(
 				CyclingOrder.ORG_ID,
-				orgId));
+				memberUser.getOrgId()));
 		Iterable<CyclingOrder> content = this.getRepository().search(
 				boolQueryBuilder);
 		CyclingOrder cyclingOrder;
@@ -188,14 +182,14 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 				.getTime()) < TO_REPAIR_WAIT_TIME) {
 			UserToRepairRecord userToRepairRecord = SpringContextHelper
 					.getBean(UserToRepairRecordSearchService.class)
-					.getLatestUserToRepairRecord(user.getUserId(),
+					.getLatestUserToRepairRecord(memberUser.getUserId(),
 							cyclingOrder.getBikePlateNumber());
 			if (userToRepairRecord != null
 					&& userToRepairRecord.getToRepairTime().getTime() > cyclingOrder
 							.getStartTime().getTime()) {
 				Double subAmmount = cyclingOrder.getOrderAmmount() * -1.0;
 
-				discount.put("报修金额减免", subAmmount);
+				discount.put(AppConstant.TO_REPAIR_DREE, subAmmount);
 
 				cyclingOrder.setOrderAmmount(0.00);
 				this.save(cyclingOrder);

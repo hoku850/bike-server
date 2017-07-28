@@ -19,8 +19,6 @@ import org.ccframe.commons.data.ImportDataCheckUtil;
 import org.ccframe.commons.data.ListExcelReader;
 import org.ccframe.commons.data.ListExcelWriter;
 import org.ccframe.commons.helper.SpringContextHelper;
-import org.ccframe.commons.jpaquery.Criteria;
-import org.ccframe.commons.jpaquery.Restrictions;
 import org.ccframe.commons.util.BusinessException;
 import org.ccframe.commons.util.JsonBinder;
 import org.ccframe.commons.util.WebContextHolder;
@@ -51,7 +49,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		
 		SmartLock dbSmartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, smartLock.getLockerHardwareCode());
 		if(dbSmartLock != null){
-			if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock.getLockerHardwareCode() != smartLock.getLockerHardwareCode()))){
+			if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (!dbSmartLock.getSmartLockId().equals(smartLock.getSmartLockId())))){
 				throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "硬件编码重复！！！" });
 			}
 		}
@@ -59,7 +57,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		if(StringUtils.isNotBlank(smartLock.getImeiCode())){
 			SmartLock dbSmartLock1 = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.IMEI_CODE, smartLock.getImeiCode());
 			if(dbSmartLock1 != null){
-				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock1.getImeiCode() != smartLock.getImeiCode()))){
+				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (!dbSmartLock1.getSmartLockId().equals(smartLock.getSmartLockId())))){
 					throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "IMEI码重复！！！" });
 				}
 			}
@@ -68,7 +66,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		if(StringUtils.isNotBlank(smartLock.getMacAddress())){
 			SmartLock dbSmartLock1 = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.MAC_ADDRESS, smartLock.getMacAddress());
 			if(dbSmartLock1 != null){
-				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock1.getMacAddress() != smartLock.getMacAddress()))){
+				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (!dbSmartLock1.getSmartLockId().equals(smartLock.getSmartLockId())))){
 					throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "MAC地址重复！！！" });
 				}
 			}
@@ -77,7 +75,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		if(StringUtils.isNotBlank(smartLock.getBikePlateNumber())){
 			SmartLock dbSmartLock1 = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.BIKE_PLATE_NUMBER, smartLock.getBikePlateNumber());
 			if(dbSmartLock1 != null){
-				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (dbSmartLock1.getBikePlateNumber() != smartLock.getBikePlateNumber()))){
+				if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (!dbSmartLock1.getSmartLockId().equals(smartLock.getSmartLockId())))){
 					throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "单车车牌号重复！！！" });
 				}
 			}
@@ -87,15 +85,15 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		
 	}
 
-	@Transactional(readOnly=true)
-	public Integer countSmartLockOfAgent(Integer agentId) {
-		List<SmartLock> list = this.getRepository().findAll(new Criteria<SmartLock>().add(Restrictions.eq(SmartLock.ORG_ID, agentId)));
-		if (list != null) {
-			return list.size();
-		} else {
-			return 0;
-		}
-	}
+//	@Transactional(readOnly=true)
+//	public Integer countSmartLockOfAgent(Integer agentId) {
+//		List<SmartLock> list = this.getRepository().findAll(new Criteria<SmartLock>().add(Restrictions.eq(SmartLock.ORG_ID, agentId)));
+//		if (list != null) {
+//			return list.size();
+//		} else {
+//			return 0;
+//		}
+//	}
 
 	@Transactional
 	public void decideDeleteById(Integer smartLockId) {

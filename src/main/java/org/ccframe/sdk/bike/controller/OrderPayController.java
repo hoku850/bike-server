@@ -6,9 +6,9 @@ import org.ccframe.client.ControllerMapping;
 import org.ccframe.client.Global;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.WebContextHolder;
+import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.service.CyclingOrderSearchService;
 import org.ccframe.subsys.bike.service.CyclingOrderService;
-import org.ccframe.subsys.core.domain.entity.User;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,22 +21,22 @@ public class OrderPayController {
 
 	@RequestMapping(value = ControllerMapping.GET_PAY_DATA)
 	@ResponseBody
-	public Map<String, String> getPayData(Integer orderId, Integer orgId) {
+	public Map<String, String> getPayData() {
 
-		User user = (User) WebContextHolder.getSessionContextStore()
+		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore()
 				.getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
 		if (DEBUG) {
 			if(user == null || user.getUserId() == null){
-				user = new User();
+				user = new MemberUser();
 				user.setUserId(50002);
 			}
 				return SpringContextHelper.getBean(
 						CyclingOrderSearchService.class).getOrderPayDetail(
-						user, orgId);
+						user);
 
 		} else {
 			return SpringContextHelper.getBean(CyclingOrderSearchService.class)
-					.getOrderPayDetail(user, orgId);
+					.getOrderPayDetail(user);
 		}
 
 	}
@@ -44,21 +44,15 @@ public class OrderPayController {
 	@RequestMapping(value = ControllerMapping.ORDER_PAY_SUBMIT)
 	@ResponseBody
 	public String orderPaySubmit(Integer orderId) {
-		User user;
+		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore()
+		.getServerValue(Global.SESSION_LOGIN_MEMBER_USER);;
 		if (DEBUG) {
-
-			user = (User) WebContextHolder.getSessionContextStore()
-					.getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
 			if (user == null || user.getUserId() == null) {
-				user = new User();
+				user = new MemberUser();
 				user.setUserId(50002);
 			}
 
-		} else {
-			user = (User) WebContextHolder.getSessionContextStore()
-					.getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
 		}
-
 		return SpringContextHelper.getBean(CyclingOrderService.class).orderPay(
 				orderId, user);
 

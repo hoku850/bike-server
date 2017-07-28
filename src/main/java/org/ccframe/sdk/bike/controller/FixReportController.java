@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.sencha.gxt.legacy.client.mvc.Controller;
 
 @RestController
 @RequestMapping(ControllerMapping.MEMBER_FIXREPORT_BASE)

@@ -33,36 +33,29 @@ import com.sencha.gxt.widget.core.client.form.Radio;
 import com.sencha.gxt.widget.core.client.info.Info;
 
 @Singleton
-public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockGrant> implements Editor<SmartLockGrant>{
+public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockGrant>{
 
 	interface SmartLockGrantUiBinder extends UiBinder<Component, SmartLockGrantWindowView> {}
-	interface SmartLockGrantDriver extends SimpleBeanEditorDriver<SmartLockGrant, SmartLockGrantWindowView> {}
 	
 	private static SmartLockGrantUiBinder uiBinder = GWT.create(SmartLockGrantUiBinder.class);
-	private SmartLockGrantDriver driver = GWT.create(SmartLockGrantDriver.class);
 	
 	private ToggleGroup toggle = new ToggleGroup();
 	
 	@UiField
 	CcVBoxLayoutContainer vBoxLayoutContainer;
 	
-	@Editor.Ignore
 	@UiField
 	Radio LockerHardwareCodeScope;
 	
-	@Editor.Ignore
 	@UiField
 	Radio bikePlateNumberPrefix;
 	
-	@Editor.Ignore
 	@UiField
 	CcTextField startLockerHardwareCode;
 	
-	@Editor.Ignore
 	@UiField
 	CcTextField endLockerHardwareCode;
 	
-	@Editor.Ignore
 	@UiField
 	CcTextField bikePlateNumberPrefixText;
 	
@@ -112,8 +105,6 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 			}
 			
 		});
-		driver.initialize(this);
-		driver.edit(new SmartLockGrant());
 		return widget;
 	}
 
@@ -130,15 +121,15 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 	@UiHandler("grantButton")
 	public void handleGrantClick(SelectEvent e){
 		if(FormPanelHelper.isValid(vBoxLayoutContainer, false)){
-			final SmartLockGrant smartLockGrant = driver.flush();
+			final SmartLockGrant smartLockGrant = new SmartLockGrant();
 			if(LockerHardwareCodeScope.getValue()==true){
 				smartLockGrant.setStartLockerHardwareCode(startLockerHardwareCode.getValue());
 				smartLockGrant.setEndLockerHardwareCode(endLockerHardwareCode.getValue());
 			}else{
 				smartLockGrant.setBikePlateNumberPrefixText(bikePlateNumberPrefixText.getValue());
 			}
-//			smartLockGrant.setOrgId(orgId.getValue());
-//			smartLockGrant.setBikeTypeId(bikeTypeId.getValue());
+			smartLockGrant.setOrgId(orgId.getValue());
+			smartLockGrant.setBikeTypeId(bikeTypeId.getValue());
 			final TextButton button = ((TextButton)(e.getSource()));
 //			button.disable();
 			

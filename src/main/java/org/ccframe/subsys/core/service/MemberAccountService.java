@@ -29,6 +29,7 @@ import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.dto.MemberAccountRowDto;
 import org.ccframe.subsys.core.repository.MemberAccountRepository;
+import org.omg.CORBA.UserException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
@@ -219,7 +220,7 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 			chargeOrder.setUserId(user.getUserId());
 			chargeOrder.setMemberAccountId(memberAccount.getMemberAccountId());
 			chargeOrder.setMemberAccountLogId(logId);
-			chargeOrder.setOrgId(1);
+			chargeOrder.setOrgId(user.getOrgId());
 			chargeOrder.setPaymentTransactionalNumber(AppConstant.PAYMENT_TRANSACTIONAL_NUMBER);
 			chargeOrder.setChargeAmmount(deposit);
 			chargeOrder.setChargeOrderStatCode(ChargeOrderStatCodeEnum.CHARGE_SUCCESS.toCode());

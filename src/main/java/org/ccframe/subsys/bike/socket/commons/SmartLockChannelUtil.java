@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.codec.binary.Hex;
 import org.ccframe.commons.util.CRC16Util;
 import org.ccframe.commons.util.UtilDateTime;
+import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.processor.NettyServerProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,17 +24,17 @@ import io.netty.channel.Channel;
  */
 public class SmartLockChannelUtil {
 	
-	private static final int MAX_CONNECTION=10000; /* 默认10000个长连接 */
+	private static final int MAX_CONNECTION = 10000; /* 默认10000个长连接 */
 	
 	private static final int READ_TIMEOUT_MILLIS=15*1000; /* 15秒内将数据发出去 */
 
 	private static final int UNLOCKING_SIZE = 1000;
 	
-	private static LinkedHashMap<Long, Boolean> openMessageMap = new LinkedHashMap<Long, Boolean>(){ //开锁消息队列
+	private static LinkedHashMap<Long, OpenMessage> openMessageMap = new LinkedHashMap<Long, OpenMessage>(){ //开锁消息队列
 
 		private static final long serialVersionUID = -657968168039482524L;
 
-		protected boolean removeEldestEntry(Map.Entry<Long, Boolean> eldest) {
+		protected boolean removeEldestEntry(Map.Entry<Long, OpenMessage> eldest) {
 		    // 当前记录数大于设置的最大的记录数，删除最旧记录（即最近访问最少的记录）
 		    return size() > UNLOCKING_SIZE;
 		}
@@ -69,7 +70,7 @@ public class SmartLockChannelUtil {
 		return chanelMap.get(lockerHardwareCode) != null;
 	}
 	
-	public static boolean tryUnlock(Long lockerHardwareCode){
+	public static boolean tryUnlock(Long lockerHardwareCode, MemberUser memberUser){
 		Channel channel = chanelMap.get(lockerHardwareCode);
 		if(channel != null){
 			//开锁请求 , byte[] bytes、、TODO
@@ -102,12 +103,10 @@ public class SmartLockChannelUtil {
 				channel.writeAndFlush(NettyServerProcessor.BOUND_DELIMITER.array());
 
 				synchronized(channel){
-					Boolean locked = openMessageMap.get(lockerHardwareCode);
-					if(locked == null){ //开锁完毕
-						openMessageMap.put(lockerHardwareCode, false); //将打开超时也标记为OTHER_ERROR，biaoshi
-						channel.wait(READ_TIMEOUT_MILLIS); //等开锁回复命令notifyall
-					}
-					return openMessageMap.remove(lockerHardwareCode); //开锁成功返回true，失败或READ_TIMEOUT_MILLIS超时返回false
+					//标记开锁，等待回复
+					openMessageMap.put(lockerHardwareCode, new OpenMessage(memberUser, false)); //将打开超时也标记为OTHER_ERROR
+					channel.wait(READ_TIMEOUT_MILLIS); //等开锁回复命令notifyall
+					return openMessageMap.remove(lockerHardwareCode).isUnLocked(); //开锁成功返回true，失败或READ_TIMEOUT_MILLIS超时返回false
 				}
 			} catch (Throwable tr) {
 				logger.error("", tr);
@@ -120,10 +119,24 @@ public class SmartLockChannelUtil {
 	public static void notifyUnlocked(Long lockerHardwareCode){
 		Channel channel = chanelMap.get(lockerHardwareCode);
 		if(channel != null && openMessageMap.get(lockerHardwareCode) != null){
-			openMessageMap.put(lockerHardwareCode, true);
+			openMessageMap.get(lockerHardwareCode).setUnLocked(true);
 			synchronized(channel){
 				channel.notifyAll(); //通知开锁线程继续
 			}
+		}
+	}
+	
+	/**
+	 * 返回开锁中的用户
+	 * @param lockerHardwareCode
+	 * @return
+	 */
+	public static MemberUser getLockerUser(Long lockerHardwareCode){
+		OpenMessage openMessage = openMessageMap.get(lockerHardwareCode);
+		if(openMessage != null){
+			return openMessage.getMemberUser();
+		}else{
+			return null;
 		}
 	}
 }

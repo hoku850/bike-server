@@ -43,5 +43,6 @@ public interface AppConstant {
 	Double EVERY_HALF_HOUR = 30.0;
 	String FIRST_POS = "firstPos";
 	String POLYLINE_PATH = "polylinePath";
+	String TO_REPAIR_DREE = "保修金额减免";
 	
 }

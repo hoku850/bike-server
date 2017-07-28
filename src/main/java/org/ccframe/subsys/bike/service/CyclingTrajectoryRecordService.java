@@ -14,7 +14,6 @@ import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.domain.entity.CyclingTrajectoryRecord;
 import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.repository.CyclingTrajectoryRecordRepository;
-import org.ccframe.subsys.core.domain.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

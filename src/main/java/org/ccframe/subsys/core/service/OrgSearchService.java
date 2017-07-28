@@ -11,7 +11,7 @@ import org.ccframe.subsys.bike.domain.code.ChargeOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
-import org.ccframe.subsys.bike.service.ChargeOrderService;
+import org.ccframe.subsys.bike.service.ChargeOrderSearchService;
 import org.ccframe.subsys.bike.service.CyclingOrderService;
 import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.dto.OrgListReq;
@@ -40,18 +40,28 @@ public class OrgSearchService extends BaseSearchService<Org, Integer, OrgSearchR
 
 		List<OrgRowDto> resultList = new ArrayList<OrgRowDto>();
 		for(Org org : page.getContent()){
+			//this.SumQuery(queryBuilder, fieldNames)
+			
 			OrgRowDto orgRowDto = new OrgRowDto();
 			BeanUtils.copyProperties(org, orgRowDto);
+
 			// 查询出充值总金额
-			List<ChargeOrder> chargeOrders = SpringContextHelper.getBean(ChargeOrderService.class).findByKey(ChargeOrder.ORG_ID, org.getOrgId());
-			Double chargeTotalValue = 0.0;
-			for (ChargeOrder chargeOrder : chargeOrders) {
-				// 充值成功的状态
-				if (ChargeOrderStatCodeEnum.CHARGE_SUCCESS.toCode().equals(chargeOrder.getChargeOrderStatCode())) {
-					chargeTotalValue += chargeOrder.getChargeAmmount();
-				}
-			}
-			orgRowDto.setChargeTotalValue(chargeTotalValue);
+			boolQueryBuilder = QueryBuilders.boolQuery();
+			boolQueryBuilder.must(QueryBuilders.termQuery(ChargeOrder.CHARGE_ORDER_STAT_CODE, ChargeOrderStatCodeEnum.CHARGE_SUCCESS.toCode()));
+			boolQueryBuilder.must(QueryBuilders.termQuery(ChargeOrder.ORG_ID, org.getOrgId()));
+			orgRowDto.setChargeTotalValue(SpringContextHelper.getBean(ChargeOrderSearchService.class).sumQuery(boolQueryBuilder, ChargeOrder.CHARGE_AMMOUNT));
+
+			//TODO yjz完成其它查询
+			
+//			List<ChargeOrder> chargeOrders = SpringContextHelper.getBean(ChargeOrderService.class).findByKey(ChargeOrder.ORG_ID, org.getOrgId());
+//			Double chargeTotalValue = 0.0;
+//			for (ChargeOrder chargeOrder : chargeOrders) {
+//				// 充值成功的状态
+//				if (ChargeOrderStatCodeEnum.CHARGE_SUCCESS.toCode().equals(chargeOrder.getChargeOrderStatCode())) {
+//					chargeTotalValue += chargeOrder.getChargeAmmount();
+//				}
+//			}
+//			orgRowDto.setChargeTotalValue(chargeTotalValue);
 			// 查询出骑行订单
 			List<CyclingOrder> cyclingOrders = SpringContextHelper.getBean(CyclingOrderService.class).findByKey(CyclingOrder.ORG_ID, org.getOrgId());
 			Double cyclingIncome = 0.0;

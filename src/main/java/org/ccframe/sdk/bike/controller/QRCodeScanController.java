@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.ccframe.client.ControllerMapping;
@@ -11,23 +12,26 @@ import org.ccframe.client.Global;
 import org.ccframe.client.ResGlobal;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.BusinessException;
+import org.ccframe.commons.util.WebContextHolder;
+import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.AgentApp;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
+import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.service.AgentAppService;
 import org.ccframe.subsys.bike.service.CyclingOrderSearchService;
 import org.ccframe.subsys.bike.service.SmartLockService;
 import org.ccframe.subsys.bike.socket.commons.SmartLockChannelUtil;
+import org.ccframe.subsys.core.domain.entity.User;
+import org.ccframe.subsys.core.service.UserSearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 @RestController
 @RequestMapping(ControllerMapping.QR_CODE_SCAN_BASE)
@@ -36,9 +40,10 @@ public class QRCodeScanController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	@RequestMapping(value = Global.ID_BINDER_PATH)
-	public void browserScan(@PathVariable(Global.ID_BINDER_ID) java.lang.Long lockerHardwareCode, HttpServletResponse response) {
+	public void browserScan(@PathVariable(Global.ID_BINDER_ID) java.lang.Long lockerHardwareCode, HttpServletResponse response, HttpServletRequest request) {
 		//测试用，转到appScan逻辑
-		appScan(lockerHardwareCode);
+
+		appScan(lockerHardwareCode, request);
 		if(true)return;
 		
 		//查查锁是哪个运营商的
@@ -51,7 +56,8 @@ public class QRCodeScanController {
 	}
 
 	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.POST) //APP扫码采用POST方式开锁
-	public String appScan(@PathVariable(Global.ID_BINDER_ID) java.lang.Long lockerHardwareCode){
+	public String appScan(@PathVariable(Global.ID_BINDER_ID) java.lang.Long lockerHardwareCode,
+			HttpServletRequest httpRequest){
 		if(! SmartLockChannelUtil.isChannelActive(lockerHardwareCode)){ //锁不在线
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车出现故障，请更换一辆单车"});
 		}
@@ -63,14 +69,25 @@ public class QRCodeScanController {
 		}
 		
 		//如果是在骑行中，那么不能开锁
-		//TODO 杰中补充完成，如果最后一个锁相关的订单是骑行中，那么不能关锁。throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车正在被人使用，请更换一辆单车"});
+		//TODO 杰中补充完成，如果最后一个锁相关的订单是骑行中，那么不能开锁。throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车正在被人使用，请更换一辆单车"});
 		SmartLock smartLock1 = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, lockerHardwareCode);
 		List<CyclingOrder> listCyclingOrder = SpringContextHelper.getBean(CyclingOrderSearchService.class).findBySmartLockIdOrderByStartTimeDesc(smartLock1.getSmartLockId());
 		if(listCyclingOrder.size()>0&&listCyclingOrder.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode())){
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车正在被人使用，请更换一辆单车"});
 		}
 		
-		if(! SmartLockChannelUtil.tryUnlock(lockerHardwareCode)){ //开锁并等待完成
+		String phoneNumber = httpRequest.getParameter("phoneName");
+		String IMEI = httpRequest.getParameter("IMEI");
+		String orgId = httpRequest.getParameter("orgId");
+		List<User> users = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(phoneNumber, IMEI);
+		MemberUser memberUser = null;
+		 if(users!=null && users.size()>0) {
+			 //自动登录
+			 memberUser = new MemberUser(users.get(0).getUserId(), Integer.valueOf(orgId));
+			 
+		 }
+		
+		if(memberUser != null && ! SmartLockChannelUtil.tryUnlock(lockerHardwareCode, memberUser)){ //开锁并等待完成
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"开锁信息未同步成功，如已经开锁请骑行，如未开启请重试或更换一辆单车"});
 		}
 		
@@ -84,7 +101,7 @@ public class QRCodeScanController {
 		logger.info("智能锁 {} 开锁成功", lockerHardwareCode);
 		System.out.println("----智能锁开锁成功-----");
 		
-		return "success";
+		return AppConstant.SUCCESS;
 	}
 
 }

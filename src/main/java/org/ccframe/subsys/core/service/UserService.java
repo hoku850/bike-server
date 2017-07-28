@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -61,7 +62,8 @@ import com.google.gwt.i18n.client.NumberFormat;
 public class UserService extends BaseService<User, Integer, UserRepository> implements BatchImportSupport<User>{
 
 	private static final String USER_IMPORT_TEMPLATE_FILE_NAME = "userImport.xls";
-
+	private static Map<String, String> validateCodeMap = new HashMap<String, String>();
+	
 	private Map<String, Double> importStatusMap = new ConcurrentHashMap<String, Double>();
 	
 	/**
@@ -463,7 +465,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 
 		List<User> list = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(phoneNumber, iMEI);
 		User user = null;
-		MemberUser memberUser = null;
+		MemberUser memberUser = new MemberUser();
 		if (list != null && list.size() > 0) {
 			user = list.get(0);
 			List<MemberAccount> listAccounts = SpringContextHelper.getBean(MemberAccountSearchService.class).findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), orgId, AccountTypeCodeEnum.DEPOSIT.toCode());
@@ -490,6 +492,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 			user = SpringContextHelper.getBean(UserService.class).save(user);
 			this.createAccount(user, orgId);
 		}
+		memberUser = new MemberUser();
 		memberUser.setUserId(user.getUserId());
 		memberUser.setOrgId(orgId);
 		WebContextHolder.getSessionContextStore().setServerValue(Global.SESSION_LOGIN_MEMBER_USER, memberUser);
@@ -546,6 +549,26 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 		 }
 		
 		return state;
+	}
+	
+	/**
+	 * @author lqz
+	 * update by lzh
+	 */
+	public static String getValidateCode(String loginId) {
+//		String validateCode = (int)((Math.random()*9+1)*100000)+"";
+		String validateCode = Double.toString(Math.random()).substring(2, 8);
+		validateCodeMap.put(loginId, validateCode);
+		return validateCode;
+	}
+
+	public static boolean Validate(String loginId, String validateCode) {
+//		return true;
+		if(validateCodeMap.get(loginId).equals(validateCode)){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

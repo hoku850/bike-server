@@ -8,6 +8,7 @@ import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.BusinessException;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
+import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.domain.entity.SmartLockStat;
 import org.ccframe.subsys.bike.service.CyclingOrderService;
@@ -18,11 +19,7 @@ import org.ccframe.subsys.bike.socket.commons.SmartLockChannelUtil;
 import org.ccframe.subsys.bike.socket.tcpobj.CommandFlagEnum;
 import org.ccframe.subsys.bike.socket.tcpobj.DataBlockTypeEnum;
 import org.ccframe.subsys.core.domain.entity.MemberAccount;
-import org.ccframe.subsys.core.domain.entity.Org;
-import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.MemberAccountService;
-import org.ccframe.subsys.core.service.UserService;
-import org.springframework.http.converter.json.SpringHandlerInstantiator;
 import org.springframework.stereotype.Component;
 
 /**
@@ -60,31 +57,35 @@ public class OpenLockController implements ISocketController {
 		System.out.println("异常信息="+Byte.toString(lockError));
 		
 		//更新锁状态
+		Date nowDate = new Date();
 		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, String.valueOf(lockerHardwareCode));
 		if(smartLock != null){
 			SmartLockStat smartLockStat = SpringContextHelper.getBean(SmartLockStatService.class).getByKey(SmartLockStat.SMART_LOCK_ID, smartLock.getSmartLockId());
 			if(smartLockStat != null){
-				smartLockStat.setLastLocationUpdTime(date);
+				smartLockStat.setLastLocationUpdTime(nowDate);
 				smartLockStat.setLockSwitchStatCode(Byte.toString(lockStatus));
 				SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
 			}
 		}
 		
 		//创建新的骑行订单
-		MemberAccount memberAccount = SpringContextHelper.getBean(MemberAccountService.class).getByKey(MemberAccount.USER_ID, userId);
-		if(memberAccount != null){
+		MemberUser memberUser = SmartLockChannelUtil.getLockerUser(lockerHardwareCode);
+		//TODO 金明处理订单
+
+		if(memberUser != null){
 			CyclingOrder cyclingOrder = new CyclingOrder();
-			cyclingOrder.setUserId((int)requestDataMap.get(DataBlockTypeEnum.USER_ID));
-			cyclingOrder.setOrgId(memberAccount.getOrgId());
+			cyclingOrder.setUserId(memberUser.getUserId());
+			cyclingOrder.setOrgId(memberUser.getOrgId());
 			cyclingOrder.setSmartLockId(smartLock.getSmartLockId());
 			cyclingOrder.setBikePlateNumber(smartLock.getBikePlateNumber());
-			cyclingOrder.setStartTime(date);
+			cyclingOrder.setStartTime(nowDate);
 			cyclingOrder.setStartLocationLng(39.54);//天安门经纬度
 			cyclingOrder.setStartLocationLat(116.23);
 			cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode());
 			cyclingOrder.setCyclingContinousSec(0);
 			cyclingOrder.setOrderAmmount(0.00);
-			
+			cyclingOrder.setCyclingDistanceMeter(0);
+
 			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 		}
 		

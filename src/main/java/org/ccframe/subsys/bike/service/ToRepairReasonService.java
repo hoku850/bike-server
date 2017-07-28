@@ -4,9 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.ccframe.subsys.bike.domain.entity.BikeLockedStat;
 import org.ccframe.subsys.bike.domain.entity.ToRepairReason;
-import org.ccframe.subsys.bike.repository.BikeLockedStatRepository;
 import org.ccframe.subsys.bike.repository.ToRepairReasonRepository;
 import org.ccframe.commons.base.BaseService;
 import org.ccframe.commons.helper.SpringContextHelper;

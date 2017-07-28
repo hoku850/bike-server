@@ -7,8 +7,6 @@ import org.ccframe.subsys.bike.domain.entity.SmartLockStat;
 import org.ccframe.subsys.bike.search.SmartLockStatSearchRepository;
 import org.springframework.stereotype.Service;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
 @Service
 public class SmartLockStatSearchService extends BaseSearchService<SmartLockStat, Integer, SmartLockStatSearchRepository> {
 

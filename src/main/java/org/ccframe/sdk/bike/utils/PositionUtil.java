@@ -8,8 +8,6 @@ import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.sdk.bike.dto.Position;
 import org.ccframe.subsys.bike.domain.entity.CyclingTrajectoryRecord;
 import org.ccframe.subsys.bike.service.CyclingTrajectoryRecordSearchService;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.domain.Sort.Order;
 
 /**
  * @author zjm

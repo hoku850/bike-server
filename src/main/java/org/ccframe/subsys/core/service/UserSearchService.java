@@ -33,7 +33,7 @@ public class UserSearchService extends BaseSearchService<User, Integer, UserSear
 	public ClientPage<UserRowDto> findUserList(UserListReq userListReq, int offset, int limit) {
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		if(StringUtils.isNotBlank(userListReq.getLoginId())){
-			boolQueryBuilder.must(QueryBuilders.matchQuery(User.LOGIN_ID, userListReq.getLoginId()));
+			boolQueryBuilder.must(QueryBuilders.termQuery(User.LOGIN_ID, userListReq.getLoginId()));
 		}
 		if(StringUtils.isNotBlank(userListReq.getUserNm())){
 			MatchQueryBuilder builder = QueryBuilders.matchQuery(User.USER_NM, userListReq.getUserNm());

@@ -5,21 +5,20 @@ import java.util.Date;
 import org.ccframe.client.Global;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.WebContextHolder;
+import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.core.domain.entity.MemberAccountLog;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.MemberAccountLogService;
-import org.ccframe.subsys.core.service.MemberAccountService;
 
 public class SaveLogUtil {
 	public static Integer saveLog(Integer memberAccount, Double preVaule, Double afterVaule, Double changeVaule, String reason){
-		
-		Integer orgId = 2;
-		User user = (User) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+
+		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
 		MemberAccountLog memberAccountLog = new MemberAccountLog();
 		memberAccountLog.setUserId(user.getUserId());
 		memberAccountLog.setMemberAccountId(memberAccount);
 		memberAccountLog.setOperationManId(user.getUserId());
-		memberAccountLog.setOrgId(orgId);
+		memberAccountLog.setOrgId(user.getOrgId());
 		memberAccountLog.setPrevValue(preVaule);
 		memberAccountLog.setReason(reason);
 		memberAccountLog.setChangeValue(changeVaule);

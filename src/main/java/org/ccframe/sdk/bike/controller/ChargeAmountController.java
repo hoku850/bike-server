@@ -1,6 +1,5 @@
 package org.ccframe.sdk.bike.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.ccframe.client.ControllerMapping;

@@ -33,11 +33,13 @@ import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.domain.entity.SmartLockStat;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;
 import org.ccframe.subsys.bike.repository.CyclingOrderRepository;
+import org.ccframe.subsys.core.domain.code.AccountTypeCodeEnum;
 import org.ccframe.subsys.core.domain.entity.MemberAccount;
 import org.ccframe.subsys.core.domain.entity.MemberAccountLog;
 import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.service.MemberAccountLogService;
+import org.ccframe.subsys.core.service.MemberAccountSearchService;
 import org.ccframe.subsys.core.service.MemberAccountService;
 import org.ccframe.subsys.core.service.OrgService;
 import org.ccframe.subsys.core.service.UserService;
@@ -393,7 +395,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 				
 				StringBuffer polylinePath = PositionUtil.getPolylinePath(cyclingOrder2.getCyclingOrderId());
 				String firstPos = "";
-				if(!polylinePath.equals("")) {
+				if(!polylinePath.toString().equals("")) {
 					polylinePath = polylinePath.insert(polylinePath.length()-1, ",["+nowPos+"]");
 					firstPos = polylinePath.substring(1, polylinePath.indexOf("]")+1);
 				} else {
@@ -455,31 +457,30 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	/**
 	 * @author lzh
 	 */
-	public Map<String, String> getMenuData(User user, Integer orgId){
+	public Map<String, String> getMenuData(MemberUser user){
 		Map<String, String> map = new HashMap<String, String>();
 		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class)
-			.findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), orgId);
+			.findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
 		Integer cyclingDistace = 0;
-		for (CyclingOrder cyclingOrder : list) {
+		for (CyclingOrder cyclingOrder : list) { //TODO Fly 1.更改为数据库运算？ 2.米的问题
 			cyclingDistace += cyclingOrder.getCyclingDistanceMeter();
 		}
 		map.put("item0", cyclingDistace.toString());
 		map.put("item1", Double.toString((cyclingDistace / 16) * 413.27));
-		map.put("item2", SpringContextHelper.getBean(MemberAccountService.class).
-				getByKey(MemberAccount.USER_ID, user.getUserId()).getAccountValue().toString());
+		map.put("item2", SpringContextHelper.getBean(MemberAccountSearchService.class).findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), user.getOrgId(), AccountTypeCodeEnum.PRE_DEPOSIT.toCode()).get(0).getAccountValue().toString());
 		map.put("item3", Integer.toString(list.size()));
 		map.put("item4", "0");
 		
 		return map;
 	}
 	/**
+	 * 骑行
 	 * @author lzh
 	 */
-	public String orderPay(Integer orderId, User user){
+	public String orderPay(Integer orderId, MemberUser user){
 		CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderService.class).getById(orderId);
 		cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.PAY_FINISH.toCode());
-//		User user = SpringContextHelper.getBean(UserService.class).getByLoginId(loginId);
-		MemberAccount memberAccount = SpringContextHelper.getBean(MemberAccountService.class).getByKey(MemberAccount.USER_ID, user.getUserId());
+		MemberAccount memberAccount = SpringContextHelper.getBean(MemberAccountSearchService.class).findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), user.getOrgId(), AccountTypeCodeEnum.PRE_DEPOSIT.toCode()).get(0);
 		//构造并添加账户日志
 //		MemberAccountLog memberAccountLog = SpringContextHelper.getBean(MemberAccountLog.class);
 		MemberAccountLog memberAccountLog = new MemberAccountLog();
@@ -510,12 +511,12 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	@Transactional
 	public void updateCyclingOrderAndLockStat(Integer smartLockId, Double lng, Double lat, Integer lockBattery) {
 		//更新骑行订单记录
+		//List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class)
+				//.findBySmartLockIdAndCyclingOrderStatCodeOrderByStartTimeDesc(smartLockId, CyclingOrderStatCodeEnum.ON_THE_WAY.toCode());
+		//测试smartLockId为60001
+		
 		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class)
 				.findBySmartLockIdAndCyclingOrderStatCodeOrderByStartTimeDesc(smartLockId, CyclingOrderStatCodeEnum.ON_THE_WAY.toCode());
-		//测试smartLockId为60001
-		/*List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class)
-				.findBySmartLockIdAndCyclingOrderStatCodeOrderByStartTimeDesc(60001, CyclingOrderStatCodeEnum.ON_THE_WAY.toCode());*/
-
 		if(list!=null && list.size()>0) {
 			
 			CyclingOrder cyclingOrder = list.get(0);
@@ -527,15 +528,13 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder.getStartTime(), nowDate);
 			long min = sec / 60;
 			System.out.println("已骑行" + min + "分钟");
-
 			Integer count = (int) (min/30.0) + 1;
-
+			
 			//获取半小时金额
 			SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(smartLockId);
 			BikeType bikeType = SpringContextHelper.getBean(BikeTypeService.class).getByKey(BikeType.BIKE_TYPE_ID, smartLock.getBikeTypeId());
 			Double halfhourAmmount = bikeType.getHalfhourAmmount();
 			BigDecimal result = new BigDecimal(halfhourAmmount).multiply(new BigDecimal(count), MathContext.DECIMAL32);
-
 			Double payMoney = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 			
 			cyclingOrder.setCyclingContinousSec((int)sec);

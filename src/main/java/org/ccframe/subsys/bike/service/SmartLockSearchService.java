@@ -30,6 +30,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer, SmartLockSearchRepository>{
@@ -84,7 +85,7 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 		}
 		boolQueryBuilder.must(rangeQuerybuilder);
 		if(StringUtils.isNotBlank(smartLockGrant.getBikePlateNumberPrefixText())){
-			PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery(SmartLock.BIKE_PLATE_NUMBER, smartLockGrant.getBikePlateNumberPrefixText());
+			PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery(SmartLock.BIKE_PLATE_NUMBER, smartLockGrant.getBikePlateNumberPrefixText().toLowerCase());
 			boolQueryBuilder.must(prefixQueryBuilder);
 		}
 		boolQueryBuilder.mustNot(QueryBuilders.termQuery(SmartLock.SMART_LOCK_STAT_CODE, SmartLockStatCodeEnum.UNPRODUCE.toCode()));
@@ -96,6 +97,7 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 		return totalLock;
 	}
 	
+	@Transactional
 	public SmartLockGrantDto grant(SmartLockGrant smartLockGrant) {
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		RangeQueryBuilder rangeQuerybuilder = QueryBuilders.rangeQuery(SmartLock.LOCKER_HARDWARE_CODE);
@@ -115,32 +117,35 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 		}
 		boolQueryBuilder.mustNot(QueryBuilders.termQuery(SmartLock.SMART_LOCK_STAT_CODE, SmartLockStatCodeEnum.UNPRODUCE.toCode()));
 		
-		Page<SmartLock> smartLockPage = this.getRepository().search(boolQueryBuilder, null);
+		//一次只能发放10000把，有待改进
+		Page<SmartLock> smartLockPage = this.getRepository().search(boolQueryBuilder, new OffsetBasedPageRequest(0, 10000, new Order(Direction.ASC, SmartLock.SMART_LOCK_ID)));
 		smartLockGrantDto.setTotalLock(smartLockPage.getTotalElements());
+		System.out.println("totalpage"+smartLockPage.getTotalPages());
+		List<SmartLock> list =  smartLockPage.getContent();
+		System.out.println("list"+smartLockPage.getSize());
+		System.out.println("listSize"+list.size());
 		
-		List<SmartLock> list = smartLockPage.getContent();
 		for (SmartLock smartLock : list) {
 			smartLock.setSmartLockStatCode(SmartLockStatCodeEnum.GRANTED.toCode());
 			smartLock.setOrgId(smartLockGrant.getOrgId());
 			smartLock.setBikeTypeId(smartLockGrant.getBikeTypeId());
-			if(smartLock != null){
-				SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
-				
-				SmartLockStat smartLockStat = new SmartLockStat();
+			SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
+			
+			//更新锁状态表
+			SmartLockStat smartLockStat = SpringContextHelper.getBean(SmartLockStatService.class).getByKey(SmartLockStat.SMART_LOCK_ID, smartLock.getSmartLockId());
+			if(smartLockStat == null){
+				smartLockStat = new SmartLockStat();
 				smartLockStat.setSmartLockId(smartLock.getSmartLockId());
-				smartLockStat.setOrgId(smartLock.getOrgId());
-				smartLockStat.setLockLng(39.54);//天安门经纬度
-				smartLockStat.setLockLat(116.23);
-//				smartLockStat.setLockBattery(lockLng);
-				smartLockStat.setLockSwitchStatCode(LockSwitchStatCodeEnum.NO_USE.toCode());
-				smartLockStat.setIfRepairIng(BoolCodeEnum.NO.toCode());
-//				smartLockStat.setLastLocationUpdTime(lockLng);
-				SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
 			}
-
-			Org org = SpringContextHelper.getBean(OrgService.class).getById(smartLockGrant.getOrgId());
-			smartLockGrantDto.setOrgNm(org.getOrgNm());
+			smartLockStat.setOrgId(smartLock.getOrgId());
+			smartLockStat.setLockLng(39.54);//天安门经纬度
+			smartLockStat.setLockLat(116.23);
+			smartLockStat.setLockSwitchStatCode(LockSwitchStatCodeEnum.NO_USE.toCode());
+			smartLockStat.setIfRepairIng(BoolCodeEnum.NO.toCode());
+			SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
 		}
+		Org org = SpringContextHelper.getBean(OrgService.class).getById(smartLockGrant.getOrgId());
+		smartLockGrantDto.setOrgNm(org.getOrgNm());
 		return smartLockGrantDto;
 	}
 }

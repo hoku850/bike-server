@@ -47,7 +47,7 @@ public class ByteEscapeHelper {
 	}
 	
 	/**
-	 * 转义解码.(优化完善中...)
+	 * 转义解码.
 	 * @param escapedBytes
 	 * @return
 	 */
@@ -88,11 +88,6 @@ public class ByteEscapeHelper {
 		return Bytes.toArray(returnData);
 	}
 	
-	/**
-	 * 转义解码.
-	 * @param escapedBytes
-	 * @return
-	 */
 //	public byte[] unescapeBytes(byte[] escapedBytes){
 //		
 //		List<Byte> returnData = new ArrayList<Byte>();

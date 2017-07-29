@@ -9,9 +9,9 @@ import org.ccframe.sdk.map.domain.AMapData;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.domain.entity.CyclingTrajectoryRecord;
 import org.ccframe.subsys.bike.domain.entity.UserToRepairRecord;
-import org.ccframe.subsys.bike.service.CyclingOrderService;
+import org.ccframe.subsys.bike.service.CyclingOrderSearchService;
 import org.ccframe.subsys.bike.service.CyclingTrajectoryRecordService;
-import org.ccframe.subsys.bike.service.UserToRepairRecordService;
+import org.ccframe.subsys.bike.service.UserToRepairRecordSearchService;
 
 public class AMapApi {
 	
@@ -59,7 +59,7 @@ public class AMapApi {
 			CyclingTrajectoryRecord record = list.get(list.size() / 2);
 			aMapData.setCenterPosition(lngLatFormat(record.getRecordLocationLng(), record.getRecordLocationLat()));
 		} else {
-			CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderService.class).getById(id);
+			CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderSearchService.class).getById(id);
 			String startPosition = lngLatFormat(cyclingOrder.getStartLocationLng(), cyclingOrder.getStartLocationLat());
 			String endPosition = lngLatFormat(cyclingOrder.getEndLocationLng(), cyclingOrder.getEndLocationLat());
 			
@@ -78,7 +78,7 @@ public class AMapApi {
 	
 	public static AMapData getAMapDataByUserToRepairRecordId(Integer id){
 		AMapData aMapData = new AMapData();
-		UserToRepairRecord userToRepairRecord = SpringContextHelper.getBean(UserToRepairRecordService.class).getById(id);
+		UserToRepairRecord userToRepairRecord = SpringContextHelper.getBean(UserToRepairRecordSearchService.class).getById(id);
 		if (userToRepairRecord != null) {
 			String iconPosition = lngLatFormat(userToRepairRecord.getToRepairLocationLng(), userToRepairRecord.getToRepairLocationLat());
 			aMapData.setIconPosition(iconPosition);

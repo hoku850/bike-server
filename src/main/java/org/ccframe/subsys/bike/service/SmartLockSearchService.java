@@ -22,7 +22,6 @@ import org.ccframe.subsys.bike.search.SmartLockSearchRepository;
 import org.ccframe.subsys.core.domain.code.BoolCodeEnum;
 import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.service.OrgSearchService;
-import org.ccframe.subsys.core.service.OrgService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.PrefixQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -146,7 +145,7 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 			smartLockStat.setIfRepairIng(BoolCodeEnum.NO.toCode());
 			SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
 		}
-		Org org = SpringContextHelper.getBean(OrgService.class).getById(smartLockGrant.getOrgId());
+		Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(smartLockGrant.getOrgId());
 		smartLockGrantDto.setOrgNm(org.getOrgNm());
 		return smartLockGrantDto;
 	}

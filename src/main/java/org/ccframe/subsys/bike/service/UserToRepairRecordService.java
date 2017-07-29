@@ -70,7 +70,7 @@ public class UserToRepairRecordService extends BaseService<UserToRepairRecord,ja
 		SpringContextHelper.getBean(UserToRepairRecordService.class).save(userToRepairRecord);
 		
 		//更新智能锁表记录
-		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(cyclingOrder.getSmartLockId());
+		SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder.getSmartLockId());
 		smartLock.setSmartLockStatCode(SmartLockStatCodeEnum.TO_FIX.toCode());
 		smartLock.setLastUseDate(nowDate);
 		SpringContextHelper.getBean(SmartLockService.class).save(smartLock);

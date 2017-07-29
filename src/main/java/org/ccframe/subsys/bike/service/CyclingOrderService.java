@@ -176,6 +176,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
      	String outFileName = WebContextHolder.getWarPath() + File.separator + Global.TEMP_DIR + File.separator + fileName;
         writer.fillToFile(dataList, outFileName);
      	
+        // URL请求路径
 		return JsonBinder.buildNormalBinder().toJson(Global.TEMP_DIR + "/" + fileName);
 	}
 	
@@ -257,7 +258,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	@Transactional(readOnly=true)
 	public Map<String, Object> getTravelDetail(Integer cyclingOrderId) {
 		
-		CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderService.class).getById(cyclingOrderId);
+		CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderSearchService.class).getById(cyclingOrderId);
 		BigDecimal result = new BigDecimal(cyclingOrder.getCyclingDistanceMeter()).divide(new BigDecimal(AppConstant.EVERY_KM), MathContext.DECIMAL32);
 		Double km = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 
@@ -563,7 +564,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			Integer count = (int) (min/30.0) + 1;
 			
 			//获取半小时金额
-			SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(smartLockId);
+			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(smartLockId);
 			BikeType bikeType = SpringContextHelper.getBean(BikeTypeService.class).getByKey(BikeType.BIKE_TYPE_ID, smartLock.getBikeTypeId());
 			Double halfhourAmmount = bikeType.getHalfhourAmmount();
 			BigDecimal result = new BigDecimal(halfhourAmmount).multiply(new BigDecimal(count), MathContext.DECIMAL32);

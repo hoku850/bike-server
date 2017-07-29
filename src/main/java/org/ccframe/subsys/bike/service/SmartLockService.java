@@ -28,6 +28,7 @@ import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.dto.SmartLockRowDto;
 import org.ccframe.subsys.bike.repository.SmartLockRepository;
 import org.ccframe.subsys.core.domain.entity.Org;
+import org.ccframe.subsys.core.service.OrgSearchService;
 import org.ccframe.subsys.core.service.OrgService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -87,7 +88,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 
 	@Transactional
 	public void decideDeleteById(Integer smartLockId) {
-		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(smartLockId);
+		SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(smartLockId);
 
 		if (SpringContextHelper.getBean(CyclingOrderService.class).getById(smartLock.getBikeTypeId()) == null) {
 			SpringContextHelper.getBean(SmartLockService.class).deleteById(smartLockId);
@@ -302,7 +303,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			data.put(SmartLock.BIKE_PLATE_NUMBER, smartLock.getBikePlateNumber());
 			data.put(SmartLock.ACTIVE_DATE_STR, smartLock.getActiveDateStr());
 
-			Org org = SpringContextHelper.getBean(OrgService.class).getById(smartLock.getOrgId());
+			Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(smartLock.getOrgId());
 			if (org != null) {
 				data.put(SmartLock.ORG_ID, org.getOrgNm());
 			}
@@ -341,11 +342,12 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
      	String outFileName = WebContextHolder.getWarPath() + File.separator + Global.TEMP_DIR + File.separator + fileName;
         writer.fillToFile(dataList, outFileName);
      	
+        // URL地址
 		return JsonBinder.buildNormalBinder().toJson(Global.TEMP_DIR + "/" + fileName);
 	}
 	
 	public void doDesert(SmartLockRowDto selectedRow){
-		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(selectedRow.getSmartLockId());
+		SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(selectedRow.getSmartLockId());
 		smartLock.setSmartLockStatCode(SmartLockStatCodeEnum.DESERTED.toCode());
 		SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
 	}

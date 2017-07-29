@@ -21,7 +21,7 @@ public class AdminUserController{
 
 	@RequestMapping(value = Global.ID_BINDER_PATH)
 	public User getUser(@PathVariable(Global.ID_BINDER_ID) Integer userId) {
-		User user = SpringContextHelper.getBean(UserService.class).getById(userId);
+		User user = SpringContextHelper.getBean(UserSearchService.class).getById(userId);
 		user.setUserPsw(Global.FAKE_PASSWORD);
 		return user;
 	}

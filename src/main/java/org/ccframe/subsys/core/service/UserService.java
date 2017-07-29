@@ -385,7 +385,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 		List<UserRoleRel> userRoleRelList = SpringContextHelper.getBean(UserRoleRelService.class).findByKey(UserRoleRel.ROLE_ID, roleId);
 		List<User> resultList = new ArrayList<User>();
 		for(UserRoleRel userRoleRel: userRoleRelList){
-			resultList.add(this.getById(userRoleRel.getUserId()));
+			resultList.add(SpringContextHelper.getBean(UserSearchService.class).getById(userRoleRel.getUserId()));
 		}
 		return resultList;
 	}

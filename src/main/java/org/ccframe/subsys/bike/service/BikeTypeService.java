@@ -28,7 +28,7 @@ public class BikeTypeService extends BaseService<BikeType, Integer, BikeTypeRepo
 	 */
 	@Transactional
 	public void deleteBikeTypeById(Integer bikeTypeId) {
-		BikeType bikeType = getById(bikeTypeId);
+		BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(bikeTypeId);
 		List<SmartLock> list = SpringContextHelper.getBean(SmartLockService.class).findByKey(SmartLock.BIKE_TYPE_ID, bikeType.getBikeTypeId());
 		if (list == null || list.size() == 0) {
 			SpringContextHelper.getBean(BikeTypeService.class).delete(bikeType);

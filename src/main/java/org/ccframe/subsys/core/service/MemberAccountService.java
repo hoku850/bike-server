@@ -76,8 +76,9 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 		// 用DTO传输
 		MemberAccountRowDto memberAccountRowDto = new MemberAccountRowDto();
 		BeanUtils.copyProperties(memberAccount, memberAccountRowDto);
+		
 		// 查询用户名称
-		User user = SpringContextHelper.getBean(UserService.class).getById(memberAccount.getUserId());
+		User user = SpringContextHelper.getBean(UserSearchService.class).getById(memberAccount.getUserId());
 		memberAccountRowDto.setUserNm(user==null ? null : user.getUserNm());
 		// 查询出机构名称
 		Org org = SpringContextHelper.getBean(OrgService.class).getById(memberAccount.getOrgId());

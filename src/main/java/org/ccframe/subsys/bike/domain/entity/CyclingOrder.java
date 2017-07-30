@@ -34,6 +34,7 @@ public class CyclingOrder implements Serializable{
 	public static final String USER_ID = "userId";
 	public static final String ORG_ID = "orgId";
 	public static final String SMART_LOCK_ID = "smartLockId";
+	public static final String BIKE_TYPE_ID = "bikeTypeId";
 	public static final String BIKE_PLATE_NUMBER = "bikePlateNumber";
 	public static final String START_TIME = "startTime";
 	public static final String START_LOCATION_LNG = "startLocationLng";
@@ -67,6 +68,9 @@ public class CyclingOrder implements Serializable{
 	
 	@Column(name = "SMART_LOCK_ID", nullable = false, length = 10)
 	private java.lang.Integer smartLockId;
+	
+	@Column(name = "BIKE_TYPE_ID", nullable = false, length = 10)
+	private java.lang.Integer bikeTypeId;
 	
 	//elasticsearch 
 	//@Field(type = FieldType.String, analyzer="ik") 
@@ -245,7 +249,14 @@ public class CyclingOrder implements Serializable{
 		return this.orderAmmount;
 	}
 
-	
+	public java.lang.Integer getBikeTypeId() {
+		return bikeTypeId;
+	}
+
+	public void setBikeTypeId(java.lang.Integer bikeTypeId) {
+		this.bikeTypeId = bikeTypeId;
+	}
+
 	public int hashCode() {
 		return new HashCodeBuilder()
 			.append(getCyclingOrderId())

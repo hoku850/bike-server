@@ -72,7 +72,7 @@
 			<toolbar:ToolBar borders="true">
 				<g:Label text="账户管理"/>
 				<toolbar:FillToolItem />
-				<cc:CcLabelValueCombobox ui:field="orgNm" width="128" searchAllText="全部运营商" defaultValue="0" beanName="orgService"/>
+				<cc:CcLabelValueCombobox ui:field="orgCombobox" width="128" searchAllText="全部运营商" defaultValue="0" beanName="orgService"/>
 			</toolbar:ToolBar>
 		</container:child>
 		

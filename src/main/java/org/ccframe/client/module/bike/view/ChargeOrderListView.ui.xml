@@ -44,11 +44,11 @@
 			<toolbar:ToolBar borders="true">
 				<g:Label text="充值订单"/>
 				<button:TextButton text="导 出" ui:field="exportButton" />
-				<cc:CcLabelValueCombobox ui:field="orgNm" width="120" searchAllText="全部运营商" defaultValue="0" beanName="orgService"/>
-				<cc:CcEnumCombobox ui:field="chargeState" width="135" searchAllText="全部状态" default="{UNPAID}" enumTexts="待支付,充值成功,充值失败,退款中,退款成功,退款失败" />
-				<cc:CcEnumCombobox ui:field="payState" width="135" searchAllText="全部支付类型" default="{ALIPAY}" enumTexts="支付宝,微信,中国银联" />
+				<cc:CcLabelValueCombobox ui:field="orgCombobox" width="120" searchAllText="全部运营商" defaultValue="0" beanName="orgService"/>
+				<cc:CcEnumCombobox ui:field="chargeStateCombobox" width="135" searchAllText="全部状态" default="{UNPAID}" enumTexts="待支付,充值成功,充值失败,退款中,退款成功,退款失败" />
+				<cc:CcEnumCombobox ui:field="payStateCombobox" width="135" searchAllText="全部支付类型" default="{ALIPAY}" enumTexts="支付宝,微信,中国银联" />
 				<toolbar:FillToolItem />
-				<form:TextField ui:field="search" allowBlank="true" width="250" emptyText="输入登陆ID/订单号码"/>
+				<form:TextField ui:field="searchField" allowBlank="true" width="250" emptyText="输入登陆ID/订单号码"/>
 				<button:TextButton text="查询" ui:field="searchButton" />
 			</toolbar:ToolBar>
 		</container:child>

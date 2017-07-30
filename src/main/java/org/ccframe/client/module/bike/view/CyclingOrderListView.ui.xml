@@ -65,9 +65,9 @@
 		
 		<container:child layoutData="{toolRow}">
 			<toolbar:ToolBar borders="true">
-				<cc:CcLabelValueCombobox ui:field="orgNm" width="120" searchAllText="全部运营商" defaultValue="0" beanName="orgService"/>
-				<cc:CcLabelValueCombobox ui:field="bikeTypeNm" width="135" searchAllText="全部单车类型" defaultValue="0" beanName="bikeTypeService"/>
-				<cc:CcEnumCombobox ui:field="orderState" width="135" searchAllText="全部订单状态" default="{ON_THE_WAY}" enumTexts="骑行中,骑行完成,支付完成,已报修,锁定中" />
+				<cc:CcLabelValueCombobox ui:field="orgCombobox" width="120" searchAllText="全部运营商" defaultValue="0" beanName="orgService"/>
+				<cc:CcLabelValueCombobox ui:field="bikeTypeCombobox" width="135" searchAllText="全部单车类型" defaultValue="0" beanName="bikeTypeService"/>
+				<cc:CcEnumCombobox ui:field="orderStateCombobox" width="135" searchAllText="全部订单状态" default="{ON_THE_WAY}" enumTexts="骑行中,骑行完成,支付完成,已报修,锁定中" />
 				<toolbar:FillToolItem />
 				<g:Label text="时间范围"/>
 				<cc:CcDateField ui:field="startTime" width="120"  allowBlank="true"/>

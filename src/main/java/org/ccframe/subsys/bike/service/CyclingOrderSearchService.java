@@ -43,20 +43,14 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 		
 		// 过滤运营商
 		Integer orgId = cyclingOrderListReq.getOrgId();
-		if(orgId != null && orgId != 0){
+		if(orgId != null && orgId != Global.COMBOBOX_ALL_VALUE){
 			boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.ORG_ID, orgId));
 		}
 		
 		// 过滤单车类型 -> 找出该单车类型的智能锁，过滤掉
 		Integer typeId = cyclingOrderListReq.getBikeTypeId();
-		if(typeId != null && typeId != 0){
-			List<SmartLock> locks = SpringContextHelper.getBean(SmartLockService.class).findByKey(SmartLock.BIKE_TYPE_ID, typeId);
-			for (SmartLock smartLock : locks) {
-				boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.SMART_LOCK_ID, smartLock.getSmartLockId()));
-			}
-			if (locks.size() == 0) {
-				return new CyclingOrderClientPage<CyclingOrderRowDto>(0, offset / limit, limit, new ArrayList<CyclingOrderRowDto>());
-			}
+		if(typeId != null && typeId != Global.COMBOBOX_ALL_VALUE){
+			boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.BIKE_TYPE_ID, typeId));
 		}
 		
 		// 过滤状态
@@ -70,11 +64,16 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 		builder.lte(cyclingOrderListReq.getEndTime() == null ? Global.MAX_SEARCH_DATE : cyclingOrderListReq.getEndTime());
 		boolQueryBuilder.must(builder);
 
-		// 过滤[登陆ID/硬件编号/车牌号]
+		// 过滤[登陆ID/硬件编号/车牌号]s
 		BoolQueryBuilder shouldQueryBuilder = QueryBuilders.boolQuery();
 		if (StringUtils.isNotBlank(cyclingOrderListReq.getSearchField())) {
-			shouldQueryBuilder.should(QueryBuilders.termQuery(CyclingOrder.USER_ID, cyclingOrderListReq.getSearchField()));
-			shouldQueryBuilder.should(QueryBuilders.termQuery(CyclingOrder.SMART_LOCK_ID, cyclingOrderListReq.getSearchField()));
+			// 登陆ID
+			User user = SpringContextHelper.getBean(UserSearchService.class).getByKey(User.LOGIN_ID, cyclingOrderListReq.getSearchField());
+			if (user != null) shouldQueryBuilder.should(QueryBuilders.termQuery(CyclingOrder.USER_ID, user.getUserId()));
+			// 硬件编号s
+			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, cyclingOrderListReq.getSearchField());
+			if (smartLock != null) shouldQueryBuilder.should(QueryBuilders.termQuery(CyclingOrder.SMART_LOCK_ID, smartLock.getSmartLockId()));
+			
 			shouldQueryBuilder.should(QueryBuilders.termQuery(CyclingOrder.BIKE_PLATE_NUMBER, cyclingOrderListReq.getSearchField()));
 			boolQueryBuilder.must(shouldQueryBuilder);
 		}
@@ -107,11 +106,11 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder.getSmartLockId());
 			if (smartLock != null) {
 				cyclingOrderRowDto.setLockerHardwareCode(smartLock.getLockerHardwareCode());
-				// 查询出单车类型
-				BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(smartLock.getBikeTypeId());
-				if (bikeType != null) {
-					cyclingOrderRowDto.setBikeTypeNm(bikeType.getBikeTypeNm());
-				}
+			}
+			// 查询出单车类型
+			BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(cyclingOrder.getBikeTypeId());
+			if (bikeType != null) {
+				cyclingOrderRowDto.setBikeTypeNm(bikeType.getBikeTypeNm());
 			}
 			resultList.add(cyclingOrderRowDto);
 		}

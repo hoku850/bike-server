@@ -43,7 +43,7 @@
 				<button:TextButton text="添 加" ui:field="addButton" />
 				<button:TextButton text="修 改" ui:field="editButton" />
 				<button:TextButton text="删 除" ui:field="deleteButton" />
-				<cc:CcLabelValueCombobox ui:field="orgId" width="128" searchAllText="全部运营商" defaultValue="0" beanName="orgService"/>
+				<cc:CcLabelValueCombobox ui:field="orgCombobox" width="128" searchAllText="全部运营商" defaultValue="0" beanName="orgService"/>
 				<toolbar:FillToolItem />
 			</toolbar:ToolBar>
 		</container:child>

@@ -24,10 +24,17 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
     public boolean beforeHandshake(ServerHttpRequest request,  
             ServerHttpResponse response, WebSocketHandler wsHandler,  
             Map<String, Object> attributes) throws Exception {  
+ 
         //logger.debug("GOMA ===> Before Handshake"); 
     	ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
+    	
 		HttpSession session = servletRequest.getServletRequest().getSession(false);
 		HttpServletRequest request2 = servletRequest.getServletRequest();
+		//System.out.println("upgrade:"+request.getHeaders().getUpgrade());
+		System.out.println("request:"+request.getHeaders());
+		System.out.println("request2:"+request2.getHeaderNames().toString());
+		System.out.println("request2的Upgrade:"+request2.getHeader("Upgrade")); 
+
 		String IMEI = request2.getParameter("IMEI");
 		String phoneNumber = request2.getParameter("phoneNumber");
 		System.out.println("IMEI："+IMEI+"   phoneNumber:"+phoneNumber);

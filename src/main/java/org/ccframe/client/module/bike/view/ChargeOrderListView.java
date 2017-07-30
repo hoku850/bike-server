@@ -43,16 +43,16 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 	private static ChargeOrderListUiBinder uiBinder = GWT.create(ChargeOrderListUiBinder.class);
 
     @UiField
-    public CcLabelValueCombobox orgNm;
+    public CcLabelValueCombobox orgCombobox;
     
     @UiField
-    public CcEnumCombobox chargeState;
-    
+    public CcEnumCombobox chargeStateCombobox;
+
     @UiField
-    public CcEnumCombobox payState;
+    public CcEnumCombobox payStateCombobox;
     
 	@UiField
-    public TextField search;
+    public TextField searchField;
     
 	@UiHandler("searchButton")
 	public void searchButtonClick(SelectEvent e){
@@ -118,11 +118,11 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
 					chargeOrderListReq.setOrgId(MainFrame.adminUser.getOrgId());
 				} else {
-					chargeOrderListReq.setOrgId(orgNm.getValue());
+					chargeOrderListReq.setOrgId(orgCombobox.getValue());
 				}
-				chargeOrderListReq.setChargeOrderStatCode(chargeState.getValue());
-				chargeOrderListReq.setPaymentTypeCode(payState.getValue());
-				chargeOrderListReq.setSearchText(search.getValue());
+				chargeOrderListReq.setChargeOrderStatCode(chargeStateCombobox.getValue());
+				chargeOrderListReq.setPaymentTypeCode(payStateCombobox.getValue());
+				chargeOrderListReq.setSearchText(searchField.getValue());
 				ClientManager.getChargeOrderClient().findList(chargeOrderListReq, offset, limit, new RestCallback<ClientPage<ChargeOrderRowDto>>(){
 					@Override
 					public void onSuccess(Method method, ClientPage<ChargeOrderRowDto> response) {
@@ -136,13 +136,27 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
-		chargeState.addValueChangeHandler(new ValueChangeHandler<String>() {
+		// 运营商登陆
+		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+			this.orgCombobox.hide();
+			this.columnModel.getColumn(1).setHidden(true);
+		} else {
+			orgCombobox.reset();
+			orgCombobox.setValue(Global.COMBOBOX_ALL_VALUE);
+			orgCombobox.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<Integer> event) {
+					loader.load();
+				}
+			});
+		}
+		chargeStateCombobox.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				loader.load();
 			}
 		});
-		payState.addValueChangeHandler(new ValueChangeHandler<String>() {
+		payStateCombobox.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				loader.load();
@@ -154,20 +168,12 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
-		// 运营商登陆
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
-			this.orgNm.hide();
-			this.columnModel.getColumn(1).setHidden(true);
-		} else {
-			orgNm.setValue(Global.COMBOBOX_ALL_VALUE);
-			orgNm.reset();
-			orgNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-				@Override
-				public void onValueChange(ValueChangeEvent<Integer> event) {
-					loader.load();
-				}
-			});
+		// 重置过滤条件
+		if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
+			orgCombobox.reset();
 		}
-		search.setValue(null);
+		chargeStateCombobox.reset();
+		payStateCombobox.reset();
+		searchField.setValue(null);
 	}
 }

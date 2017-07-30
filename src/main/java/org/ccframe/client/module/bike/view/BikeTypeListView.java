@@ -46,7 +46,7 @@ public class BikeTypeListView extends BaseCrudListView<BikeTypeRowDto> {
 	private static BikeTypeListUiBinder uiBinder = GWT.create(BikeTypeListUiBinder.class);
 
     @UiField
-    public CcLabelValueCombobox orgId;
+    public CcLabelValueCombobox orgCombobox;
     
 	@Override
 	public void handleAddClick(SelectEvent e) {
@@ -121,7 +121,7 @@ public class BikeTypeListView extends BaseCrudListView<BikeTypeRowDto> {
 				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
 					bikeTypeListReq.setOrgId(MainFrame.adminUser.getOrgId());
 				} else {
-					bikeTypeListReq.setOrgId(orgId.getValue());
+					bikeTypeListReq.setOrgId(orgCombobox.getValue());
 				}
 				ClientManager.getBikeTypeClient().findBikeTypeList(bikeTypeListReq, offset, limit, new RestCallback<ClientPage<BikeTypeRowDto>>(){
 					@Override
@@ -136,24 +136,27 @@ public class BikeTypeListView extends BaseCrudListView<BikeTypeRowDto> {
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
+		// 运营商登陆
+		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+			orgCombobox.hide();
+		} else {
+			orgCombobox.reset();
+			orgCombobox.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<Integer> event) {
+					loader.load();
+				}
+			});
+		}
 		return widget;
 	}
 
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
-		// 运营商登陆
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
-			orgId.hide();
-		} else {
-			orgId.setValue(Global.COMBOBOX_ALL_VALUE);
-			orgId.reset();
-			orgId.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-				@Override
-				public void onValueChange(ValueChangeEvent<Integer> event) {
-					loader.load();
-				}
-			});
+		// 总平台登陆 重置下拉框
+		if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
+			orgCombobox.reset();
 		}
 	}
 }

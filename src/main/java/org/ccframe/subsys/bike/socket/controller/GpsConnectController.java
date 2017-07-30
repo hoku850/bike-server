@@ -26,15 +26,20 @@ public class GpsConnectController implements ISocketController {
 	}
 
 	@Override
-	public Map<DataBlockTypeEnum, Object> execute(long lockerHardwareCode, Map<DataBlockTypeEnum, Object> requestDataMap) {
+	public Map<DataBlockTypeEnum, Object> execute(String lockerHardwareCode, Map<DataBlockTypeEnum, Object> requestDataMap) {
 		//TODO 保存锁的状态和电量
 		Double lockLng = (Double)requestDataMap.get(DataBlockTypeEnum.LOCK_LNG);
 		Double lockLat = (Double)requestDataMap.get(DataBlockTypeEnum.LOCK_LAT);
 		Date date = (Date)requestDataMap.get(DataBlockTypeEnum.SYS_TIME);
 //		Integer userId = (Integer)requestDataMap.get(DataBlockTypeEnum.USER_ID);
 		
-		SmartLock smartLock= SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, String.valueOf(lockerHardwareCode));
-		Integer smartLockId = smartLock.getSmartLockId();
+		SmartLock smartLock= SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, lockerHardwareCode);
+		Integer smartLockId = null;
+		if(smartLock != null){
+			smartLockId = smartLock.getSmartLockId();
+		}else{
+			System.out.println("该硬件编号的锁不存在！");
+		}
 		
 		
 		//更新骑行订单经纬度

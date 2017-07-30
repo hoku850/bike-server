@@ -19,7 +19,9 @@ public class LockPackage {
 	
 	private byte version = 0x01;
 	
-	private long lockerHardwareCode;
+//	private long lockerHardwareCode;
+	
+	private String lockerHardwareCode;
 	
 	private BikeTypeCodeEnum bykeTypeCodeEnum;
 	
@@ -54,16 +56,26 @@ public class LockPackage {
 		this.version = version;
 	}
 
-	public long getLockerHardwareCode() {
+//	public long getLockerHardwareCode() {
+//		return lockerHardwareCode;
+//	}
+//
+//	public void setLockerHardwareCode(long lockerHardwareCode) {
+//		this.lockerHardwareCode = lockerHardwareCode;
+//	}
+
+	
+	
+	public BikeTypeCodeEnum getBykeTypeCodeEnum() {
+		return bykeTypeCodeEnum;
+	}
+
+	public String getLockerHardwareCode() {
 		return lockerHardwareCode;
 	}
 
-	public void setLockerHardwareCode(long lockerHardwareCode) {
+	public void setLockerHardwareCode(String lockerHardwareCode) {
 		this.lockerHardwareCode = lockerHardwareCode;
-	}
-
-	public BikeTypeCodeEnum getBykeTypeCodeEnum() {
-		return bykeTypeCodeEnum;
 	}
 
 	public void setBykeTypeEnum(BikeTypeCodeEnum bykeTypeCodeEnum) {

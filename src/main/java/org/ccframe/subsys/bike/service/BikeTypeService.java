@@ -11,6 +11,7 @@ import org.ccframe.commons.cache.CacheEvictBy;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.BusinessException;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
+import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
 import org.ccframe.subsys.bike.repository.BikeTypeRepository;
 import org.ccframe.subsys.core.service.ILabelValueListProvider;
@@ -29,8 +30,9 @@ public class BikeTypeService extends BaseService<BikeType, Integer, BikeTypeRepo
 	@Transactional
 	public void deleteBikeTypeById(Integer bikeTypeId) {
 		BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(bikeTypeId);
-		List<SmartLock> list = SpringContextHelper.getBean(SmartLockService.class).findByKey(SmartLock.BIKE_TYPE_ID, bikeType.getBikeTypeId());
-		if (list == null || list.size() == 0) {
+		List<SmartLock> locks = SpringContextHelper.getBean(SmartLockSearchService.class).findByKey(SmartLock.BIKE_TYPE_ID, bikeType.getBikeTypeId());
+		List<CyclingOrder> orders = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByKey(CyclingOrder.BIKE_TYPE_ID, bikeType.getBikeTypeId());
+		if (locks.size() == 0 && orders.size() == 0) {
 			SpringContextHelper.getBean(BikeTypeService.class).delete(bikeType);
 		} else {
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该类型已被使用，禁止删除"});

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.ccframe.client.Global;
 import org.ccframe.client.ResGlobal;
 import org.ccframe.client.components.LabelValue;
 import org.ccframe.commons.base.BaseService;
@@ -14,10 +16,12 @@ import org.ccframe.subsys.bike.service.BikeTypeService;
 import org.ccframe.subsys.core.domain.code.BoolCodeEnum;
 import org.ccframe.subsys.core.domain.code.UserStatCodeEnum;
 import org.ccframe.subsys.core.domain.entity.Org;
+import org.ccframe.subsys.core.domain.entity.OrgUserRel;
 import org.ccframe.subsys.core.domain.entity.Role;
+import org.ccframe.subsys.core.domain.entity.RoleMenuResRel;
 import org.ccframe.subsys.core.domain.entity.User;
-import org.ccframe.subsys.core.domain.entity.UserRoleRel;
 import org.ccframe.subsys.core.repository.OrgRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +33,21 @@ public class OrgService extends BaseService<Org, Integer, OrgRepository> impleme
 	
 	private static final String ADMIN_DEFAULT_NM = "默认管理员";
 	private static final String LOGIN_NM = "admin";
-	private static final String LOGIN_PASSWORD = "admin";
+	private static final String LOGIN_PASSWORD = "c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec"; //admin的sha-256
 	
 	private static final String DEFAULT_BIKE_TYPR_NM = "标准单车";
 	private static final Double DEFAULT_BIKE_TYPR_HALFHOURAMMOUNT = 0.5;
+	
+	List<Integer> orgDefaultMenuRes = new ArrayList<Integer>();	
+	
+    @Value("${app.data.orgDefaultMenu:}")
+    private void setOrgDefaultMenu(String orgDefaultMenu){
+		for(String rowString: orgDefaultMenu.split(",")){
+	    	if(StringUtils.isNotBlank(orgDefaultMenu)){
+	    		orgDefaultMenuRes.add(Integer.parseInt(rowString.trim()));
+	    	}
+		}
+    }
 	
 	@Override
 	@Transactional(readOnly = true)
@@ -55,6 +70,8 @@ public class OrgService extends BaseService<Org, Integer, OrgRepository> impleme
 	@Transactional
 	public User saveOrUpdateOrg(Org org) {
 		
+		//TODO JIM 做成事件扩展的方式
+		
 		// 新增操作下 同时新增 角色， 用户， 角色用户关系， 单车类型
 		if (org.getOrgId() == null) {
 			
@@ -69,14 +86,38 @@ public class OrgService extends BaseService<Org, Integer, OrgRepository> impleme
 			SpringContextHelper.getBean(this.getClass()).save(org);
 			
 			// 增加一个角色
-			Role role = new Role();
-			role.setRoleNm(ADMIN_DEFAULT_NM);
-			role.setIfTemplate(BoolCodeEnum.NO.toCode());
-			role.setOrgId(org.getOrgId());
-			role = SpringContextHelper.getBean(RoleService.class).save(role);
+			Role defaultRole = new Role();
+			defaultRole.setRoleNm(ADMIN_DEFAULT_NM);
+			defaultRole.setIfTemplate(BoolCodeEnum.NO.toCode());
+			defaultRole.setOrgId(org.getOrgId());
+			SpringContextHelper.getBean(RoleService.class).save(defaultRole);
+
+			//创建角色默认菜单权限
+			RoleMenuResRelService roleMenuResRelService = SpringContextHelper.getBean(RoleMenuResRelService.class);
+			for(Integer menuResId: orgDefaultMenuRes){
+				RoleMenuResRel roleMenuResRel = new RoleMenuResRel();
+				roleMenuResRel.setRoleId(defaultRole.getRoleId());
+				roleMenuResRel.setMenuResId(menuResId);
+				roleMenuResRelService.save(roleMenuResRel);
+			}
+
+			//增加机构模板角色
+			Role orgRole = new Role();
+			orgRole.setRoleNm(org.getOrgNm());
+			orgRole.setIfTemplate(BoolCodeEnum.YES.toCode());
+			orgRole.setOrgId(org.getOrgId());
+			SpringContextHelper.getBean(RoleService.class).save(orgRole);
 			
-			org.setRoleId(role.getRoleId());
-			SpringContextHelper.getBean(this.getClass()).save(org);
+			//创建机构默认菜单
+			for(Integer menuResId: orgDefaultMenuRes){
+				RoleMenuResRel roleMenuResRel = new RoleMenuResRel();
+				roleMenuResRel.setRoleId(orgRole.getRoleId());
+				roleMenuResRel.setMenuResId(menuResId);
+				roleMenuResRelService.save(roleMenuResRel);
+			}
+
+			org.setRoleId(orgRole.getRoleId());
+			SpringContextHelper.getBean(this.getClass()).save(org); //设置机构模板
 			
 			// 增加一个标准单车类型
 			BikeType bikeType = new BikeType();
@@ -86,7 +127,7 @@ public class OrgService extends BaseService<Org, Integer, OrgRepository> impleme
 			SpringContextHelper.getBean(BikeTypeService.class).save(bikeType);
 			
 			// 增加默认管理员 如果找到99都被占用，那么就不返回新建管理员信息（新增完毕不会有弹框）
-			String loginId = createLoginId(org.getOrgId(), 1);
+			String loginId = createLoginId(org.getOrgId(), Global.TRY_START_SEQ);
 			if (loginId != null) {
 				User user = new User();
 				user.setLoginId(loginId);
@@ -98,17 +139,15 @@ public class OrgService extends BaseService<Org, Integer, OrgRepository> impleme
 				user.setUserStatCode(UserStatCodeEnum.NORMAL.toCode());
 				SpringContextHelper.getBean(UserService.class).save(user);
 				
-				UserRoleRel userRoleRel = new UserRoleRel();
-				userRoleRel.setUserId(user.getUserId());
-				userRoleRel.setRoleId(role.getRoleId());
-				SpringContextHelper.getBean(UserRoleRelService.class).save(userRoleRel);
-				userRoleRel = new UserRoleRel();
-				userRoleRel.setUserId(user.getUserId());
-				userRoleRel.setRoleId(ADMIN_ROLE_ID);
-				SpringContextHelper.getBean(UserRoleRelService.class).save(userRoleRel);
+				// 用户机构关系
+				OrgUserRel orgUserRel = new OrgUserRel();
+				orgUserRel.setOrgId(org.getOrgId());
+				orgUserRel.setUserId(user.getUserId());
+				SpringContextHelper.getBean(OrgUserRelService.class).save(orgUserRel);
 				
 				return user;
 			}
+			
 			return null;
 			
 		// 运营商信息修改
@@ -122,13 +161,13 @@ public class OrgService extends BaseService<Org, Integer, OrgRepository> impleme
 	 * 添加机构默认的管理员采用这样的规则：admin+2位机构编号+2位机构用户序列号
 	 */
 	private String createLoginId(Integer orgId, Integer num) {
-		String loginId = LOGIN_NM + String.format("%02d", orgId) + String.format("%02d", num);
+		String loginId = LOGIN_NM + String.format("%02d%02d", orgId, num);
 		User user = SpringContextHelper.getBean(UserService.class).getByKey(User.LOGIN_ID, loginId);
 		if (user == null) {
 			return loginId;
 		} else {
 			num = Integer.parseInt(loginId.substring(loginId.length() - 2, loginId.length()))+ 1;
-			if (num > 99) return null;
+			if (num > Global.TRY_END_SEQ) return null;
 			else return createLoginId(orgId, num);
 		}
 	}

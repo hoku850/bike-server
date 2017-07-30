@@ -78,7 +78,7 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			requestPackage.setType(dataInputStream.readByte());
 			requestPackage.setVersion(dataInputStream.readByte());
 			
-			requestPackage.setLockerHardwareCode(dataInputStream.readLongReverse()); //TODO yjz 修改  readByte 16转10
+			requestPackage.setLockerHardwareCode(dataInputStream.readStringReverse()); //TODO yjz 修改  readByte 16转10
 			
 			byte bykeType = dataInputStream.readByte();
 			switch(bykeType){
@@ -144,7 +144,7 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			responseDataOutputStream.write(requestPackage.getType());
 			responseDataOutputStream.write(requestPackage.getVersion());
 			
-			responseDataOutputStream.writeLongReverse(requestPackage.getLockerHardwareCode()); //TODO yjz 修改   10转16
+			responseDataOutputStream.writeStringReverse(requestPackage.getLockerHardwareCode()); //TODO yjz 修改   10转16
 			
 			
 			
@@ -171,8 +171,11 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			ctx.channel().write(NettyServerProcessor.BOUND_DELIMITER.array());
 			ctx.channel().write(byteEscapeHelper.escapeBytes(responseStream.toByteArray()));		
 			ctx.channel().write(NettyServerProcessor.BOUND_DELIMITER.array());
+			
 			ctx.channel().flush();
-		} catch (Throwable e) {
+			
+			System.out.println("responsePack -> " + requestPackage);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

@@ -3,6 +3,7 @@ package org.ccframe.subsys.bike.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
@@ -30,7 +31,7 @@ public class BikeTypeSearchService extends BaseSearchService<BikeType, Integer, 
 		
 		//过滤运营商ID
 		Integer orgId = bikeTypeListReq.getOrgId();
-		if(orgId != null && orgId != 0){
+		if(orgId != null && orgId != Global.COMBOBOX_ALL_VALUE){
 			boolQueryBuilder.must(QueryBuilders.termQuery(BikeType.ORG_ID, bikeTypeListReq.getOrgId()));
 		}
 		

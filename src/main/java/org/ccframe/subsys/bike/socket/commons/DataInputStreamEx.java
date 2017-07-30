@@ -46,14 +46,11 @@ public class DataInputStreamEx extends DataInputStream {
     public final String readStringReverse() throws IOException {
         readFully(readBuffer, 0, 8);
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder = stringBuilder.append(readBuffer[7] & 255)
-						.append(readBuffer[6] & 255)
-						.append(readBuffer[5] & 255)
-						.append(readBuffer[4] & 255)
-						.append(readBuffer[3] & 255)
-						.append(readBuffer[2] & 255)
-						.append(readBuffer[1] & 255)
-						.append(readBuffer[0] & 255);
+        stringBuilder = stringBuilder.append(String.format("%02d", readBuffer[4] & 255))
+						.append(String.format("%02d", readBuffer[3] & 255))
+						.append(String.format("%02d", readBuffer[2] & 255))
+						.append(String.format("%02d", readBuffer[1] & 255))
+						.append(String.format("%02d", readBuffer[0] & 255));
         return stringBuilder.toString();
     }
     

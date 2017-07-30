@@ -45,10 +45,10 @@ public class MainFrameController{
         if(validateCode == null) {
         	throw new BusinessException(ResGlobal.ERRORS_LOGIN_VALIDATE_CODE, true);
         }
-//        if(!validateCode.equals(sessionCode)){
-//    		WebContextHolder.getSessionContextStore().removeServerValue(Global.SESSION_VALIDATE_CODE);
-//        	throw new BusinessException(ResGlobal.ERRORS_LOGIN_VALIDATE_CODE, true);
-//        }
+        if(!validateCode.equals(sessionCode)){
+    		WebContextHolder.getSessionContextStore().removeServerValue(Global.SESSION_VALIDATE_CODE);
+        	throw new BusinessException(ResGlobal.ERRORS_LOGIN_VALIDATE_CODE, true);
+        }
         User user = SpringContextHelper.getBean(UserService.class).getByMultiLoginIdUserPswOrgId(loginId, userPsw, orgId);
 		if(!BoolCodeEnum.fromCode(user.getIfAdmin()).boolValue()){ //管理员登录需判断用户必须是管理员
 			throw new BusinessException(ResGlobal.ERRORS_LOGIN_PASSWORD, true);

@@ -59,13 +59,13 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 	private static final long ONE_MONTH = (long)30 * 24 * 60 * 60 * 1000;
 	
     @UiField
-    public CcLabelValueCombobox orgNm;
+    public CcLabelValueCombobox orgCombobox;
     
     @UiField
-    public CcLabelValueCombobox bikeTypeNm;  
+    public CcLabelValueCombobox bikeTypeCombobox;  
     
     @UiField
-    public CcEnumCombobox orderState;
+    public CcEnumCombobox orderStateCombobox;
 	
 	@UiField
 	public CcDateField startTime;
@@ -163,10 +163,10 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
 					cyclingOrderListReq.setOrgId(MainFrame.adminUser.getOrgId());
 				} else {
-					cyclingOrderListReq.setOrgId(orgNm.getValue());
+					cyclingOrderListReq.setOrgId(orgCombobox.getValue());
 				}
-				cyclingOrderListReq.setBikeTypeId(bikeTypeNm.getValue());
-				cyclingOrderListReq.setOrderState(orderState.getValue());
+				cyclingOrderListReq.setBikeTypeId(bikeTypeCombobox.getValue());
+				cyclingOrderListReq.setOrderState(orderStateCombobox.getValue());
 				cyclingOrderListReq.setStartTimeStr(startTime.getValue());
 				cyclingOrderListReq.setEndTimeStr(endTime.getValue());
 				cyclingOrderListReq.setSearchField(searchField.getValue());
@@ -188,21 +188,33 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 		// 时间范围默认为当前至前30天
 		startTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date(new Date().getTime() - ONE_MONTH)));
 		endTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date()));
-		orgNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+		// 运营商登陆
+		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+			this.columnModel.getColumn(1).setHidden(true);
+			this.orgCombobox.hide();
+			bikeTypeCombobox.setExtraParam(MainFrame.adminUser.getOrgId().toString());
+			bikeTypeCombobox.reset();
+		} else {
+			orgCombobox.reset();
+			orgCombobox.setValue(Global.COMBOBOX_ALL_VALUE);
+			bikeTypeCombobox.setExtraParam(Integer.toString(Global.COMBOBOX_ALL_VALUE));
+			bikeTypeCombobox.reset();
+			orgCombobox.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<Integer> event) {
+					bikeTypeCombobox.setExtraParam(event.getValue().toString());
+					bikeTypeCombobox.reset();
+					loader.load();
+				}
+			});
+		}
+		bikeTypeCombobox.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Integer> event) {
-				bikeTypeNm.setExtraParam(event.getValue().toString());
-				bikeTypeNm.reset();
 				loader.load();
 			}
 		});
-		bikeTypeNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Integer> event) {
-				loader.load();
-			}
-		});
-		orderState.addValueChangeHandler(new ValueChangeHandler<String>() {
+		orderStateCombobox.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				loader.load();
@@ -223,18 +235,16 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 		// 时间范围默认为当前至前30天
 		startTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date(new Date().getTime() - ONE_MONTH)));
 		endTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date()));
-		// 运营商登陆
+		// 重置下拉框的值
 		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
-			this.columnModel.getColumn(1).setHidden(true);
-			this.orgNm.hide();
-			bikeTypeNm.setExtraParam(MainFrame.adminUser.getOrgId().toString());
-			bikeTypeNm.reset();
+			bikeTypeCombobox.setExtraParam(MainFrame.adminUser.getOrgId().toString());
+			bikeTypeCombobox.reset();
 		} else {
-			orgNm.reset();
-			orgNm.setValue(Global.COMBOBOX_ALL_VALUE);
-			bikeTypeNm.setExtraParam(Integer.toString(Global.COMBOBOX_ALL_VALUE));
-			bikeTypeNm.reset();
+			orgCombobox.reset();
+			bikeTypeCombobox.setExtraParam(Integer.toString(Global.COMBOBOX_ALL_VALUE));
+			bikeTypeCombobox.reset();
 		}
+		orderStateCombobox.reset();
 	}
 	
 	@UiHandler("finishButton")

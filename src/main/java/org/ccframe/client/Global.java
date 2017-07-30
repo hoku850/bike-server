@@ -127,6 +127,10 @@ public interface Global {
 	public static final Double BIEJING_LNG = 116.23;
 	public static final Double BIEJING_LAT = 39.54;
 	
-	public static final String DAY_START_TIME = "00:00:00";
-	public static final String DAY_END_TIME = "23:59:59";
+	public String DAY_START_TIME = "00:00:00";
+	public String DAY_END_TIME = "23:59:59";
+	
+	// 添加机构默认的管理员 2位机构用户序列号
+	public int TRY_START_SEQ = 1;
+	public int TRY_END_SEQ = 99;
 }

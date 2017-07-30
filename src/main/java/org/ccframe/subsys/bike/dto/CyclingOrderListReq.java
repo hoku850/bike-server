@@ -96,7 +96,7 @@ public class CyclingOrderListReq {
 	}
 
 	public void setEndTimeStr(String value) {
-		value.replace(Global.DAY_START_TIME, Global.DAY_END_TIME);
+		value = value.replace(Global.DAY_START_TIME, Global.DAY_END_TIME);
 		if (value != null) {
 			this.setEndTime(UtilDateTimeClient.convertStringToDateTime(value));
 		}

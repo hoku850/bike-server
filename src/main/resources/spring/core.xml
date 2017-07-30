@@ -167,7 +167,7 @@
     <context:component-scan base-package="org.**.service"/>
     <context:component-scan base-package="org.**.processor"/>
 	<context:component-scan base-package="org.**.controller" />
-	<context:component-scan base-package="org.**.websocket" />
+	
 	<mvc:annotation-driven/>
 
     <task:executor id="executor" pool-size="${app.thread.executor.poolsize:2}" /><!-- 处理@Async的  -->
@@ -245,12 +245,12 @@
         <constructor-arg name="client" ref="client"/>
     </bean>
     
-    <!-- <bean id="websocket" class="org.ccframe.sdk.bike.websocket.WebsocketEndPoint"/>  
+    <bean id="websocket" class="org.ccframe.sdk.bike.websocket.WebsocketEndPoint"/>  
 	<websocket:handlers>  
 	    <websocket:mapping path="websocket/mywebsocket.do" handler="websocket"/>  
 	    <websocket:handshake-interceptors>  
 	        <bean class="org.ccframe.sdk.bike.websocket.HandshakeInterceptor"/>  
 	    </websocket:handshake-interceptors>  
-	</websocket:handlers> -->  
-
+	</websocket:handlers>   
+ 
 </beans>

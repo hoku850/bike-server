@@ -16,7 +16,7 @@ public class HeartBitConnectController implements ISocketController {
 	}
 
 	@Override
-	public Map<DataBlockTypeEnum, Object> execute(long lockerHardwareCode, Map<DataBlockTypeEnum, Object> requestDataMap) {
+	public Map<DataBlockTypeEnum, Object> execute(String lockerHardwareCode, Map<DataBlockTypeEnum, Object> requestDataMap) {
 		
 		System.out.println("IMSI码"+requestDataMap.get(DataBlockTypeEnum.IMSI));
 		System.out.println("锁的状态"+Byte.toString((byte)requestDataMap.get(DataBlockTypeEnum.LOCK_STATUS)));

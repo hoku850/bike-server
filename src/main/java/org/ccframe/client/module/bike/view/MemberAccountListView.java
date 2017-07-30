@@ -65,7 +65,7 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 	public TabPanel statusTabPanel;
 	
     @UiField
-    public CcLabelValueCombobox orgNm;
+    public CcLabelValueCombobox orgCombobox;
     
     @UiField
     public TextButton chargeButton;
@@ -126,6 +126,18 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
+		// 运营商登陆
+		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+			orgCombobox.hide();
+		} else {
+			orgCombobox.reset();
+			orgCombobox.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<Integer> event) {
+					loader.load();
+				}
+			});
+		}
 		statusTabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
 			@Override
 			public void onSelection(SelectionEvent<Widget> event) {
@@ -153,17 +165,9 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
-		// 运营商登陆
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
-			orgNm.hide();
-		} else {
-			orgNm.reset();
-			orgNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-				@Override
-				public void onValueChange(ValueChangeEvent<Integer> event) {
-					loader.load();
-				}
-			});
+		// 总平台登陆 重置下拉框
+		if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
+			orgCombobox.reset();
 		}
 	}
 	
@@ -179,7 +183,7 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
 					memberAccountListReq.setOrgId(MainFrame.adminUser.getOrgId());
 				} else {
-					memberAccountListReq.setOrgId(orgNm.getValue());
+					memberAccountListReq.setOrgId(orgCombobox.getValue());
 				}
 				ClientManager.getMemberAccountClient().findList(memberAccountListReq, offset, limit, new RestCallback<ClientPage<MemberAccountRowDto>>(){
 

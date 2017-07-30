@@ -159,10 +159,10 @@ public class MainFrame implements IsWidget{
 		menuItem.addSelectionHandler(new SelectionHandler<Item>(){
 			@Override
 			public void onSelection(SelectionEvent<Item> event) {
-				EventBusUtil.fireEvent(new LoadWindowEvent<Integer, Void, EventHandler>(ViewResEnum.ABOUT_SYSTEM, null, new WindowEventCallback<Void>(){
-					@Override
-					public void onClose(Void returnData) {}
-				}));
+//				EventBusUtil.fireEvent(new LoadWindowEvent<Integer, Void, EventHandler>(ViewResEnum.ABOUT_SYSTEM, null, new WindowEventCallback<Void>(){
+//					@Override
+//					public void onClose(Void returnData) {}
+//				}));
 			}
 		});
 		menu.add(menuItem);

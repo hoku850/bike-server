@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.ccframe.client.Global;
 import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
@@ -33,7 +34,7 @@ public class ChargeOrderSearchService extends BaseSearchService<ChargeOrder, Int
 		
 		// 过滤运营商
 		Integer orgId = chargeOrderListReq.getOrgId();
-		if(orgId != null && orgId != 0){
+		if(orgId != null && orgId != Global.COMBOBOX_ALL_VALUE){
 			boolQueryBuilder.must(QueryBuilders.termQuery(ChargeOrder.ORG_ID, orgId));
 		}
 		// 过滤充值订单状态

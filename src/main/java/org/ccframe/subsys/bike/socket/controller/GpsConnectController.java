@@ -42,10 +42,14 @@ public class GpsConnectController implements ISocketController {
 		CyclingOrder cyclingOrder = cyclingOrderList.get(0);
 		
 		if(date.getTime() - cyclingOrder.getStartTime().getTime() <= 10*1000){//10秒内有新订单
-			cyclingOrder.setStartLocationLng(lockLng);
-			cyclingOrder.setStartLocationLat(lockLat);
-			cyclingOrder.setEndLocationLng(lockLng);
-			cyclingOrder.setEndLocationLat(lockLat);
+			if(lockLat != null){
+				cyclingOrder.setStartLocationLat(lockLat);
+				cyclingOrder.setEndLocationLat(lockLat);
+			}
+			if(lockLng != null){
+				cyclingOrder.setStartLocationLng(lockLng);
+				cyclingOrder.setEndLocationLng(lockLng);
+			}
 			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 		}
 		
@@ -54,8 +58,12 @@ public class GpsConnectController implements ISocketController {
 			SmartLockStat smartLockStat = SpringContextHelper.getBean(SmartLockStatService.class).getByKey(SmartLockStat.SMART_LOCK_ID, smartLock.getSmartLockId());
 			
 			if(smartLockStat != null){
-				smartLockStat.setLockLng(lockLng);
-				smartLockStat.setLockLat(lockLat);
+				if(lockLng != null){
+					smartLockStat.setLockLng(lockLng);
+				}
+				if(lockLat != null){
+					smartLockStat.setLockLat(lockLat);
+				}
 				smartLockStat.setLastLocationUpdTime(date);
 				SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
 			}

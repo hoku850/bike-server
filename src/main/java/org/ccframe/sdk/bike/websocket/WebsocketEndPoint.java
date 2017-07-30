@@ -29,6 +29,7 @@ public class WebsocketEndPoint extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
     	//User user = (User)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
         // TODO Auto-generated method stub
+    	System.out.println("连接成功");
         User user = (User) session.getAttributes().get("user");
         users.put(user.getUserId(),session);
         System.out.println("用户"+user.getUserId()+"正在用车！");

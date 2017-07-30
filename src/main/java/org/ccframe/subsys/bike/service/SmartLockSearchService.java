@@ -121,10 +121,7 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 		//一次只能发放10000把，有待改进
 		Page<SmartLock> smartLockPage = this.getRepository().search(boolQueryBuilder, new OffsetBasedPageRequest(0, 10000, new Order(Direction.ASC, SmartLock.SMART_LOCK_ID)));
 		smartLockGrantDto.setTotalLock(smartLockPage.getTotalElements());
-		System.out.println("totalpage"+smartLockPage.getTotalPages());
 		List<SmartLock> list =  smartLockPage.getContent();
-		System.out.println("list"+smartLockPage.getSize());
-		System.out.println("listSize"+list.size());
 		
 		for (SmartLock smartLock : list) {
 			smartLock.setSmartLockStatCode(SmartLockStatCodeEnum.GRANTED.toCode());

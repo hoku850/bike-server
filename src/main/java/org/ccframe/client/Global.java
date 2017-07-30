@@ -124,6 +124,9 @@ public interface Global {
 	String AGRNT_DEFAULT_PASSWORD = "admin";
 	
 	//天安门经纬度
-	public static final Double BIEJING_LNG = 39.54;
-	public static final Double BIEJING_LAT = 116.23;
+	public static final Double BIEJING_LNG = 116.23;
+	public static final Double BIEJING_LAT = 39.54;
+	
+	public static final String DAY_START_TIME = "00:00:00";
+	public static final String DAY_END_TIME = "23:59:59";
 }

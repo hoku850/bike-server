@@ -2,6 +2,7 @@ package org.ccframe.subsys.bike.dto;
 
 import java.util.Date;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.commons.UtilDateTimeClient;
 
 /**
@@ -95,6 +96,7 @@ public class CyclingOrderListReq {
 	}
 
 	public void setEndTimeStr(String value) {
+		value.replace(Global.DAY_START_TIME, Global.DAY_END_TIME);
 		if (value != null) {
 			this.setEndTime(UtilDateTimeClient.convertStringToDateTime(value));
 		}

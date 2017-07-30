@@ -41,5 +41,20 @@ public class DataInputStreamEx extends DataInputStream {
                 ((readBuffer[1] & 255) <<  8) +
                 ((readBuffer[0] & 255) <<  0));
     }
-
+    
+    //new
+    public final String readStringReverse() throws IOException {
+        readFully(readBuffer, 0, 8);
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder = stringBuilder.append(readBuffer[7] & 255)
+						.append(readBuffer[6] & 255)
+						.append(readBuffer[5] & 255)
+						.append(readBuffer[4] & 255)
+						.append(readBuffer[3] & 255)
+						.append(readBuffer[2] & 255)
+						.append(readBuffer[1] & 255)
+						.append(readBuffer[0] & 255);
+        return stringBuilder.toString();
+    }
+    
 }

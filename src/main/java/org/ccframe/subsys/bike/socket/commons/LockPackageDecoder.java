@@ -77,7 +77,9 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			LockPackage requestPackage = new LockPackage();
 			requestPackage.setType(dataInputStream.readByte());
 			requestPackage.setVersion(dataInputStream.readByte());
-			requestPackage.setLockerHardwareCode(dataInputStream.readLongReverse());
+			
+			requestPackage.setLockerHardwareCode(dataInputStream.readLongReverse()); //TODO yjz 修改  readByte 16转10
+			
 			byte bykeType = dataInputStream.readByte();
 			switch(bykeType){
 				case BLE_GPRS_FLAG:
@@ -141,7 +143,11 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			//开始准备回写数据
 			responseDataOutputStream.write(requestPackage.getType());
 			responseDataOutputStream.write(requestPackage.getVersion());
-			responseDataOutputStream.writeLongReverse(requestPackage.getLockerHardwareCode());
+			
+			responseDataOutputStream.writeLongReverse(requestPackage.getLockerHardwareCode()); //TODO yjz 修改   10转16
+			
+			
+			
 			switch(requestPackage.getBykeTypeCodeEnum()){
 				case BLE_GPRS:
 					responseStream.write(BLE_GPRS_FLAG);

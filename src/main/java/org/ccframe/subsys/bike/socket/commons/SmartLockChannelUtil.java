@@ -80,7 +80,9 @@ public class SmartLockChannelUtil {
 			){
 				responseDataOutputStream.write(0x01); //协议类型
 				responseDataOutputStream.write(0x01); //协议版本号
-				responseDataOutputStream.writeLongReverse(lockerHardwareCode); //单车设备号
+				
+				responseDataOutputStream.writeLongReverse(lockerHardwareCode); //单车设备号  //TODO yjz 修改
+				
 				responseDataOutputStream.write(0x01); //单车类别
 				responseDataOutputStream.write(0x04); //命令字：开锁
 				responseDataOutputStream.write(0xFF); //纯命令

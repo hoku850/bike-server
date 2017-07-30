@@ -30,10 +30,12 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
 		HttpServletRequest request2 = servletRequest.getServletRequest();
 		String IMEI = request2.getParameter("IMEI");
 		String phoneNumber = request2.getParameter("phoneNumber");
+		System.out.println("IMEI："+IMEI+"   phoneNumber:"+phoneNumber);
 		List<User> users = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(phoneNumber, IMEI);
 		 if(users!=null && users.size()>0) {
 			 User user = users.get(0);
 			 attributes.put("user", user);
+			 System.out.println("websocket的user："+user);
 		 }
 		//User user = (User) session.getAttribute(Global.SESSION_LOGIN_MEMBER_USER);
         System.out.println("握手前调用");

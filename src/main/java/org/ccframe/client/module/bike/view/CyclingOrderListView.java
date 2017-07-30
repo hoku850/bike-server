@@ -185,6 +185,9 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
+		// 时间范围默认为当前至前30天
+		startTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date(new Date().getTime() - ONE_MONTH)));
+		endTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date()));
 		orgNm.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Integer> event) {

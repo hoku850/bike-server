@@ -56,7 +56,9 @@ public class UserToRepairRecordSearchService extends BaseSearchService<UserToRep
 					Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(userToRepairRecord.getOrgId());
 					rowRecord.setOrgNm(org.getOrgNm());
 					SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(userToRepairRecord.getSmartLockId());
-					rowRecord.setLockerHardwareCode(smartLock.getLockerHardwareCode());
+					if (smartLock != null) {
+						rowRecord.setLockerHardwareCode(smartLock.getLockerHardwareCode());
+					}
 					BeanUtils.copyProperties(userToRepairRecord, rowRecord);
 					
 					resultList.add(rowRecord);

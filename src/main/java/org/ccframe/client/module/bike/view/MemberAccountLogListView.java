@@ -41,6 +41,7 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 	private static ArticleInfListUiBinder uiBinder = GWT.create(ArticleInfListUiBinder.class);
 
 	private Integer userId;
+	private Integer memberAccountId;
 	
 	@UiField
 	public Label title;
@@ -85,6 +86,7 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 				if (userId != null) {
 					MemberAccountLogListReq memberAccountLogListReq = new MemberAccountLogListReq();
 					memberAccountLogListReq.setUserId(userId);
+					memberAccountLogListReq.setMemberAccountId(memberAccountId);
 					ClientManager.getMemberAccountLogClient().findList(memberAccountLogListReq, offset, limit, new RestCallback<ClientPage<MemberAccountLogRowDto>>(){
 						@Override
 						public void onSuccess(Method method, ClientPage<MemberAccountLogRowDto> response) {
@@ -106,6 +108,7 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 				final MemberAccount mAccount = event.getObject();
 				if (mAccount != null) {
 					userId = mAccount.getUserId();
+					memberAccountId = mAccount.getMemberAccountId();
 					loader.load();
 					// 改变title的值
 					ClientManager.getAdminUserClient().getById(userId, new RestCallback<User>() {

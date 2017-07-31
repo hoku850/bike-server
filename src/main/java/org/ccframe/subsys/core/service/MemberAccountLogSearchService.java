@@ -7,6 +7,7 @@ import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.subsys.core.domain.entity.MemberAccount;
 import org.ccframe.subsys.core.domain.entity.MemberAccountLog;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.dto.MemberAccountLogListReq;
@@ -30,6 +31,12 @@ public class MemberAccountLogSearchService extends BaseSearchService<MemberAccou
 		// 过滤 USER_ID
 		boolQueryBuilder.must(QueryBuilders.termQuery(MemberAccountLog.USER_ID, memberAccountLogListReq.getUserId()));
 				
+		// 过滤账户类型
+		if (memberAccountLogListReq.getMemberAccountId() != null) {
+			MemberAccount memberAccount = SpringContextHelper.getBean(MemberAccountSearchService.class).getById(memberAccountLogListReq.getMemberAccountId());
+			boolQueryBuilder.must(QueryBuilders.termQuery(MemberAccountLog.MEMBER_ACCOUNT_ID, memberAccount.getMemberAccountId()));
+		}
+		
 		// 查询
 		Page<MemberAccountLog> cPage = this.getRepository().search(
 			boolQueryBuilder,

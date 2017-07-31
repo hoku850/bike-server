@@ -171,7 +171,7 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 				CyclingOrder.CYCLING_ORDER_STAT_CODE,
 				CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode()));
 		boolQueryBuilder.must(QueryBuilders.termQuery(
-				CyclingOrder.ORG_ID,
+				CyclingOrder.ORG_ID, 
 				memberUser.getOrgId()));
 		Iterable<CyclingOrder> content = this.getRepository().search(
 				boolQueryBuilder);
@@ -205,13 +205,7 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 
 		// 查询单车类型
 		BikeType bikeType;
-		bikeType = SpringContextHelper.getBean(BikeTypeService.class).getByKey(
-				BikeType.BIKE_TYPE_ID,
-				SpringContextHelper
-						.getBean(SmartLockService.class)
-						.getByKey(SmartLock.BIKE_PLATE_NUMBER,
-								cyclingOrder.getBikePlateNumber())
-						.getBikeTypeId());
+		bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(cyclingOrder.getBikeTypeId());
 		map.put("time", cyclingOrder.getCyclingContinousSec().toString());
 		map.put("price", cyclingOrder.getOrderAmmount().toString());
 		map.put("pricePerHalfHour", bikeType.getHalfhourAmmount().toString());

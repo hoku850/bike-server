@@ -120,24 +120,12 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 			}
 		});
 		configList.add(nmColumn);
-		configList.add(new ColumnConfigEx<MemberAccountRowDto, Double>(props.accountValue(), 20, "余额", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<MemberAccountRowDto, Double>(props.accountValue(), 24, "余额（元）", HasHorizontalAlignment.ALIGN_CENTER, false));
 	}
 	
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
-		// 运营商登陆
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
-			orgCombobox.hide();
-		} else {
-			orgCombobox.reset();
-			orgCombobox.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-				@Override
-				public void onValueChange(ValueChangeEvent<Integer> event) {
-					loader.load();
-				}
-			});
-		}
 		statusTabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
 			@Override
 			public void onSelection(SelectionEvent<Widget> event) {
@@ -165,9 +153,17 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
-		// 总平台登陆 重置下拉框
-		if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
+		// 运营商登陆
+		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+			orgCombobox.hide();
+		} else {
 			orgCombobox.reset();
+			orgCombobox.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<Integer> event) {
+					loader.load();
+				}
+			});
 		}
 	}
 	

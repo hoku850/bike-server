@@ -102,7 +102,7 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.orgNm(), 100, "运营商", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.loginId(), 130, "登陆ID", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.paymentTypeCodeStr(), 100, "支付类型", HasHorizontalAlignment.ALIGN_CENTER, true));
-		configList.add(new ColumnConfigEx<ChargeOrderRowDto, Double>(props.chargeAmmount(), 100, "金额", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<ChargeOrderRowDto, Double>(props.chargeAmmount(), 100, "金额（元）", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.paymentTransactionalNumber(), 150, "交易流水", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.chargeOrderStatCodeStr(), 80, "状态", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<ChargeOrderRowDto, String>(props.createTimeStr(), 130, "创建时间", HasHorizontalAlignment.ALIGN_CENTER, true));
@@ -136,20 +136,6 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
-		// 运营商登陆
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
-			this.orgCombobox.hide();
-			this.columnModel.getColumn(1).setHidden(true);
-		} else {
-			orgCombobox.reset();
-			orgCombobox.setValue(Global.COMBOBOX_ALL_VALUE);
-			orgCombobox.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-				@Override
-				public void onValueChange(ValueChangeEvent<Integer> event) {
-					loader.load();
-				}
-			});
-		}
 		chargeStateCombobox.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
@@ -168,10 +154,20 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
-		// 重置过滤条件
-		if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
+		// 运营商登陆
+		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+			this.orgCombobox.hide();
+			this.columnModel.getColumn(1).setHidden(true);
+		} else {
 			orgCombobox.reset();
-		}
+			orgCombobox.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<Integer> event) {
+					loader.load();
+				}
+			});
+		}	
+		// 重置过滤条件
 		chargeStateCombobox.reset();
 		payStateCombobox.reset();
 		searchField.setValue(null);

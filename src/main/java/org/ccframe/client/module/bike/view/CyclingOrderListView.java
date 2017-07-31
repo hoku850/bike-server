@@ -150,7 +150,7 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.bikePlateNumber(), 150, "单车车牌号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.bikeTypeNm(), 100, "单车类型", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.cyclingOrderStatCodeStr(), 80, "状态", HasHorizontalAlignment.ALIGN_CENTER, true));
-		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Double>(props.orderAmmount(), 100, "金额", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Double>(props.orderAmmount(), 80, "金额（元）", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.endTimeStr(), 130, "结束时间", HasHorizontalAlignment.ALIGN_CENTER, true));
 	}
 
@@ -185,29 +185,6 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
-		// 时间范围默认为当前至前30天
-		startTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date(new Date().getTime() - ONE_MONTH)));
-		endTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date()));
-		// 运营商登陆
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
-			this.columnModel.getColumn(1).setHidden(true);
-			this.orgCombobox.hide();
-			bikeTypeCombobox.setExtraParam(MainFrame.adminUser.getOrgId().toString());
-			bikeTypeCombobox.reset();
-		} else {
-			orgCombobox.reset();
-			orgCombobox.setValue(Global.COMBOBOX_ALL_VALUE);
-			bikeTypeCombobox.setExtraParam(Integer.toString(Global.COMBOBOX_ALL_VALUE));
-			bikeTypeCombobox.reset();
-			orgCombobox.addValueChangeHandler(new ValueChangeHandler<Integer>() {
-				@Override
-				public void onValueChange(ValueChangeEvent<Integer> event) {
-					bikeTypeCombobox.setExtraParam(event.getValue().toString());
-					bikeTypeCombobox.reset();
-					loader.load();
-				}
-			});
-		}
 		bikeTypeCombobox.addValueChangeHandler(new ValueChangeHandler<Integer>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Integer> event) {
@@ -235,15 +212,26 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 		// 时间范围默认为当前至前30天
 		startTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date(new Date().getTime() - ONE_MONTH)));
 		endTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date()));
-		// 重置下拉框的值
+		// 运营商登陆
 		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+			this.columnModel.getColumn(1).setHidden(true);
+			this.orgCombobox.hide();
 			bikeTypeCombobox.setExtraParam(MainFrame.adminUser.getOrgId().toString());
 			bikeTypeCombobox.reset();
 		} else {
 			orgCombobox.reset();
 			bikeTypeCombobox.setExtraParam(Integer.toString(Global.COMBOBOX_ALL_VALUE));
 			bikeTypeCombobox.reset();
+			orgCombobox.addValueChangeHandler(new ValueChangeHandler<Integer>() {
+				@Override
+				public void onValueChange(ValueChangeEvent<Integer> event) {
+					bikeTypeCombobox.setExtraParam(event.getValue().toString());
+					bikeTypeCombobox.reset();
+					loader.load();
+				}
+			});
 		}
+		// 重置过滤条件
 		orderStateCombobox.reset();
 	}
 	

@@ -98,9 +98,9 @@ public class OrgListView extends BaseCrudListView<OrgRowDto>{
 		configList.add(new ColumnConfigEx<OrgRowDto, String>(props.orgNm(), 100, "运营商名称", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<OrgRowDto, String>(props.manager(), 100, "联系人", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<OrgRowDto, String>(props.managerTel(), 120, "联系电话", HasHorizontalAlignment.ALIGN_CENTER, true));
-		configList.add(new ColumnConfigEx<OrgRowDto, Double>(props.chargeTotalValue(), 100, "充值总金额", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<OrgRowDto, Long>(props.cyclingNum(), 100, "骑行订单数", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<OrgRowDto, Double>(props.cyclingIncome(), 100, "骑行总收入", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<OrgRowDto, Double>(props.chargeTotalValue(), 100, "充值总金额（元）", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<OrgRowDto, Long>(props.cyclingNum(), 100, "骑行订单数（单）", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<OrgRowDto, Double>(props.cyclingIncome(), 100, "骑行总收入（元）", HasHorizontalAlignment.ALIGN_CENTER, false));
 	}
 	
 	@Override

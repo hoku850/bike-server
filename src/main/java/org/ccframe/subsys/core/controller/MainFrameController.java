@@ -22,6 +22,7 @@ import org.ccframe.subsys.core.dto.MainFrameResp;
 import org.ccframe.subsys.core.service.MenuResService;
 import org.ccframe.subsys.core.service.MenuResUserHitService;
 import org.ccframe.subsys.core.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +31,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ControllerMapping.MAIN_FRAME_BASE)
 public class MainFrameController{
 
+	private boolean disableValidateCode;
+	
+    @Value("${app.disableValidateCode:false}") //如果要做压力测试，可以设置该标志
+    public void setDisableValidateCode(Boolean disableValidateCode){
+    	this.disableValidateCode = disableValidateCode;
+    }
+
+	
 	/**
 	 * 管理员登录.
 	 * @param orgId 登录的机构
@@ -45,7 +54,7 @@ public class MainFrameController{
         if(validateCode == null) {
         	throw new BusinessException(ResGlobal.ERRORS_LOGIN_VALIDATE_CODE, true);
         }
-        if(!validateCode.equals(sessionCode)){
+        if(!disableValidateCode && !validateCode.equals(sessionCode)){
     		WebContextHolder.getSessionContextStore().removeServerValue(Global.SESSION_VALIDATE_CODE);
         	throw new BusinessException(ResGlobal.ERRORS_LOGIN_VALIDATE_CODE, true);
         }
@@ -70,14 +79,8 @@ public class MainFrameController{
 		AdminUser adminUser = (AdminUser)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_ADMIN);
 		MainFrameResp mainFrameDto = new MainFrameResp();
 		mainFrameDto.setAdminUser(adminUser);
-//		mainFrameDto.setTreeNodeTree(SpringContextHelper.getBean(UserService.class).getUserRoleMenuTree(adminUser.getUserId(), adminUser.getOrgId()));
-
-		//医疗系统始终搜索总平台角色的菜单树
-		mainFrameDto.setTreeNodeTree(SpringContextHelper.getBean(UserService.class).getUserRoleMenuTree(adminUser.getUserId(), Global.PLATFORM_ORG_ID));
-
-//		List<MenuRes> fastMenuResList = SpringContextHelper.getBean(UserService.class).findFastMenuRes(adminUser.getUserId(), adminUser.getOrgId());
-		//医疗系统始终搜索总平台角色的快速菜单
-		List<MenuRes> fastMenuResList = SpringContextHelper.getBean(UserService.class).findFastMenuRes(adminUser.getUserId(), Global.PLATFORM_ORG_ID);
+		mainFrameDto.setTreeNodeTree(SpringContextHelper.getBean(UserService.class).getUserRoleMenuTree(adminUser.getUserId(), adminUser.getOrgId()));
+		List<MenuRes> fastMenuResList = SpringContextHelper.getBean(UserService.class).findFastMenuRes(adminUser.getUserId(), adminUser.getOrgId());
 		Collections.sort(fastMenuResList, new Comparator<MenuRes>(){
 
 			@Override

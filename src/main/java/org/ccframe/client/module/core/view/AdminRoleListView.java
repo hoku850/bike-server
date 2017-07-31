@@ -7,6 +7,7 @@ import org.ccframe.client.commons.EventBusUtil;
 import org.ccframe.client.commons.ICcModule;
 import org.ccframe.client.commons.RestCallback;
 import org.ccframe.client.commons.ViewUtil;
+import org.ccframe.client.components.CcLabelValueCombobox;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
 import org.ccframe.client.module.core.event.AdminRoleSelectEvent;
@@ -18,6 +19,8 @@ import org.fusesource.restygwt.client.Method;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -46,6 +49,9 @@ public class AdminRoleListView implements ICcModule{
 
 	interface AdminRoleListUiBinder extends UiBinder<Component, AdminRoleListView> {}
 	private static AdminRoleListUiBinder uiBinder = GWT.create(AdminRoleListUiBinder.class);
+	
+	@UiField
+	CcLabelValueCombobox orgId;
 	
 	@UiField
 	TextButton addButton;
@@ -85,7 +91,7 @@ public class AdminRoleListView implements ICcModule{
 	}
 
 	private void reloadList(){
-		ClientManager.getAdminRoleClient().findRoleList(new RestCallback<List<Role>>(){
+		ClientManager.getAdminRoleClient().findRoleList(orgId.getValue(), new RestCallback<List<Role>>(){
 			@Override
 			public void onSuccess(Method method, List<Role> response) {
 				listStore.clear();
@@ -179,6 +185,7 @@ public class AdminRoleListView implements ICcModule{
 					final Role role = new Role();
 					role.setRoleId(selectedId);
 					role.setRoleNm(roleNm.getValue());
+					role.setOrgId(orgId.getValue());
 					ClientManager.getAdminRoleClient().saveOrUpdate(role, new RestCallback<Void>(){
 						@Override
 						public void onSuccess(Method method, Void response) {
@@ -216,13 +223,26 @@ public class AdminRoleListView implements ICcModule{
 					EventBusUtil.fireEvent(new RoleSelectEvent(event.getSelectedItem()));
 				}
 			});
+			
+			orgId.setAfterAsyncReset(new Runnable(){
+				@Override
+				public void run() {
+					reloadList();
+				}
+			});
+			orgId.addValueChangeHandler(new ValueChangeHandler<Integer>(){
+				@Override
+				public void onValueChange(ValueChangeEvent<Integer> event) {
+					reloadList();
+				}
+			});
 		}
 		return widget;
 	}
 
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
-		reloadList();
+		orgId.reset();
 	}
 
 }

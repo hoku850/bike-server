@@ -20,6 +20,7 @@ import org.ccframe.subsys.core.domain.entity.OrgUserRel;
 import org.ccframe.subsys.core.domain.entity.Role;
 import org.ccframe.subsys.core.domain.entity.RoleMenuResRel;
 import org.ccframe.subsys.core.domain.entity.User;
+import org.ccframe.subsys.core.domain.entity.UserRoleRel;
 import org.ccframe.subsys.core.repository.OrgRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrgService extends BaseService<Org, Integer, OrgRepository> implements ILabelValueListProvider {
 
 	private static final int TEMP_ORG_ID = 2;
-	private static final int ADMIN_ROLE_ID = 2;
 	
 	private static final String ADMIN_DEFAULT_NM = "默认管理员";
 	private static final String LOGIN_NM = "admin";
@@ -144,7 +144,13 @@ public class OrgService extends BaseService<Org, Integer, OrgRepository> impleme
 				orgUserRel.setOrgId(org.getOrgId());
 				orgUserRel.setUserId(user.getUserId());
 				SpringContextHelper.getBean(OrgUserRelService.class).save(orgUserRel);
-				
+
+				// 用户角色关系
+				UserRoleRel userRoleRel = new UserRoleRel();
+				userRoleRel.setRoleId(defaultRole.getRoleId());
+				userRoleRel.setUserId(user.getUserId());
+				SpringContextHelper.getBean(UserRoleRelService.class).save(userRoleRel);
+
 				return user;
 			}
 			

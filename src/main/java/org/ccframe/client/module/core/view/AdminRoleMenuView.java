@@ -48,7 +48,7 @@ public class AdminRoleMenuView implements ICcModule{
 
 	private Role role;
 	
-	private boolean needReloadMenu;
+	private int currentMenuTreeOrdId;
 	
 	@UiFactory
 	public ValueProvider<TreeNodeTree, String> createValueProvider() {
@@ -57,17 +57,17 @@ public class AdminRoleMenuView implements ICcModule{
 
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
-		needReloadMenu = true;
+		currentMenuTreeOrdId = -1;
 	}
 
 	private void reloadMenuAndCheck(){
-		ClientManager.getTreeNodeClient().getOrgMenuTree(null, new RestCallback<TreeNodeTree>(){
+		ClientManager.getTreeNodeClient().getOrgMenuTree(role.getOrgId(), new RestCallback<TreeNodeTree>(){
 			@Override
 			public void onSuccess(Method method, TreeNodeTree response) {
 				TreeUtil.loadTreeStore(treeStore, response, true);
 				tree.focus();
 				tree.expandAll();
-				needReloadMenu = false;
+				currentMenuTreeOrdId = role.getOrgId();
 				reloadCheck();
 			}
 			protected void afterFailure(){
@@ -102,9 +102,9 @@ public class AdminRoleMenuView implements ICcModule{
 				public void action(RoleSelectEvent event) {
 					role = event.getObject();
 					tree.mask();
-					if(needReloadMenu){
+					if(currentMenuTreeOrdId != role.getOrgId()){ //机构改变了，重新加载树和勾选
 						reloadMenuAndCheck();
-					}else{
+					}else{ //机构没改变，只加载勾选即可
 						reloadCheck();
 					}
 				}

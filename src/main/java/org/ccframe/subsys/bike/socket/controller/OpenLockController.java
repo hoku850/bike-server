@@ -38,6 +38,7 @@ public class OpenLockController implements ISocketController {
 		Byte lockerErrorInfo = (byte)requestDataMap.get(DataBlockTypeEnum.LOCK_ERROR);
 
 		if(lockerErrorInfo != 0){
+			System.out.println("lockerErrorInfo != 0");
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车出现故障，请更换一辆单车"});
 		}
 
@@ -83,6 +84,7 @@ public class OpenLockController implements ISocketController {
 			cyclingOrder.setCyclingContinousSec(0);
 			cyclingOrder.setOrderAmmount(0.00);
 			cyclingOrder.setCyclingDistanceMeter(0);
+			cyclingOrder.setBikeTypeId(smartLock.getBikeTypeId());
 
 			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 		}

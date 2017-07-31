@@ -316,8 +316,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			
 			Integer count = (int) (min/AppConstant.EVERY_HALF_HOUR) + 1;
 			//Integer count = (int) (31/30.0);
-			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder.getSmartLockId());
-			BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(smartLock.getBikeTypeId());
+			BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(cyclingOrder.getBikeTypeId());
 			
 			Double halfHourAmmount = bikeType.getHalfhourAmmount();
 			
@@ -374,8 +373,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			
 			Integer count = (int) (min/AppConstant.EVERY_HALF_HOUR) + 1;
 			//Integer count = (int) (31/30.0);
-			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder.getSmartLockId());
-			BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(smartLock.getBikeTypeId());
+			BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(cyclingOrder.getBikeTypeId());
 			Double halfHourAmmount = bikeType.getHalfhourAmmount();
 			BigDecimal result = new BigDecimal(halfHourAmmount).multiply(new BigDecimal(count), MathContext.DECIMAL32);
 			Double payMoney = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
@@ -413,8 +411,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 				//写死 每半小时支付0.5元
 				Integer count = (int) (min/AppConstant.EVERY_HALF_HOUR) + 1;
 				//Integer count = (int) (31/30.0);
-				SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder2.getSmartLockId());
-				BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(smartLock.getBikeTypeId());
+				BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(cyclingOrder2.getBikeTypeId());
 				
 				Double halfHourAmmount = bikeType.getHalfhourAmmount();
 				BigDecimal result = new BigDecimal(halfHourAmmount).multiply(new BigDecimal(count), MathContext.DECIMAL32);

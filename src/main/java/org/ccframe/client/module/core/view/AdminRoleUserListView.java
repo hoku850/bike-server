@@ -172,7 +172,7 @@ public class AdminRoleUserListView implements ICcModule{
 								if(response.isEmpty()){
 									Info.display("操作完成", "用户关联角色 " + role.getRoleNm() + " 成功");
 								}else{
-									ViewUtil.error("存在操作失败", "以下管理员关联失败<br/>请检查登录ID是否填写错误：<br/>" + StringUtils.join(response, "<br/>"));
+									ViewUtil.error("存在操作失败", "以下管理员关联失败<br/>请检查登录ID是否填写错误或管理员不属于该机构：<br/>" + StringUtils.join(response, "<br/>"));
 								}
 								reloadList();
 							}

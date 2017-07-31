@@ -38,9 +38,9 @@ public class RoleController{
 	 * @return
 	 */
 	@RequestMapping(value = ControllerMapping.ADMIN_ROLE_LIST)
-	public List<Role> findRoleList() {
-		AdminUser adminUser = (AdminUser)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_ADMIN);
-		return SpringContextHelper.getBean(RoleService.class).getOrgRoleList(adminUser.getOrgId());
+	public List<Role> findRoleList(Integer orgId) {
+		//AdminUser adminUser = (AdminUser)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_ADMIN);
+		return SpringContextHelper.getBean(RoleService.class).getOrgRoleList(orgId);
 	}
 
 	@RequestMapping(method=RequestMethod.POST)
@@ -54,7 +54,6 @@ public class RoleController{
 	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.DELETE)
 	void delete(@PathParam(Global.ID_BINDER_ID) Integer roleId){
 		SpringContextHelper.getBean(RoleService.class).deleteById(roleId);
-		SpringContextHelper.getBean(RoleSearchService.class).deleteById(roleId);
 	}
 	
 	@RequestMapping(value = ControllerMapping.ADMIN_ROLE_REF_USER_COUNT)

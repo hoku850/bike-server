@@ -19,7 +19,7 @@
 
 	<container:HBoxLayoutContainer hBoxLayoutAlign="STRETCH"><!-- 角色管理 -->
 		<container:child>
-			<container:VBoxLayoutContainer width="210" vBoxLayoutAlign="STRETCH">
+			<container:VBoxLayoutContainer width="250" vBoxLayoutAlign="STRETCH">
 				<container:child layoutData="{leftTopData}">
 					<core:AdminRoleListView ui:field="adminRoleListView"/>
 				</container:child>

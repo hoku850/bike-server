@@ -28,9 +28,14 @@
 		<container:child layoutData="{toolRow}">
 			<toolbar:ToolBar borders="true">
 				<g:Label text="角色列表"/>
-				<button:TextButton text="增" ui:field="addButton" />
-				<button:TextButton text="改" ui:field="editButton" />
-				<button:TextButton text="删" ui:field="deleteButton" />
+				<cc:CcLabelValueCombobox ui:field="orgId" width="150" beanName="orgService" />
+			</toolbar:ToolBar>
+		</container:child>
+		<container:child layoutData="{toolRow}">
+			<toolbar:ToolBar borders="true">
+				<button:TextButton text="增加" ui:field="addButton" />
+				<button:TextButton text="修改" ui:field="editButton" />
+				<button:TextButton text="删除" ui:field="deleteButton" />
 			</toolbar:ToolBar>
 		</container:child>
 		<container:child layoutData="{treeRow}">

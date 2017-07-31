@@ -2,7 +2,11 @@ package org.ccframe.commons.servlet;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,7 +19,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.ccframe.client.Global;
+import org.ccframe.commons.helper.SysInitBeanHelper;
 
 import cn.apiclub.captcha.Captcha;
 import cn.apiclub.captcha.backgrounds.GradiatedBackgroundProducer;
@@ -27,6 +33,11 @@ import cn.apiclub.captcha.text.producer.TextProducer;
 import cn.apiclub.captcha.text.renderer.ColoredEdgesWordRenderer;
 import cn.apiclub.captcha.text.renderer.WordRenderer;
 
+/**
+ * 校验码，同时做启动日志输出.
+ * @author JIM
+ *
+ */
 public class CaptchaServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -2178175559012074926L;
@@ -43,6 +54,9 @@ public class CaptchaServlet extends HttpServlet {
 	private Map<Color, GimpyRenderer> gimpyRendererMap = new HashMap<Color, GimpyRenderer>();
 	private BlockGimpyRenderer blockGimpyRenderer = new BlockGimpyRenderer(2);
 	private GradiatedBackgroundProducer bradiatedBackgroundProducer;
+
+	private Logger log = Logger.getLogger(this.getClass());
+	private static final String SYS_START_STR = "系统启动模式：";
 
 	private void initParameter(){
 		if(getServletConfig().getInitParameter("thickness") != null){
@@ -62,6 +76,7 @@ public class CaptchaServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		super.init();
+		checkSysIntMode();
 		initParameter();
 		
 		textProducer = new WordProducer(4, avaiableChars); //有兴趣可以试试chinease的producer
@@ -92,7 +107,46 @@ public class CaptchaServlet extends HttpServlet {
 		bradiatedBackgroundProducer.setToColor(new Color(251, 251, 251)); 
 	}
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
+    private void checkSysIntMode() {
+    	String forceInitMode = System.getProperty("forceInitMode", null); //自动发布时，通过环境变量-D强制指定是重置还是不处理
+    	String modeStr = null;
+    	if(forceInitMode != null){
+    		modeStr = forceInitMode;
+    	}else{
+        	try(
+        		FileInputStream finput = new FileInputStream(new File(getClass().getResource(SysInitBeanHelper.APP_CONFIG_FILE_NAME).toURI()));
+       	    	BufferedReader reader = new BufferedReader(new InputStreamReader(finput));
+        	){
+    	        String line = null;
+    	        while((line = reader.readLine()) != null){
+    	        	if(line.trim().startsWith(SysInitBeanHelper.INIT_MODE_PARAM_NAME)){
+    	        		modeStr = line.split("=")[1].trim();
+    	        		break;
+    	        	}
+    	        }
+    	        if(modeStr == null){ //系统创建模式被注释或删除，默认模式模式就是none
+    	        	modeStr = "none";
+    	        }
+        	}catch(Exception e){
+        		e.printStackTrace();
+        	}
+    	}
+    	switch(modeStr){
+    		case "none":
+    			log.info(SYS_START_STR + "标准模式...");
+    			break;
+    		case "create":
+    			log.info(SYS_START_STR + "数据重新创建模式...");
+    			break;
+    		case "create-once":
+    			log.info(SYS_START_STR + "数据安全创建模式...");
+    			break;
+    		default: 
+    			log.info(SysInitBeanHelper.INIT_MODE_PARAM_NAME + "参数配置有误...");
+    	}
+	}
+
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doGet(request, response);
     }

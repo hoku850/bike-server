@@ -97,8 +97,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 				throw new BusinessException(ResGlobal.ERRORS_LOGIN_FREEZE, new String[]{multiLoginId});
 			}
 		}
-//医疗系统允许自由登录所有的校区
-/*		List<OrgUserRel> orgUserRelList = SpringContextHelper.getBean(OrgUserRelSearchService.class).findByKey(OrgUserRel.USER_ID, user.getUserId());
+		List<OrgUserRel> orgUserRelList = SpringContextHelper.getBean(OrgUserRelSearchService.class).findByKey(OrgUserRel.USER_ID, user.getUserId());
 		boolean userNotInOrg = true;
 		for(OrgUserRel orgUserRel: orgUserRelList){
 			if(orgUserRel.getOrgId().equals(orgId)){
@@ -109,7 +108,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 		if(userNotInOrg){
 			throw new BusinessException(ResGlobal.ERRORS_LOGIN_PASSWORD, true);
 		}
-*/		return user;
+		return user;
 	}
 
 	/**

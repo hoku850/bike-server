@@ -2,6 +2,7 @@ package org.ccframe.client.module.core.view;
 
 import java.util.List;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.MenuConfig;
 import org.ccframe.client.ViewResEnum;
 import org.ccframe.client.base.BaseHandler;
@@ -24,6 +25,7 @@ import org.ccframe.client.module.core.event.LoadWindowEvent;
 import org.ccframe.client.service.MainFrameClient;
 import org.ccframe.subsys.core.domain.entity.MenuRes;
 import org.ccframe.subsys.core.dto.MainFrameResp;
+import org.ccframe.subsys.core.dto.OrgDto;
 import org.fusesource.restygwt.client.Method;
 
 import com.google.gwt.core.client.GWT;
@@ -42,6 +44,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Singleton;
 import com.sencha.gxt.core.client.Style.Anchor;
@@ -71,6 +74,9 @@ public class MainFrame implements IsWidget{
 
 	interface MainFrameUiBinder extends UiBinder<Component, MainFrame> {}
 
+	@UiField
+	public Label orgNmLabel;
+	
 	@UiField
 	public ContentPanel menuPanel;
 	
@@ -262,8 +268,11 @@ public class MainFrame implements IsWidget{
 				}
 
 				adminUser = mainFrameDto.getAdminUser();
-
-				//todo 用户头像
+				
+				// 初始化运营商的信息
+				initOrgInfo();
+				
+				//TODO 用户头像
 				userButton.setHTML("<img src='"+GWT.getHostPageBaseURL()+ (GWT.getHostPageBaseURL().endsWith("/") ? "" : "/")+"ccframe/images/testlogo.jpg'/>" + mainFrameDto.getAdminUser().getUserNm() + "<li class='fa fa-sort-desc'/>");
 				borderLayoutContainer.forceLayout();
 			}
@@ -271,6 +280,18 @@ public class MainFrame implements IsWidget{
 
 		initEvent();
 		return widget;
+	}
+
+	private void initOrgInfo() {
+		// 运营商登陆
+		if (adminUser != null && Global.PLATFORM_ORG_ID != adminUser.getOrgId()) {
+			ClientManager.getOrgClient().getById(adminUser.getOrgId(), new RestCallback<OrgDto>() {
+				@Override
+				public void onSuccess(Method method, OrgDto response) {
+					orgNmLabel.setText(response.getOrgNm());
+				}
+			});
+		}
 	}
 
 	@SuppressWarnings("unchecked")

@@ -1,0 +1,22 @@
+性能测试准备数据：
+目标：准备一份有测试数据的SQL（非XML）
+过程：写一个controller，来生成我们需要的测试数据
+内容：
+
+用户表（会员） 10000条数据，内容尽量随机，要具备合理性。【程序来实现】
+
+账户表 30000条（押金）数据，每个用户属于3个运营商【insert select from】
+积分表 30000条（为0）的数据 【insert select from】
+预存款表 30000条 （充值）数据 【insert select from】
+充值订单表 30000条 （充值）数据【insert select from】
+会员账户日志表 60000条 （充值）数据【insert select from】
+会员账户日志表 60000条 （支付骑行订单，每个用户2条骑行记录）数据【insert select from】
+
+智能锁表 9000 条（每个运营商3000条）【写代码】
+智能锁状态表 9000 条【insert select from】
+骑行订单表 60000 条，每个用户在每个运营商下2个骑行订单，每个骑行订单使用不同的锁【写代码】
+用户报修记录 1000条【insert select from】
+骑行轨迹记录 180000条【insert select from】
+
+INSERT INTO `prd_cycling_order` (SELECT NULL, `BIKE_PLATE_NUMBER`, 3800, 10000, '2', 23.135, 116.375, '2017-07-28 20:00:00', 1.0, 2, `SMART_LOCK_ID`, 23.135, 116.375, '2017-07-28 19:00:00', 50001 FROM `prd_smart_lock`);
+

@@ -62,7 +62,7 @@
 						<cc:CcImage contextUrl="ccframe/images/backgroud_log.png"/>
 					</container:child>
 					<container:child>
-						<g:Label styleName="{style.orgNmLabel}" text="摩拜单车"/>
+						<g:Label ui:field="orgNmLabel" styleName="{style.orgNmLabel}" text="总平台"/>
 					</container:child>
 					<container:child layoutData="{boxDataFlex1}">
 						<container:SimpleContainer></container:SimpleContainer>

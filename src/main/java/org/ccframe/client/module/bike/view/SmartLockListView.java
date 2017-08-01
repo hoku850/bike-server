@@ -284,6 +284,22 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
+		if(MainFrame.adminUser.getOrgId() != Global.PLATFORM_ORG_ID){
+			isAgent = true;
+		}else{
+			isAgent = false;
+		}
+		if(isAgent){
+			this.columnModel.getColumn(4).setHidden(true);
+			this.addButton.hide();
+			this.editButton.hide();
+			this.deleteButton.hide();
+			this.grantButton.hide();
+			this.importButton.hide();
+			this.orgId.hide();
+		}else{
+			this.desertButton.hide();
+		}
 		return widget;
 	}
 	

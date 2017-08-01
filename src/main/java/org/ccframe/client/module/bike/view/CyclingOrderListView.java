@@ -215,6 +215,7 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 		// 运营商登陆
 		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
 			this.columnModel.getColumn(1).setHidden(true);
+			this.view.getHeader().refresh(); //强制更新头部
 			this.orgCombobox.hide();
 			bikeTypeCombobox.setExtraParam(MainFrame.adminUser.getOrgId().toString());
 			bikeTypeCombobox.reset();

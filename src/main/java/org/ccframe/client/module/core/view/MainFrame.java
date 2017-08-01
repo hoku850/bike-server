@@ -298,8 +298,8 @@ public class MainFrame implements IsWidget{
 									});
 									if(result instanceof ICcModule){
 										centerPanel.add(result.asWidget());
-										centerPanel.forceLayout();
 										((ICcModule)result).onModuleReload(event);
+										centerPanel.forceLayout();
 									}
 								}
 							});

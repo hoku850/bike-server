@@ -66,10 +66,10 @@ public class QRCodeScanController {
 		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, lockerHardwareCode);
 		SmartLockStatCodeEnum smartLockStatCodeEnum = SmartLockStatCodeEnum.fromCode(smartLock.getSmartLockStatCode());
 		//已发放或已激活才可骑行
-		//先注释，方便测试
-		/*if(!( smartLockStatCodeEnum == SmartLockStatCodeEnum.GRANTED || smartLockStatCodeEnum == SmartLockStatCodeEnum.ACTIVED)){
+		if(!( smartLockStatCodeEnum == SmartLockStatCodeEnum.GRANTED || smartLockStatCodeEnum == SmartLockStatCodeEnum.ACTIVED)){
+		    System.out.println("已发放或已激活才可骑行");
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车出现故障，请更换一辆单车"});
-		}*/
+		}
 		
 		//如果是在骑行中，那么不能开锁
 		//TODO 杰中补充完成，如果最后一个锁相关的订单是骑行中，那么不能开锁。throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车正在被人使用，请更换一辆单车"});

@@ -158,6 +158,7 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
 			this.orgCombobox.hide();
 			this.columnModel.getColumn(1).setHidden(true);
+			this.view.getHeader().refresh(); //强制更新头部
 		} else {
 			orgCombobox.reset();
 			orgCombobox.addValueChangeHandler(new ValueChangeHandler<Integer>() {

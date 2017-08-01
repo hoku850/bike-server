@@ -14,6 +14,7 @@ import org.ccframe.client.commons.RestyGwtPagingLoader;
 import org.ccframe.client.commons.RestyGwtPagingLoader.CallBack;
 import org.ccframe.client.module.bike.event.MemberAccountSelectEvent;
 import org.ccframe.client.module.core.view.MainFrame;
+import org.ccframe.subsys.core.domain.code.AccountTypeCodeEnum;
 import org.ccframe.subsys.core.domain.entity.MemberAccount;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.dto.MemberAccountLogListReq;
@@ -40,8 +41,8 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 	interface ArticleInfListUiBinder extends UiBinder<Component, MemberAccountLogListView> {}
 	private static ArticleInfListUiBinder uiBinder = GWT.create(ArticleInfListUiBinder.class);
 
-	private Integer userId;
 	private Integer memberAccountId;
+	private AccountTypeCodeEnum accountTypeCode;
 	
 	@UiField
 	public Label title;
@@ -83,9 +84,8 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 		return new CallBack<MemberAccountLogRowDto>(){
 			@Override
 			public void call(int offset, int limit,final RestyGwtPagingLoader<MemberAccountLogRowDto> loader) {
-				if (userId != null) {
+				if (memberAccountId != null) {
 					MemberAccountLogListReq memberAccountLogListReq = new MemberAccountLogListReq();
-					memberAccountLogListReq.setUserId(userId);
 					memberAccountLogListReq.setMemberAccountId(memberAccountId);
 					ClientManager.getMemberAccountLogClient().findList(memberAccountLogListReq, offset, limit, new RestCallback<ClientPage<MemberAccountLogRowDto>>(){
 						@Override
@@ -107,27 +107,59 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 			public void action(MemberAccountSelectEvent event) {
 				final MemberAccount mAccount = event.getObject();
 				if (mAccount != null) {
-					userId = mAccount.getUserId();
 					memberAccountId = mAccount.getMemberAccountId();
+					accountTypeCode = AccountTypeCodeEnum.fromCode(mAccount.getAccountTypeCode());
+					
+					// 改变列表Header的值
+					switch (accountTypeCode) {
+						case INTEGRAL:
+							columnModel.getColumn(2).setHeader("交易积分");
+							view.getHeader().refresh(); //强制更新头部
+							break;
+						case PRE_DEPOSIT:
+							columnModel.getColumn(2).setHeader("交易预存款");
+							view.getHeader().refresh(); //强制更新头部
+							break;
+						case DEPOSIT:
+							columnModel.getColumn(2).setHeader("交易押金");
+							view.getHeader().refresh(); //强制更新头部
+							break;
+					}
 					loader.load();
+					
 					// 改变title的值
-					ClientManager.getAdminUserClient().getById(userId, new RestCallback<User>() {
+					ClientManager.getAdminUserClient().getById(mAccount.getUserId(), new RestCallback<User>() {
 						@Override
 						public void onSuccess(Method method, User response) {
-							title.setText(response.getLoginId() + "账户交易日志");
-							// 总平台登陆
-							if (Global.PLATFORM_ORG_ID == MainFrame.adminUser.getOrgId()) {
+							final String baseTitle = response.getLoginId() + "账户交易日志";
+							
+							// 运营商登陆
+							if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+								title.setText(baseTitle);
+							} 
+							// 总平台
+							else {
 								ClientManager.getOrgClient().getById(mAccount.getOrgId(), new RestCallback<OrgDto>() {
 									@Override
 									public void onSuccess(Method method, OrgDto response) {
-										if (!title.getText().contains("预存款")) {
-											title.setText(title.getText() +  "(" + response.getOrgNm() + "预存款)");
+										switch (accountTypeCode) {
+											case INTEGRAL:
+												title.setText(baseTitle + "(" + response.getOrgNm() + "积分)");
+												break;
+											case PRE_DEPOSIT:
+												title.setText(baseTitle + "(" + response.getOrgNm() + "预存款)");
+												break;
+											case DEPOSIT:
+												title.setText(baseTitle + "(" + response.getOrgNm() + "押金)");
+												break;
 										}
 									}
 								});
 							}
 						}
 					});
+					
+					// 表格的值
 				}
 			}
 		});

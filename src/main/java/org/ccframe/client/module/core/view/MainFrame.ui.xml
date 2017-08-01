@@ -13,6 +13,14 @@
 		.maincolor{
 			background-color: #34495e;
 		}
+		.orgNmLabel{
+			overflow:hidden;
+			text-overflow:ellipsis;
+			white-space: nowrap;
+			font-size: 24px;
+			color: #ffffff;
+			line-height:50px;
+		}
 	</ui:style>
 
 	<ui:with type="org.ccframe.client.resources.ClientImages" field="icons" />
@@ -52,6 +60,9 @@
 				<container:HBoxLayoutContainer height="50px" styleName="{style.maincolor}" addStyleNames="x-toolbar-mark" ui:field="hbox"><!-- hBoxLayoutAlign="STRETCH"  -->
 					<container:child>
 						<cc:CcImage contextUrl="ccframe/images/backgroud_log.png"/>
+					</container:child>
+					<container:child>
+						<g:Label styleName="{style.orgNmLabel}" text="摩拜单车"/>
 					</container:child>
 					<container:child layoutData="{boxDataFlex1}">
 						<container:SimpleContainer></container:SimpleContainer>

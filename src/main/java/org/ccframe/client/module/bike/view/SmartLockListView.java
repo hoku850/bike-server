@@ -297,6 +297,7 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 		}
 		if(isAgent){
 			this.columnModel.getColumn(4).setHidden(true);
+			this.view.getHeader().refresh(); //强制更新头部
 			this.addButton.hide();
 			this.editButton.hide();
 			this.deleteButton.hide();

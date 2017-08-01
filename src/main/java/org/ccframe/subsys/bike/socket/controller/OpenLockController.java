@@ -69,7 +69,6 @@ public class OpenLockController implements ISocketController {
 		
 		//创建新的骑行订单
 		MemberUser memberUser = SmartLockChannelUtil.getLockerUser(lockerHardwareCode);
-		//TODO 金明处理订单
 
 		if(memberUser != null){
 			CyclingOrder cyclingOrder = new CyclingOrder();

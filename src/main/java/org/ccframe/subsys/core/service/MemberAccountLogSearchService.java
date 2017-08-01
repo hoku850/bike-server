@@ -28,9 +28,6 @@ public class MemberAccountLogSearchService extends BaseSearchService<MemberAccou
 
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		
-		// 过滤 USER_ID
-		boolQueryBuilder.must(QueryBuilders.termQuery(MemberAccountLog.USER_ID, memberAccountLogListReq.getUserId()));
-				
 		// 过滤账户类型
 		if (memberAccountLogListReq.getMemberAccountId() != null) {
 			MemberAccount memberAccount = SpringContextHelper.getBean(MemberAccountSearchService.class).getById(memberAccountLogListReq.getMemberAccountId());

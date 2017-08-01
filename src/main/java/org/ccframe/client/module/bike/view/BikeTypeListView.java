@@ -145,6 +145,8 @@ public class BikeTypeListView extends BaseCrudListView<BikeTypeRowDto> {
 		// 运营商登陆
 		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
 			orgCombobox.hide();
+			this.columnModel.getColumn(1).setHidden(true);
+			this.view.getHeader().refresh(); //强制更新头部
 		} else {
 			orgCombobox.reset();
 			orgCombobox.addValueChangeHandler(new ValueChangeHandler<Integer>() {

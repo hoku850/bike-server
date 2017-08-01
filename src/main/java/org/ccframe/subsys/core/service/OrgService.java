@@ -53,7 +53,7 @@ public class OrgService extends BaseService<Org, Integer, OrgRepository> impleme
 	@Transactional(readOnly = true)
 	public List<LabelValue> getLabelValueList(String beanName, String extraParam) {
 		List<LabelValue> resultList = new ArrayList<LabelValue>();
-		for(Org org: ((OrgService)SpringContextHelper.getBean(this.getClass())).listAll()){ //需要用spring容器方法以利用缓存
+		for(Org org: ((OrgService)SpringContextHelper.getBean(this.getClass())).listAll()){
 			resultList.add(new LabelValue(org.getOrgNm(), org.getOrgId()));
 		}
 		return resultList;

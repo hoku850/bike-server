@@ -237,6 +237,7 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 		}
 		if(isAgent){
 			this.columnModel.getColumn(0).setHidden(true);
+			this.view.getHeader().refresh(); //强制更新头部
 			this.orgId.hide();
 		}
 		fixStatCode.reset();

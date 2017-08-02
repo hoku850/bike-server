@@ -34,7 +34,7 @@ public class OpenLockController implements ISocketController {
 	}
 
 	@Override
-	public Map<DataBlockTypeEnum, Object> execute(String lockerHardwareCode, Map<DataBlockTypeEnum, Object> requestDataMap) {
+	public Map<DataBlockTypeEnum, Object> execute(Long lockerHardwareCode, Map<DataBlockTypeEnum, Object> requestDataMap) {
 		Byte lockerErrorInfo = (byte)requestDataMap.get(DataBlockTypeEnum.LOCK_ERROR);
 
 		if(lockerErrorInfo != 0){
@@ -57,7 +57,7 @@ public class OpenLockController implements ISocketController {
 		
 		//更新锁状态
 		Date nowDate = new Date();
-		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, lockerHardwareCode);
+		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.HARDWARE_CODE, lockerHardwareCode);
 		if(smartLock != null){
 			SmartLockStat smartLockStat = SpringContextHelper.getBean(SmartLockStatService.class).getByKey(SmartLockStat.SMART_LOCK_ID, smartLock.getSmartLockId());
 			if(smartLockStat != null){

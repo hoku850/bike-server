@@ -78,7 +78,7 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			requestPackage.setType(dataInputStream.readByte());
 			requestPackage.setVersion(dataInputStream.readByte());
 			
-			requestPackage.setLockerHardwareCode(dataInputStream.readStringReverse()); //TODO yjz 修改  readByte 16转10
+			requestPackage.setHardwareCode(dataInputStream.readStringReverse()); //TODO yjz 修改  readByte 16转10
 			
 			byte bykeType = dataInputStream.readByte();
 			switch(bykeType){
@@ -111,7 +111,7 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			System.out.println("encode map  -> " + DataBlockEncodeUtil.decodeDataBlock(encodeDataBlock));
 			
 			//检查连接，如果没有则放入到channel池
-			SmartLockChannelUtil.checkAndRegisterChannel(requestPackage.getLockerHardwareCode(), ctx.channel());
+			SmartLockChannelUtil.checkAndRegisterChannel(requestPackage.getHardwareCode(), ctx.channel());
 
 			Map<DataBlockTypeEnum, Object> responseDataMap = null;
 			AnswerFlagEnum answerFlagEnum = AnswerFlagEnum.SUCCESS; //默认是成功
@@ -121,7 +121,7 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 				if(socketController.getCommand() == requestPackage.getCommandFlagEnum()){
 					commandNotSupportFlag = false;
 					try{
-						responseDataMap = socketController.execute(requestPackage.getLockerHardwareCode(), requestPackage.getDataBlockMap());
+						responseDataMap = socketController.execute(requestPackage.getHardwareCode(), requestPackage.getDataBlockMap());
 					}catch(Throwable tr){
 						logger.error("socket executed with error!", tr);
 						exceptionFlag = true;
@@ -144,7 +144,7 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			responseDataOutputStream.write(requestPackage.getType());
 			responseDataOutputStream.write(requestPackage.getVersion());
 			
-			responseDataOutputStream.writeStringReverse(requestPackage.getLockerHardwareCode()); //TODO yjz 修改   10转16
+			responseDataOutputStream.writeStringReverse(requestPackage.getHardwareCode()); //TODO yjz 修改   10转16
 			
 			
 			

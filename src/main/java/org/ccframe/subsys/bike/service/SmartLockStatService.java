@@ -75,7 +75,7 @@ public class SmartLockStatService extends BaseService<SmartLockStat,java.lang.In
 	 */
 	@Transactional
 	public void saveOrUpdate(SmartLock smartLock, String lockStatus, Integer lockBattery, Double lng, Double lat, Date sysTime) {
-		SmartLockStat smartLockStat = SpringContextHelper.getBean(SmartLockStatSearchService.class).getByKey(SmartLockStat.SMART_LOCK_ID, smartLock);
+		SmartLockStat smartLockStat = SpringContextHelper.getBean(SmartLockStatSearchService.class).getById(smartLock.getSmartLockId());
 		if (smartLockStat == null) {
 			smartLockStat = new SmartLockStat();
 			smartLockStat.setSmartLockId(smartLock.getSmartLockId());

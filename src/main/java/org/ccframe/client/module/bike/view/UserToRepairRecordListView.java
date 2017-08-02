@@ -88,7 +88,7 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 		ValueProvider<UserToRepairRecordRowDto, String> orgNm();
 		ValueProvider<UserToRepairRecordRowDto, String> ifFinishFix();
 		ValueProvider<UserToRepairRecordRowDto, Integer> userId();
-		ValueProvider<UserToRepairRecordRowDto, String> lockerHardwareCode();
+		ValueProvider<UserToRepairRecordRowDto, String> hardwareCodeStr();
 		ValueProvider<UserToRepairRecordRowDto, String> bikePlateNumber();
 		ValueProvider<UserToRepairRecordRowDto, String> toRepairLocationCode();
 		ValueProvider<UserToRepairRecordRowDto, String> toRepairTimeStr();
@@ -155,7 +155,7 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.orgNm(), 100, "运营商", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(fixStatColumn);
 		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, Integer>(props.userId(), 120, "登录ID", HasHorizontalAlignment.ALIGN_CENTER, true));
-		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.lockerHardwareCode(), 150, "智能锁硬件编号", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.hardwareCodeStr(), 150, "硬件码", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.bikePlateNumber(), 150, "单车车牌号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(repairLocationCodeColumn);
 		configList.add(new ColumnConfigEx<UserToRepairRecordRowDto, String>(props.toRepairTimeStr(), 130, "报修时间", HasHorizontalAlignment.ALIGN_CENTER, true));

@@ -133,4 +133,6 @@ public interface Global {
 	// 添加机构默认的管理员 2位机构用户序列号
 	public int TRY_START_SEQ = 1;
 	public int TRY_END_SEQ = 99;
+	
+	public String FORMAT_HARDWARECODE = "%016d";
 }

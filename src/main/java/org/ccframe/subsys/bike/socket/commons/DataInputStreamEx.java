@@ -43,7 +43,7 @@ public class DataInputStreamEx extends DataInputStream {
     }
     
     //new
-    public final String readStringReverse() throws IOException {
+    public final Long readStringReverse() throws IOException {
         readFully(readBuffer, 0, 8);
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder = stringBuilder.append(String.format("%02d", readBuffer[4] & 255))
@@ -51,7 +51,7 @@ public class DataInputStreamEx extends DataInputStream {
 						.append(String.format("%02d", readBuffer[2] & 255))
 						.append(String.format("%02d", readBuffer[1] & 255))
 						.append(String.format("%02d", readBuffer[0] & 255));
-        return stringBuilder.toString();
+        return Long.valueOf(stringBuilder.toString());
     }
     
 }

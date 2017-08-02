@@ -45,7 +45,7 @@
 			<cc:child layoutData="{vBoxLayoutData}">
 				<form:FieldLabel text="硬件编号">
 					<form:widget>
-						<cc:CcTextField ui:field="lockerHardwareCode"  width="160"  readOnly="true"/>
+						<cc:CcTextField ui:field="hardwareCodeStr"  width="160"  readOnly="true"/>
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>

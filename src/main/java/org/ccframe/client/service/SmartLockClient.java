@@ -18,7 +18,7 @@ import org.fusesource.restygwt.client.RestService;
 
 public interface SmartLockClient extends RestService{
 	@GET @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.SMART_LOCK_BASE + Global.ID_BINDER_PATH + Global.REST_REQUEST_URL_SUFFIX)
-	void getById(@PathParam(Global.ID_BINDER_ID) Integer smartLockId, RestCallback<SmartLock> callback);
+	void getById(@PathParam(Global.ID_BINDER_ID) Integer smartLockId, RestCallback<SmartLockRowDto> callback);
 
 	@DELETE @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.SMART_LOCK_BASE + Global.ID_BINDER_PATH + Global.REST_REQUEST_URL_SUFFIX)
 	void decideDeleteById(@PathParam(Global.ID_BINDER_ID) Integer smartLockId, RestCallback<Void> callback);

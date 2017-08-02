@@ -42,7 +42,7 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 		if(StringUtils.isNotBlank(smartLockListReq.getSearchText())){
 			searchTextboolQueryBuilder.should(QueryBuilders.termQuery(SmartLock.MAC_ADDRESS, smartLockListReq.getSearchText().toLowerCase()));
 			searchTextboolQueryBuilder.should(QueryBuilders.termQuery(SmartLock.BIKE_PLATE_NUMBER, smartLockListReq.getSearchText().toLowerCase()));
-			searchTextboolQueryBuilder.should(QueryBuilders.termQuery(SmartLock.LOCKER_HARDWARE_CODE, smartLockListReq.getSearchText().toLowerCase()));
+			searchTextboolQueryBuilder.should(QueryBuilders.termQuery(SmartLock.HARDWARE_CODE, smartLockListReq.getSearchText().toLowerCase()));
 			searchTextboolQueryBuilder.should(QueryBuilders.termQuery(SmartLock.IMEI_CODE, smartLockListReq.getSearchText().toLowerCase()));
 		}
 		
@@ -61,6 +61,7 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 		List<SmartLockRowDto> resultList = new ArrayList<SmartLockRowDto>();
 		for(SmartLock smartLock:smartLockPage.getContent()){
 			SmartLockRowDto rowRecord = new SmartLockRowDto();
+			rowRecord.setHardwareCodeStr(String.format(Global.FORMAT_HARDWARECODE, smartLock.getHardwareCode()));
 			Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(smartLock.getOrgId());
 			if (org != null) {
 				rowRecord.setOrgNm(org.getOrgNm());
@@ -77,7 +78,7 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 	
 	public long grantSearch(SmartLockGrant smartLockGrant) {
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-		RangeQueryBuilder rangeQuerybuilder = QueryBuilders.rangeQuery(SmartLock.LOCKER_HARDWARE_CODE);
+		RangeQueryBuilder rangeQuerybuilder = QueryBuilders.rangeQuery(SmartLock.HARDWARE_CODE);
 		if(StringUtils.isNotBlank(smartLockGrant.getStartLockerHardwareCode())){
 			rangeQuerybuilder.from(smartLockGrant.getStartLockerHardwareCode());
 		}
@@ -101,7 +102,7 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 	@Transactional
 	public SmartLockGrantDto grant(SmartLockGrant smartLockGrant) {
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-		RangeQueryBuilder rangeQuerybuilder = QueryBuilders.rangeQuery(SmartLock.LOCKER_HARDWARE_CODE);
+		RangeQueryBuilder rangeQuerybuilder = QueryBuilders.rangeQuery(SmartLock.HARDWARE_CODE);
 		
 		SmartLockGrantDto smartLockGrantDto = new SmartLockGrantDto();
 		

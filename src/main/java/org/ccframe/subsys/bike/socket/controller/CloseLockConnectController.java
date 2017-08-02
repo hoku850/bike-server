@@ -23,11 +23,10 @@ public class CloseLockConnectController implements ISocketController {
 	}
 
 	@Override
-	public Map<DataBlockTypeEnum, Object> execute(String lockerHardwareCode, Map<DataBlockTypeEnum, Object> requestDataMap) {
+	public Map<DataBlockTypeEnum, Object> execute(Long lockerHardwareCode, Map<DataBlockTypeEnum, Object> requestDataMap) {
 		
-		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, lockerHardwareCode);
+		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.HARDWARE_CODE, lockerHardwareCode);
 		if (smartLock == null) {
-			System.out.println("lockerHardwareCode不存在!");
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"lockerHardwareCode不存在!"});
 		}
 		

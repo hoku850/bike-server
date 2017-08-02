@@ -48,7 +48,7 @@ public class CyclingOrderFinishWindowView extends BaseWindowView<Integer, Cyclin
 	CcTextField loginId;
 	
 	@UiField
-	CcTextField lockerHardwareCode;
+	CcTextField hardwareCodeStr;
 	
 	@UiField
 	CcTextField bikePlateNumber;
@@ -71,12 +71,8 @@ public class CyclingOrderFinishWindowView extends BaseWindowView<Integer, Cyclin
 			
 			final CyclingOrderRowDto cyclingOrderRowDto = driver.flush();
 			
-//			cyclingOrderRowDto.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode());
-//			cyclingOrderRowDto.setEndLocationLng(cyclingOrderRowDto.getStartLocationLng());
-//			cyclingOrderRowDto.setEndLocationLat(cyclingOrderRowDto.getStartLocationLat());
-			
 			final TextButton button = ((TextButton)(e.getSource()));
-//			button.disable();
+			button.disable();
 
 			ClientManager.getCyclingOrderClient().finish(cyclingOrderRowDto, new RestCallback<Integer>(){
 				@Override

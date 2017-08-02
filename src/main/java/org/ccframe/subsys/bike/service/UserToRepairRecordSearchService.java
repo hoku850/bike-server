@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.ccframe.client.Global;
 import org.ccframe.client.commons.ClientPage;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
@@ -31,11 +32,15 @@ public class UserToRepairRecordSearchService extends BaseSearchService<UserToRep
 		BoolQueryBuilder searchTextboolQueryBuilder = QueryBuilders.boolQuery();
 		
 		if(StringUtils.isNotBlank(userToRepairRecordListReq.getSearchText())){
-			List<SmartLock> smartLockList = SpringContextHelper.getBean(SmartLockService.class).findByKey(SmartLock.LOCKER_HARDWARE_CODE, userToRepairRecordListReq.getSearchText());
-			if(smartLockList.size()!=0){
-				searchTextboolQueryBuilder.should(QueryBuilders.termQuery(UserToRepairRecord.SMART_LOCK_ID, smartLockList.get(0).getSmartLockId()));
-			}
-			searchTextboolQueryBuilder.should(QueryBuilders.termQuery(UserToRepairRecord.BIKE_PLATE_NUMBER, userToRepairRecordListReq.getSearchText().toLowerCase()));
+			try {
+				List<SmartLock> smartLockList = SpringContextHelper.getBean(SmartLockService.class).findByKey(SmartLock.HARDWARE_CODE, userToRepairRecordListReq.getSearchText());
+				if(smartLockList.size()!=0){
+					searchTextboolQueryBuilder.should(QueryBuilders.termQuery(UserToRepairRecord.SMART_LOCK_ID, smartLockList.get(0).getSmartLockId()));
+				}
+				searchTextboolQueryBuilder.should(QueryBuilders.termQuery(UserToRepairRecord.BIKE_PLATE_NUMBER, userToRepairRecordListReq.getSearchText().toLowerCase()));
+			} catch (Exception e) {
+				return new ClientPage<UserToRepairRecordRowDto>(0, offset / limit, limit, new ArrayList<UserToRepairRecordRowDto>());
+			} 
 		}
 		
 		boolQueryBuilder.must(searchTextboolQueryBuilder);
@@ -57,14 +62,14 @@ public class UserToRepairRecordSearchService extends BaseSearchService<UserToRep
 					rowRecord.setOrgNm(org.getOrgNm());
 					SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(userToRepairRecord.getSmartLockId());
 					if (smartLock != null) {
-						rowRecord.setLockerHardwareCode(smartLock.getLockerHardwareCode());
+						rowRecord.setHardwareCodeStr(String.format(Global.FORMAT_HARDWARECODE, smartLock.getHardwareCode()));
 					}
 					BeanUtils.copyProperties(userToRepairRecord, rowRecord);
-					
-					resultList.add(rowRecord);
-				}
-				return new ClientPage<UserToRepairRecordRowDto>((int)userToRepairRecordPage.getTotalElements(), offset / limit, limit, resultList);
-			}
+
+			resultList.add(rowRecord);
+		}
+		return new ClientPage<UserToRepairRecordRowDto>((int) userToRepairRecordPage.getTotalElements(), offset / limit, limit, resultList);
+	}
 
 	/**
 	 * @author lzh

@@ -39,14 +39,14 @@ public class QRCodeScanController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	@RequestMapping(value = Global.ID_BINDER_PATH)
-	public void browserScan(@PathVariable(Global.ID_BINDER_ID) java.lang.String lockerHardwareCode, HttpServletResponse response, HttpServletRequest request) {
+	public void browserScan(@PathVariable(Global.ID_BINDER_ID) java.lang.Long hardwareCode, HttpServletResponse response, HttpServletRequest request) {
 		//测试用，转到appScan逻辑
 
-		appScan(lockerHardwareCode, request);
+		appScan(hardwareCode, request);
 		if(true)return;
 		
 		//查查锁是哪个运营商的
-		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, lockerHardwareCode);
+		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.HARDWARE_CODE, hardwareCode);
 		try {
 			response.sendRedirect(SpringContextHelper.getBean(AgentAppService.class).getByKey(AgentApp.ORG_ID, smartLock.getOrgId()).getAndroidUrl());
 		} catch (IOException e) {
@@ -55,17 +55,17 @@ public class QRCodeScanController {
 	}
 
 	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.POST) //APP扫码采用POST方式开锁
-	public String appScan(@PathVariable(Global.ID_BINDER_ID) java.lang.String lockerHardwareCode,
+	public String appScan(@PathVariable(Global.ID_BINDER_ID) java.lang.Long hardwareCode,
 			HttpServletRequest httpRequest){
 		/*if(true) {
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车出现故障，请更换一辆单车"});
 		}*/
-		if(! SmartLockChannelUtil.isChannelActive(lockerHardwareCode)){ //锁不在线
+		if(! SmartLockChannelUtil.isChannelActive(hardwareCode)){ //锁不在线
 			System.out.println("锁不在线");
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车出现故障，请更换一辆单车"});
 		}
 		
-		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, lockerHardwareCode);
+		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.HARDWARE_CODE, hardwareCode);
 		SmartLockStatCodeEnum smartLockStatCodeEnum = SmartLockStatCodeEnum.fromCode(smartLock.getSmartLockStatCode());
 		//已发放或已激活才可骑行
 		if(!( smartLockStatCodeEnum == SmartLockStatCodeEnum.GRANTED || smartLockStatCodeEnum == SmartLockStatCodeEnum.ACTIVED)){
@@ -75,7 +75,7 @@ public class QRCodeScanController {
 		
 		//如果是在骑行中，那么不能开锁
 		//TODO 杰中补充完成，如果最后一个锁相关的订单是骑行中，那么不能开锁。throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车正在被人使用，请更换一辆单车"});
-		SmartLock smartLock1 = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, lockerHardwareCode);
+		SmartLock smartLock1 = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.HARDWARE_CODE, hardwareCode);
 		List<CyclingOrder> listCyclingOrder = SpringContextHelper.getBean(CyclingOrderSearchService.class).findBySmartLockIdOrderByStartTimeDesc(smartLock1.getSmartLockId());
 		if(listCyclingOrder.size()>0&&listCyclingOrder.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode())){
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车正在被人使用，请更换一辆单车"});
@@ -92,7 +92,7 @@ public class QRCodeScanController {
 			 
 		 }
 		
-		if(memberUser != null && ! SmartLockChannelUtil.tryUnlock(lockerHardwareCode, memberUser)){ //开锁并等待完成
+		if(memberUser != null && ! SmartLockChannelUtil.tryUnlock(hardwareCode, memberUser)){ //开锁并等待完成
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"开锁信息未同步成功，如已经开锁请骑行，如未开启请重试或更换一辆单车"});
 		}
 		
@@ -101,9 +101,9 @@ public class QRCodeScanController {
 		if(smartLockStatCodeEnum == SmartLockStatCodeEnum.GRANTED){
 			smartLock.setSmartLockStatCode(SmartLockStatCodeEnum.ACTIVED.toCode());
 			SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
-			logger.info("激活智能锁 {}", lockerHardwareCode);
+			logger.info("激活智能锁 {}", hardwareCode);
 		}
-		logger.info("智能锁 {} 开锁成功", lockerHardwareCode);
+		logger.info("智能锁 {} 开锁成功", hardwareCode);
 		System.out.println("----智能锁开锁成功-----");
 		
 		return AppConstant.SUCCESS;

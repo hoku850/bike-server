@@ -9,6 +9,7 @@ import org.ccframe.client.components.CcLabelValueCombobox;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
+import org.ccframe.subsys.bike.dto.SmartLockRowDto;
 import org.fusesource.restygwt.client.Method;
 
 import com.google.gwt.core.client.GWT;
@@ -28,10 +29,10 @@ import com.sencha.gxt.widget.core.client.form.FormPanelHelper;
 import com.sencha.gxt.widget.core.client.info.Info;
 
 @Singleton
-public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> implements Editor<SmartLock>{
+public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> implements Editor<SmartLockRowDto>{
 
 	interface SmartLockUiBinder extends UiBinder<Component, SmartLockWindowView> {}
-	interface SmartLockDriver extends SimpleBeanEditorDriver<SmartLock, SmartLockWindowView> {}
+	interface SmartLockDriver extends SimpleBeanEditorDriver<SmartLockRowDto, SmartLockWindowView> {}
 	
 	private static SmartLockUiBinder uiBinder = GWT.create(SmartLockUiBinder.class);
 	private SmartLockDriver driver = GWT.create(SmartLockDriver.class);
@@ -42,7 +43,7 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 	CcVBoxLayoutContainer vBoxLayoutContainer;
 	
 	@UiField
-	CcTextField lockerHardwareCode;
+	CcTextField hardwareCodeStr;
 	
 	@UiField
 	CcTextField imeiCode;
@@ -104,9 +105,9 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 			@Override
 			public void run() {
 				if(SmartLockWindowView.this.smartLockId != null){
-					ClientManager.getSmartLockClient().getById(smartLockId, new RestCallback<SmartLock>(){
+					ClientManager.getSmartLockClient().getById(smartLockId, new RestCallback<SmartLockRowDto>(){
 						@Override
-						public void onSuccess(Method method, SmartLock response) {
+						public void onSuccess(Method method, SmartLockRowDto response) {
 							driver.edit(response);
 							orgId.setValue(response.getOrgId());
 							bikeTypeId.setValue(response.getBikeTypeId());
@@ -134,7 +135,7 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 		});
 
 		driver.initialize(this);
-		driver.edit(new SmartLock());
+		driver.edit(new SmartLockRowDto());
 		return widget;
 	}
 

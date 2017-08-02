@@ -192,7 +192,7 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 	
 	interface SmartLockProperties extends PropertyAccess<SmartLockRowDto> {
 		
-		ValueProvider<SmartLockRowDto, String> lockerHardwareCode();
+		ValueProvider<SmartLockRowDto, String> hardwareCodeStr();
 		ValueProvider<SmartLockRowDto, String> imeiCode();
 		ValueProvider<SmartLockRowDto, String> macAddress();
 		ValueProvider<SmartLockRowDto, String> orgNm();
@@ -240,7 +240,7 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
             }
         });
 		
-		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.lockerHardwareCode(), 150, "硬件编号", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.hardwareCodeStr(), 150, "硬件码", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.imeiCode(), 150, "IMEI码", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<SmartLockRowDto, String>(props.macAddress(), 150, "MAC地址", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(smartLockStatColumn);
@@ -338,8 +338,5 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 				loader.load();
 			}
 		});
-
-			
-		
 	}
 }

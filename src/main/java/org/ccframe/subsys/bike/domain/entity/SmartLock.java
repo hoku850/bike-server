@@ -33,7 +33,7 @@ public class SmartLock implements Serializable{
 	public static final String SMART_LOCK_ID = "smartLockId";
 	public static final String IMEI_CODE = "imeiCode";
 	public static final String MAC_ADDRESS = "macAddress";
-	public static final String LOCKER_HARDWARE_CODE = "lockerHardwareCode";
+	public static final String HARDWARE_CODE = "hardwareCode";
 	public static final String BIKE_PLATE_NUMBER = "bikePlateNumber";
 	public static final String ACTIVE_DATE = "activeDate";
 	public static final String ORG_ID = "orgId";
@@ -66,8 +66,8 @@ public class SmartLock implements Serializable{
 	
 	//elasticsearch 
 	//@Field(type = FieldType.String, analyzer="ik") //浣跨敤ik鍒嗚瘝鍣ㄨ繘琛屽垎璇�
-	@Column(name = "LOCKER_HARDWARE_CODE", nullable = false, length = 32)
-	private java.lang.String lockerHardwareCode;
+	@Column(name = "HARDWARE_CODE", nullable = false, length = 16)
+	private java.lang.Long hardwareCode;
 	
 	//elasticsearch 
 	//@Field(type = FieldType.String, analyzer="ik") //浣跨敤ik鍒嗚瘝鍣ㄨ繘琛屽垎璇�
@@ -146,12 +146,12 @@ public class SmartLock implements Serializable{
 	public java.lang.String getMacAddress() {
 		return this.macAddress;
 	}
-	public void setLockerHardwareCode(java.lang.String lockerHardwareCode) {
-		this.lockerHardwareCode = lockerHardwareCode;
+	public void setHardwareCode(java.lang.Long hardwareCode) {
+		this.hardwareCode = hardwareCode;
 	}
 	
-	public java.lang.String getLockerHardwareCode() {
-		return this.lockerHardwareCode;
+	public java.lang.Long getHardwareCode() {
+		return this.hardwareCode;
 	}
 	public void setBikePlateNumber(java.lang.String bikePlateNumber) {
 		this.bikePlateNumber = bikePlateNumber;

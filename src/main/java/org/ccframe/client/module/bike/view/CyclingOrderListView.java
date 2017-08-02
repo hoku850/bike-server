@@ -131,7 +131,7 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 		ValueProvider<CyclingOrderRowDto, Integer> cyclingOrderId();
 		ValueProvider<CyclingOrderRowDto, String> orgNm();
 		ValueProvider<CyclingOrderRowDto, String> loginId();
-		ValueProvider<CyclingOrderRowDto, String> lockerHardwareCode();
+		ValueProvider<CyclingOrderRowDto, String> hardwareCodeStr();
 		ValueProvider<CyclingOrderRowDto, String> bikePlateNumber();
 		ValueProvider<CyclingOrderRowDto, String> bikeTypeNm();
 		ValueProvider<CyclingOrderRowDto, String> cyclingOrderStatCodeStr();
@@ -146,7 +146,7 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, Integer>(props.cyclingOrderId(), 130, "订单编号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.orgNm(), 100, "运营商", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.loginId(), 120, "登陆ID", HasHorizontalAlignment.ALIGN_CENTER, true));
-		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.lockerHardwareCode(), 150, "智能锁硬件编号", HasHorizontalAlignment.ALIGN_CENTER, true));
+		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.hardwareCodeStr(), 150, "硬件码", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.bikePlateNumber(), 150, "单车车牌号", HasHorizontalAlignment.ALIGN_CENTER, true));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.bikeTypeNm(), 100, "单车类型", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<CyclingOrderRowDto, String>(props.cyclingOrderStatCodeStr(), 80, "状态", HasHorizontalAlignment.ALIGN_CENTER, true));

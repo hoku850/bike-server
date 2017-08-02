@@ -11,50 +11,18 @@ public class CyclingOrderRowDto extends CyclingOrder {
 	private static final long serialVersionUID = 1375546387825976209L;
 
 	private String orgNm;
-	
+
 	private String bikeTypeNm;
-	
+
 	private String userNm;
-	
+
 	private String continueTimeStr;
-	
+
 	private String cyclingDistanceMeterStr;
-	
-	private String lockerHardwareCode;
-	
+
+	private String hardwareCodeStr;
+
 	private String loginId;
-
-	public String getLoginId() {
-		return loginId;
-	}
-
-	public void setLoginId(String loginId) {
-		this.loginId = loginId;
-	}
-
-	public String getLockerHardwareCode() {
-		return lockerHardwareCode;
-	}
-
-	public void setLockerHardwareCode(String lockerHardwareCode) {
-		this.lockerHardwareCode = lockerHardwareCode;
-	}
-
-	public String getCyclingDistanceMeterStr() {
-		return cyclingDistanceMeterStr;
-	}
-
-	public void setCyclingDistanceMeterStr(String cyclingDistanceMeterStr) {
-		this.cyclingDistanceMeterStr = cyclingDistanceMeterStr;
-	}
-
-	public String getContinueTimeStr() {
-		return continueTimeStr;
-	}
-
-	public void setContinueTimeStr(String continueTimeStr) {
-		this.continueTimeStr = continueTimeStr;
-	}
 
 	public String getOrgNm() {
 		return orgNm;
@@ -62,14 +30,6 @@ public class CyclingOrderRowDto extends CyclingOrder {
 
 	public void setOrgNm(String orgNm) {
 		this.orgNm = orgNm;
-	}
-
-	public String getUserNm() {
-		return userNm;
-	}
-
-	public void setUserNm(String userNm) {
-		this.userNm = userNm;
 	}
 
 	public String getBikeTypeNm() {
@@ -80,9 +40,49 @@ public class CyclingOrderRowDto extends CyclingOrder {
 		this.bikeTypeNm = bikeTypeNm;
 	}
 
+	public String getUserNm() {
+		return userNm;
+	}
+
+	public void setUserNm(String userNm) {
+		this.userNm = userNm;
+	}
+
+	public String getContinueTimeStr() {
+		return continueTimeStr;
+	}
+
+	public void setContinueTimeStr(String continueTimeStr) {
+		this.continueTimeStr = continueTimeStr;
+	}
+
+	public String getCyclingDistanceMeterStr() {
+		return cyclingDistanceMeterStr;
+	}
+
+	public void setCyclingDistanceMeterStr(String cyclingDistanceMeterStr) {
+		this.cyclingDistanceMeterStr = cyclingDistanceMeterStr;
+	}
+
+	public String getHardwareCodeStr() {
+		return hardwareCodeStr;
+	}
+
+	public void setHardwareCodeStr(String hardwareCodeStr) {
+		this.hardwareCodeStr = hardwareCodeStr;
+	}
+
+	public String getLoginId() {
+		return loginId;
+	}
+
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
+	}
+
 	// 增强型方法
 	public String getCyclingOrderStatCodeStr() {
-		
+
 		switch (CyclingOrderStatCodeEnum.fromCode(getCyclingOrderStatCode())) {
 		case ON_THE_WAY:
 			return "骑行中";
@@ -97,6 +97,6 @@ public class CyclingOrderRowDto extends CyclingOrder {
 		default:
 			return "NULL";
 		}
-		
+
 	}
 }

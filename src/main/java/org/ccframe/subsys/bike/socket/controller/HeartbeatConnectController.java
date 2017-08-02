@@ -21,17 +21,17 @@ public class HeartbeatConnectController implements ISocketController {
 	}
 
 	@Override
-	public Map<DataBlockTypeEnum, Object> execute(String lockerHardwareCode, Map<DataBlockTypeEnum, Object> requestDataMap) {
+	public Map<DataBlockTypeEnum, Object> execute(Long lockerHardwareCode, Map<DataBlockTypeEnum, Object> requestDataMap) {
 		
 		System.out.println("IMSI码"+requestDataMap.get(DataBlockTypeEnum.IMSI));
 		System.out.println("锁的状态"+Byte.toString((byte)requestDataMap.get(DataBlockTypeEnum.LOCK_STATUS)));
 		System.out.println("锁的电量"+(int)(byte)requestDataMap.get(DataBlockTypeEnum.LOCK_BATTERY));
 		System.out.println("csp信号="+requestDataMap.get(DataBlockTypeEnum.GPS_INFO));
 		
-		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, lockerHardwareCode);
+		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.HARDWARE_CODE, lockerHardwareCode);
 		if (smartLock!= null) {
 			if(SmartLockStatCodeEnum.fromCode(smartLock.getSmartLockStatCode()) == SmartLockStatCodeEnum.GRANTED || SmartLockStatCodeEnum.fromCode(smartLock.getSmartLockStatCode()) == SmartLockStatCodeEnum.ACTIVED){
-				SpringContextHelper.getBean(SmartLockStatService.class).updateLockBattery(smartLock.getSmartLockId(), (int)requestDataMap.get(DataBlockTypeEnum.LOCK_BATTERY));
+				SpringContextHelper.getBean(SmartLockStatService.class).updateLockBattery(smartLock.getSmartLockId(), (int)(byte)requestDataMap.get(DataBlockTypeEnum.LOCK_BATTERY));
 			}
 		}
 		//长连接事件，数据原封不动丢回去完事

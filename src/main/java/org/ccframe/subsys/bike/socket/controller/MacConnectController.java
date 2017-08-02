@@ -17,7 +17,7 @@ public class MacConnectController implements ISocketController {
 	}
 
 	@Override
-	public Map<DataBlockTypeEnum, Object> execute(String lockerHardwareCode, Map<DataBlockTypeEnum, Object> requestDataMap) {
+	public Map<DataBlockTypeEnum, Object> execute(Long lockerHardwareCode, Map<DataBlockTypeEnum, Object> requestDataMap) {
 		//TODO 保存锁的状态和电量
 		System.out.println("电量="+requestDataMap.get(DataBlockTypeEnum.LOCK_BATTERY));
 		System.out.println("MAC="+requestDataMap.get(DataBlockTypeEnum.LOCK_MAC));

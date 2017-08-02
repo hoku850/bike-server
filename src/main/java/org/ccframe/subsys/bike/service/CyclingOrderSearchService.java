@@ -64,16 +64,19 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 		builder.lte(cyclingOrderListReq.getEndTime() == null ? Global.MAX_SEARCH_DATE : cyclingOrderListReq.getEndTime());
 		boolQueryBuilder.must(builder);
 
-		// 过滤[登陆ID/硬件编号/车牌号]s
+		// 过滤[登陆ID/硬件编号/车牌号]
 		BoolQueryBuilder shouldQueryBuilder = QueryBuilders.boolQuery();
 		if (StringUtils.isNotBlank(cyclingOrderListReq.getSearchField())) {
 			// 登陆ID
 			User user = SpringContextHelper.getBean(UserSearchService.class).getByKey(User.LOGIN_ID, cyclingOrderListReq.getSearchField());
 			if (user != null) shouldQueryBuilder.should(QueryBuilders.termQuery(CyclingOrder.USER_ID, user.getUserId()));
-			// 硬件编号s
-			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, cyclingOrderListReq.getSearchField());
-			if (smartLock != null) shouldQueryBuilder.should(QueryBuilders.termQuery(CyclingOrder.SMART_LOCK_ID, smartLock.getSmartLockId()));
-			
+			// 硬件编号 捕获非法字符
+			try {
+				SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getByKey(SmartLock.HARDWARE_CODE, cyclingOrderListReq.getSearchField());
+				if (smartLock != null) shouldQueryBuilder.should(QueryBuilders.termQuery(CyclingOrder.SMART_LOCK_ID, smartLock.getSmartLockId()));
+			} catch (Exception e) {
+				
+			}
 			shouldQueryBuilder.should(QueryBuilders.termQuery(CyclingOrder.BIKE_PLATE_NUMBER, cyclingOrderListReq.getSearchField()));
 			boolQueryBuilder.must(shouldQueryBuilder);
 		}
@@ -105,7 +108,7 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 			// 查询出智能锁硬件编号
 			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder.getSmartLockId());
 			if (smartLock != null) {
-				cyclingOrderRowDto.setLockerHardwareCode(smartLock.getLockerHardwareCode());
+				cyclingOrderRowDto.setHardwareCodeStr(String.format(Global.FORMAT_HARDWARECODE, smartLock.getHardwareCode()));
 			}
 			// 查询出单车类型
 			BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(cyclingOrder.getBikeTypeId());
@@ -115,7 +118,7 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 			resultList.add(cyclingOrderRowDto);
 		}
 		CyclingOrderClientPage<CyclingOrderRowDto> clientPage = new CyclingOrderClientPage<CyclingOrderRowDto>((int)cPage.getTotalElements(), offset / limit, limit, resultList);
-		clientPage.setCyclingOrderTotalAmount(totalAmount);
+		clientPage.setCyclingOrderTotalAmount(String.format("%.2f", totalAmount));
 		return clientPage;
 	}
 

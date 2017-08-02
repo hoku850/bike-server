@@ -46,15 +46,16 @@ public class DataOutputStreamEx extends DataOutputStream {
         incCount(8);
     }
     
-    public final void writeStringReverse(String v) throws IOException {
+    public final void writeStringReverse(Long v) throws IOException {
+    	String str = v.toString();
     	writeBuffer[7] = (byte)(0);
     	writeBuffer[6] = (byte)(0);
     	writeBuffer[5] = (byte)(0);
-        writeBuffer[4] = (byte)(Integer.parseInt(v.substring(0, 2)));
-        writeBuffer[3] = (byte)(Integer.parseInt(v.substring(2, 4)));
-        writeBuffer[2] = (byte)(Integer.parseInt(v.substring(4, 6)));
-        writeBuffer[1] = (byte)(Integer.parseInt(v.substring(6, 8)));
-        writeBuffer[0] = (byte)(Integer.parseInt(v.substring(8, 10)));
+        writeBuffer[4] = (byte)(Integer.parseInt(str.substring(0, 2)));
+        writeBuffer[3] = (byte)(Integer.parseInt(str.substring(2, 4)));
+        writeBuffer[2] = (byte)(Integer.parseInt(str.substring(4, 6)));
+        writeBuffer[1] = (byte)(Integer.parseInt(str.substring(6, 8)));
+        writeBuffer[0] = (byte)(Integer.parseInt(str.substring(8, 10)));
         out.write(writeBuffer, 0, 8);
         incCount(8);
     }

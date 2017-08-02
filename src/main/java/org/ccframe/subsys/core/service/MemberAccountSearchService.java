@@ -64,7 +64,7 @@ public class MemberAccountSearchService extends BaseSearchService<MemberAccount,
 		// 查询
 		Page<MemberAccount> cPage = this.getRepository().search(
 			boolQueryBuilder,
-			new OffsetBasedPageRequest(offset, limit, new Order(Direction.DESC, MemberAccount.MEMBER_ACCOUNT_ID))
+			new OffsetBasedPageRequest(offset, limit, new Order(Direction.ASC, MemberAccount.MEMBER_ACCOUNT_ID))
 		);
 		
 		List<MemberAccountRowDto> resultList = new ArrayList<MemberAccountRowDto>();

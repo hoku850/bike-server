@@ -20,13 +20,13 @@ public class CyclingOrderClientPage<E> extends ClientPage<E>{
 		super(totalLength, page, size, list);
 	}
 
-	private Double cyclingOrderTotalAmount;
+	private String cyclingOrderTotalAmount;
 
-	public Double getCyclingOrderTotalAmount() {
+	public String getCyclingOrderTotalAmount() {
 		return cyclingOrderTotalAmount;
 	}
 
-	public void setCyclingOrderTotalAmount(Double cyclingOrderTotalAmount) {
+	public void setCyclingOrderTotalAmount(String cyclingOrderTotalAmount) {
 		this.cyclingOrderTotalAmount = cyclingOrderTotalAmount;
 	}
 }

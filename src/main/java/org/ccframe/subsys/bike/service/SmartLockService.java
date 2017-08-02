@@ -30,6 +30,7 @@ import org.ccframe.subsys.bike.repository.SmartLockRepository;
 import org.ccframe.subsys.core.domain.entity.Org;
 import org.ccframe.subsys.core.service.OrgSearchService;
 import org.ccframe.subsys.core.service.OrgService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +42,18 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 
 	private Map<String, Double> importStatusMap = new ConcurrentHashMap<String, Double>();
 
+	/**
+	 * lqz
+	 */
+	@Transactional
+	public SmartLockRowDto getSmartLockRowDtoById(Integer smartLockId) {
+		SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(smartLockId);
+		SmartLockRowDto smartLockRowDto = new SmartLockRowDto();
+		BeanUtils.copyProperties(smartLock, smartLockRowDto);
+		smartLockRowDto.setHardwareCodeStr(String.format(Global.FORMAT_HARDWARECODE, smartLock.getHardwareCode()));
+		return smartLockRowDto;
+	}
+	
 	@Transactional
 	public void saveOrUpdateSmartLock(SmartLock smartLock) {
 		if(smartLock.getSmartLockId()==null){
@@ -48,7 +61,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			smartLock.setLastUseDate(null);
 		}
 		
-		SmartLock dbSmartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.LOCKER_HARDWARE_CODE, smartLock.getLockerHardwareCode());
+		SmartLock dbSmartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.HARDWARE_CODE, smartLock.getHardwareCode());
 		if(dbSmartLock != null){
 			if(smartLock.getSmartLockId() == null || (smartLock.getSmartLockId() != null && (!dbSmartLock.getSmartLockId().equals(smartLock.getSmartLockId())))){
 				throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[] { "硬件编码重复！！！" });
@@ -85,7 +98,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
 		
 	}
-
+	
 	@Transactional
 	public void decideDeleteById(Integer smartLockId) {
 		SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(smartLockId);
@@ -99,7 +112,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 
 	private List<ExcelReaderError> dataLogicCheck(SmartLockRowDto checkValue, int rowNum) {
 		List<ExcelReaderError> resultList = new ArrayList<>();
-		ImportDataCheckUtil.stringCheck("硬件编码", 32, false, checkValue.getLockerHardwareCode(), rowNum, 0, resultList);
+		ImportDataCheckUtil.stringCheck("硬件编码", 32, false, checkValue.getHardwareCode().toString(), rowNum, 0, resultList);
 		ImportDataCheckUtil.stringCheck("IMEI码", 15, true, checkValue.getImeiCode(), rowNum, 1, resultList);
 		ImportDataCheckUtil.stringCheck("MAC地址", 17, true, checkValue.getMacAddress(), rowNum, 2, resultList);
 		ImportDataCheckUtil.stringCheck("单车车牌号", 15, true, checkValue.getBikePlateNumber(), rowNum, 3, resultList);
@@ -123,7 +136,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 				continue;
 			}
 
-			SmartLock smartLock = this.getByKey(SmartLock.LOCKER_HARDWARE_CODE, rowSmartLock.getLockerHardwareCode());//数据库内容
+			SmartLock smartLock = this.getByKey(SmartLock.HARDWARE_CODE, rowSmartLock.getHardwareCode());//数据库内容
 
 			// 判断重复
 			SmartLock check = null;
@@ -239,14 +252,14 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			
 			
 			// 保存
-			SmartLock dbSmartLock = this.getByKey(SmartLock.LOCKER_HARDWARE_CODE, rowSmartLock.getLockerHardwareCode());
+			SmartLock dbSmartLock = this.getByKey(SmartLock.HARDWARE_CODE, rowSmartLock.getHardwareCode());
 			if (dbSmartLock == null) {//add
 				dbSmartLock = new SmartLock();
 			}
 			dbSmartLock.setOrgId(orgId);
 			dbSmartLock.setSmartLockStatCode(smartLockStatCode);
 			dbSmartLock.setBikeTypeId(bikeTypeId);
-			dbSmartLock.setLockerHardwareCode(rowSmartLock.getLockerHardwareCode());
+			dbSmartLock.setHardwareCode(rowSmartLock.getHardwareCode());
 			dbSmartLock.setImeiCode(rowSmartLock.getImeiCode());
 			dbSmartLock.setMacAddress(rowSmartLock.getMacAddress());
 			dbSmartLock.setBikePlateNumber(rowSmartLock.getBikePlateNumber());
@@ -299,7 +312,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			data.put(SmartLock.SMART_LOCK_ID, smartLock.getSmartLockId());
 			data.put(SmartLock.IMEI_CODE, smartLock.getImeiCode());
 			data.put(SmartLock.MAC_ADDRESS, smartLock.getMacAddress());
-			data.put(SmartLock.LOCKER_HARDWARE_CODE, smartLock.getLockerHardwareCode());
+			data.put(SmartLock.HARDWARE_CODE, smartLock.getHardwareCode());
 			data.put(SmartLock.BIKE_PLATE_NUMBER, smartLock.getBikePlateNumber());
 			data.put(SmartLock.ACTIVE_DATE_STR, smartLock.getActiveDateStr());
 
@@ -351,5 +364,5 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 		smartLock.setSmartLockStatCode(SmartLockStatCodeEnum.DESERTED.toCode());
 		SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
 	}
-	
+
 }

@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ControllerMapping.SMART_LOCK_BASE)
 public class SmartLockController{
 	@RequestMapping(value = Global.ID_BINDER_PATH)
-	public SmartLock getSmartLock(@PathVariable(Global.ID_BINDER_ID) Integer smartLockId) {
-		return SpringContextHelper.getBean(SmartLockSearchService.class).getById(smartLockId);
+	public SmartLockRowDto getSmartLock(@PathVariable(Global.ID_BINDER_ID) Integer smartLockId) {
+		return SpringContextHelper.getBean(SmartLockService.class).getSmartLockRowDtoById(smartLockId);
 	}
 
 	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.DELETE)

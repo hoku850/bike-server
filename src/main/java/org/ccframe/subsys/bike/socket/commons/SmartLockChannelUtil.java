@@ -30,11 +30,11 @@ public class SmartLockChannelUtil {
 
 	private static final int UNLOCKING_SIZE = 1000;
 	
-	private static LinkedHashMap<String, OpenMessage> openMessageMap = new LinkedHashMap<String, OpenMessage>(){ //开锁消息队列
+	private static LinkedHashMap<Long, OpenMessage> openMessageMap = new LinkedHashMap<Long, OpenMessage>(){ //开锁消息队列
 
 		private static final long serialVersionUID = -657968168039482524L;
 
-		protected boolean removeEldestEntry(Map.Entry<String, OpenMessage> eldest) {
+		protected boolean removeEldestEntry(Map.Entry<Long, OpenMessage> eldest) {
 		    // 当前记录数大于设置的最大的记录数，删除最旧记录（即最近访问最少的记录）
 		    return size() > UNLOCKING_SIZE;
 		}
@@ -51,11 +51,11 @@ public class SmartLockChannelUtil {
 	/**
 	 * 双向map
 	 */
-	private static HashBiMap<String,Channel> chanelMap = HashBiMap.<String,Channel>create(MAX_CONNECTION);
+	private static HashBiMap<Long,Channel> chanelMap = HashBiMap.<Long,Channel>create(MAX_CONNECTION);
 	
 	private static Logger logger = LoggerFactory.getLogger(SmartLockChannelUtil.class);
 	
-	synchronized public static void checkAndRegisterChannel(String lockerHardwareCode, Channel channel){
+	synchronized public static void checkAndRegisterChannel(Long lockerHardwareCode, Channel channel){
 		if(chanelMap.get(lockerHardwareCode) == null){
 			chanelMap.put(lockerHardwareCode, channel);
 			logger.info("connected smartLockId channel >> {}", lockerHardwareCode);
@@ -66,12 +66,12 @@ public class SmartLockChannelUtil {
 		logger.info("remove smartLockId >> {}", chanelMap.inverse().remove(channel));
 	}
 	
-	public static boolean isChannelActive(String lockerHardwareCode){
+	public static boolean isChannelActive(Long lockerHardwareCode){
 		return chanelMap.get(lockerHardwareCode) != null;
 	}
 	
-	public static boolean tryUnlock(String lockerHardwareCode, MemberUser memberUser){
-		Channel channel = chanelMap.get(lockerHardwareCode);
+	public static boolean tryUnlock(Long hardwareCode, MemberUser memberUser){
+		Channel channel = chanelMap.get(hardwareCode);
 		if(channel != null){
 			//开锁请求 , byte[] bytes、、TODO
 			try (
@@ -81,7 +81,7 @@ public class SmartLockChannelUtil {
 				responseDataOutputStream.write(0x01); //协议类型
 				responseDataOutputStream.write(0x01); //协议版本号
 				
-				responseDataOutputStream.writeStringReverse(lockerHardwareCode); //单车设备号  //TODO yjz 修改
+				responseDataOutputStream.writeStringReverse(hardwareCode); //单车设备号  //TODO yjz 修改
 				
 				responseDataOutputStream.write(0x01); //单车类别
 				responseDataOutputStream.write(0x04); //命令字：开锁
@@ -106,9 +106,9 @@ public class SmartLockChannelUtil {
 
 				synchronized(channel){
 					//标记开锁，等待回复
-					openMessageMap.put(lockerHardwareCode, new OpenMessage(memberUser, false)); //将打开超时也标记为OTHER_ERROR
+					openMessageMap.put(hardwareCode, new OpenMessage(memberUser, false)); //将打开超时也标记为OTHER_ERROR
 					channel.wait(READ_TIMEOUT_MILLIS); //等开锁回复命令notifyall
-					return openMessageMap.remove(lockerHardwareCode).isUnLocked(); //开锁成功返回true，失败或READ_TIMEOUT_MILLIS超时返回false
+					return openMessageMap.remove(hardwareCode).isUnLocked(); //开锁成功返回true，失败或READ_TIMEOUT_MILLIS超时返回false
 				}
 			} catch (Throwable tr) {
 				logger.error("", tr);
@@ -118,7 +118,7 @@ public class SmartLockChannelUtil {
 		return false;
 	}
 	
-	public static void notifyUnlocked(String lockerHardwareCode){
+	public static void notifyUnlocked(Long lockerHardwareCode){
 		Channel channel = chanelMap.get(lockerHardwareCode);
 		if(channel != null && openMessageMap.get(lockerHardwareCode) != null){
 			openMessageMap.get(lockerHardwareCode).setUnLocked(true);
@@ -133,7 +133,7 @@ public class SmartLockChannelUtil {
 	 * @param lockerHardwareCode
 	 * @return
 	 */
-	public static MemberUser getLockerUser(String lockerHardwareCode){
+	public static MemberUser getLockerUser(Long lockerHardwareCode){
 		OpenMessage openMessage = openMessageMap.get(lockerHardwareCode);
 		if(openMessage != null){
 			return openMessage.getMemberUser();

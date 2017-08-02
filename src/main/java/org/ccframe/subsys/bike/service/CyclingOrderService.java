@@ -70,7 +70,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(smartLock.getBikeTypeId());
 		cyclingOrderRowDto.setOrgNm(org.getOrgNm());
 		cyclingOrderRowDto.setLoginId(user.getLoginId());
-		cyclingOrderRowDto.setLockerHardwareCode(smartLock.getLockerHardwareCode());
+		cyclingOrderRowDto.setHardwareCodeStr(String.format(Global.FORMAT_HARDWARECODE, smartLock.getHardwareCode()));
 		cyclingOrderRowDto.setBikeTypeNm(bikeType.getBikeTypeNm());
 		
 		return cyclingOrderRowDto;
@@ -134,7 +134,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			if (org != null) data.put(Org.ORG_NM, org.getOrgNm());
 			
 			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(cyclingOrder.getSmartLockId());
-			if (smartLock != null) data.put(SmartLock.LOCKER_HARDWARE_CODE, smartLock.getLockerHardwareCode());
+			if (smartLock != null) data.put(SmartLock.HARDWARE_CODE, smartLock.getHardwareCode());
 			
 			data.put(CyclingOrder.BIKE_PLATE_NUMBER, cyclingOrder.getBikePlateNumber());
 			data.put(CyclingOrder.START_TIME_STR, cyclingOrder.getStartTimeStr());

@@ -35,7 +35,7 @@ public class TestController {
 		
 	    int imeiCode = 100000001;
 		int macAddress = 200000001;
-		int lockerHardwareCode = 300000001;
+		long lockerHardwareCode = 300000001;
 		int bikePlateNumber = 400000001;
 		int i = 0;
 		SmartLock smartLock = new SmartLock();
@@ -43,7 +43,7 @@ public class TestController {
 			smartLock = new SmartLock();
 			smartLock.setImeiCode(String.valueOf(imeiCode++));
 			smartLock.setMacAddress(String.valueOf(macAddress++));
-			smartLock.setLockerHardwareCode(String.valueOf(lockerHardwareCode++));
+			smartLock.setHardwareCode(lockerHardwareCode++);
 			smartLock.setBikePlateNumber(String.valueOf(bikePlateNumber++));
 			smartLock.setActiveDate(new Date());
 			smartLock.setLastUseDate(new Date());

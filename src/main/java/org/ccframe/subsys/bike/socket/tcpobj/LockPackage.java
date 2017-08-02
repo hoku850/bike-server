@@ -21,7 +21,7 @@ public class LockPackage {
 	
 //	private long lockerHardwareCode;
 	
-	private String lockerHardwareCode;
+	private Long hardwareCode;
 	
 	private BikeTypeCodeEnum bykeTypeCodeEnum;
 	
@@ -34,7 +34,7 @@ public class LockPackage {
 	@Override
 	public String toString() {
 		return "LockPackage [type=" + type + ", version=" + version
-				+ ", lockerHardwareCode=" + lockerHardwareCode
+				+ ", lockerHardwareCode=" + hardwareCode
 				+ ", bykeTypeCodeEnum=" + bykeTypeCodeEnum
 				+ ", commandFlagEnum=" + commandFlagEnum + ", answerFlagEnum="
 				+ answerFlagEnum + ", dataBlockMap=" + dataBlockMap + "]";
@@ -70,12 +70,12 @@ public class LockPackage {
 		return bykeTypeCodeEnum;
 	}
 
-	public String getLockerHardwareCode() {
-		return lockerHardwareCode;
+	public Long getHardwareCode() {
+		return hardwareCode;
 	}
 
-	public void setLockerHardwareCode(String lockerHardwareCode) {
-		this.lockerHardwareCode = lockerHardwareCode;
+	public void setHardwareCode(Long hardwareCode) {
+		this.hardwareCode = hardwareCode;
 	}
 
 	public void setBykeTypeEnum(BikeTypeCodeEnum bykeTypeCodeEnum) {

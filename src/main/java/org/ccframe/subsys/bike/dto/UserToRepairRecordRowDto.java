@@ -2,17 +2,17 @@ package org.ccframe.subsys.bike.dto;
 
 import org.ccframe.subsys.bike.domain.entity.UserToRepairRecord;
 
-public class UserToRepairRecordRowDto extends UserToRepairRecord{
+public class UserToRepairRecordRowDto extends UserToRepairRecord {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private String orgNm;
-	
-	private String lockerHardwareCode;
-	
+
+	private String hardwareCodeStr;
+
 	public String getOrgNm() {
 		return orgNm;
 	}
@@ -21,13 +21,12 @@ public class UserToRepairRecordRowDto extends UserToRepairRecord{
 		this.orgNm = orgNm;
 	}
 
-	public String getLockerHardwareCode() {
-		return lockerHardwareCode;
+	public String getHardwareCodeStr() {
+		return hardwareCodeStr;
 	}
 
-	public void setLockerHardwareCode(String lockerHardwareCode) {
-		this.lockerHardwareCode = lockerHardwareCode;
+	public void setHardwareCodeStr(String hardwareCodeStr) {
+		this.hardwareCodeStr = hardwareCodeStr;
 	}
-	
-	
+
 }

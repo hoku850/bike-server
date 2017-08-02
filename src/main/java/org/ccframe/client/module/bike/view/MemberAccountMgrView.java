@@ -12,9 +12,9 @@ import com.sencha.gxt.widget.core.client.Component;
 
 /**
  * 
- * 文章管理器.
+ * 会员账户管理基础左右布局.
  * 
- * @author JIM
+ * @author lqz
  *
  */
 @Singleton

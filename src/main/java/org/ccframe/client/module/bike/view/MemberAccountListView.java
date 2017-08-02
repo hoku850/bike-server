@@ -120,7 +120,7 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 			}
 		});
 		configList.add(nmColumn);
-		configList.add(new ColumnConfigEx<MemberAccountRowDto, Double>(props.accountValue(), 24, "余额（元）", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<MemberAccountRowDto, Double>(props.accountValue(), 24, "余额", HasHorizontalAlignment.ALIGN_CENTER, false));
 	}
 	
 	@Override

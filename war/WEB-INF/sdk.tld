@@ -126,7 +126,7 @@
         <name>getArticleById</name>
         <function-class>org.ccframe.sdk.article.function.ArticleApi</function-class>
         <function-signature>
-            org.ccframe.domain.ArticleInf getArticleById(java.lang.Integer)
+            org.ccframe.subsys.article.domain.entity.ArticleInf getArticleById(java.lang.Integer)
         </function-signature>
     </function>
 

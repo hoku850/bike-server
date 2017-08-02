@@ -57,7 +57,9 @@ public class QRCodeScanController {
 	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.POST) //APP扫码采用POST方式开锁
 	public String appScan(@PathVariable(Global.ID_BINDER_ID) java.lang.String lockerHardwareCode,
 			HttpServletRequest httpRequest){
-
+		/*if(true) {
+			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车出现故障，请更换一辆单车"});
+		}*/
 		if(! SmartLockChannelUtil.isChannelActive(lockerHardwareCode)){ //锁不在线
 			System.out.println("锁不在线");
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车出现故障，请更换一辆单车"});

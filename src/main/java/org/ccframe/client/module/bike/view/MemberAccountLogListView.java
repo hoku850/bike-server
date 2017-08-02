@@ -114,17 +114,15 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 					switch (accountTypeCode) {
 						case INTEGRAL:
 							columnModel.getColumn(2).setHeader("交易积分");
-							view.getHeader().refresh(); //强制更新头部
 							break;
 						case PRE_DEPOSIT:
 							columnModel.getColumn(2).setHeader("交易预存款");
-							view.getHeader().refresh(); //强制更新头部
 							break;
 						case DEPOSIT:
 							columnModel.getColumn(2).setHeader("交易押金");
-							view.getHeader().refresh(); //强制更新头部
 							break;
 					}
+					view.getHeader().refresh(); //强制更新头部
 					loader.load();
 					
 					// 改变title的值

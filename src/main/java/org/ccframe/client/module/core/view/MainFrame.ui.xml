@@ -18,8 +18,9 @@
 			text-overflow:ellipsis;
 			white-space: nowrap;
 			font-size: 24px;
-			color: #ffffff;
+			color: #d2d3d3;
 			line-height:50px;
+			padding-left:10px;
 		}
 	</ui:style>
 
@@ -59,7 +60,7 @@
 			<container:north layoutData="{northData}">
 				<container:HBoxLayoutContainer height="50px" styleName="{style.maincolor}" addStyleNames="x-toolbar-mark" ui:field="hbox"><!-- hBoxLayoutAlign="STRETCH"  -->
 					<container:child>
-						<cc:CcImage contextUrl="ccframe/images/backgroud_log.png"/>
+						<cc:CcImage contextUrl="ccframe/images/backgroud_logo.png"/>
 					</container:child>
 					<container:child>
 						<g:Label ui:field="orgNmLabel" styleName="{style.orgNmLabel}" text="总平台"/>

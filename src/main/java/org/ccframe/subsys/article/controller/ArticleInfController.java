@@ -57,13 +57,13 @@ public class ArticleInfController{
 	public void saveOrUpdateArticleInfDto(@RequestBody ArticleInfDto articleInfDto){
 		ArticleInf articleInf = SpringContextHelper.getBean(ArticleInfService.class).saveOrUpdateArticleInfDto(articleInfDto);
 		//必须在保证事务正常执行的情况下，才提交索引
-		SpringContextHelper.getBean(ArticleInfSearchService.class).save(articleInf);
+		SpringContextHelper.getBean(ArticleInfService.class).save(articleInf);
 	}
 
 	@RequestMapping(value = Global.ID_BINDER_PATH, method=RequestMethod.DELETE)
 	public void delete(@PathVariable(Global.ID_BINDER_ID) java.lang.Integer articleInfId){
 		SpringContextHelper.getBean(ArticleInfService.class).deleteById(articleInfId);
 		//必须在保证事务正常执行的情况下，才提交索引
-		SpringContextHelper.getBean(ArticleInfSearchService.class).deleteById(articleInfId);
+		SpringContextHelper.getBean(ArticleInfService.class).deleteById(articleInfId);
 	}
 }

@@ -94,6 +94,12 @@ public interface Global {
 	double IMPORT_SUCCESS_WITH_ERROR = 4.0; //导入成功，但是有错误，详见错误文件
 	double IMPORT_ERROR = 5.0; //导入失败
 	
+	//发放的几个状态
+	double GRANT_INIT = 2.0; //初始状态
+	double GRANT_SUCCESS_ALL = 3.0;
+	double GRANT_SUCCESS_WITH_ERROR = 4.0; //部分发放成功
+	double GRANT_ERROR = 5.0;
+	
 	//优选文本的分隔符，默认是回车\n
 	String PREFERENCE_TEXT_SPLIT_STR = "\n";
 	

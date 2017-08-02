@@ -72,10 +72,11 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 			if (user != null) shouldQueryBuilder.should(QueryBuilders.termQuery(CyclingOrder.USER_ID, user.getUserId()));
 			// 硬件编号 捕获非法字符
 			try {
-				SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getByKey(SmartLock.HARDWARE_CODE, cyclingOrderListReq.getSearchField());
+				long hardwareCode = Long.parseLong(cyclingOrderListReq.getSearchField());
+				SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getByKey(SmartLock.HARDWARE_CODE, hardwareCode);
 				if (smartLock != null) shouldQueryBuilder.should(QueryBuilders.termQuery(CyclingOrder.SMART_LOCK_ID, smartLock.getSmartLockId()));
 			} catch (Exception e) {
-				
+				//e.printStackTrace();
 			}
 			shouldQueryBuilder.should(QueryBuilders.termQuery(CyclingOrder.BIKE_PLATE_NUMBER, cyclingOrderListReq.getSearchField()));
 			boolQueryBuilder.must(shouldQueryBuilder);

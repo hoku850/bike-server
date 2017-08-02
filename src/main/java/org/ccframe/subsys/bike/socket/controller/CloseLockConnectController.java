@@ -43,7 +43,7 @@ public class CloseLockConnectController implements ISocketController {
 		System.out.println("锁的纬度=" + lat);
 		System.out.println("系统时间=" + sysTime);
 		
-		// 更新智能锁状态表
+		// 更新智能锁状态表和骑行订单
 		SpringContextHelper.getBean(SmartLockStatService.class).saveOrUpdate(smartLock, lockStatus, lockBattery, lng, lat, sysTime);
 		
 		return requestDataMap;

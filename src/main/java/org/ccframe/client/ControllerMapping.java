@@ -152,6 +152,7 @@ public interface ControllerMapping {
 	String SMART_LOCK_BASE = ADMIN_BASE + "smartLock"; //基地址+getById(path)+增改(POST)+删除(DELETE)
 	String SMART_LOCK_GRANT_LIST = "grant"; 
 	String SMART_LOCK_SEARCH_LIST = "grantSearch"; 
+	String SMART_LOCK_QUERY_GRANT = "queryGrant"; 
 	String SMART_LOCK_LIST = "findSmartLockList"; //用户分页列表
 	String SMART_LOCK_EXPORT = "doExport"; //导出
 	String SMART_LOCK_DESERT = "doDesert"; //报废

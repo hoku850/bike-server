@@ -1,5 +1,6 @@
 package org.ccframe.client.module.bike.view;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.base.BaseWindowView;
 import org.ccframe.client.commons.CcFormPanelHelper;
 import org.ccframe.client.commons.ClientManager;
@@ -13,17 +14,23 @@ import org.ccframe.subsys.bike.dto.SmartLockGrantDto;
 import org.fusesource.restygwt.client.Method;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Singleton;
 import com.sencha.gxt.core.client.util.ToggleGroup;
 import com.sencha.gxt.widget.core.client.Component;
+import com.sencha.gxt.widget.core.client.ProgressBar;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.CardLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.form.FormPanelHelper;
 import com.sencha.gxt.widget.core.client.form.Radio;
@@ -35,6 +42,8 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 	interface SmartLockGrantUiBinder extends UiBinder<Component, SmartLockGrantWindowView> {}
 	
 	private static SmartLockGrantUiBinder uiBinder = GWT.create(SmartLockGrantUiBinder.class);
+	
+	private static NumberFormat percentFormat = NumberFormat.getFormat("#0.0");
 	
 	private ToggleGroup toggle = new ToggleGroup();
 	
@@ -61,6 +70,31 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 	
 	@UiField
     CcLabelValueCombobox bikeTypeId;
+	
+	@UiField
+	public ProgressBar processProgressBar;
+
+	@UiField
+	public CardLayoutContainer processCardLayoutContainer;
+	
+	@UiField
+	public HTML grantResult;
+	
+	@UiField
+	public TextButton grantButton;
+	
+	protected void reset(boolean includeGrantResult) {
+		if(includeGrantResult){
+			processCardLayoutContainer.setActiveWidget(grantResult);
+			grantResult.setHTML("请选择并填写条件后点击“发放”按钮开始");
+			grantResult.getElement().getStyle().setColor("red");
+		}
+		grantButton.setEnabled(true);
+	}
+	
+	protected void reset() {
+		reset(true);
+	}
 	
 	@Override
 	protected Widget bindUi() {
@@ -113,6 +147,7 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
 		// 重置下拉框
 		orgId.reset();
+		reset();
 		FormPanelHelper.reset(vBoxLayoutContainer);
 		vBoxLayoutContainer.forceLayout();
 	}
@@ -142,17 +177,18 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 						ViewUtil.confirm("提示信息", "符合条件的车锁共计"+"<span style='color:red'>"+response+"</span>"+"把"+","+"你确定发放吗？该操作将不可撤销！！", new Runnable(){
 							@Override
 							public void run() {
-								ClientManager.getSmartLockGrantClient().grant(smartLockGrant, new RestCallback<SmartLockGrantDto>(){
+								ClientManager.getSmartLockGrantClient().grant(smartLockGrant, new RestCallback<String>(){
 									@Override
-									public void onSuccess(Method method, SmartLockGrantDto response) {
-										Info.display("操作完成", "成功发放单车车锁 "+response.getTotalLock()+" 把至运营商 "+response.getOrgNm());
-										SmartLockGrantWindowView.this.retCallBack.onClose(null); //保存并回传结果数据
-										button.enable();
-										window.hide();
+									public void onSuccess(Method method, String response) {
+										queryNext("grantPersent");
+
+//										Info.display("操作完成", "成功发放单车车锁 "+response.getTotalLock()+" 把至运营商 "+response.getOrgNm());
+										
 									}
 									@Override
 									protected void afterFailure(){ //如果采用按钮的disable逻辑，一定要在此方法enable按钮
 										button.enable();
+										
 									}
 									
 								});
@@ -169,6 +205,55 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 				
 			});
 		}
+	}
+	
+	private void queryNext(final String grantPersent){
+		ClientManager.getSmartLockGrantClient().queryGrant(grantPersent, new RestCallback<Double>(){
+			@Override
+			public void onSuccess(Method method, Double response) {
+				boolean nextCheck = true;
+				if(response >= 0 && response <= 1){
+					processCardLayoutContainer.setActiveWidget(processProgressBar);
+					processProgressBar.updateProgress(response, percentFormat.format(response*100) + "%");
+				}else{
+					processCardLayoutContainer.setActiveWidget(grantResult);
+				}
+				if(response == Global.GRANT_ERROR){
+					grantResult.setHTML("<span style='color:red'>发放失败！</span>");
+					reset(false);
+					nextCheck = false;
+				}
+				if(response == Global.GRANT_SUCCESS_WITH_ERROR){
+					grantResult.setHTML("<span style='color:red'>部分发放成功！，建议整理后重新发放</span>");
+					reset(false);
+					nextCheck = false;
+				}
+				if(response == Global.GRANT_SUCCESS_ALL){
+//					grantResult.setHTML("<span style='color:green'>发放成功！</span>");
+					reset(false);
+					nextCheck = false;
+					ViewUtil.messageBox("温馨提示", "发放成功", new Runnable() {
+						@Override
+						public void run() {
+							SmartLockGrantWindowView.this.retCallBack.onClose(null); //保存并回传结果数据
+							window.hide();
+						}
+					});
+				}
+
+				if(nextCheck){
+					Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+						@Override
+						public boolean execute() {
+							if(asWidget().isAttached()){
+								queryNext(grantPersent);
+							}
+							return false; //窗体关闭则停止执行
+						}
+					}, 1000); //每隔1秒检查一次
+				}
+			}
+		});
 	}
 }
 

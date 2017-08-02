@@ -33,14 +33,14 @@ public class UserToRepairRecordSearchService extends BaseSearchService<UserToRep
 		
 		if(StringUtils.isNotBlank(userToRepairRecordListReq.getSearchText())){
 			try {
-				List<SmartLock> smartLockList = SpringContextHelper.getBean(SmartLockService.class).findByKey(SmartLock.HARDWARE_CODE, userToRepairRecordListReq.getSearchText());
+				List<SmartLock> smartLockList = SpringContextHelper.getBean(SmartLockService.class).findByKey(SmartLock.HARDWARE_CODE, Long.parseLong(userToRepairRecordListReq.getSearchText()));
 				if(smartLockList.size()!=0){
 					searchTextboolQueryBuilder.should(QueryBuilders.termQuery(UserToRepairRecord.SMART_LOCK_ID, smartLockList.get(0).getSmartLockId()));
 				}
-				searchTextboolQueryBuilder.should(QueryBuilders.termQuery(UserToRepairRecord.BIKE_PLATE_NUMBER, userToRepairRecordListReq.getSearchText().toLowerCase()));
 			} catch (Exception e) {
-				return new ClientPage<UserToRepairRecordRowDto>(0, offset / limit, limit, new ArrayList<UserToRepairRecordRowDto>());
+				//e.printStackTrace();
 			} 
+			searchTextboolQueryBuilder.should(QueryBuilders.termQuery(UserToRepairRecord.BIKE_PLATE_NUMBER, userToRepairRecordListReq.getSearchText().toLowerCase()));
 		}
 		
 		boolQueryBuilder.must(searchTextboolQueryBuilder);

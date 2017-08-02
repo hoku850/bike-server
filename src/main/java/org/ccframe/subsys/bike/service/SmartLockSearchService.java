@@ -2,6 +2,8 @@ package org.ccframe.subsys.bike.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ccframe.client.Global;
@@ -30,11 +32,17 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer, SmartLockSearchRepository>{
+	
+	private Map<String, Double> grantStatusMap = new ConcurrentHashMap<String, Double>();
+	
+	public Map<String, Double> getGrantStatusMap() {
+		return grantStatusMap;
+	}
 
 	public ClientPage<SmartLockRowDto> findSmartLockList(SmartLockListReq smartLockListReq, int offset, int limit) {
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
@@ -42,7 +50,12 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 		if(StringUtils.isNotBlank(smartLockListReq.getSearchText())){
 			searchTextboolQueryBuilder.should(QueryBuilders.termQuery(SmartLock.MAC_ADDRESS, smartLockListReq.getSearchText().toLowerCase()));
 			searchTextboolQueryBuilder.should(QueryBuilders.termQuery(SmartLock.BIKE_PLATE_NUMBER, smartLockListReq.getSearchText().toLowerCase()));
-			searchTextboolQueryBuilder.should(QueryBuilders.termQuery(SmartLock.HARDWARE_CODE, smartLockListReq.getSearchText().toLowerCase()));
+			// 硬件编号 捕获非法字符
+			try {
+				searchTextboolQueryBuilder.should(QueryBuilders.termQuery(SmartLock.HARDWARE_CODE, Long.parseLong(smartLockListReq.getSearchText())));
+			} catch (Exception e) {
+				//e.printStackTrace();
+			}
 			searchTextboolQueryBuilder.should(QueryBuilders.termQuery(SmartLock.IMEI_CODE, smartLockListReq.getSearchText().toLowerCase()));
 		}
 		
@@ -99,8 +112,9 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 		return totalLock;
 	}
 	
-	@Transactional
-	public SmartLockGrantDto grant(SmartLockGrant smartLockGrant) {
+	@Async
+//	@Transactional
+	public void grant(SmartLockGrant smartLockGrant) {
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		RangeQueryBuilder rangeQuerybuilder = QueryBuilders.rangeQuery(SmartLock.HARDWARE_CODE);
 		
@@ -124,11 +138,16 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 		smartLockGrantDto.setTotalLock(smartLockPage.getTotalElements());
 		List<SmartLock> list =  smartLockPage.getContent();
 		
+		int r = 0;
+		getGrantStatusMap().put("grantPersent", 0d);
 		for (SmartLock smartLock : list) {
 			smartLock.setSmartLockStatCode(SmartLockStatCodeEnum.GRANTED.toCode());
 			smartLock.setOrgId(smartLockGrant.getOrgId());
 			smartLock.setBikeTypeId(smartLockGrant.getBikeTypeId());
 			SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
+			
+			r++;
+			getGrantStatusMap().put("grantPersent", ((double)r) / smartLockGrantDto.getTotalLock());
 			
 			//更新锁状态表
 			SmartLockStat smartLockStat = SpringContextHelper.getBean(SmartLockStatService.class).getByKey(SmartLockStat.SMART_LOCK_ID, smartLock.getSmartLockId());
@@ -143,8 +162,11 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 			smartLockStat.setIfRepairIng(BoolCodeEnum.NO.toCode());
 			SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
 		}
-		Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(smartLockGrant.getOrgId());
-		smartLockGrantDto.setOrgNm(org.getOrgNm());
-		return smartLockGrantDto;
+		
+		System.out.println("finishGrant");
+		getGrantStatusMap().put("grantPersent", Global.GRANT_SUCCESS_ALL);
+		return;
+//		Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(smartLockGrant.getOrgId());
+//		smartLockGrantDto.setOrgNm(org.getOrgNm());
 	}
 }

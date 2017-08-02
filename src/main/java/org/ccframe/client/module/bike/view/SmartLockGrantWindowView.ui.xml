@@ -10,6 +10,9 @@
 	xmlns:grid="urn:import:com.sencha.gxt.widget.core.client.grid">
 	
 	<ui:import field='org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum.*'/>
+	<ui:style>
+		.labelMargin{margin: 5px 5px 0px 5px;display: block;}
+	</ui:style>
 	<ui:with type="com.sencha.gxt.core.client.util.Margins" field="rowMargins">
 		<ui:attributes top="5" right="5" bottom="0" left="5" />
 	</ui:with>
@@ -20,7 +23,7 @@
 		<ui:attributes margins="{rowMargins}"/>
 	</ui:with>
 
-	<gxt:Window ui:field="window" width="380" modal="true" headingText="智能锁发放" focusWidget="{closeButton}" buttonAlign="CENTER" resizable="false">
+	<gxt:Window ui:field="window" width="460" modal="true" headingText="智能锁发放" focusWidget="{closeButton}" buttonAlign="CENTER" resizable="false">
 		<cc:CcVBoxLayoutContainer ui:field="vBoxLayoutContainer" padding="{vBoxPaddings}">
 			<cc:child layoutData="{vBoxLayoutData}">
 				<cc:CcTextLabel text="发放条件"/>
@@ -57,12 +60,27 @@
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>
+			
+			<cc:child layoutData="{vBoxLayoutData}">
+				<form:FieldLabel labelWidth="80" text="发放状态">
+					<form:widget>
+						<container:CardLayoutContainer ui:field="processCardLayoutContainer">
+							<container:child>
+								<gxt:ProgressBar ui:field="processProgressBar"/>
+							</container:child>	
+							<container:child>
+								<g:HTML ui:field="grantResult" styleName="{style.labelMargin}"/>
+							</container:child>
+						</container:CardLayoutContainer>
+					</form:widget>
+				</form:FieldLabel>
+			</cc:child>
 		</cc:CcVBoxLayoutContainer>
 		<gxt:button>
 			<button:TextButton ui:field="grantButton" text="发放"/>
 		</gxt:button>
 		<gxt:button>
-			<button:TextButton ui:field="closeButton" text="取消"/>
+			<button:TextButton ui:field="closeButton" text="退出"/>
 		</gxt:button>
 	</gxt:Window>
 

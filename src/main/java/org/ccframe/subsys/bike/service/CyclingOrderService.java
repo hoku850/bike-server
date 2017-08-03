@@ -20,11 +20,12 @@ import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.BigDecimalUtil;
 import org.ccframe.commons.util.JsonBinder;
 import org.ccframe.commons.util.WebContextHolder;
-import org.ccframe.sdk.bike.utils.AppConstant;
+import org.ccframe.sdk.bike.dto.AppPageDto;
 import org.ccframe.sdk.bike.utils.DateDistanceUtil;
 import org.ccframe.sdk.bike.utils.PositionUtil;
 import org.ccframe.sdk.bike.websocket.WebsocketEndPoint;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
+import org.ccframe.subsys.bike.domain.code.CyclingOrderStateZhCodeEnum;
 import org.ccframe.subsys.bike.domain.code.LockSwitchStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
@@ -204,7 +205,6 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			for(CyclingOrder cyclingOrder : list){
 				String code = cyclingOrder.getCyclingOrderStatCode();
 				if(code.equals(CyclingOrderStatCodeEnum.PAY_FINISH.toCode())){
-					cyclingOrder.setCyclingOrderStatCode(AppConstant.Travel_Pay);
 					list2.add(cyclingOrder);
 				}
 			}
@@ -229,17 +229,17 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			for(CyclingOrder cyclingOrder : list){
 				String code = cyclingOrder.getCyclingOrderStatCode();
 				if(code.equals(CyclingOrderStatCodeEnum.TO_BE_REPAIRED.toCode())){
-					cyclingOrder.setCyclingOrderStatCode(AppConstant.ORDER_FIXED);
+					cyclingOrder.setCyclingOrderStatCode(CyclingOrderStateZhCodeEnum.ORDER_FIXED.toCode());
 					
-					BigDecimal result = new BigDecimal(cyclingOrder.getCyclingContinousSec()).divide(new BigDecimal(AppConstant.EVERY_MIN), MathContext.DECIMAL32);
+					BigDecimal result = new BigDecimal(cyclingOrder.getCyclingContinousSec()).divide(new BigDecimal(60), MathContext.DECIMAL32);
 					Double min = result.setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
 					//用来保存骑行时长（分钟）
 					cyclingOrder.setBikePlateNumber(min+"");
 					list2.add(cyclingOrder);
 				} else if(code.equals(CyclingOrderStatCodeEnum.PAY_FINISH.toCode())){
-					cyclingOrder.setCyclingOrderStatCode(AppConstant.ORDER_FINISHED);
+					cyclingOrder.setCyclingOrderStatCode(CyclingOrderStateZhCodeEnum.ORDER_FINISHED.toCode());
 					
-					BigDecimal result = new BigDecimal(cyclingOrder.getCyclingContinousSec()).divide(new BigDecimal(AppConstant.EVERY_MIN), MathContext.DECIMAL32);
+					BigDecimal result = new BigDecimal(cyclingOrder.getCyclingContinousSec()).divide(new BigDecimal(60), MathContext.DECIMAL32);
 					Double min = result.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
 					//用来保存骑行时长（分钟）
 					cyclingOrder.setBikePlateNumber(min+"");
@@ -256,13 +256,13 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	 * @author zjm
 	 */
 	@Transactional(readOnly=true)
-	public Map<String, Object> getTravelDetail(Integer cyclingOrderId) {
+	public AppPageDto getTravelDetail(Integer cyclingOrderId) {
 		
 		CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderSearchService.class).getById(cyclingOrderId);
-		BigDecimal result = new BigDecimal(cyclingOrder.getCyclingDistanceMeter()).divide(new BigDecimal(AppConstant.EVERY_KM), MathContext.DECIMAL32);
+		BigDecimal result = new BigDecimal(cyclingOrder.getCyclingDistanceMeter()).divide(new BigDecimal(1000), MathContext.DECIMAL32);
 		Double km = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 
-		long min = cyclingOrder.getCyclingContinousSec() / AppConstant.EVERY_MIN;
+		long min = cyclingOrder.getCyclingContinousSec() / 60;
 		
 		double burnCalories = this.countBurnCalories(cyclingOrder.getCyclingDistanceMeter());
 		double reduceEmissions = burnCalories * 2.7;
@@ -282,39 +282,39 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			polylinePath = polylinePath.insert(1, startPos+",");
 			polylinePath = polylinePath.insert(polylinePath.length()-1, ","+endPos);
 		}
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put(AppConstant.LIST, polylinePath);
-		map.put(AppConstant.KM, km+"");
-		map.put(AppConstant.MIN, min+"");
-		map.put(AppConstant.PAY_MONEY, orderAmmount+"");
-		map.put(AppConstant.START_POS, startPos);
-		map.put(AppConstant.END_POS, endPos);
-		map.put(AppConstant.BIKE_NUMBER, bikeNumber);
-		map.put(AppConstant.BURN_CALORIES, ""+burnCalories);
-		map.put(AppConstant.REDUCE_EMISSIONS, ""+reduceEmissions);
+		AppPageDto appPageDto = new AppPageDto();
+		appPageDto.setList(polylinePath+"");
+		appPageDto.setKm(km+"");
+		appPageDto.setMin(min+"");
+		appPageDto.setPayMoney(orderAmmount+"");
+		appPageDto.setStartPos(startPos);
+		appPageDto.setEndPos(endPos);
+		appPageDto.setBikeNumber(bikeNumber);
+		appPageDto.setBurnCalories(burnCalories+"");
+		appPageDto.setReduceEmissions(reduceEmissions+"");
 
-		return map;
+		return appPageDto;
 	}
 
 	/**
 	 * @author zjm
 	 */
 	@Transactional
-	public Map<String, Object> getUsingBikeData() {
+	public AppPageDto getUsingBikeData() {
 		MemberUser user = (MemberUser)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
 
 		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
 		
-		Map<String, Object> map = new HashMap<String, Object>();
+		AppPageDto appPageDto = new AppPageDto();
 		if(list!=null && list.size()>0) {
 			
 			CyclingOrder cyclingOrder = list.get(0);
 			long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder.getStartTime(), new Date());
-			long min = sec / AppConstant.EVERY_MIN;
+			long min = sec / 60;
 			System.out.println("开始时间" + cyclingOrder.getStartTime());
 			System.out.println("已骑行" + min + "分钟");
 			
-			Integer count = (int) (min/AppConstant.EVERY_HALF_HOUR) + 1;
+			Integer count = (int) (min/30.0) + 1;
 			//Integer count = (int) (31/30.0);
 			BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(cyclingOrder.getBikeTypeId());
 			
@@ -327,13 +327,14 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			/*Integer meter = this.countMeter(cyclingOrder.getCyclingOrderId());
 			cyclingOrder.setCyclingDistanceMeter(meter);*/
 
-			map.put(AppConstant.MIN, min+"");
-			map.put(AppConstant.BIKE_NUMBER, cyclingOrder.getBikePlateNumber());
-			map.put(AppConstant.PAY_MONEY, payMoney+""); 
+			appPageDto.setMin(min+"");
+			appPageDto.setBikeNumber(cyclingOrder.getBikePlateNumber());
+			appPageDto.setPayMoney(payMoney+"");
+			
 		} 
 
 
-		return map;
+		return appPageDto;
 	}
 
 	public Integer countMeter(Integer orderId) {
@@ -368,10 +369,10 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode());
 			
 			long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder.getStartTime(), new Date());
-			long min = sec / AppConstant.EVERY_MIN;
+			long min = sec / 60;
 			System.out.println("已骑行" + min + "分钟");
 			
-			Integer count = (int) (min/AppConstant.EVERY_HALF_HOUR) + 1;
+			Integer count = (int) (min/30.0) + 1;
 			//Integer count = (int) (31/30.0);
 			BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(cyclingOrder.getBikeTypeId());
 			Double halfHourAmmount = bikeType.getHalfhourAmmount();
@@ -386,7 +387,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 		}
 			
-		return AppConstant.SUCCESS;
+		return Global.SUCCESS;
 	}
 	
 	
@@ -395,21 +396,21 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	 * @author zjm
 	 */
 	@Transactional
-	public Map<String, Object> newCyclingOrder(String nowPos) {
+	public AppPageDto newCyclingOrder(String nowPos) {
 		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
 
 		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
-		Map<String, Object> map = new HashMap<String, Object>();
+		AppPageDto appPageDto = new AppPageDto();
 		if(list!=null && list.size()>0 && list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode())) {
 			
 				//用车中显示在前台时执行
 				CyclingOrder cyclingOrder2 = list.get(0);
 				
 				long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder2.getStartTime(), new Date());
-				long min = sec / AppConstant.EVERY_MIN;
+				long min = sec / 60;
 				//System.out.println("已骑行" + min + "分钟");
 				//写死 每半小时支付0.5元
-				Integer count = (int) (min/AppConstant.EVERY_HALF_HOUR) + 1;
+				Integer count = (int) (min/30.0) + 1;
 				//Integer count = (int) (31/30.0);
 				BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(cyclingOrder2.getBikeTypeId());
 				
@@ -427,13 +428,13 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 					firstPos = "["+nowPos+"]";
 				}
 				
+				appPageDto.setMin(min+"");
+				appPageDto.setBikeNumber(cyclingOrder2.getBikePlateNumber());
+				appPageDto.setPayMoney(payMoney+"");
+				appPageDto.setFirstPos(firstPos);
+				appPageDto.setPolylinePath(polylinePath+"");
 				
-				map.put(AppConstant.MIN, min+"");
-				map.put(AppConstant.BIKE_NUMBER, cyclingOrder2.getBikePlateNumber());
-				map.put(AppConstant.PAY_MONEY, payMoney+"");
-				map.put(AppConstant.FIRST_POS, firstPos);
-				map.put(AppConstant.POLYLINE_PATH, polylinePath+"");
-				System.out.println("firstPos:"+firstPos+" polylinePath:"+polylinePath);
+				//System.out.println("firstPos:"+firstPos+" polylinePath:"+polylinePath);
 	
 		}
 		//生成骑行订单
@@ -475,7 +476,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		map.put("payMoney", "0.00");
 		map.put("firstPos", "["+nowPos+"]");
 		map.put("polylinePath", "[["+nowPos+"]]");*/
-		return map;
+		return appPageDto;
 	}
 
 	/**
@@ -576,22 +577,43 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 			
 			//更新智能锁状态表记录
-			List<SmartLockStat> statList = SpringContextHelper.getBean(SmartLockStatService.class).findByKey(SmartLockStat.SMART_LOCK_ID, cyclingOrder.getSmartLockId());
-			SmartLockStat smartLockStat = statList.get(0);
-			
-			smartLockStat.setLockLng(lng);
-			smartLockStat.setLockLat(lat);
-			smartLockStat.setLockSwitchStatCode(LockSwitchStatCodeEnum.CLOCK.toCode());
-			smartLockStat.setLastLocationUpdTime(nowDate);
-			smartLockStat.setLockBattery(lockBattery);
-			
-			SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
+//			List<SmartLockStat> statList = SpringContextHelper.getBean(SmartLockStatService.class).findByKey(SmartLockStat.SMART_LOCK_ID, cyclingOrder.getSmartLockId());
+//			SmartLockStat smartLockStat = statList.get(0);
+//			
+//			smartLockStat.setLockLng(lng);
+//			smartLockStat.setLockLat(lat);
+//			smartLockStat.setLockSwitchStatCode(LockSwitchStatCodeEnum.CLOCK.toCode());
+//			smartLockStat.setLastLocationUpdTime(nowDate);
+//			smartLockStat.setLockBattery(lockBattery);
+//			
+//			SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
+			updateSmartLockStat(smartLockId, lng, lat, lockBattery);
 			
 			//通知app跳转页面
 			WebsocketEndPoint.sendMessageToUser(cyclingOrder.getUserId(),new TextMessage("success"));
+		} else {
+			//如果订单已经结束，那么将不再更新订单，但是需要更新锁状态
+			updateSmartLockStat(smartLockId, lng, lat, lockBattery);
 		}
 		
 	}
+	/**
+	 * 更新智能锁状态表
+	 * @author lzh
+	 */
+	private void updateSmartLockStat(Integer smartLockId, Double lng, Double lat, Integer lockBattery) {
+		//更新智能锁状态表记录
+		List<SmartLockStat> statList = SpringContextHelper.getBean(SmartLockStatService.class).findByKey(SmartLockStat.SMART_LOCK_ID, smartLockId);
+		SmartLockStat smartLockStat = statList.get(0);
+		
+		smartLockStat.setLockLng(lng);
+		smartLockStat.setLockLat(lat);
+		smartLockStat.setLockSwitchStatCode(LockSwitchStatCodeEnum.CLOCK.toCode());
+		smartLockStat.setLastLocationUpdTime(new Date());
+		smartLockStat.setLockBattery(lockBattery);
+		
+		SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
+	} 
 	
 	/**
 	 * 强制结束骑行订单
@@ -604,7 +626,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		
 		//获取骑行轨迹最后一个打点
 		List<CyclingTrajectoryRecord> cyclingTrajectoryRecordList = SpringContextHelper.getBean(CyclingTrajectoryRecordSearchService.class).findByCyclingOrderIdOrderByRecordTimeDesc(cyclingOrder.getCyclingOrderId());
-		if(cyclingTrajectoryRecordList != null){
+		if(cyclingTrajectoryRecordList.size() > 0){
 			Double endLng = cyclingTrajectoryRecordList.get(0).getRecordLocationLng();
 			Double endLat = cyclingTrajectoryRecordList.get(0).getRecordLocationLat();
 			cyclingOrder.setEndLocationLng(endLng);

@@ -3,8 +3,8 @@ package org.ccframe.sdk.bike.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ccframe.client.ControllerMapping;
+import org.ccframe.client.Global;
 import org.ccframe.commons.helper.SpringContextHelper;
-import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.subsys.core.service.UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,17 +17,8 @@ public class LoginController {
 	@RequestMapping(value = ControllerMapping.NOFILTER_LOGIN)
 	@ResponseBody
 	public String login(String phoneNum, String IMEI, String validateCode, Integer orgId) {
-//		System.out.println(UserService.Validate(phoneNum, validateCode));
-		switch (UserService.Validate(phoneNum, validateCode)) {
-		case PASS:
-			SpringContextHelper.getBean(UserService.class).login(phoneNum, IMEI, validateCode, orgId);
-			return AppConstant.SUCCESS;		
-		case TIMEOUT:
-			return "timeout";
-		default:
-			System.out.println(AppConstant.FAIL);
-			return AppConstant.FAIL;
-		}	
+		SpringContextHelper.getBean(UserService.class).login(phoneNum, IMEI, validateCode, orgId);
+		return "success";		
 	}
 
 	@RequestMapping(value = ControllerMapping.CHECK_STATE)

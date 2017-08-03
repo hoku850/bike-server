@@ -22,6 +22,16 @@
 			line-height:50px;
 			padding-left:10px;
 		}
+		.redButton{background-color: #892e65;text-align:center;}
+		.redButton > li{animation: 2s ease 1s normal none 5 running ringing;transform-origin:50% 0 0;}
+		.redButtonOver{ background-color: #762c59;}
+		.redButtonBadge{background-color: #d15b47;}
+
+		.greenButton {background-color: #2e8965;text-align:center;}
+		.greenButton > li{animation: 2s ease 2s normal none 5 running vertical;}
+		.greenButtonOver{background-color: #2c7659}
+		.greenButtonBadge{background-color: #82af6f}
+
 	</ui:style>
 
 	<ui:with type="org.ccframe.client.resources.ClientImages" field="icons" />
@@ -60,7 +70,7 @@
 			<container:north layoutData="{northData}">
 				<container:HBoxLayoutContainer height="50px" styleName="{style.maincolor}" addStyleNames="x-toolbar-mark" ui:field="hbox"><!-- hBoxLayoutAlign="STRETCH"  -->
 					<container:child>
-						<cc:CcImage contextUrl="ccframe/images/backgroud_logo.png"/>
+						<cc:CcImage contextUrl="ccframe/images/backgroud_logo.png" width="190px"/>
 					</container:child>
 					<container:child>
 						<g:Label ui:field="orgNmLabel" styleName="{style.orgNmLabel}" text="总平台"/>
@@ -70,10 +80,12 @@
 					</container:child>
 					<container:child>
 						<!-- <cc:FaTextButtonfaText="" faIconType="GEARS" scale="LARGE" height="33px" width="45px"/>  -->
-						<cc:FaBadgeButton badgeText="0" addStyleNames="cc-nav red" faIconType="BELL" width="74px" height="50px" ui:field="navButton1"/>
+						<cc:CcIconfontBadgeButton styleName="{style.redButton}" overStyleName="{style.redButtonOver}" badgeStyleName="{style.redButtonBadge}" 
+						badgeText="0" addStyleNames="cc-nav red" iconName="bell" width="74px" height="50px" ui:field="navButton1"/>
 					</container:child>
 					<container:child>
-						<cc:FaBadgeButton badgeText="0" addStyleNames="cc-nav green" faIconType="ENVELOPE" width="74px" height="50px"/>
+						<cc:CcIconfontBadgeButton styleName="{style.greenButton}" overStyleName="{style.greenButtonOver}" badgeStyleName="{style.greenButtonBadge}" 
+						badgeText="0" addStyleNames="cc-nav green" iconName="envelope" width="74px" height="50px"/>
 					</container:child>
 					<container:child>
 						<g:Button addStyleNames="cc-nav user" height="50px" ui:field="userButton"/>
@@ -85,19 +97,19 @@
 					<container:VBoxLayoutContainer ui:field="buttonBox" vBoxLayoutAlign="STRETCH">
 						<container:child>
 							<container:HBoxLayoutContainer hBoxLayoutAlign="TOP" height="45" addStyleNames="nav-img-button-bar"><!-- 强制toolbar颜色 -->
-								<container:child><cc:FaButton ui:field="fastMenu1" faIconType="GEARS" height="33px" width="45px"/></container:child>
+								<container:child><cc:CcIconfontButton ui:field="fastMenu1" iconName="gears" height="33px" width="45px"/></container:child>
 								<container:child layoutData="{boxDataFlex1}">
 									<container:SimpleContainer></container:SimpleContainer>
 								</container:child>
-								<container:child><cc:FaButton ui:field="fastMenu2" faIconType="STEAM_SQUARE" height="33px" width="45px"/></container:child>
+								<container:child><cc:CcIconfontButton ui:field="fastMenu2" iconName="gears" height="33px" width="45px"/></container:child>
 								<container:child layoutData="{boxDataFlex1}">
 									<container:SimpleContainer></container:SimpleContainer>
 								</container:child>
-								<container:child><cc:FaButton ui:field="fastMenu3" faIconType="BELL_O" height="33px" width="45px"/></container:child>
+								<container:child><cc:CcIconfontButton ui:field="fastMenu3" iconName="gears" height="33px" width="45px"/></container:child>
 								<container:child layoutData="{boxDataFlex1}">
 									<container:SimpleContainer></container:SimpleContainer>
 								</container:child>
-								<container:child><cc:FaButton ui:field="fastMenu4" faIconType="STAR" height="33px" width="45px"/></container:child>
+								<container:child><cc:CcIconfontButton ui:field="fastMenu4" iconName="star" height="33px" width="45px"/></container:child>
 							</container:HBoxLayoutContainer>
 						</container:child>
 					</container:VBoxLayoutContainer>

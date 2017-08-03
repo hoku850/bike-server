@@ -14,6 +14,7 @@
 
 	<link href="${webRoot}/client/reset.css" rel="stylesheet" type="text/css" />
 	<link href="${webRoot}/common-statics/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+	<link href="${webRoot}/ccframe/style/iconfont/iconfont.css" rel="stylesheet" type="text/css" />
 	<link href="${webRoot}/ccframe/style/admin.css" rel="stylesheet" type="text/css" />
 	<link href="${webRoot}/ccframe/style/cc-main.css" rel="stylesheet" type="text/css" />
 

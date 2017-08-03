@@ -16,6 +16,8 @@ import org.ccframe.client.commons.TreeNodeTree;
 import org.ccframe.client.commons.TreeUtil;
 import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.commons.WindowEventCallback;
+import org.ccframe.client.components.CcFlatIconButton;
+import org.ccframe.client.components.CcIconfontBadgeButton;
 import org.ccframe.client.components.FaBadgeButton;
 import org.ccframe.client.components.FaButton;
 import org.ccframe.client.components.FaIconType;
@@ -28,6 +30,8 @@ import org.ccframe.subsys.core.dto.MainFrameResp;
 import org.ccframe.subsys.core.dto.OrgDto;
 import org.fusesource.restygwt.client.Method;
 
+import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -37,6 +41,9 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.inject.client.AsyncProvider;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -90,7 +97,7 @@ public class MainFrame implements IsWidget{
 	public Button userButton;
 
 	@UiField
-	public FaBadgeButton navButton1;
+	public CcIconfontBadgeButton navButton1;
 	
 	@UiField
 	public VBoxLayoutContainer buttonBox;
@@ -101,13 +108,13 @@ public class MainFrame implements IsWidget{
 	public static AdminUser adminUser;
 
 	@UiField
-	FaButton fastMenu1;
+	CcFlatIconButton fastMenu1;
 	@UiField
-	FaButton fastMenu2;
+	CcFlatIconButton fastMenu2;
 	@UiField
-	FaButton fastMenu3;
+	CcFlatIconButton fastMenu3;
 	@UiField
-	FaButton fastMenu4;
+	CcFlatIconButton fastMenu4;
 	
 	@UiHandler("navButton1")
 	void handleClick(ClickEvent e) {
@@ -152,7 +159,11 @@ public class MainFrame implements IsWidget{
 				ClientManager.getMainFrameClient().doLogout(new RestCallback<String>(){
 					@Override
 					public void onSuccess(Method method, String response) {
-						this.redirect(GWT.getHostPageBaseURL() + response + Window.Location.getQueryString());
+						if(MainFrame.adminUser.getOrgId() == Global.PLATFORM_ORG_ID){
+							redirect(GWT.getHostPageBaseURL() + response + Window.Location.getQueryString());
+						}else{
+							redirect(GWT.getHostPageBaseURL() + "ccframe/orgLogin.jsp" + Window.Location.getQueryString());
+						}
 					}
 				});
 			}
@@ -207,10 +218,19 @@ public class MainFrame implements IsWidget{
 				List<TreeNodeTree> treeNodeTreeList = mainFrameDto.getTreeNodeTree().getSubNodeTree();
 				for(TreeNodeTree treeNodeTree: treeNodeTreeList){
 					TreeStore<TreeNodeTree> menuTreeStore = new TreeStore<TreeNodeTree>(TreeUtil.treeNodeTreeKeyProvider);
-					TreeUtil.loadTreeStore(menuTreeStore, treeNodeTree, false);
 
 					//申明一个节点为String的树
-					final Tree<TreeNodeTree, String> tree = new Tree<TreeNodeTree, String>(menuTreeStore, TreeUtil.treeValueProvider);
+					final Tree<TreeNodeTree, String> tree = new Tree<TreeNodeTree, String>(menuTreeStore, TreeUtil.treeValueProvider){
+						@Override
+						protected SafeHtml getCellContent(TreeNodeTree model) { //重新定义有图标的叶节点输出
+							SafeHtmlBuilder sb = new SafeHtmlBuilder();
+							if(isLeaf(model)){
+								sb.append(SafeHtmlUtils.fromTrustedString("<li class='iconfont icon-" + model.getIcon() + " treeIcon'></li>"));
+							}
+							sb.append(SafeHtmlUtils.fromString(model.getTreeNodeNm()));
+							return sb.toSafeHtml();
+						}
+					};
 					tree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 					tree.getSelectionModel().addSelectionHandler(new SelectionHandler<TreeNodeTree>(){
 						@Override
@@ -225,8 +245,8 @@ public class MainFrame implements IsWidget{
 								}
 							});
 						}
-						
 					});
+					TreeUtil.loadTreeStore(menuTreeStore, treeNodeTree, false);
 					tree.setAutoExpand(true);
 					
 					ContentPanel menuCategory = new ContentPanel();
@@ -253,11 +273,11 @@ public class MainFrame implements IsWidget{
 					fastMenu3.setVisible(false);
 					fastMenu4.setVisible(false);
 				}else{
-					FaButton[] fastMenus = new FaButton[]{fastMenu1,fastMenu2,fastMenu3,fastMenu4};
+					CcFlatIconButton[] fastMenus = new CcFlatIconButton[]{fastMenu1,fastMenu2,fastMenu3,fastMenu4};
 					for(int i = 0; i < 4; i ++){
 						final MenuRes menuRes = mainFrameDto.getFastMenuRes().get(i);
 						fastMenus[i].setTitle(menuRes.getResNm());
-						fastMenus[i].setFaIconType(FaIconType.fromCode(menuRes.getIcon()));
+						fastMenus[i].setIconName(menuRes.getIcon());
 						fastMenus[i].addClickHandler(new ClickHandler(){
 							@Override
 							public void onClick(ClickEvent event) {

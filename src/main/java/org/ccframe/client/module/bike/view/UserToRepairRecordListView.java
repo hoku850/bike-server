@@ -176,7 +176,6 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 					userToRepairRecordListReq.setFixStatCode(null);
 				}
 				
-				
 				if(isAgent){
 					userToRepairRecordListReq.setOrgId(MainFrame.adminUser.getOrgId());
 				}else{

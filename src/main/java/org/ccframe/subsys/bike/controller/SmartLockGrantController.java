@@ -28,8 +28,8 @@ public class SmartLockGrantController{
 	}
 	
 	@RequestMapping(value = ControllerMapping.SMART_LOCK_QUERY_GRANT, method=RequestMethod.POST)
-	public double queryGrant(String grantPersent){
-		Double result = SpringContextHelper.getBean(SmartLockSearchService.class).getGrantStatusMap().get(grantPersent);
+	public double queryGrant(){
+		Double result = SpringContextHelper.getBean(SmartLockSearchService.class).getGrantStatusMap().get("grantPercent");
 		System.out.println(result);
 		return result == null ? Global.IMPORT_INIT : result;
 	}

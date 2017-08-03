@@ -2,9 +2,7 @@ package org.ccframe.subsys.core.service;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ccframe.client.Global;
@@ -13,9 +11,10 @@ import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.WebContextHolder;
-import org.ccframe.sdk.bike.utils.AppConstant;
+import org.ccframe.sdk.bike.dto.AppPageDto;
 import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.core.domain.code.AccountTypeCodeEnum;
+import org.ccframe.subsys.core.domain.code.BoolCodeEnum;
 import org.ccframe.subsys.core.domain.entity.MemberAccount;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.dto.MemberAccountListReq;
@@ -33,7 +32,11 @@ import org.springframework.stereotype.Service;
 public class MemberAccountSearchService extends BaseSearchService<MemberAccount, Integer, MemberAccountSearchRepository> {
 	
 	public List<MemberAccount> findByUserIdAndOrgIdAndAccountTypeCode(Integer userId, Integer orgId, String code){
-		return this.getRepository().findByUserIdAndOrgIdAndAccountTypeCode(userId, orgId, code);
+		if(userId!=null && orgId!=null && code!=null) {
+			return this.getRepository().findByUserIdAndOrgIdAndAccountTypeCode(userId, orgId, code);
+		}
+		
+		return null;
 	}
 
 	public ClientPage<MemberAccountRowDto> findMemberAccountList(MemberAccountListReq memberAccountListReq, int offset, int limit) {
@@ -86,15 +89,15 @@ public class MemberAccountSearchService extends BaseSearchService<MemberAccount,
 	/**
 	 * @author zjm
 	 */
-	public Map<String, String> getChargeAmount() {
+	public AppPageDto getChargeAmount() {
 		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
 		
 		List<MemberAccount> list1 = SpringContextHelper.getBean(MemberAccountSearchService.class)
 				.findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), user.getOrgId(), AccountTypeCodeEnum.PRE_DEPOSIT.toCode());
 		
-		String amount = AppConstant.INIT_AMOUNT;
-		String ifChargeDeposit = AppConstant.INIT_IFCHARGEDEPOSIT;
-		String deposit = AppConstant.INIT_DEPOSIT;
+		String amount = "0.00";
+		String ifChargeDeposit = BoolCodeEnum.NO.toCode();
+		String deposit = "0.00";
 		DecimalFormat df = new DecimalFormat("#0.00");  
 		if(list1 != null && list1.size()>0){
 			
@@ -105,17 +108,18 @@ public class MemberAccountSearchService extends BaseSearchService<MemberAccount,
 		List<MemberAccount> list2 = SpringContextHelper.getBean(MemberAccountSearchService.class)
 				.findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), user.getOrgId(), AccountTypeCodeEnum.DEPOSIT.toCode());
 		if(list2!= null && list2.size()>0 && list2.get(0).getAccountValue()>0){
-			ifChargeDeposit = AppConstant.IFCHARGEDEPOSIT_YES;
+			ifChargeDeposit = BoolCodeEnum.YES.toCode();
 			
 			deposit = df.format(list2.get(0).getAccountValue())+"";
 		}
 		
-		Map<String, String> map = new HashMap<String, String>();
-		map.put(AppConstant.AMOUNT, amount);
-		map.put(AppConstant.DEPOSIT, deposit);
-		map.put(AppConstant.IFCHARGEDEPOSIT, ifChargeDeposit);
+		AppPageDto appPageDto = new AppPageDto();
 		
-		return map;
+		appPageDto.setAmount(amount);
+		appPageDto.setDeposit(deposit);
+		appPageDto.setIfChargeDeposit(ifChargeDeposit);
+		
+		return appPageDto;
 	}
 
 }

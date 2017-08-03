@@ -33,12 +33,12 @@ public class UserToRepairRecordSearchService extends BaseSearchService<UserToRep
 		
 		if(StringUtils.isNotBlank(userToRepairRecordListReq.getSearchText())){
 			try {
-				List<SmartLock> smartLockList = SpringContextHelper.getBean(SmartLockService.class).findByKey(SmartLock.HARDWARE_CODE, Long.parseLong(userToRepairRecordListReq.getSearchText()));
-				if(smartLockList.size()!=0){
-					searchTextboolQueryBuilder.should(QueryBuilders.termQuery(UserToRepairRecord.SMART_LOCK_ID, smartLockList.get(0).getSmartLockId()));
+				SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.HARDWARE_CODE, Long.parseLong(userToRepairRecordListReq.getSearchText()));
+				if(smartLock != null){
+					searchTextboolQueryBuilder.should(QueryBuilders.termQuery(UserToRepairRecord.SMART_LOCK_ID, smartLock.getSmartLockId()));
 				}
 			} catch (Exception e) {
-				//e.printStackTrace();
+				e.printStackTrace();
 			} 
 			searchTextboolQueryBuilder.should(QueryBuilders.termQuery(UserToRepairRecord.BIKE_PLATE_NUMBER, userToRepairRecordListReq.getSearchText().toLowerCase()));
 		}
@@ -54,17 +54,17 @@ public class UserToRepairRecordSearchService extends BaseSearchService<UserToRep
 		
 		Page<UserToRepairRecord> userToRepairRecordPage = this.getRepository().search(
 		    boolQueryBuilder,new OffsetBasedPageRequest(offset, limit, new Order(Direction.ASC, UserToRepairRecord.USER_TO_REPAIR_RECORD_ID)));
-			List<UserToRepairRecordRowDto> resultList = new ArrayList<UserToRepairRecordRowDto>();
-				for(UserToRepairRecord userToRepairRecord:userToRepairRecordPage.getContent()){
-					UserToRepairRecordRowDto rowRecord = new UserToRepairRecordRowDto();
-					
-					Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(userToRepairRecord.getOrgId());
-					rowRecord.setOrgNm(org.getOrgNm());
-					SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class).getById(userToRepairRecord.getSmartLockId());
-					if (smartLock != null) {
-						rowRecord.setHardwareCodeStr(String.format(Global.FORMAT_HARDWARECODE, smartLock.getHardwareCode()));
-					}
-					BeanUtils.copyProperties(userToRepairRecord, rowRecord);
+		List<UserToRepairRecordRowDto> resultList = new ArrayList<UserToRepairRecordRowDto>();
+		for (UserToRepairRecord userToRepairRecord : userToRepairRecordPage.getContent()) {
+			UserToRepairRecordRowDto rowRecord = new UserToRepairRecordRowDto();
+			Org org = SpringContextHelper.getBean(OrgSearchService.class).getById(userToRepairRecord.getOrgId());
+			rowRecord.setOrgNm(org.getOrgNm());
+			SmartLock smartLock = SpringContextHelper.getBean(SmartLockSearchService.class)
+					.getById(userToRepairRecord.getSmartLockId());
+			if (smartLock != null) {
+				rowRecord.setHardwareCodeStr(String.format(Global.FORMAT_HARDWARECODE, smartLock.getHardwareCode()));
+			}
+			BeanUtils.copyProperties(userToRepairRecord, rowRecord);
 
 			resultList.add(rowRecord);
 		}

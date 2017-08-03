@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -31,9 +31,8 @@ import org.ccframe.commons.jpaquery.Criteria;
 import org.ccframe.commons.jpaquery.Restrictions;
 import org.ccframe.commons.util.BusinessException;
 import org.ccframe.commons.util.WebContextHolder;
-import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
-import org.ccframe.subsys.bike.domain.code.ValidateCodeStatCodeEnum;
+import org.ccframe.subsys.bike.domain.code.ReturnPageCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.service.CyclingOrderSearchService;
@@ -65,7 +64,7 @@ import com.google.gwt.i18n.client.NumberFormat;
 public class UserService extends BaseService<User, Integer, UserRepository> implements BatchImportSupport<User>{
 
 	private static final String USER_IMPORT_TEMPLATE_FILE_NAME = "userImport.xls";
-	private static Map<String, String> validateCodeMap = new HashMap<String, String>();
+	private static Map<String, String> validateCodeMap = new Hashtable<String, String>();
 	private static Timer timer = new Timer();
 	private Map<String, Double> importStatusMap = new ConcurrentHashMap<String, Double>();
 	
@@ -464,7 +463,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 	 */
 	@Transactional
 	public void login(String phoneNumber, String iMEI, String validateCode, int orgId) {
-
+		this.Validate(phoneNumber, validateCode);
 		List<User> list = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(phoneNumber, iMEI);
 		User user = null;
 		MemberUser memberUser = new MemberUser();
@@ -487,7 +486,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 				user.setUserNm(phoneNumber);
 				user.setUserMobile(phoneNumber);
 				user.setUserPsw(iMEI);
-				user.setIfAdmin(AppConstant.NO);
+				user.setIfAdmin(BoolCodeEnum.NO.toCode());
 				user.setCreateDate(new Date());
 				user.setUserStatCode(UserStatCodeEnum.NORMAL.toCode());
 			}
@@ -535,50 +534,63 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 	public String checkState(HttpServletRequest httpRequest) {
 	
 		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-		String state = "";
+		String state = ReturnPageCodeEnum.EMPTY_STRING.toCode();
 		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
 		if(list!=null && list.size()>0) {
 			if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode())) {
-				return AppConstant.ON_THE_WAY;
+				return ReturnPageCodeEnum.ON_THE_WAY.toCode();
 			} else if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode())) {
-				return AppConstant.WAIT_PAY;
+				return ReturnPageCodeEnum.WAIT_PAY.toCode();
 			}
 		}
-		 String flag = httpRequest.getParameter(AppConstant.FLAG);
-		 if(flag!=null && flag.equals(AppConstant.ON_CREATE)) {
-			 return AppConstant.FIRST;
+		 String flag = httpRequest.getParameter("flag");
+		 if(flag!=null && flag.equals("onCreate")) {
+			 return ReturnPageCodeEnum.FIRST.toCode();
 			 //return "";
 		 }
 		
 		return state;
 	}
-	
+
 	/**
-	 * @author lqz
+	 * @author lqz 
 	 * update by lzh
 	 */
 	public static String getValidateCode(final String loginId) {
-		String validateCode = Double.toString(Math.random()).substring(2, 8);
-		validateCodeMap.put(loginId, validateCode);
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				validateCodeMap.remove(loginId);
-			}
-		}, 60 * 1000); //测试时间 10秒
+		String validateCode;
+		if (validateCodeMap.containsKey(loginId)) {
+			validateCode = validateCodeMap.get(loginId);
+		} else {
+			validateCode = Double.toString(Math.random()).substring(2, 8);
+			validateCodeMap.put(loginId, validateCode);
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					validateCodeMap.remove(loginId);
+				}
+			}, 180 * 1000); // 验证码过期时间180秒
+		}
 		return validateCode;
 	}
 
-	public static ValidateCodeStatCodeEnum Validate(String loginId, String validateCode) {
-//		return true;
+	public static void Validate(String loginId, String validateCode) {
+
 		String code = validateCodeMap.get(loginId);
-		if(code == null){
-			return ValidateCodeStatCodeEnum.TIMEOUT;
-		} else if(code.equals(validateCode)){
-			return ValidateCodeStatCodeEnum.PASS;
-		} else {
-			return ValidateCodeStatCodeEnum.ERROR;
+		if(code == null) {
+			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED,new String[]{"验证码已过期，请重新获取"} );
 		}
+		if(!code.equals(validateCode)) {
+			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED,new String[]{"验证码错误，请检查或重新获取"} );
+			
+		}
+
+		// if(code == null){
+		// return ValidateCodeStatCodeEnum.TIMEOUT;
+		// } else if(code.equals(validateCode)){
+		// return ValidateCodeStatCodeEnum.PASS;
+		// } else {
+		// return ValidateCodeStatCodeEnum.ERROR;
+		// }
 	}
 
 }

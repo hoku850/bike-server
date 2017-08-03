@@ -31,7 +31,7 @@ import com.flipthebird.gwthashcodeequals.HashCodeBuilder;
 public class UserToRepairRecord implements Serializable{
 	
 	public static final String USER_TO_REPAIR_RECORD_ID = "userToRepairRecordId";
-	public static final String SMART_LOCK_ID = "60006000";
+	public static final String SMART_LOCK_ID = "smartLockId";
 	public static final String BIKE_PLATE_NUMBER = "bikePlateNumber";
 	public static final String USER_ID = "userId";
 	public static final String ORG_ID = "orgId";

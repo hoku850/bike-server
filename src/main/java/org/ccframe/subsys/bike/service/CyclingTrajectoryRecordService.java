@@ -8,7 +8,6 @@ import org.ccframe.commons.base.BaseService;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.WebContextHolder;
 import org.ccframe.sdk.bike.dto.Position;
-import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.sdk.bike.utils.PositionUtil;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.domain.entity.CyclingTrajectoryRecord;
@@ -40,7 +39,7 @@ public class CyclingTrajectoryRecordService extends BaseService<CyclingTrajector
 				SpringContextHelper.getBean(CyclingTrajectoryRecordService.class).save(record);
 			}
 		}
-		return AppConstant.SUCCESS;
+		return Global.SUCCESS;
 	}
 
 }

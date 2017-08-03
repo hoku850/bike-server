@@ -1,7 +1,12 @@
 package org.ccframe.client.components;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public enum FaIconType {
+import org.ccframe.client.commons.ICodeEnum;
+import org.ccframe.subsys.core.domain.code.BoolCodeEnum;
+
+public enum FaIconType implements ICodeEnum {
     ADJUST("fa-adjust"),
     ADN("fa-adn"),
     ALIGN_CENTER("fa-align-center"),
@@ -612,4 +617,13 @@ public enum FaIconType {
 		}
 		return null;
     }
+
+	@Override
+	public List<ICodeEnum> valueList() {
+		List<ICodeEnum> result = new ArrayList<ICodeEnum>();
+		for(FaIconType value: values()){
+			result.add(value);
+		}
+		return result;
+	}
 }

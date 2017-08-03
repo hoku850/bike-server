@@ -139,6 +139,15 @@ public interface Global {
 	// 添加机构默认的管理员 2位机构用户序列号
 	public int TRY_START_SEQ = 1;
 	public int TRY_END_SEQ = 99;
-	
+
+	//前端app使用的常量
+	String PAYMENT_TRANSACTIONAL_NUMBER = "2017071316010001";//TODO 下一步要得到动态的支付流水
+	Integer RADIUS = 500;
+	String SUCCESS = "success";
+	String FAIL = "fail";
+
+	String TO_REPAIR_DREE = "保修金额减免";
+
 	public String FORMAT_HARDWARECODE = "%016d";
+
 }

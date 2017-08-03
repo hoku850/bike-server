@@ -79,7 +79,7 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 	@UiField
 	public Label totalOrderAmmount;
 	
-   @UiField
+    @UiField
     public TextButton findTrajectory;
 	
 	@UiHandler("searchButton")

@@ -10,7 +10,6 @@ import org.ccframe.client.Global;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
-import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
@@ -165,7 +164,7 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 	 * @author lzh
 	 */
 	public Map<String, String> getOrderPayDetail(MemberUser memberUser) {
-		final int TO_REPAIR_WAIT_TIME = 60 * 1000 * 3;// 3分钟转换成毫秒
+		final int TO_REPAIR_WAIT_TIME = 60 * 1000 * 2;// 2分钟转换成毫秒
 		Map<String, String> map = new HashMap<String, String>();
 		// 查询未完成的唯一订单
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
@@ -189,21 +188,21 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 		HashMap<String, Double> discount = new HashMap<String, Double>();
 		if ((cyclingOrder.getEndTime().getTime() - cyclingOrder.getStartTime()
 				.getTime()) < TO_REPAIR_WAIT_TIME) {
-			UserToRepairRecord userToRepairRecord = SpringContextHelper
-					.getBean(UserToRepairRecordSearchService.class)
-					.getLatestUserToRepairRecord(memberUser.getUserId(),
-							cyclingOrder.getBikePlateNumber());
-			if (userToRepairRecord != null
-					&& userToRepairRecord.getToRepairTime().getTime() > cyclingOrder
-							.getStartTime().getTime()) {
+//			UserToRepairRecord userToRepairRecord = SpringContextHelper
+//					.getBean(UserToRepairRecordSearchService.class)
+//					.getLatestUserToRepairRecord(memberUser.getUserId(),
+//							cyclingOrder.getBikePlateNumber());
+//			if (userToRepairRecord != null
+//					&& userToRepairRecord.getToRepairTime().getTime() > cyclingOrder
+//							.getStartTime().getTime()) {
 				Double subAmmount = cyclingOrder.getOrderAmmount() * -1.0;
 
-				discount.put(AppConstant.TO_REPAIR_DREE, subAmmount);
+				discount.put("两分钟内金额减免", subAmmount);
 
 				cyclingOrder.setOrderAmmount(0.00);
 				this.save(cyclingOrder);
 
-			}
+//			}
 
 		}
 

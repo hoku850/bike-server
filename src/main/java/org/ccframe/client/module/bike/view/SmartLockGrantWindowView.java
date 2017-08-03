@@ -10,7 +10,6 @@ import org.ccframe.client.components.CcLabelValueCombobox;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
 import org.ccframe.subsys.bike.dto.SmartLockGrant;
-import org.ccframe.subsys.bike.dto.SmartLockGrantDto;
 import org.fusesource.restygwt.client.Method;
 
 import com.google.gwt.core.client.GWT;
@@ -33,8 +32,10 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.CardLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.form.FormPanelHelper;
+import com.sencha.gxt.widget.core.client.form.LongField;
 import com.sencha.gxt.widget.core.client.form.Radio;
-import com.sencha.gxt.widget.core.client.info.Info;
+import com.sencha.gxt.widget.core.client.form.error.TitleErrorHandler;
+import com.sencha.gxt.widget.core.client.form.error.ToolTipErrorHandler;
 
 @Singleton
 public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockGrant>{
@@ -57,13 +58,16 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 	Radio bikePlateNumberPrefix;
 	
 	@UiField
-	CcTextField startLockerHardwareCode;
+	LongField startLockerHardwareCode;
 	
 	@UiField
-	CcTextField endLockerHardwareCode;
+	LongField endLockerHardwareCode;
 	
 	@UiField
-	CcTextField bikePlateNumberPrefixText;
+	CcTextField startBikePlateNumber;
+	
+	@UiField
+	CcTextField endBikePlateNumber;
 	
     @UiField
     CcLabelValueCombobox orgId;
@@ -99,31 +103,8 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
-		toggle.add(LockerHardwareCodeScope);
-		toggle.add(bikePlateNumberPrefix);
-		LockerHardwareCodeScope.setValue(true);
-		bikePlateNumberPrefixText.disable();
-		startLockerHardwareCode.enable();
-		endLockerHardwareCode.enable();
-		toggle.addValueChangeHandler(new ValueChangeHandler<HasValue<Boolean>>(){
-			@Override
-			public void onValueChange(ValueChangeEvent<HasValue<Boolean>> event) {
-				if(LockerHardwareCodeScope.getValue()==true){
-					bikePlateNumberPrefixText.disable();
-					bikePlateNumberPrefixText.reset();
-					startLockerHardwareCode.enable();
-					endLockerHardwareCode.enable();
-				}else{
-					bikePlateNumberPrefixText.enable();
-					startLockerHardwareCode.reset();
-					endLockerHardwareCode.reset();
-					startLockerHardwareCode.disable();
-					endLockerHardwareCode.disable();
-				}
-			}
-		});
+		
 		orgId.setAfterAsyncReset(new Runnable(){
-
 			@Override
 			public void run() {
 				bikeTypeId.setExtraParam(orgId.getValue().toString());
@@ -131,14 +112,13 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 			}
 		});
 		orgId.addValueChangeHandler(new ValueChangeHandler<Integer>(){
-
 			@Override
 			public void onValueChange(ValueChangeEvent<Integer> event) {
 				bikeTypeId.setExtraParam(event.getValue().toString());
 				bikeTypeId.reset();
 			}
-			
 		});
+		
 		return widget;
 	}
 
@@ -149,7 +129,54 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 		orgId.reset();
 		reset();
 		FormPanelHelper.reset(vBoxLayoutContainer);
+		toggle.add(LockerHardwareCodeScope);
+		toggle.add(bikePlateNumberPrefix);
+		LockerHardwareCodeScope.setValue(true);
+		toggle.setValue(LockerHardwareCodeScope);
+		startBikePlateNumber.disable();
+		endBikePlateNumber.disable();
+		startLockerHardwareCode.enable();
+		endLockerHardwareCode.enable();
+		toggle.addValueChangeHandler(new ValueChangeHandler<HasValue<Boolean>>(){
+			@Override
+			public void onValueChange(ValueChangeEvent<HasValue<Boolean>> event) {
+				if(LockerHardwareCodeScope.getValue()==true){
+					startBikePlateNumber.disable();
+					endBikePlateNumber.disable();
+					startBikePlateNumber.reset();
+					endBikePlateNumber.reset();
+					startLockerHardwareCode.enable();
+					endLockerHardwareCode.enable();
+				}else{
+					startBikePlateNumber.enable();
+					endBikePlateNumber.enable();
+					startLockerHardwareCode.reset();
+					endLockerHardwareCode.reset();
+					startLockerHardwareCode.disable();
+					endLockerHardwareCode.disable();
+				}
+			}
+		});
+		
+		startBikePlateNumber.setErrorSupport(new TitleErrorHandler(startBikePlateNumber));
+		endBikePlateNumber.setErrorSupport(new ToolTipErrorHandler(endBikePlateNumber));
+		startLockerHardwareCode.setErrorSupport(new TitleErrorHandler(startLockerHardwareCode));
+		endLockerHardwareCode.setErrorSupport(new ToolTipErrorHandler(endLockerHardwareCode));
+		
 		vBoxLayoutContainer.forceLayout();
+
+		ClientManager.getSmartLockGrantClient().queryGrant(new RestCallback<Double>(){
+
+			@Override
+			public void onSuccess(Method method, Double response) {
+				if(response > 0 && response < 1d){ //正在跑
+					grantButton.disable();
+					queryNext();
+				}else{
+					grantButton.enable();
+				}
+			}
+		});
 	}
 
 	
@@ -161,12 +188,12 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 				smartLockGrant.setStartLockerHardwareCode(startLockerHardwareCode.getValue());
 				smartLockGrant.setEndLockerHardwareCode(endLockerHardwareCode.getValue());
 			}else{
-				smartLockGrant.setBikePlateNumberPrefixText(bikePlateNumberPrefixText.getValue());
+				smartLockGrant.setStartBikePlateNumber(startBikePlateNumber.getValue());
+				smartLockGrant.setEndBikePlateNumber(endBikePlateNumber.getValue());
 			}
 			smartLockGrant.setOrgId(orgId.getValue());
 			smartLockGrant.setBikeTypeId(bikeTypeId.getValue());
 			final TextButton button = ((TextButton)(e.getSource()));
-//			button.disable();
 			
 			ClientManager.getSmartLockGrantClient().grantSearch(smartLockGrant, new RestCallback<Long>(){
 				
@@ -180,17 +207,13 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 								ClientManager.getSmartLockGrantClient().grant(smartLockGrant, new RestCallback<String>(){
 									@Override
 									public void onSuccess(Method method, String response) {
-										queryNext("grantPersent");
-
-//										Info.display("操作完成", "成功发放单车车锁 "+response.getTotalLock()+" 把至运营商 "+response.getOrgNm());
-										
+										button.disable();
+										queryNext();
 									}
 									@Override
 									protected void afterFailure(){ //如果采用按钮的disable逻辑，一定要在此方法enable按钮
 										button.enable();
-										
 									}
-									
 								});
 							}
 						});
@@ -202,17 +225,16 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 				protected void afterFailure(){ //如果采用按钮的disable逻辑，一定要在此方法enable按钮
 					button.enable();
 				}
-				
 			});
 		}
 	}
 	
-	private void queryNext(final String grantPersent){
-		ClientManager.getSmartLockGrantClient().queryGrant(grantPersent, new RestCallback<Double>(){
+	private void queryNext(){
+		ClientManager.getSmartLockGrantClient().queryGrant(new RestCallback<Double>(){
 			@Override
 			public void onSuccess(Method method, Double response) {
 				boolean nextCheck = true;
-				if(response >= 0 && response <= 1){
+				if(response >= 0 && response <= 1d){
 					processCardLayoutContainer.setActiveWidget(processProgressBar);
 					processProgressBar.updateProgress(response, percentFormat.format(response*100) + "%");
 				}else{
@@ -237,6 +259,7 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 						public void run() {
 							SmartLockGrantWindowView.this.retCallBack.onClose(null); //保存并回传结果数据
 							window.hide();
+							grantButton.enable();
 						}
 					});
 				}
@@ -246,7 +269,7 @@ public class SmartLockGrantWindowView extends BaseWindowView<Integer, SmartLockG
 						@Override
 						public boolean execute() {
 							if(asWidget().isAttached()){
-								queryNext(grantPersent);
+								queryNext();
 							}
 							return false; //窗体关闭则停止执行
 						}

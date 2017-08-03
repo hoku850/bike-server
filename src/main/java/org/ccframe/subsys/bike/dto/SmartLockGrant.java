@@ -2,9 +2,10 @@ package org.ccframe.subsys.bike.dto;
 
 public class SmartLockGrant {
 	
-	private String startLockerHardwareCode;
-	private String endLockerHardwareCode;
-	private String bikePlateNumberPrefixText;
+	private Long startLockerHardwareCode;
+	private Long endLockerHardwareCode;
+	private String startBikePlateNumber;
+	private String endBikePlateNumber;
 	private Integer orgId;
 	private Integer bikeTypeId;
 	
@@ -20,24 +21,30 @@ public class SmartLockGrant {
 	public void setOrgId(Integer orgId) {
 		this.orgId = orgId;
 	}
-	public String getStartLockerHardwareCode() {
+	
+	public Long getStartLockerHardwareCode() {
 		return startLockerHardwareCode;
 	}
-	public void setStartLockerHardwareCode(String startLockerHardwareCode) {
+	public void setStartLockerHardwareCode(Long startLockerHardwareCode) {
 		this.startLockerHardwareCode = startLockerHardwareCode;
 	}
-	public String getEndLockerHardwareCode() {
+	public Long getEndLockerHardwareCode() {
 		return endLockerHardwareCode;
 	}
-	public void setEndLockerHardwareCode(String endLockerHardwareCode) {
+	public void setEndLockerHardwareCode(Long endLockerHardwareCode) {
 		this.endLockerHardwareCode = endLockerHardwareCode;
 	}
-	public String getBikePlateNumberPrefixText() {
-		return bikePlateNumberPrefixText;
+	public String getStartBikePlateNumber() {
+		return startBikePlateNumber;
 	}
-	public void setBikePlateNumberPrefixText(String bikePlateNumberPrefixText) {
-		this.bikePlateNumberPrefixText = bikePlateNumberPrefixText;
+	public void setStartBikePlateNumber(String startBikePlateNumber) {
+		this.startBikePlateNumber = startBikePlateNumber;
 	}
-	
+	public String getEndBikePlateNumber() {
+		return endBikePlateNumber;
+	}
+	public void setEndBikePlateNumber(String endBikePlateNumber) {
+		this.endBikePlateNumber = endBikePlateNumber;
+	}
 	
 }

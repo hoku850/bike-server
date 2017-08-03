@@ -14,6 +14,7 @@ public interface ControllerMapping {
 	String ADMIN_BASE = "admin/";
 	
 	String MAIN_FRAME_BASE = ADMIN_BASE + "mainFrame"; //基地址
+	String MAIN_FRAME_ORG_BASE = ADMIN_BASE + "org/mainFrame"; //运营商基地址
 	String MAIN_FRAME_DO_LOGOUT = "doLogout"; //登出
 	String MAIN_FRAME_DO_LOGIN = "doLogin"; //登录
 	String MAIN_FRAME_ADMIN_MENU = "adminMenu"; //权限菜单

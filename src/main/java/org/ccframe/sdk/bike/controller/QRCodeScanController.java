@@ -12,7 +12,6 @@ import org.ccframe.client.Global;
 import org.ccframe.client.ResGlobal;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.BusinessException;
-import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.code.SmartLockStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.AgentApp;
@@ -106,7 +105,7 @@ public class QRCodeScanController {
 		logger.info("智能锁 {} 开锁成功", hardwareCode);
 		System.out.println("----智能锁开锁成功-----");
 		
-		return AppConstant.SUCCESS;
+		return Global.SUCCESS;
 	}
 
 }

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.ccframe.client.ControllerMapping;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.sdk.bike.dto.AppPageDto;
 import org.ccframe.subsys.bike.service.AgentAppService;
 import org.ccframe.subsys.core.service.MemberAccountSearchService;
 import org.ccframe.subsys.core.service.MemberAccountService;
@@ -17,7 +18,7 @@ public class ChargeAmountController {
 	
 	@RequestMapping(value = ControllerMapping.GET_CHARGE_AMOUNT)
 	@ResponseBody
-	public Map<String, String> getChargeAmount() {
+	public AppPageDto getChargeAmount() {
 		/*AppPageDto appPageDto = new AppPageDto();
 		String amount, deposit, ifChargeDeposit;
 		SpringContextHelper.getBean(MemberAccountSearchService.class).getChargeAmount(amount, deposit, ifChargeDeposit);
@@ -30,28 +31,28 @@ public class ChargeAmountController {
 	
 	@RequestMapping(value = ControllerMapping.GET_DEPOSIT)
 	@ResponseBody
-	public Map<String, Object> getDeposit() {
+	public AppPageDto getDeposit() {
 
 		return SpringContextHelper.getBean(AgentAppService.class).getDeposit();
 	}
 	
 	@RequestMapping(value = ControllerMapping.CHARGE_ACCOUNT)
 	@ResponseBody
-	public Map<String, Object> chargeAccount(Double chargeMoney, String payType) {
+	public AppPageDto chargeAccount(Double chargeMoney, String payType) {
 		
 		return SpringContextHelper.getBean(MemberAccountService.class).chargeAccount(chargeMoney, payType);
 	}
 	
 	@RequestMapping(value = ControllerMapping.RETURN_DEPOSIT)
 	@ResponseBody
-	public Map<String, Object> returnDeposit() {
+	public AppPageDto returnDeposit() {
 		
 		return SpringContextHelper.getBean(MemberAccountService.class).returnDeposit();
 	}
 	
 	@RequestMapping(value = ControllerMapping.CHARGE_DEPOSIT)
 	@ResponseBody
-	public Map<String, Object> chargeDeposit(String payType) {
+	public AppPageDto chargeDeposit(String payType) {
 		
 		return SpringContextHelper.getBean(MemberAccountService.class).chargeDeposit(payType);
 	}

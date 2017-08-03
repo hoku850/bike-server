@@ -14,8 +14,8 @@ import org.ccframe.commons.data.ListExcelWriter;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.commons.util.JsonBinder;
 import org.ccframe.commons.util.WebContextHolder;
-import org.ccframe.sdk.bike.utils.AppConstant;
 import org.ccframe.subsys.bike.domain.code.ChargeOrderStatCodeEnum;
+import org.ccframe.subsys.bike.domain.code.PayTypeZhCodeEnum;
 import org.ccframe.subsys.bike.domain.code.PaymentTypeCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
 import org.ccframe.subsys.bike.domain.entity.MemberUser;
@@ -133,13 +133,21 @@ public class ChargeOrderService extends BaseService<ChargeOrder,java.lang.Intege
 		 
 		if(list != null && list.size()>0){
 			for(ChargeOrder chargeOrder : list){
-				String code = chargeOrder.getPaymentTypeCode();
-				if(code.equals(PaymentTypeCodeEnum.ALIPAY.toCode())){
-					chargeOrder.setPaymentTypeCode(AppConstant.ALIPAY_CHARGE);
-				} else if(code.equals(PaymentTypeCodeEnum.UNIONPAY.toCode())){
-					chargeOrder.setPaymentTypeCode(AppConstant.YINLIAN_CHARGE);
-				} else if(code.equals(PaymentTypeCodeEnum.WECHAT.toCode())){
-					chargeOrder.setPaymentTypeCode(AppConstant.WECHAT_CHARGE);
+				PaymentTypeCodeEnum code = PaymentTypeCodeEnum.fromCode(chargeOrder.getPaymentTypeCode());
+
+				switch (code) {
+				case ALIPAY:
+					chargeOrder.setPaymentTypeCode(PayTypeZhCodeEnum.ALIPAY_CHARGE.toCode());
+					break;
+				case UNIONPAY:
+					chargeOrder.setPaymentTypeCode(PayTypeZhCodeEnum.UNIONPAY_CHARGE.toCode());
+					break;
+				case WECHAT:
+					chargeOrder.setPaymentTypeCode(PayTypeZhCodeEnum.WECHAT_CHARGE.toCode());
+					break;
+
+				default:
+					break;
 				}
 			}
 		}

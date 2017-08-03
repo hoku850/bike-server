@@ -1,9 +1,8 @@
 package org.ccframe.sdk.bike.controller;
 
-import java.util.Map;
-
 import org.ccframe.client.ControllerMapping;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.sdk.bike.dto.AppPageDto;
 import org.ccframe.subsys.bike.service.CyclingOrderService;
 import org.ccframe.subsys.bike.service.CyclingTrajectoryRecordService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,13 +15,13 @@ public class UsingBikeController{
 	
 	@RequestMapping(value = ControllerMapping.GET_USING_BIKE_DATA)
 	@ResponseBody
-	public Map<String, Object> getUsingBikeData() {
+	public AppPageDto getUsingBikeData() {
 		return SpringContextHelper.getBean(CyclingOrderService.class).getUsingBikeData();
 	}
 	
 	@RequestMapping(value = ControllerMapping.NEW_CYCLING_ORDER)
 	@ResponseBody
-	public Map<String, Object> newCyclingOrder(String nowPos) {
+	public AppPageDto newCyclingOrder(String nowPos) {
 		return SpringContextHelper.getBean(CyclingOrderService.class).newCyclingOrder(nowPos);
 	}
 	

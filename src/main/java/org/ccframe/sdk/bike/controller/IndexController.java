@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.ccframe.client.ControllerMapping;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.sdk.bike.dto.AppPageDto;
 import org.ccframe.subsys.bike.service.SmartLockStatService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,7 +16,7 @@ public class IndexController {
 
 	@RequestMapping(value = ControllerMapping.GET_BIKE_LOCATION)
 	@ResponseBody
-	public Map<String, Object> getBikeLocation(String position) {
+	public AppPageDto getBikeLocation(String position) {
 
 		return SpringContextHelper.getBean(SmartLockStatService.class).getBikeLocation(position);
 	}

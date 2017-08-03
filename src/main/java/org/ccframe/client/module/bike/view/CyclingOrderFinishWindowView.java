@@ -65,6 +65,10 @@ public class CyclingOrderFinishWindowView extends BaseWindowView<Integer, Cyclin
 	@UiField
 	CcCurrencyField orderAmmount;
 	
+	@Editor.Ignore
+	@UiField
+	TextButton saveButton;
+	
 	@UiHandler("saveButton")
 	public void handleSaveClick(SelectEvent e){
 		if(FormPanelHelper.isValid(vBoxLayoutContainer, false)){
@@ -102,11 +106,17 @@ public class CyclingOrderFinishWindowView extends BaseWindowView<Integer, Cyclin
 	protected void onLoadData(Integer cyclingOrderId) {
 		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
 		// 重置下拉框
-		
 		ClientManager.getCyclingOrderClient().finishGetById(cyclingOrderId, new RestCallback<CyclingOrderRowDto>(){
 			@Override
 			public void onSuccess(Method method, CyclingOrderRowDto response) {
 				driver.edit(response);
+				if(!(response.getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode()))){
+					orderAmmount.disable();
+					saveButton.disable();
+				}else{
+					orderAmmount.enable();
+					saveButton.enable();
+				}
 				switch (CyclingOrderStatCodeEnum.fromCode(response.getCyclingOrderStatCode())){
 				case ON_THE_WAY:
 					cyclingOrderStatCode.setValue("骑行中");

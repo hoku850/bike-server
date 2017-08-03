@@ -1,6 +1,8 @@
 package org.ccframe.client.commons;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.ResGlobal;
+import org.ccframe.client.module.core.view.MainFrame;
 import org.ccframe.subsys.core.dto.ErrorObjectResp;
 import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
@@ -32,7 +34,11 @@ public abstract class RestCallback<T> implements MethodCallback<T> {
 			ViewUtil.messageBox("系统信息", "操作超时，您需要重新登录", new Runnable(){
 				@Override
 				public void run() {
-					redirect(GWT.getHostPageBaseURL() + method.getResponse().getText() + Window.Location.getQueryString());
+					if(MainFrame.adminUser.getOrgId() == Global.PLATFORM_ORG_ID){
+						redirect(GWT.getHostPageBaseURL() + method.getResponse().getText() + Window.Location.getQueryString());
+					}else{
+						redirect(GWT.getHostPageBaseURL() + "ccframe/orgLogin.jsp" + Window.Location.getQueryString());
+					}
 				}
 			});
 		}else{

@@ -56,6 +56,8 @@ textarea[readonly] {
 
 .fileGrid .simpleTileSelected, .fileGrid .simpleTileSelectedOver{background: url(../images/file_grid_selected_bg.gif);}
 
+.iconfont{display: inline-block;} /*iconfont样式补丁*/
+
 .ckeditorFile .simpleTileSelected, .ckeditorFile .simpleTileSelectedOver{border: 1px solid #69ac9f;}
 .ckeditorFile .buttonRounded,
 .ckeditorFile .buttonRoundedOver,

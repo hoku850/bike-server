@@ -59,24 +59,15 @@
 	color:#ffffff !important;
 }
 
-
-.cc-nav.red {background-color: #892e65 !important;text-align:center;}
-.cc-nav.red > li{animation: 2s ease 1s normal none 5 running ringing;transform-origin:50% 0 0;}
-.cc-nav.red:hover{background-color: #762c59 !important;}
-.cc-nav.red > .badge{background-color: #d15b47 !important;}
-
-.cc-nav.green {background-color: #2e8965 !important;}
-.cc-nav.green > li{animation: 2s ease 2s normal none 5 running vertical;}
-.cc-nav.green:hover{background-color: #2c7659 !important;}
-.cc-nav.green > .badge{background-color: #82af6f !important;}
-
 .cc-nav.user{background-color: #1b6ba5 !important; color: #ffffff !important;white-space:nowrap;font-size:14px;}
 .cc-nav.user:hover{background-color: #005892 !important;}
 .cc-nav.user img{width:40px;height:40px;border-radius:100%;vertical-align:middle;margin-right:10px;border:1px solid #DDDDDD;}
 .cc-nav.user li{display:inline-block;margin-left:5px;font-size:14px !important;}
 
-.cc-lmenu .nav-menu-accordion{background-color: #efefef!important;};
+.treeIcon{margin-right:5px!important;color:#4A6987;}
 
+.cc-lmenu .nav-menu-accordion{background-color: #efefef!important;};
+/*
 .badge {
 	font-size: 12px;
 	padding: 1px 6px;
@@ -87,7 +78,7 @@
     vertical-align: text-bottom !important;
 	behavior:url(${webRoot}/common-statics/bootstrap-patch/PIE.htc);
 }
-
+*/
 .fa-menu-icon {
     border: 0 none;
     height: 16px;

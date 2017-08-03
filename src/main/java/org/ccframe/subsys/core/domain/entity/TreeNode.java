@@ -110,7 +110,7 @@ public class TreeNode implements Serializable{
 		return icon;
 	}
 
-	public void setIconNm(String icon) {
+	public void setIcon(String icon) {
 		this.icon = icon;
 	}
 

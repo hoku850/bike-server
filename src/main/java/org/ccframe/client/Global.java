@@ -149,5 +149,6 @@ public interface Global {
 	String TO_REPAIR_DREE = "保修金额减免";
 
 	public String FORMAT_HARDWARECODE = "%016d";
+	public String MAP_BASE = "ccframe/map/";
 
 }

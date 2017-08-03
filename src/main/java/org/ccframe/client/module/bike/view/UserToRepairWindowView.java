@@ -1,5 +1,6 @@
 package org.ccframe.client.module.bike.view;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.base.BaseWindowView;
 import org.ccframe.client.commons.CcFormPanelHelper;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
@@ -41,7 +42,7 @@ public class UserToRepairWindowView extends BaseWindowView<Integer, BikeType> {
 		if(id == null){
 			FormPanelHelper.reset(vBoxLayoutContainer);
 		}else{
-			frame.setUrl(GWT.getHostPageBaseURL() + "map/umap.jsp?userToRepairRecordId=" + id);
+			frame.setUrl(GWT.getHostPageBaseURL() + Global.MAP_BASE + "umap.jsp?userToRepairRecordId=" + id);
 			frame.setPixelSize(445, 350);
 		}
 		

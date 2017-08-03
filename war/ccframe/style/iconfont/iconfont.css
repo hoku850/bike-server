@@ -1,10 +1,10 @@
 
 @font-face {font-family: "iconfont";
-  src: url('iconfont.eot?t=1501748675485'); /* IE9*/
-  src: url('iconfont.eot?t=1501748675485#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('iconfont.woff?t=1501748675485') format('woff'), /* chrome, firefox */
-  url('iconfont.ttf?t=1501748675485') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('iconfont.svg?t=1501748675485#iconfont') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1501758609654'); /* IE9*/
+  src: url('iconfont.eot?t=1501758609654#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1501758609654') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1501758609654') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1501758609654#iconfont') format('svg'); /* iOS 4.1- */
 }
 
 .iconfont {
@@ -47,5 +47,7 @@
 
 
 .icon-about:before { content: "\e609"; }
-.icon-logout:before { content: "\e603"; }
+.icon-logout:before { content: "\e60f"; }
 .icon-password:before { content: "\e93d"; }
+
+.icon-expand:before { content: "\e626"; }

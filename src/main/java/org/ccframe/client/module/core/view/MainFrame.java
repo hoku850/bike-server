@@ -18,10 +18,7 @@ import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.commons.WindowEventCallback;
 import org.ccframe.client.components.CcFlatIconButton;
 import org.ccframe.client.components.CcIconfontBadgeButton;
-import org.ccframe.client.components.FaBadgeButton;
-import org.ccframe.client.components.FaButton;
-import org.ccframe.client.components.FaIconType;
-import org.ccframe.client.components.FaMenuItem;
+import org.ccframe.client.components.CcIconfontMenuItem;
 import org.ccframe.client.module.core.event.BodyContentEvent;
 import org.ccframe.client.module.core.event.LoadWindowEvent;
 import org.ccframe.client.service.MainFrameClient;
@@ -30,8 +27,6 @@ import org.ccframe.subsys.core.dto.MainFrameResp;
 import org.ccframe.subsys.core.dto.OrgDto;
 import org.fusesource.restygwt.client.Method;
 
-import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -41,6 +36,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.inject.client.AsyncProvider;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -134,8 +130,7 @@ public class MainFrame implements IsWidget{
 	private Menu menu;
 	private Menu createMenu() {
 		Menu menu = new Menu();
-		FaMenuItem menuItem = new FaMenuItem("更改密码");
-		menuItem.setFaIconType(FaIconType.KEY);
+		CcIconfontMenuItem menuItem = new CcIconfontMenuItem("更改密码", "password");
 		menuItem.addSelectionHandler(new SelectionHandler<Item>(){
 			@Override
 			public void onSelection(SelectionEvent<Item> event) {
@@ -151,8 +146,7 @@ public class MainFrame implements IsWidget{
 //		menuItem.setFaIconType(FaIconType.QUESTION);
 //		menu.add(menuItem);
 
-		menuItem = new FaMenuItem("注销");
-		menuItem.setFaIconType(FaIconType.SIGN_OUT);
+		menuItem = new CcIconfontMenuItem("注销", "logout");
 		menuItem.addSelectionHandler(new SelectionHandler<Item>(){
 			@Override
 			public void onSelection(SelectionEvent<Item> event) {
@@ -171,8 +165,7 @@ public class MainFrame implements IsWidget{
 		menu.add(menuItem);
 		
 		//关于本系统
-		menuItem = new FaMenuItem("关于本系统");
-		menuItem.setFaIconType(FaIconType.COFFEE);
+		menuItem = new CcIconfontMenuItem("关于本系统", "about");
 		menuItem.addSelectionHandler(new SelectionHandler<Item>(){
 			@Override
 			public void onSelection(SelectionEvent<Item> event) {
@@ -225,10 +218,13 @@ public class MainFrame implements IsWidget{
 						protected SafeHtml getCellContent(TreeNodeTree model) { //重新定义有图标的叶节点输出
 							SafeHtmlBuilder sb = new SafeHtmlBuilder();
 							if(isLeaf(model)){
-								sb.append(SafeHtmlUtils.fromTrustedString("<li class='iconfont icon-" + model.getIcon() + " treeIcon'></li>"));
+								sb.append(SafeHtmlUtils.fromTrustedString("<li class='cc-tree-icon iconfont icon-" + model.getIcon() + "'></li>"));
 							}
 							sb.append(SafeHtmlUtils.fromString(model.getTreeNodeNm()));
 							return sb.toSafeHtml();
+						}
+						protected ImageResource calculateIconStyle(TreeNodeTree model) {
+							return null;
 						}
 					};
 					tree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -293,7 +289,7 @@ public class MainFrame implements IsWidget{
 				initOrgInfo();
 				
 				//TODO 用户头像
-				userButton.setHTML("<img src='"+GWT.getHostPageBaseURL()+ (GWT.getHostPageBaseURL().endsWith("/") ? "" : "/")+"ccframe/images/testlogo.jpg'/>" + mainFrameDto.getAdminUser().getUserNm() + "<li class='fa fa-sort-desc'/>");
+				userButton.setHTML("<img src='"+GWT.getHostPageBaseURL()+ (GWT.getHostPageBaseURL().endsWith("/") ? "" : "/")+"ccframe/images/testlogo.jpg'/>" + mainFrameDto.getAdminUser().getUserNm() + "<li class='iconfont icon-expand'/>");
 				borderLayoutContainer.forceLayout();
 			}
 		});

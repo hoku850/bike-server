@@ -9,11 +9,6 @@ import com.google.gwt.uibinder.client.UiConstructor;
 public class CcFontAwesomeButton extends CcFlatIconButton{
 
 	@UiConstructor
-	public CcFontAwesomeButton(String badgeText, String iconName) {
-		super(badgeText, iconName);
-	}
-
-	@UiConstructor
 	public CcFontAwesomeButton(String iconName) {
 		super(iconName);
 	}

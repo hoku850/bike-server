@@ -22,15 +22,57 @@
 			line-height:50px;
 			padding-left:10px;
 		}
-		.redButton{background-color: #892e65;text-align:center;}
+		.redButton{background-color: #892e65}
 		.redButton > li{animation: 2s ease 1s normal none 5 running ringing;transform-origin:50% 0 0;}
 		.redButtonOver{ background-color: #762c59;}
 		.redButtonBadge{background-color: #d15b47;}
 
-		.greenButton {background-color: #2e8965;text-align:center;}
+		.greenButton {background-color: #2e8965}
 		.greenButton > li{animation: 2s ease 2s normal none 5 running vertical;}
 		.greenButtonOver{background-color: #2c7659}
 		.greenButtonBadge{background-color: #82af6f}
+
+		.navButton {
+			border-left:1px solid #e1e1e1;
+			border-top:none;
+			border-right:none;
+			border-top:none;
+			color: #ffffff;
+			text-align:center;
+			cursor: pointer;
+			padding-left:10px;
+		}
+		.navButton li{
+			font-size:18px;
+			margin-right:5px;
+			border-radius:9px;
+		}
+
+		.nav-img-button-bar {
+			background-color:#34495e;
+			padding: 5px;
+		}
+		.fast-menu-button{
+			background-color:#445f7a;
+			color:#ecf0f5;
+			cursor:pointer;
+			border:none;
+		}
+		.fast-menu-button > li{
+			font-size:18px;
+		}
+		.fast-menu-button-hover{
+			background-color:#597da0;
+			color:#ffffff;
+		}
+		
+		.user-nav-button{
+			font-family: airal,verdana,tahoma,helvetica,"microsoft yahei","宋体";
+		}
+		.user-nav-button{background-color: #1b6ba5 !important; color: #ffffff !important;white-space:nowrap;font-size:14px;}
+		.user-nav-button:hover{background-color: #005892 !important;}
+		.user-nav-button img{width:40px;height:40px;border-radius:100%;vertical-align:middle;margin-right:10px;border:1px solid #DDDDDD;}
+		.user-nav-button li{display:inline-block;margin-left:5px;font-size:14px !important;}
 
 	</ui:style>
 
@@ -80,15 +122,15 @@
 					</container:child>
 					<container:child>
 						<!-- <cc:FaTextButtonfaText="" faIconType="GEARS" scale="LARGE" height="33px" width="45px"/>  -->
-						<cc:CcIconfontBadgeButton styleName="{style.redButton}" overStyleName="{style.redButtonOver}" badgeStyleName="{style.redButtonBadge}" 
-						badgeText="0" addStyleNames="cc-nav red" iconName="bell" width="74px" height="50px" ui:field="navButton1"/>
+						<cc:CcIconfontBadgeButton styleName="{style.navButton} {style.redButton}" overStyleName="{style.redButtonOver}" badgeStyleName="{style.redButtonBadge}" 
+						badgeText="0" iconName="bell" width="74px" height="50px" ui:field="navButton1"/>
 					</container:child>
 					<container:child>
-						<cc:CcIconfontBadgeButton styleName="{style.greenButton}" overStyleName="{style.greenButtonOver}" badgeStyleName="{style.greenButtonBadge}" 
-						badgeText="0" addStyleNames="cc-nav green" iconName="envelope" width="74px" height="50px"/>
+						<cc:CcIconfontBadgeButton styleName="{style.navButton} {style.greenButton}" overStyleName="{style.greenButtonOver}" badgeStyleName="{style.greenButtonBadge}" 
+						badgeText="0" iconName="envelope" width="74px" height="50px"/>
 					</container:child>
 					<container:child>
-						<g:Button addStyleNames="cc-nav user" height="50px" ui:field="userButton"/>
+						<g:Button styleName="{style.navButton} {style.user-nav-button}" height="50px" ui:field="userButton"/>
 					</container:child>
 				</container:HBoxLayoutContainer>
 			</container:north>
@@ -96,20 +138,28 @@
 				<gxt:ContentPanel ui:field="menuPanel" headingText="功能导航">
 					<container:VBoxLayoutContainer ui:field="buttonBox" vBoxLayoutAlign="STRETCH">
 						<container:child>
-							<container:HBoxLayoutContainer hBoxLayoutAlign="TOP" height="45" addStyleNames="nav-img-button-bar"><!-- 强制toolbar颜色 -->
-								<container:child><cc:CcIconfontButton ui:field="fastMenu1" iconName="gears" height="33px" width="45px"/></container:child>
+							<container:HBoxLayoutContainer hBoxLayoutAlign="TOP" height="45" addStyleNames="{style.nav-img-button-bar}"><!-- 强制toolbar颜色 -->
+								<container:child>
+									<cc:CcIconfontButton styleName="{style.fast-menu-button}" overStyleName="{style.fast-menu-button-hover}" ui:field="fastMenu1" iconName="gears" height="33px" width="45px"/>
+								</container:child>
 								<container:child layoutData="{boxDataFlex1}">
 									<container:SimpleContainer></container:SimpleContainer>
 								</container:child>
-								<container:child><cc:CcIconfontButton ui:field="fastMenu2" iconName="gears" height="33px" width="45px"/></container:child>
+								<container:child>
+									<cc:CcIconfontButton styleName="{style.fast-menu-button}" overStyleName="{style.fast-menu-button-hover}" ui:field="fastMenu2" iconName="gears" height="33px" width="45px"/>
+								</container:child>
 								<container:child layoutData="{boxDataFlex1}">
 									<container:SimpleContainer></container:SimpleContainer>
 								</container:child>
-								<container:child><cc:CcIconfontButton ui:field="fastMenu3" iconName="gears" height="33px" width="45px"/></container:child>
+								<container:child>
+									<cc:CcIconfontButton styleName="{style.fast-menu-button}" overStyleName="{style.fast-menu-button-hover}" ui:field="fastMenu3" iconName="gears" height="33px" width="45px"/>
+								</container:child>
 								<container:child layoutData="{boxDataFlex1}">
 									<container:SimpleContainer></container:SimpleContainer>
 								</container:child>
-								<container:child><cc:CcIconfontButton ui:field="fastMenu4" iconName="star" height="33px" width="45px"/></container:child>
+								<container:child>
+									<cc:CcIconfontButton styleName="{style.fast-menu-button}" overStyleName="{style.fast-menu-button-hover}" ui:field="fastMenu4" iconName="star" height="33px" width="45px"/>
+								</container:child>
 							</container:HBoxLayoutContainer>
 						</container:child>
 					</container:VBoxLayoutContainer>

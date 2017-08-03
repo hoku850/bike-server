@@ -48,7 +48,7 @@ textarea[readonly] {
 }
 
 .toolStripButton, .toolStripButtonOver, .toolStripButtonFocused, .toolStripButtonFocusedOver, .toolStripButtonDown, .toolStripButtonFocusedDown, .toolStripButtonSelected, .toolStripButtonSelectedFocused, .toolStripButtonSelectedDown, .toolStripButtonSelectedFocusedDown, .toolStripButtonSelectedOver, .toolStripButtonSelectedFocusedOver, .toolStripButtonDisabled, .toolStripButtonSelectedDisabled{
-    font-family: airal,verdana,tahoma,helvetica,"宋体","microsoft yahei" !important;
+    font-family: airal,verdana,tahoma,helvetica,"microsoft yahei","宋体" !important;
     font-size: 12px !important;
     letter-spacing: 2px;
     word-spacing: 2px;

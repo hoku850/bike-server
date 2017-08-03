@@ -3,6 +3,9 @@
 .badge{
 	border-radius: 9px;
 	padding:0px 6px;
+	display: inline-block;
+	font-weight: 400 !important;
+    vertical-align: text-bottom !important;
 }
 
 /* main frame */
@@ -18,24 +21,6 @@
 	border-bottom:1px dashed #AAAAAA;
 }
 
-.nav-img-button-bar {
-	background-color: #34495e;
-	padding: 5px;
-}
-.nav-img-button-bar button{
-	background-color: #445f7a;
-	color:#ecf0f5;
-	cursor:pointer;
-	border:none;
-	font-size:16px;
-}
-.nav-img-button-bar button:hover{
-	background-color:#597da0;
-	color:#ffffff;
-}
-.nav-img-button-bar button:active{
-	padding-top:2px;padding-left:5px;
-}
 .nav-menu-accordion > div:first-child {
 	border-bottom: 1px dashed #AAAAAA;
 }
@@ -51,22 +36,25 @@
 	padding-left:10px;
 }
 
-.cc-menu li,.cc-nav li{
+.cc-menu li{
 	font-size:18px !important;
 	margin-right:5px !important;
 }
+.cc-menu span{color:#444444}
 .cc-menu span:hover{
 	color:#ffffff !important;
 }
 
-.cc-nav.user{background-color: #1b6ba5 !important; color: #ffffff !important;white-space:nowrap;font-size:14px;}
-.cc-nav.user:hover{background-color: #005892 !important;}
-.cc-nav.user img{width:40px;height:40px;border-radius:100%;vertical-align:middle;margin-right:10px;border:1px solid #DDDDDD;}
-.cc-nav.user li{display:inline-block;margin-left:5px;font-size:14px !important;}
+.cc-tree-icon{
+    border: 0 none;
+    padding: 0;
+    margin-right: 4px;
+    vertical-align: top;
+	font-size: 18px;
+	color:#4A6987;
+}
 
-.treeIcon{margin-right:5px!important;color:#4A6987;}
-
-.cc-lmenu .nav-menu-accordion{background-color: #efefef!important;};
+.cc-lmenu .nav-menu-accordion{background-color: #efefef!important;}
 /*
 .badge {
 	font-size: 12px;
@@ -79,15 +67,17 @@
 	behavior:url(${webRoot}/common-statics/bootstrap-patch/PIE.htc);
 }
 */
-.fa-menu-icon {
+/* *********** */
+.cc-menu-icon {
     border: 0 none;
     height: 16px;
     left: 3px;
-    margin: 3px;
+    margin-left: 3px;
     padding: 0;
     position: absolute;
     vertical-align: top;
     width: 16px;
+	font-size: 18px;
 }
 
 /* 上传组件支持 TODO css图片合并*/

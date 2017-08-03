@@ -1,5 +1,6 @@
 package org.ccframe.client.module.bike.view;
 
+import org.ccframe.client.Global;
 import org.ccframe.client.base.BaseWindowView;
 import org.ccframe.client.commons.CcFormPanelHelper;
 import org.ccframe.client.commons.ClientManager;
@@ -67,7 +68,7 @@ public class CyclingOrderWindowView extends BaseWindowView<Integer, CyclingOrder
 		if(id == null){
 			FormPanelHelper.reset(vBoxLayoutContainer);
 		}else{
-			frame.setUrl(GWT.getHostPageBaseURL() + "map/cmap.jsp?cyclingOrderId=" + id);
+			frame.setUrl(GWT.getHostPageBaseURL() + Global.MAP_BASE + "cmap.jsp?cyclingOrderId=" + id);
 			frame.setPixelSize(550, 495);
 			ClientManager.getCyclingOrderClient().getCyclingOrderDtoById(id, new RestCallback<CyclingOrderRowDto>(){
 				@Override

@@ -1,5 +1,6 @@
 package org.ccframe.subsys.core.service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -104,7 +105,7 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 			amount = memberAccount.getAccountValue();
 			
 			
-			total = BigDecimalUtil.add(memberAccount.getAccountValue(), chargeMoney);
+			total = BigDecimalUtil.add(amount, chargeMoney);
 			memberAccount.setAccountValue(total);
 			SpringContextHelper.getBean(MemberAccountService.class).save(memberAccount);
 			
@@ -114,7 +115,9 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 			//保存充值订单表
 			ChargeOrder chargeOrder = new ChargeOrder();
 			Date nowDate = new Date();
-			String chargeOrderNum = UtilDateTimeClient.convertDateTimeToString(nowDate, "yyMMddHHmmss") + (Math.random() * 9000 + 1000);
+			String chargeOrderNum = UtilDateTimeClient.convertDateTimeToString(nowDate, "yyMMddHHmmss") + (int)(Math.random() * 9000 + 1000);
+			//SimpleDateFormat dateFormater = new SimpleDateFormat("yyMMddHHmmss");
+			//String chargeOrderNum = dateFormater.format(nowDate) + (Math.random() * 9000 + 1000);
 			chargeOrder.setChargeOrderNum(chargeOrderNum);
 			chargeOrder.setUserId(user.getUserId());
 			chargeOrder.setMemberAccountId(memberAccount.getMemberAccountId());
@@ -224,7 +227,10 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 			ChargeOrder chargeOrder = new ChargeOrder();
 			
 			Date nowDate = new Date();
-			String chargeOrderNum = UtilDateTimeClient.convertDateTimeToString(nowDate, "yyMMddHHmmss") + (Math.random() * 9000 + 1000);
+			String chargeOrderNum = UtilDateTimeClient.convertDateTimeToString(nowDate, "yyMMddHHmmss") + (int)(Math.random() * 9000 + 1000);
+			//SimpleDateFormat dateFormater = new SimpleDateFormat("yyMMddHHmmss");
+			//String chargeOrderNum = dateFormater.format(nowDate) + (Math.random() * 9000 + 1000);
+			chargeOrder.setChargeOrderNum(chargeOrderNum);
 			chargeOrder.setChargeOrderNum(chargeOrderNum);
 			chargeOrder.setUserId(user.getUserId());
 			chargeOrder.setMemberAccountId(memberAccount.getMemberAccountId());

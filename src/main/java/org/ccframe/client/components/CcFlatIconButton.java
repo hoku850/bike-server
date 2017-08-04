@@ -3,7 +3,6 @@ package org.ccframe.client.components;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Text;
-import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 

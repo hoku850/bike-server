@@ -3,7 +3,6 @@ package org.ccframe.sdk.bike.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.ccframe.client.ControllerMapping;
-import org.ccframe.client.Global;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.subsys.core.service.UserService;
 import org.springframework.web.bind.annotation.RequestMapping;

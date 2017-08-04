@@ -15,7 +15,6 @@ import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
 import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
-import org.ccframe.subsys.bike.domain.entity.UserToRepairRecord;
 import org.ccframe.subsys.bike.dto.CyclingOrderClientPage;
 import org.ccframe.subsys.bike.dto.CyclingOrderListReq;
 import org.ccframe.subsys.bike.dto.CyclingOrderRowDto;

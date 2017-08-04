@@ -1,7 +1,5 @@
 package org.ccframe.sdk.bike.controller;
 
-import java.util.Map;
-
 import org.ccframe.client.ControllerMapping;
 import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.sdk.bike.dto.AppPageDto;

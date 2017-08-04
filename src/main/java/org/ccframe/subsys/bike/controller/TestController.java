@@ -49,38 +49,38 @@ public class TestController {
 			smartLock.setLastUseDate(new Date());
 			if(i<1500){
 				smartLock.setOrgId(2);
-				smartLock.setBikeTypeId(62002);
+				smartLock.setBikeTypeId(52002);
 				smartLock.setSmartLockStatCode("2");
 			}
 			if(i>=1500 && i<3000){
 				smartLock.setOrgId(2);
-				smartLock.setBikeTypeId(62003);
+				smartLock.setBikeTypeId(52003);
 				smartLock.setSmartLockStatCode("2");
 			}
 			if(i>=3000 && i<4500){
 				smartLock.setOrgId(3);
-				smartLock.setBikeTypeId(63002);
+				smartLock.setBikeTypeId(53002);
 				smartLock.setSmartLockStatCode("2");
 			}
 			if(i>=4500 && i<6000){
 				smartLock.setOrgId(3);
-				smartLock.setBikeTypeId(63003);
+				smartLock.setBikeTypeId(53003);
 				smartLock.setSmartLockStatCode("2");
 			}
 			if(i>=6000 && i<7500){
 				smartLock.setOrgId(4);
-				smartLock.setBikeTypeId(64002);
+				smartLock.setBikeTypeId(54002);
 				smartLock.setSmartLockStatCode("2");
 			}
 			if(i>=7500 && i<9000){
 				smartLock.setOrgId(4);
-				smartLock.setBikeTypeId(64003);
+				smartLock.setBikeTypeId(54003);
 				smartLock.setSmartLockStatCode("2");
 			}
 			
 			SpringContextHelper.getBean(SmartLockService.class).save(smartLock);
 		}
-		writer.write("saveUser finish");
+		writer.write("saveSmartLock finish");
 		writer.flush();
 	}
 	
@@ -90,21 +90,22 @@ public class TestController {
 		HttpServletResponse response = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getResponse();
 		PrintWriter writer = response.getWriter();
 		
-		int maxSmartLockId=59004;
-        int minSmartLockId=50005;
+		int maxSmartLockId=69010;
+        int minSmartLockId=60011;
         Random random = new Random();
         
 		int i = 0;
 		CyclingOrder cyclingOrder = new CyclingOrder();
-		for(i = 0; i < 10000; i++){
+		for(i = 0; i < 60000; i++){
 			cyclingOrder = new CyclingOrder();
 			int s = random.nextInt(maxSmartLockId)%(maxSmartLockId-minSmartLockId+1) + minSmartLockId;
 			
 			cyclingOrder.setUserId(SpringContextHelper.getBean(UserService.class).findIdList().get(i));
 			cyclingOrder.setSmartLockId(s);
-			cyclingOrder.setOrgId(SpringContextHelper.getBean(SmartLockService.class).getById(cyclingOrder.getSmartLockId()).getOrgId());
-			cyclingOrder.setBikePlateNumber(SpringContextHelper.getBean(SmartLockService.class).getById(cyclingOrder.getSmartLockId()).getBikePlateNumber());
-			cyclingOrder.setBikeTypeId(SpringContextHelper.getBean(SmartLockService.class).getById(cyclingOrder.getSmartLockId()).getBikeTypeId());
+			SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getById(s);
+			cyclingOrder.setOrgId(smartLock.getOrgId());
+			cyclingOrder.setBikePlateNumber(smartLock.getBikePlateNumber());
+			cyclingOrder.setBikeTypeId(smartLock.getBikeTypeId());
 			cyclingOrder.setStartTime(new Date());
 			cyclingOrder.setStartLocationLng(113.367607);
 			cyclingOrder.setStartLocationLat(23.127620);
@@ -117,7 +118,7 @@ public class TestController {
 			cyclingOrder.setCyclingContinousSec(3800);
 			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 		}
-		writer.write("saveUser finish");
+		writer.write("saveCyclingOrder finish");
 		writer.flush();
 	}
 	
@@ -154,8 +155,8 @@ public class TestController {
 		PrintWriter writer = response.getWriter();
 		int smartLockId = 60001;
 		int i = 0;
-		int maxSmartLockId=59004;
-        int minSmartLockId=50005;
+		int maxSmartLockId=69010;
+        int minSmartLockId=60011;
         Random random = new Random();
 		
 		

@@ -96,16 +96,19 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 				throw new BusinessException(ResGlobal.ERRORS_LOGIN_FREEZE, new String[]{multiLoginId});
 			}
 		}
-		List<OrgUserRel> orgUserRelList = SpringContextHelper.getBean(OrgUserRelSearchService.class).findByKey(OrgUserRel.USER_ID, user.getUserId());
-		boolean userNotInOrg = true;
-		for(OrgUserRel orgUserRel: orgUserRelList){
-			if(orgUserRel.getOrgId().equals(orgId)){
-				userNotInOrg = false;
-				break;
+		// 区分login.jsp和orgLogin.jsp
+		if(orgId != null){
+			List<OrgUserRel> orgUserRelList = SpringContextHelper.getBean(OrgUserRelSearchService.class).findByKey(OrgUserRel.USER_ID, user.getUserId());
+			boolean userNotInOrg = true;
+			for(OrgUserRel orgUserRel: orgUserRelList){
+				if(orgUserRel.getOrgId().equals(orgId)){
+					userNotInOrg = false;
+					break;
+				}
 			}
-		}
-		if(userNotInOrg){
-			throw new BusinessException(ResGlobal.ERRORS_LOGIN_PASSWORD, true);
+			if(userNotInOrg){
+				throw new BusinessException(ResGlobal.ERRORS_LOGIN_PASSWORD, true);
+			}
 		}
 		return user;
 	}
@@ -242,22 +245,22 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 		User result = super.save(adminUser);
 
 		//TODO 以后要添加“管理员管理”管理机构管理员用户和分配权限，本阶段先认为所有保存的管理员都是总部的。更改逻辑后，所有的会员保存逻辑也要改，会员只能看到管理员，但是不能删除管理员和修改是否管理员。
-		OrgUserRelService orgUserRelService = SpringContextHelper.getBean(OrgUserRelService.class);
-		List<OrgUserRel> orgUserRelList = orgUserRelService.findByKey(UserRoleRel.USER_ID, adminUser.getUserId());
-		if(BoolCodeEnum.fromCode(adminUser.getIfAdmin()).boolValue()){ //是机构管理员，如果不是则要添加
-			if(orgUserRelList.isEmpty()){
-				OrgUserRel orgUserRel = new OrgUserRel();
-				orgUserRel.setUserId(adminUser.getUserId());
-				orgUserRel.setOrgId(Global.PLATFORM_ORG_ID);
-				orgUserRelService.save(orgUserRel);
-			}
-		}else{ //不是机构管理员，如果有机构关联则要删除
-			if(!orgUserRelList.isEmpty()){
-				for(OrgUserRel orgUserRel: orgUserRelList){
-					orgUserRelService.delete(orgUserRel);
-				}
-			}
-		}
+//		OrgUserRelService orgUserRelService = SpringContextHelper.getBean(OrgUserRelService.class);
+//		List<OrgUserRel> orgUserRelList = orgUserRelService.findByKey(UserRoleRel.USER_ID, adminUser.getUserId());
+//		if(BoolCodeEnum.fromCode(adminUser.getIfAdmin()).boolValue()){ //是机构管理员，如果不是则要添加
+//			if(orgUserRelList.isEmpty()){
+//				OrgUserRel orgUserRel = new OrgUserRel();
+//				orgUserRel.setUserId(adminUser.getUserId());
+//				orgUserRel.setOrgId(Global.PLATFORM_ORG_ID);
+//				orgUserRelService.save(orgUserRel);
+//			}
+//		}else{ //不是机构管理员，如果有机构关联则要删除
+//			if(!orgUserRelList.isEmpty()){
+//				for(OrgUserRel orgUserRel: orgUserRelList){
+//					orgUserRelService.delete(orgUserRel);
+//				}
+//			}
+//		}
 		return result;
 	}
 

@@ -47,6 +47,8 @@ Temporary Items
 .apdisk
 
 # bikeserver的忽略提交目录
+.gradle/
+.gwt/
 .svn/
 build/
 gwt-unitCache/

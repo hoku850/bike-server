@@ -1,13 +1,13 @@
 package org.ccframe.commons.cache;
 
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.TransactionController;
-
 import org.ccframe.commons.util.ElasticsearchTransactionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.DefaultTransactionStatus;
+
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.TransactionController;
 
 /**
  * 完成缓存、索引的事务同步。
@@ -22,6 +22,12 @@ public class CcframeTransactionManager extends JpaTransactionManager {
 	private static final long serialVersionUID = -3878501009638970644L;
 
 	private CacheManager ehcache;
+	
+	private int transactionTimeout;
+
+	public void setTransactionTimeout(int transactionTimeout) {
+		this.transactionTimeout = transactionTimeout;
+	}
 
 	@Autowired
 	public void setEhcache(CacheManager ehcache) {
@@ -31,7 +37,7 @@ public class CcframeTransactionManager extends JpaTransactionManager {
 	@Override
 	protected void doBegin(Object transaction, TransactionDefinition definition) {
 		super.doBegin(transaction, definition);
-		ehcache.getTransactionController().begin(120);
+		ehcache.getTransactionController().begin(transactionTimeout);
 		if(!definition.isReadOnly()){ //只读事务无需操作索引
 			ElasticsearchTransactionUtil.init();
 		}

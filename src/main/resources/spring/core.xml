@@ -151,6 +151,7 @@
 	<!-- 把jps事务和cache事务及索引事务串起来 -->
 	<bean id="transactionManager" class="org.ccframe.commons.cache.CcframeTransactionManager">
 		<property name="ehcache" ref="ehcache"/>
+		<property name="transactionTimeout" value="${app.ehcache.transactionTimeout:300}"/><!-- 默认Ehcache事务300秒 -->
         <property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 

@@ -96,21 +96,39 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 				throw new BusinessException(ResGlobal.ERRORS_LOGIN_FREEZE, new String[]{multiLoginId});
 			}
 		}
-		// 区分login.jsp和orgLogin.jsp
-		if(orgId != null){
-			List<OrgUserRel> orgUserRelList = SpringContextHelper.getBean(OrgUserRelSearchService.class).findByKey(OrgUserRel.USER_ID, user.getUserId());
+		return user;
+	}
+	
+	/**
+	 * 
+	 * @param orgId 登陆页面输入的orgId
+	 * @param usreId
+	 * @return 若登陆页面输入的orgId不为空，则直接返回，否则返回数据库查找到的第一个orgId
+	 */
+	@Transactional(readOnly = true)
+	public Integer getOrgIdByUserId(Integer orgId, Integer usreId) {
+		List<OrgUserRel> orgUserRelList = SpringContextHelper.getBean(OrgUserRelSearchService.class).findByKey(OrgUserRel.USER_ID, usreId);
+		// 总平台的登陆页面
+		if (orgId != null) {
 			boolean userNotInOrg = true;
-			for(OrgUserRel orgUserRel: orgUserRelList){
-				if(orgUserRel.getOrgId().equals(orgId)){
+			for (OrgUserRel orgUserRel : orgUserRelList) {
+				if (orgUserRel.getOrgId().equals(orgId)) {
 					userNotInOrg = false;
 					break;
 				}
 			}
-			if(userNotInOrg){
+			if (userNotInOrg) {
 				throw new BusinessException(ResGlobal.ERRORS_LOGIN_PASSWORD, true);
 			}
+			return orgId;
 		}
-		return user;
+		// 运营商的登陆页面
+		else {
+			if (orgUserRelList.size() == 0) {
+				throw new BusinessException(ResGlobal.ERRORS_LOGIN_PASSWORD, true);
+			}
+			return orgUserRelList.get(0).getOrgId();
+		}
 	}
 
 	/**
@@ -466,7 +484,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 	 */
 	@Transactional
 	public void login(String phoneNumber, String iMEI, String validateCode, int orgId) {
-		this.Validate(phoneNumber, validateCode);
+		UserService.Validate(phoneNumber, validateCode);
 		List<User> list = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(phoneNumber, iMEI);
 		User user = null;
 		MemberUser memberUser = new MemberUser();
@@ -482,8 +500,9 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 				// 更新用户的UserPsw(IMEI).
 				user = users.get(0);
 				user.setUserPsw(iMEI);
+				SpringContextHelper.getBean(UserService.class).save(user);
 			} else {
-				//新建用户
+				//新建用户并新建账户
 				user = new User();
 				user.setLoginId(phoneNumber);
 				user.setUserNm(phoneNumber);
@@ -492,9 +511,9 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 				user.setIfAdmin(BoolCodeEnum.NO.toCode());
 				user.setCreateDate(new Date());
 				user.setUserStatCode(UserStatCodeEnum.NORMAL.toCode());
+				this.createAccount(SpringContextHelper.getBean(UserService.class).save(user), orgId);
 			}
-			user = SpringContextHelper.getBean(UserService.class).save(user);
-			this.createAccount(user, orgId);
+			
 		}
 		memberUser = new MemberUser();
 		memberUser.setUserId(user.getUserId());
@@ -540,9 +559,11 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 		String state = ReturnPageCodeEnum.EMPTY_STRING.toCode();
 		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
 		if(list!=null && list.size()>0) {
-			if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode())) {
+			String code = list.get(0).getCyclingOrderStatCode();
+			if(code.equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode()) || 
+					code.equals(CyclingOrderStatCodeEnum.TO_BE_REPAIRED.toCode())) {
 				return ReturnPageCodeEnum.ON_THE_WAY.toCode();
-			} else if(list.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode())) {
+			} else if(code.equals(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode())) {
 				return ReturnPageCodeEnum.WAIT_PAY.toCode();
 			}
 		}

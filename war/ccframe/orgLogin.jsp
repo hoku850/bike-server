@@ -51,7 +51,7 @@
 		$(".btnLogin").after("<img src='images/waiting.gif' style='float:left; margin-top:4px'></img>");
 		$.ajax({	
 			type:"POST",
-			url:"<c:url value='/admin/org/mainFrame/doLogin.json'/>",
+			url:"<c:url value='/admin/mainFrame/doLogin.json'/>",
 			data:{loginId:loginId,userPsw:$.sha512(useruserPsw),validateCode:validateCode,LoginURI:LoginURI},
 			dataType: "json",
 			success:function(data) {

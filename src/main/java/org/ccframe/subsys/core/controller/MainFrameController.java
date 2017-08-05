@@ -62,6 +62,7 @@ public class MainFrameController{
 		if(!BoolCodeEnum.fromCode(user.getIfAdmin()).boolValue()){ //管理员登录需判断用户必须是管理员
 			throw new BusinessException(ResGlobal.ERRORS_LOGIN_PASSWORD, true);
 		}
+		orgId = SpringContextHelper.getBean(UserService.class).getOrgIdByUserId(orgId, user.getUserId());
 		AdminUser adminUser = AdminUser.create(user, orgId); 
 		WebContextHolder.getSessionContextStore().setServerValue(Global.SESSION_LOGIN_ADMIN, adminUser);
 		WebContextHolder.getSessionContextStore().removeServerValue(Global.SESSION_VALIDATE_CODE);

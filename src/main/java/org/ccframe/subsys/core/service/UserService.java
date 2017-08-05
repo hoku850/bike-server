@@ -466,7 +466,7 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 	 */
 	@Transactional
 	public void login(String phoneNumber, String iMEI, String validateCode, int orgId) {
-		this.Validate(phoneNumber, validateCode);
+		UserService.Validate(phoneNumber, validateCode);
 		List<User> list = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(phoneNumber, iMEI);
 		User user = null;
 		MemberUser memberUser = new MemberUser();
@@ -482,8 +482,9 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 				// 更新用户的UserPsw(IMEI).
 				user = users.get(0);
 				user.setUserPsw(iMEI);
+				SpringContextHelper.getBean(UserService.class).save(user);
 			} else {
-				//新建用户
+				//新建用户并新建账户
 				user = new User();
 				user.setLoginId(phoneNumber);
 				user.setUserNm(phoneNumber);
@@ -492,9 +493,9 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 				user.setIfAdmin(BoolCodeEnum.NO.toCode());
 				user.setCreateDate(new Date());
 				user.setUserStatCode(UserStatCodeEnum.NORMAL.toCode());
+				this.createAccount(SpringContextHelper.getBean(UserService.class).save(user), orgId);
 			}
-			user = SpringContextHelper.getBean(UserService.class).save(user);
-			this.createAccount(user, orgId);
+			
 		}
 		memberUser = new MemberUser();
 		memberUser.setUserId(user.getUserId());

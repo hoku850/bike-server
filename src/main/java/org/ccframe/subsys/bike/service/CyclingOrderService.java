@@ -576,17 +576,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			cyclingOrder.setCyclingDistanceMeter(totalMeter);
 			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 			
-			//更新智能锁状态表记录
-//			List<SmartLockStat> statList = SpringContextHelper.getBean(SmartLockStatService.class).findByKey(SmartLockStat.SMART_LOCK_ID, cyclingOrder.getSmartLockId());
-//			SmartLockStat smartLockStat = statList.get(0);
-//			
-//			smartLockStat.setLockLng(lng);
-//			smartLockStat.setLockLat(lat);
-//			smartLockStat.setLockSwitchStatCode(LockSwitchStatCodeEnum.CLOCK.toCode());
-//			smartLockStat.setLastLocationUpdTime(nowDate);
-//			smartLockStat.setLockBattery(lockBattery);
-//			
-//			SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
+
 			updateSmartLockStat(smartLockId, lng, lat, lockBattery);
 			
 			//通知app跳转页面
@@ -603,9 +593,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	 */
 	private void updateSmartLockStat(Integer smartLockId, Double lng, Double lat, Integer lockBattery) {
 		//更新智能锁状态表记录
-		List<SmartLockStat> statList = SpringContextHelper.getBean(SmartLockStatService.class).findByKey(SmartLockStat.SMART_LOCK_ID, smartLockId);
-		SmartLockStat smartLockStat = statList.get(0);
-		
+		SmartLockStat smartLockStat = SpringContextHelper.getBean(SmartLockStatService.class).getByKey(SmartLockStat.SMART_LOCK_ID, smartLockId);
 		smartLockStat.setLockLng(lng);
 		smartLockStat.setLockLat(lat);
 		smartLockStat.setLockSwitchStatCode(LockSwitchStatCodeEnum.CLOCK.toCode());

@@ -44,7 +44,7 @@ import com.google.common.collect.Lists;
 
 public abstract class BaseSearchService <E extends Serializable,ID extends Serializable,R extends ElasticsearchRepository<E,ID>> implements IHasSearchBuilder<E, ID>{ //spring 4.X 支持泛型注入
 	
-	private static final int INDEX_LOG_STEP = 100;
+	private static final int INDEX_LOG_STEP = 1000;
 	
 	private Logger log = Logger.getLogger(this.getClass());
 	

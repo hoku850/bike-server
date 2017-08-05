@@ -43,7 +43,7 @@ public class SmartLockStatService extends BaseService<SmartLockStat,java.lang.In
 		findByLockSwitchStatCodeAndIfRepairIngAndLockLatBetweenAndLockLngBetween(
 				LockSwitchStatCodeEnum.CLOCK.toCode(),BoolCodeEnum.NO.toCode(),around[0],around[2],
 				around[1],around[3]);
-		
+
 		if(list!=null && list.size()>0) {
 			StringBuffer posString = new StringBuffer("");
 			for(SmartLockStat smartLockStat : list) {
@@ -80,7 +80,7 @@ public class SmartLockStatService extends BaseService<SmartLockStat,java.lang.In
 	 */
 	@Transactional
 	public void saveOrUpdate(SmartLock smartLock, String lockStatus, Integer lockBattery, Double lng, Double lat, Date sysTime) {
-		SmartLockStat smartLockStat = SpringContextHelper.getBean(SmartLockStatSearchService.class).getById(smartLock.getSmartLockId());
+		SmartLockStat smartLockStat = SpringContextHelper.getBean(SmartLockStatSearchService.class).getByKey(SmartLockStat.SMART_LOCK_ID, smartLock.getSmartLockId());
 		if (smartLockStat == null) {
 			smartLockStat = new SmartLockStat();
 			smartLockStat.setSmartLockId(smartLock.getSmartLockId());
@@ -89,10 +89,10 @@ public class SmartLockStatService extends BaseService<SmartLockStat,java.lang.In
 		}
 		smartLockStat.setLockSwitchStatCode(lockStatus);
 		smartLockStat.setLockBattery(lockBattery);
-		smartLockStat.setLockLat(lng);
-		smartLockStat.setLockLng(lat);
+		smartLockStat.setLockLat(lat);
+		smartLockStat.setLockLng(lng);
 		smartLockStat.setLastLocationUpdTime(sysTime);
-		smartLockStat = SpringContextHelper.getBean(this.getClass()).save(smartLockStat);
+		SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
 		
 		//更新骑行订单和智能锁状态表记录
 		SpringContextHelper.getBean(CyclingOrderService.class).updateCyclingOrderAndLockStat(smartLock.getSmartLockId(), lng, lat, lockBattery);

@@ -102,8 +102,8 @@ public class BikeTypeWindowView extends BaseWindowView<Integer, BikeType> implem
 		if(bikeTypeId == null){
 			FormPanelHelper.reset(vBoxLayoutContainer);
 			// 运营商登陆
-			if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
-				orgId.setValue(MainFrame.adminUser.getOrgId());
+			if (Global.PLATFORM_ORG_ID != MainFrame.getAdminUser().getOrgId()) {
+				orgId.setValue(MainFrame.getAdminUser().getOrgId());
 				orgId.setEnabled(false);
 			}
 		}else{
@@ -112,7 +112,7 @@ public class BikeTypeWindowView extends BaseWindowView<Integer, BikeType> implem
 				public void onSuccess(Method method, BikeType response) {
 					driver.edit(response);
 					// 运营商登陆
-					if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+					if (Global.PLATFORM_ORG_ID != MainFrame.getAdminUser().getOrgId()) {
 						orgId.setEnabled(false);
 					}
 				}

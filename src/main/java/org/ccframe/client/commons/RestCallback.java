@@ -34,10 +34,10 @@ public abstract class RestCallback<T> implements MethodCallback<T> {
 			ViewUtil.messageBox("系统信息", "操作超时，您需要重新登录", new Runnable(){
 				@Override
 				public void run() {
-					if(MainFrame.adminUser.getOrgId() == Global.PLATFORM_ORG_ID){
-						redirect(GWT.getHostPageBaseURL() + method.getResponse().getText() + Window.Location.getQueryString());
-					}else{
+					if(MainFrame.getAdminUser() == null || MainFrame.getAdminUser().getOrgId() != Global.PLATFORM_ORG_ID){
 						redirect(GWT.getHostPageBaseURL() + "ccframe/orgLogin.jsp" + Window.Location.getQueryString());
+					}else{
+						redirect(GWT.getHostPageBaseURL() + method.getResponse().getText() + Window.Location.getQueryString());
 					}
 				}
 			});

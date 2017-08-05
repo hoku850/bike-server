@@ -41,8 +41,8 @@ public class QRCodeScanController {
 	public void browserScan(@PathVariable(Global.ID_BINDER_ID) java.lang.Long hardwareCode, HttpServletResponse response, HttpServletRequest request) {
 		//测试用，转到appScan逻辑
 
-		appScan(hardwareCode, request);
-		if(true)return;
+		/*appScan(hardwareCode, request);
+		if(true)return;*/
 		
 		//查查锁是哪个运营商的
 		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.HARDWARE_CODE, hardwareCode);

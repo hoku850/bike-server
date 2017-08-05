@@ -111,7 +111,7 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 	@UiHandler("exportButton")
 	public void exportButtonClick(SelectEvent e){
 		//excel下载用
-        ClientManager.getSmartLockClient().exportUrl(MainFrame.adminUser.getOrgId(), new RestCallback<String>(){			
+        ClientManager.getSmartLockClient().exportUrl(MainFrame.getAdminUser().getOrgId(), new RestCallback<String>(){			
 			@Override
 			public void onSuccess(Method method, String response) {
 				Window.open(GWT.getHostPageBaseURL() + response, "", "");
@@ -266,7 +266,7 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 				}
 				
 				if(isAgent){
-					smartLockListReq.setOrgId(MainFrame.adminUser.getOrgId());
+					smartLockListReq.setOrgId(MainFrame.getAdminUser().getOrgId());
 				}else{
 					smartLockListReq.setOrgId(orgId.getValue());
 				}
@@ -284,7 +284,7 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
-		if(MainFrame.adminUser.getOrgId() != Global.PLATFORM_ORG_ID){
+		if(MainFrame.getAdminUser().getOrgId() != Global.PLATFORM_ORG_ID){
 			isAgent = true;
 		}else{
 			isAgent = false;
@@ -306,7 +306,7 @@ public class SmartLockListView extends BaseCrudListView<SmartLockRowDto>{
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
-		if(MainFrame.adminUser.getOrgId() != Global.PLATFORM_ORG_ID){
+		if(MainFrame.getAdminUser().getOrgId() != Global.PLATFORM_ORG_ID){
 			isAgent = true;
 		}else{
 			isAgent = false;

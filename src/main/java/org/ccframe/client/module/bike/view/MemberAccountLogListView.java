@@ -132,7 +132,7 @@ public class MemberAccountLogListView extends BasePagingListView<MemberAccountLo
 							final String baseTitle = response.getLoginId() + "账户交易日志";
 							
 							// 运营商登陆
-							if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+							if (Global.PLATFORM_ORG_ID != MainFrame.getAdminUser().getOrgId()) {
 								title.setText(baseTitle);
 							} 
 							// 总平台

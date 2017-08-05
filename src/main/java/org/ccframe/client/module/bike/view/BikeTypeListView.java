@@ -118,8 +118,8 @@ public class BikeTypeListView extends BaseCrudListView<BikeTypeRowDto> {
 			@Override
 			public void call(int offset, int limit,final RestyGwtPagingLoader<BikeTypeRowDto> loader) {
 				BikeTypeListReq bikeTypeListReq = new BikeTypeListReq();
-				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
-					bikeTypeListReq.setOrgId(MainFrame.adminUser.getOrgId());
+				if (Global.PLATFORM_ORG_ID != MainFrame.getAdminUser().getOrgId()) {
+					bikeTypeListReq.setOrgId(MainFrame.getAdminUser().getOrgId());
 				} else {
 					bikeTypeListReq.setOrgId(orgCombobox.getValue());
 				}
@@ -143,7 +143,7 @@ public class BikeTypeListView extends BaseCrudListView<BikeTypeRowDto> {
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
 		// 运营商登陆
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+		if (Global.PLATFORM_ORG_ID != MainFrame.getAdminUser().getOrgId()) {
 			orgCombobox.hide();
 			this.columnModel.getColumn(1).setHidden(true);
 			this.view.getHeader().refresh(); //强制更新头部

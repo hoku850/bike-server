@@ -172,7 +172,6 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 			SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);
 		}
 		
-		System.out.println("finishGrant");
 		getGrantStatusMap().put("grantPercent", Global.GRANT_SUCCESS_ALL);
 		return;
 	}

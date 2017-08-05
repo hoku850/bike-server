@@ -87,12 +87,6 @@ public class CcLabelValueCombobox extends AdapterField<Integer>{
 				setValue(event.getSelectedItem().getValue());
 			}
 		});
-		combobox.addSelectionHandler(new SelectionHandler<LabelValue>(){
-			@Override
-			public void onSelection(SelectionEvent<LabelValue> event) {
-				setValue(event.getSelectedItem().getValue());
-			}
-		});
 		combobox.addStyleName("ccCombo");
 		store = combobox.getStore();
 	}

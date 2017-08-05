@@ -18,11 +18,11 @@ minimum-scale=1.0, maximum-scale=2.0" />
 				text-align: center
 			}
 			
-			.div {
+			div {
 				margin: 0 auto;
-				width: 400px;
+				width: 100%;
 				/*height: 100px;*/
-				border: 1px solid #F00;
+				/*border: 1px solid #F00;*/
 			}
 		</style>
 	</head>
@@ -34,8 +34,11 @@ minimum-scale=1.0, maximum-scale=2.0" />
 				有什么事情打电话去800823823问好不好。
 			</p>
 		</div>-->
-		<h1>文章信息from id : ${articleInfId}</h1>
+		<div class="div">
+		<!--<h2>文章信息from id : ${articleInfId}</h2>-->
 		${articleInf.getArticleContStr()}
+		</div>
+		
 	</body>
 	<script type="text/javascript">
 		function show() {

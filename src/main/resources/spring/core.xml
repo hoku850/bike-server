@@ -139,9 +139,9 @@
 		<property name="jpaProperties">
 			<props>
 				<prop key="hibernate.hbm2ddl.auto">#{
-				systemProperties['app.initMode'] == null ? 
+				systemProperties['app.forceInitMode'] == null ? 
 				('${app.initMode:none}' == 'create-once' ? 'create' : '${app.initMode:none}'):
-				systemProperties['app.initMode']
+				systemProperties['app.forceInitMode']
 				}</prop>
 			</props>
 		</property>

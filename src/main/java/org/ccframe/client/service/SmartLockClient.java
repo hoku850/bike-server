@@ -18,7 +18,7 @@ import org.fusesource.restygwt.client.RestService;
 
 public interface SmartLockClient extends RestService{
 	@GET @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.SMART_LOCK_BASE + Global.ID_BINDER_PATH + Global.REST_REQUEST_URL_SUFFIX)
-	void getById(@PathParam(Global.ID_BINDER_ID) Integer smartLockId, RestCallback<SmartLockRowDto> callback);
+	void getById(@PathParam(Global.ID_BINDER_ID) Integer smartLockId, RestCallback<SmartLock> callback);
 
 	@DELETE @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.SMART_LOCK_BASE + Global.ID_BINDER_PATH + Global.REST_REQUEST_URL_SUFFIX)
 	void decideDeleteById(@PathParam(Global.ID_BINDER_ID) Integer smartLockId, RestCallback<Void> callback);
@@ -27,7 +27,7 @@ public interface SmartLockClient extends RestService{
 	void findSmartLockList(SmartLockListReq smartLockListReq, @QueryParam("offset") int offset, @QueryParam("limit") int limit, RestCallback<ClientPage<SmartLockRowDto>> callback);
 
 	@POST @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.SMART_LOCK_BASE + Global.REST_REQUEST_URL_SUFFIX)
-	void saveOrUpdate(SmartLock adminUser, RestCallback<Void> restCallback);
+	void saveOrUpdate(SmartLock smartLock, RestCallback<Void> restCallback);
 
 	@POST @Path(ControllerMapping.CLIENT_TO_BASE + ControllerMapping.SMART_LOCK_BASE + "/"+ ControllerMapping.SMART_LOCK_EXPORT + Global.REST_REQUEST_URL_SUFFIX)
 	void exportUrl(Integer orgId, RestCallback<String> restCallback);

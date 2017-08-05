@@ -61,6 +61,4 @@ public class OrgSearchService extends BaseSearchService<Org, Integer, OrgSearchR
 		}
 		return new ClientPage<OrgRowDto>((int)page.getTotalElements(), offset / limit, limit, resultList);
 	}
-
-	
 }

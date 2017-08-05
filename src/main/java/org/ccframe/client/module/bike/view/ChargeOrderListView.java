@@ -62,7 +62,7 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 	@UiHandler("exportButton")
 	public void exportButtonClick(SelectEvent e){
 		//excel下载用
-        ClientManager.getChargeOrderClient().exportUrl(MainFrame.adminUser.getOrgId(), new RestCallback<String>(){			
+        ClientManager.getChargeOrderClient().exportUrl(MainFrame.getAdminUser().getOrgId(), new RestCallback<String>(){			
 			@Override
 			public void onSuccess(Method method, String response) {
 				Window.open(GWT.getHostPageBaseURL() + response, "", "");
@@ -115,8 +115,8 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 			@Override
 			public void call(int offset, int limit,final RestyGwtPagingLoader<ChargeOrderRowDto> loader) {
 				ChargeOrderListReq chargeOrderListReq = new ChargeOrderListReq();
-				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
-					chargeOrderListReq.setOrgId(MainFrame.adminUser.getOrgId());
+				if (Global.PLATFORM_ORG_ID != MainFrame.getAdminUser().getOrgId()) {
+					chargeOrderListReq.setOrgId(MainFrame.getAdminUser().getOrgId());
 				} else {
 					chargeOrderListReq.setOrgId(orgCombobox.getValue());
 				}
@@ -155,7 +155,7 @@ public class ChargeOrderListView extends BasePagingListView<ChargeOrderRowDto> {
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
 		// 运营商登陆
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+		if (Global.PLATFORM_ORG_ID != MainFrame.getAdminUser().getOrgId()) {
 			this.orgCombobox.hide();
 			this.columnModel.getColumn(1).setHidden(true);
 			this.view.getHeader().refresh(); //强制更新头部

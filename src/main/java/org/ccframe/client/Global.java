@@ -142,7 +142,7 @@ public interface Global {
 
 	//前端app使用的常量
 	String PAYMENT_TRANSACTIONAL_NUMBER = "2017071316010001";//TODO 下一步要得到动态的支付流水
-	Integer RADIUS = 500;
+	Integer RADIUS = 10000;
 	String SUCCESS = "success";
 	String FAIL = "fail";
 

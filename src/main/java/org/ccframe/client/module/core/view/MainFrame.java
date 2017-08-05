@@ -101,7 +101,7 @@ public class MainFrame implements IsWidget{
 	@UiField
 	public ContentPanel centerPanel;
 	
-	public static AdminUser adminUser;
+	private static AdminUser adminUser;
 
 	@UiField
 	CcFlatIconButton fastMenu1;
@@ -123,7 +123,7 @@ public class MainFrame implements IsWidget{
 	 * 获取全局的登录用户，用于机构等判断。但是为了安全服务器侧还是要做多一个判断。
 	 * @return
 	 */
-	public AdminUser getAdminUser(){
+	public static AdminUser getAdminUser(){
 		return adminUser;
 	}
 
@@ -153,7 +153,7 @@ public class MainFrame implements IsWidget{
 				ClientManager.getMainFrameClient().doLogout(new RestCallback<String>(){
 					@Override
 					public void onSuccess(Method method, String response) {
-						if(MainFrame.adminUser.getOrgId() == Global.PLATFORM_ORG_ID){
+						if(MainFrame.getAdminUser().getOrgId() == Global.PLATFORM_ORG_ID){
 							redirect(GWT.getHostPageBaseURL() + response + Window.Location.getQueryString());
 						}else{
 							redirect(GWT.getHostPageBaseURL() + "ccframe/orgLogin.jsp" + Window.Location.getQueryString());

@@ -43,6 +43,7 @@ public class Css3TreeAppearance implements TreeAppearance {
     @Source({"com/sencha/gxt/theme/base/client/tree/Tree.css", "Css3Tree.css"})
     Css3TreeStyle style();
     
+    @Source("")
     ThemeDetails theme();
 
     ImageResource checked();

@@ -177,7 +177,7 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 				}
 				
 				if(isAgent){
-					userToRepairRecordListReq.setOrgId(MainFrame.adminUser.getOrgId());
+					userToRepairRecordListReq.setOrgId(MainFrame.getAdminUser().getOrgId());
 				}else{
 					userToRepairRecordListReq.setOrgId(orgId.getValue());
 				}
@@ -196,7 +196,7 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 	@Override
 	protected Widget bindUi() {
 		Widget widget = uiBinder.createAndBindUi(this);
-		if(MainFrame.adminUser.getOrgId() != Global.PLATFORM_ORG_ID){
+		if(MainFrame.getAdminUser().getOrgId() != Global.PLATFORM_ORG_ID){
 			isAgent = true;
 		}else{
 			isAgent = false;
@@ -229,7 +229,7 @@ public class UserToRepairRecordListView extends BasePagingListView<UserToRepairR
 	@Override
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
-		if(MainFrame.adminUser.getOrgId() != Global.PLATFORM_ORG_ID){
+		if(MainFrame.getAdminUser().getOrgId() != Global.PLATFORM_ORG_ID){
 			isAgent = true;
 		}else{
 			isAgent = false;

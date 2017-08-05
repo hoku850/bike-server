@@ -154,7 +154,7 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 	public void onModuleReload(BodyContentEvent event) {
 		super.onModuleReload(event);
 		// 运营商登陆
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+		if (Global.PLATFORM_ORG_ID != MainFrame.getAdminUser().getOrgId()) {
 			orgCombobox.hide();
 		} else {
 			orgCombobox.reset();
@@ -176,8 +176,8 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 				memberAccountListReq.setSearchText(searchField.getValue());
 				memberAccountListReq.setAccountTypeCode(acCodeEnum.toCode());
 				// 运营商登陆
-				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
-					memberAccountListReq.setOrgId(MainFrame.adminUser.getOrgId());
+				if (Global.PLATFORM_ORG_ID != MainFrame.getAdminUser().getOrgId()) {
+					memberAccountListReq.setOrgId(MainFrame.getAdminUser().getOrgId());
 				} else {
 					memberAccountListReq.setOrgId(orgCombobox.getValue());
 				}

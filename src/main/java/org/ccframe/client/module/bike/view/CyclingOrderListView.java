@@ -90,7 +90,7 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 	@UiHandler("exportButton")
 	public void exportButtonClick(SelectEvent e){
 		//excel下载用
-        ClientManager.getCyclingOrderClient().exportUrl(MainFrame.adminUser.getOrgId(), new RestCallback<String>(){			
+        ClientManager.getCyclingOrderClient().exportUrl(MainFrame.getAdminUser().getOrgId(), new RestCallback<String>(){			
 			@Override
 			public void onSuccess(Method method, String response) {
 				Window.open(GWT.getHostPageBaseURL() + response, "", "");
@@ -160,8 +160,8 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 			@Override
 			public void call(int offset, int limit,final RestyGwtPagingLoader<CyclingOrderRowDto> loader) {
 				CyclingOrderListReq cyclingOrderListReq = new CyclingOrderListReq();
-				if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
-					cyclingOrderListReq.setOrgId(MainFrame.adminUser.getOrgId());
+				if (Global.PLATFORM_ORG_ID != MainFrame.getAdminUser().getOrgId()) {
+					cyclingOrderListReq.setOrgId(MainFrame.getAdminUser().getOrgId());
 				} else {
 					cyclingOrderListReq.setOrgId(orgCombobox.getValue());
 				}
@@ -213,11 +213,11 @@ public class CyclingOrderListView extends BasePagingListView<CyclingOrderRowDto>
 		startTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date(new Date().getTime() - ONE_MONTH)));
 		endTime.setValue(UtilDateTimeClient.convertDateTimeToString(new Date()));
 		// 运营商登陆
-		if (Global.PLATFORM_ORG_ID != MainFrame.adminUser.getOrgId()) {
+		if (Global.PLATFORM_ORG_ID != MainFrame.getAdminUser().getOrgId()) {
 			this.columnModel.getColumn(1).setHidden(true);
 			this.view.getHeader().refresh(); //强制更新头部
 			this.orgCombobox.hide();
-			bikeTypeCombobox.setExtraParam(MainFrame.adminUser.getOrgId().toString());
+			bikeTypeCombobox.setExtraParam(MainFrame.getAdminUser().getOrgId().toString());
 			bikeTypeCombobox.reset();
 		} else {
 			orgCombobox.reset();

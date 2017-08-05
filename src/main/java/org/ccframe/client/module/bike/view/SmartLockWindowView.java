@@ -9,7 +9,6 @@ import org.ccframe.client.components.CcLabelValueCombobox;
 import org.ccframe.client.components.CcTextField;
 import org.ccframe.client.components.CcVBoxLayoutContainer;
 import org.ccframe.subsys.bike.domain.entity.SmartLock;
-import org.ccframe.subsys.bike.dto.SmartLockRowDto;
 import org.fusesource.restygwt.client.Method;
 
 import com.google.gwt.core.client.GWT;
@@ -26,13 +25,14 @@ import com.sencha.gxt.widget.core.client.Component;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.form.FormPanelHelper;
+import com.sencha.gxt.widget.core.client.form.LongField;
 import com.sencha.gxt.widget.core.client.info.Info;
 
 @Singleton
-public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> implements Editor<SmartLockRowDto>{
+public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> implements Editor<SmartLock>{
 
 	interface SmartLockUiBinder extends UiBinder<Component, SmartLockWindowView> {}
-	interface SmartLockDriver extends SimpleBeanEditorDriver<SmartLockRowDto, SmartLockWindowView> {}
+	interface SmartLockDriver extends SimpleBeanEditorDriver<SmartLock, SmartLockWindowView> {}
 	
 	private static SmartLockUiBinder uiBinder = GWT.create(SmartLockUiBinder.class);
 	private SmartLockDriver driver = GWT.create(SmartLockDriver.class);
@@ -43,7 +43,7 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 	CcVBoxLayoutContainer vBoxLayoutContainer;
 	
 	@UiField
-	CcTextField hardwareCodeStr;
+	LongField hardwareCode;
 	
 	@UiField
 	CcTextField imeiCode;
@@ -63,6 +63,7 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
     @UiField
     CcEnumCombobox smartLockStatCode;
     
+    boolean editFlag;
 	
 	@UiHandler("saveButton")
 	public void handleSaveClick(SelectEvent e){
@@ -104,14 +105,15 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 		bikeTypeId.setAfterAsyncReset(new Runnable(){
 			@Override
 			public void run() {
-				if(SmartLockWindowView.this.smartLockId != null){
-					ClientManager.getSmartLockClient().getById(smartLockId, new RestCallback<SmartLockRowDto>(){
+				if(SmartLockWindowView.this.smartLockId != null && SmartLockWindowView.this.editFlag == true){
+					ClientManager.getSmartLockClient().getById(smartLockId, new RestCallback<SmartLock>(){
 						@Override
-						public void onSuccess(Method method, SmartLockRowDto response) {
+						public void onSuccess(Method method, SmartLock response) {
 							driver.edit(response);
 							orgId.setValue(response.getOrgId());
 							bikeTypeId.setValue(response.getBikeTypeId());
 							smartLockStatCode.setValue(response.getSmartLockStatCode());
+							editFlag = false;
 						}
 					});
 				}
@@ -135,7 +137,7 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 		});
 
 		driver.initialize(this);
-		driver.edit(new SmartLockRowDto());
+		driver.edit(new SmartLock());
 		return widget;
 	}
 
@@ -144,11 +146,13 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 		this.smartLockId = smartLockId;
 		window.setHeadingText("智能锁" + (smartLockId == null ? "增加" : "修改"));
 		
-		orgId.reset();
 		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
 		if(smartLockId == null){
 			FormPanelHelper.reset(vBoxLayoutContainer);
+		}else {
+			editFlag = true;
 		}
+		orgId.reset();
 		vBoxLayoutContainer.forceLayout();
 	}
 

@@ -20,8 +20,80 @@ public class AppPageDto {
 	private String polylinePath = "";
 	private String burnCalories = "";
 	private String reduceEmissions = "";
+	// OrderPayController
+	private String time;
+	private String price;
+	private String pricePerHalfHour;
+	private String cyclingOriderId;
+	private List<Discount> discount;
+	// mainMenu
+	private String distance;
+	private String achievement;
+	private String money;
+	private String record;
+	private String invite;
 	
 	
+	public String getTime() {
+		return time;
+	}
+	public void setTime(String time) {
+		this.time = time;
+	}
+	public String getPrice() {
+		return price;
+	}
+	public void setPrice(String price) {
+		this.price = price;
+	}
+	public String getPricePerHalfHour() {
+		return pricePerHalfHour;
+	}
+	public void setPricePerHalfHour(String pricePerHalfHour) {
+		this.pricePerHalfHour = pricePerHalfHour;
+	}
+	public String getCyclingOriderId() {
+		return cyclingOriderId;
+	}
+	public void setCyclingOriderId(String cyclingOriderId) {
+		this.cyclingOriderId = cyclingOriderId;
+	}
+	public List<Discount> getDiscount() {
+		return discount;
+	}
+	public void setDiscount(List<Discount> discount) {
+		this.discount = discount;
+	}
+	public String getDistance() {
+		return distance;
+	}
+	public void setDistance(String distance) {
+		this.distance = distance;
+	}
+	public String getAchievement() {
+		return achievement;
+	}
+	public void setAchievement(String achievement) {
+		this.achievement = achievement;
+	}
+	public String getMoney() {
+		return money;
+	}
+	public void setMoney(String money) {
+		this.money = money;
+	}
+	public String getRecord() {
+		return record;
+	}
+	public void setRecord(String record) {
+		this.record = record;
+	}
+	public String getInvite() {
+		return invite;
+	}
+	public void setInvite(String invite) {
+		this.invite = invite;
+	}
 	public String getList() {
 		return list;
 	}

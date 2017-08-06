@@ -2,6 +2,7 @@ package org.ccframe.subsys.bike.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,8 @@ import org.ccframe.client.Global;
 import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.sdk.bike.dto.AppPageDto;
+import org.ccframe.sdk.bike.dto.Discount;
 import org.ccframe.subsys.bike.domain.code.CyclingOrderStatCodeEnum;
 import org.ccframe.subsys.bike.domain.entity.BikeType;
 import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
@@ -162,9 +165,9 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 	/**
 	 * @author lzh
 	 */
-	public Map<String, String> getOrderPayDetail(MemberUser memberUser) {
+	public AppPageDto getOrderPayDetail(MemberUser memberUser) {
 		final int TO_REPAIR_WAIT_TIME = 60 * 1000 * 2;// 2分钟转换成毫秒
-		Map<String, String> map = new HashMap<String, String>();
+		AppPageDto appPageDto = new AppPageDto();
 		// 查询未完成的唯一订单
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		boolQueryBuilder.must(QueryBuilders.termQuery(CyclingOrder.USER_ID,
@@ -184,7 +187,7 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 			return null;
 		}
 
-		HashMap<String, Double> discount = new HashMap<String, Double>();
+		List<Discount> discountList = new LinkedList<Discount>();
 		if ((cyclingOrder.getEndTime().getTime() - cyclingOrder.getStartTime()
 				.getTime()) < TO_REPAIR_WAIT_TIME) {
 //			UserToRepairRecord userToRepairRecord = SpringContextHelper
@@ -196,10 +199,11 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 //							.getStartTime().getTime()) {
 				Double subAmmount = cyclingOrder.getOrderAmmount() * -1.0;
 
-				discount.put("两分钟内金额减免", subAmmount);
-
+//				discount.add("{\"disName\":\"关锁优惠\",\"disRemark\":\"2分钟内关锁减免\",\"disPrice\":\""
+//						+ String.format("%.2f",subAmmount) +"\"}");
+				discountList.add(new Discount("关锁优惠", "2分钟内关锁减免", String.format("%.2f",subAmmount)));
 				cyclingOrder.setOrderAmmount(0.00);
-				this.save(cyclingOrder);
+				SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 
 //			}
 
@@ -208,12 +212,17 @@ public class CyclingOrderSearchService extends BaseSearchService<CyclingOrder, I
 		// 查询单车类型
 		BikeType bikeType;
 		bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(cyclingOrder.getBikeTypeId());
-		map.put("time", cyclingOrder.getCyclingContinousSec().toString());
-		map.put("price", cyclingOrder.getOrderAmmount().toString());
-		map.put("pricePerHalfHour", bikeType.getHalfhourAmmount().toString());
-		map.put("cyclingOriderId", cyclingOrder.getCyclingOrderId().toString());
-		map.put("discount", discount.toString());
-		return map;
+//		map.put("time", cyclingOrder.getCyclingContinousSec().toString());
+//		map.put("price", cyclingOrder.getOrderAmmount().toString());
+//		map.put("pricePerHalfHour", bikeType.getHalfhourAmmount().toString());
+//		map.put("cyclingOriderId", cyclingOrder.getCyclingOrderId().toString());
+//		map.put("discount", discount.toString());
+		appPageDto.setTime(cyclingOrder.getCyclingContinousSec().toString());
+		appPageDto.setPrice(cyclingOrder.getOrderAmmount().toString());
+		appPageDto.setPricePerHalfHour(bikeType.getHalfhourAmmount().toString());
+		appPageDto.setCyclingOriderId(cyclingOrder.getCyclingOrderId().toString());
+		appPageDto.setDiscount(discountList);
+		return appPageDto;
 	}
 
 	public List<CyclingOrder> findBySmartLockIdAndCyclingOrderStatCodeOrderByStartTimeDesc(

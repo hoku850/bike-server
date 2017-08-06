@@ -482,22 +482,20 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	/**
 	 * @author lzh
 	 */
-	public Map<String, String> getMenuData(MemberUser user){
-		Map<String, String> map = new HashMap<String, String>();
+	public AppPageDto getMenuData(MemberUser user){
+		AppPageDto appPageDto = new AppPageDto();
 		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class)
 			.findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
 		Integer cyclingDistace = 0;
 		for (CyclingOrder cyclingOrder : list) { //TODO Fly 1.更改为数据库运算？ 2.米的问题
 			cyclingDistace += cyclingOrder.getCyclingDistanceMeter();
 		}
-//		map.put("item0", new DecimalFormat("#.00").format(cyclingDistace * 0.001));
-		map.put("item0", String.format("%.2f",cyclingDistace * 0.001));
-		map.put("item1", Double.toString(this.countBurnCalories(cyclingDistace)));
-		map.put("item2", SpringContextHelper.getBean(MemberAccountSearchService.class).findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), user.getOrgId(), AccountTypeCodeEnum.PRE_DEPOSIT.toCode()).get(0).getAccountValue().toString());
-		map.put("item3", Integer.toString(list.size()));
-		map.put("item4", "0");
-		
-		return map;
+		appPageDto.setDistance(String.format("%.2f",cyclingDistace * 0.001));
+		appPageDto.setAchievement(Double.toString(this.countBurnCalories(cyclingDistace)));
+		appPageDto.setMoney(SpringContextHelper.getBean(MemberAccountSearchService.class).findByUserIdAndOrgIdAndAccountTypeCode(user.getUserId(), user.getOrgId(), AccountTypeCodeEnum.PRE_DEPOSIT.toCode()).get(0).getAccountValue().toString());
+		appPageDto.setRecord(Integer.toString(list.size()));
+		appPageDto.setInvite("0");
+		return appPageDto;
 	}
 	
 	public double countBurnCalories(Integer distance) {
@@ -528,7 +526,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		//设置用户数值
 		memberAccount.setAccountValue(memberAccountLog.getAfterValue());
 		//保存数据
-		SpringContextHelper.getBean(CyclingOrderSearchService.class).save(cyclingOrder);
+		SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 		SpringContextHelper.getBean(MemberAccountService.class).save(memberAccount);
 		SpringContextHelper.getBean(MemberAccountLogService.class).save(memberAccountLog);
 		

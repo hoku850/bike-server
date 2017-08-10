@@ -302,31 +302,31 @@ public class Css3TreeAppearance implements TreeAppearance {
       if(jointElement != null){
           sb.appendHtmlConstant(jointElement.getString());
       }
-/*
+
       sb.appendHtmlConstant(jointElement == null ? "<img src=\"" + GXT.getBlankImageUrl()
-          + "\" style=\"width: 16px\" class=\"" + style.joint() + "\" />" : jointElement.getString());
-*/
+          + "\" style=\"width: 16px\" class=\"" + style.joint() + "\" />" : "");
+
       
       // checkable
-      if (checkable) {
-        Element e = null;
-        switch (checked) {
-          case CHECKED:
-            e = getImage(resources.checked());
-            break;
-          case UNCHECKED:
-            e = getImage(resources.unchecked());
-            break;
-          case PARTIAL:
-            e = getImage(resources.partialChecked());
-            break;
-        }
-
-        e.addClassName(style.check());
-        sb.appendHtmlConstant(e.getString());
-      } else {
+//      if (checkable) {
+//        Element e = null;
+//        switch (checked) {
+//          case CHECKED:
+//            e = getImage(resources.checked());
+//            break;
+//          case UNCHECKED:
+//            e = getImage(resources.unchecked());
+//            break;
+//          case PARTIAL:
+//            e = getImage(resources.partialChecked());
+//            break;
+//        }
+//
+//        e.addClassName(style.check());
+//        sb.appendHtmlConstant(e.getString());
+//      } else {
         sb.appendHtmlConstant("<span class='" + style.check() + "'></span>");
-      }
+//      }
 
       if (icon != null) {
         Element e = getImage(icon);

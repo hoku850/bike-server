@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.sf.ehcache.search.expression.Or;
+
 @RestController
 @RequestMapping(ControllerMapping.QR_CODE_SCAN_BASE)
 public class QRCodeScanController {
@@ -57,7 +59,8 @@ public class QRCodeScanController {
 	public String appScan(@PathVariable(Global.ID_BINDER_ID) java.lang.Long hardwareCode,
 			HttpServletRequest httpRequest){
 		/*if(true) {
-			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车出现故障，请更换一辆单车"});
+			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"不同的运营商不能交叉使用同一把锁"});
+			//throw new BusinessException(ResGlobal.ERRORS_LOGIN_PASSWORD, true);
 		}*/
 		if(! SmartLockChannelUtil.isChannelActive(hardwareCode)){ //锁不在线
 			System.out.println("锁不在线");
@@ -74,8 +77,8 @@ public class QRCodeScanController {
 		
 		//如果是在骑行中，那么不能开锁
 		//TODO 杰中补充完成，如果最后一个锁相关的订单是骑行中，那么不能开锁。throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车正在被人使用，请更换一辆单车"});
-		SmartLock smartLock1 = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.HARDWARE_CODE, hardwareCode);
-		List<CyclingOrder> listCyclingOrder = SpringContextHelper.getBean(CyclingOrderSearchService.class).findBySmartLockIdOrderByStartTimeDesc(smartLock1.getSmartLockId());
+		//SmartLock smartLock1 = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.HARDWARE_CODE, hardwareCode);
+		List<CyclingOrder> listCyclingOrder = SpringContextHelper.getBean(CyclingOrderSearchService.class).findBySmartLockIdOrderByStartTimeDesc(smartLock.getSmartLockId());
 		if(listCyclingOrder.size()>0&&listCyclingOrder.get(0).getCyclingOrderStatCode().equals(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode())){
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"该单车正在被人使用，请更换一辆单车"});
 		}
@@ -83,6 +86,11 @@ public class QRCodeScanController {
 		String phoneNumber = httpRequest.getParameter("phoneNumber");
 		String IMEI = httpRequest.getParameter("IMEI");
 		String orgId = httpRequest.getParameter("orgId");
+		
+		if(!smartLock.getOrgId().equals(Integer.valueOf(orgId))) {
+			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"不同的运营商不能交叉使用同一把锁"});
+		}
+		
 		List<User> users = SpringContextHelper.getBean(UserSearchService.class).findByLoginIdAndUserPsw(phoneNumber, IMEI);
 		MemberUser memberUser = null;
 		 if(users!=null && users.size()>0) {

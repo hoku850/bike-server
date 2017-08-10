@@ -26,7 +26,7 @@ public class ChargeAmountController {
 		return appPageDto;*/
 		return SpringContextHelper.getBean(MemberAccountSearchService.class).getChargeAmount();
 	}
-	
+
 	@RequestMapping(value = ControllerMapping.GET_DEPOSIT)
 	@ResponseBody
 	public AppPageDto getDeposit() {

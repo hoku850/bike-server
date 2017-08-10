@@ -140,8 +140,8 @@ public class SmartLockStatService extends BaseService<SmartLockStat,java.lang.In
 			cyclingOrder.setSmartLockId(smartLock.getSmartLockId());
 			cyclingOrder.setBikePlateNumber(smartLock.getBikePlateNumber());
 			cyclingOrder.setStartTime(nowDate);
-			cyclingOrder.setStartLocationLng(39.54);//天安门经纬度
-			cyclingOrder.setStartLocationLat(116.23);
+			cyclingOrder.setStartLocationLng(Global.BIEJING_LNG);//天安门经纬度
+			cyclingOrder.setStartLocationLat(Global.BIEJING_LAT);
 			cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode());
 			cyclingOrder.setCyclingContinousSec(0);
 			cyclingOrder.setOrderAmmount(0.00);

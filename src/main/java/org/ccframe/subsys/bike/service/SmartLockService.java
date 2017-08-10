@@ -112,7 +112,8 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 
 	private List<ExcelReaderError> dataLogicCheck(SmartLockRowDto checkValue, int rowNum) {
 		List<ExcelReaderError> resultList = new ArrayList<>();
-		ImportDataCheckUtil.stringCheck("硬件编码", 32, false, checkValue.getHardwareCode().toString(), rowNum, 0, resultList);
+		//有待改进，下一行输入空时有问题
+//		ImportDataCheckUtil.stringCheck("硬件编码", 16, false, checkValue.getHardwareCode().toString(), rowNum, 0, resultList);
 		ImportDataCheckUtil.stringCheck("IMEI码", 15, true, checkValue.getImeiCode(), rowNum, 1, resultList);
 		ImportDataCheckUtil.stringCheck("MAC地址", 17, true, checkValue.getMacAddress(), rowNum, 2, resultList);
 		ImportDataCheckUtil.stringCheck("单车车牌号", 15, true, checkValue.getBikePlateNumber(), rowNum, 3, resultList);
@@ -239,7 +240,7 @@ public class SmartLockService extends BaseService<SmartLock, java.lang.Integer, 
 			}else{
 				if(rowSmartLock.getBikeTypeNm().equals("标准单车")){
 					List<BikeType> listDbBikeType = SpringContextHelper.getBean(BikeTypeService.class).findByKey(BikeType.ORG_ID, orgId);
-					for (BikeType bikeType2 : listBikeType) {
+					for (BikeType bikeType2 : listDbBikeType) {
 						if(orgId == bikeType2.getOrgId()){
 							bikeTypeId = bikeType2.getBikeTypeId();
 						}

@@ -9,6 +9,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>骑行轨迹</title>
     <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
     <script src="http://webapi.amap.com/maps?v=1.3&key=267b137939c571fa3f59564ed9cfffaa"></script>

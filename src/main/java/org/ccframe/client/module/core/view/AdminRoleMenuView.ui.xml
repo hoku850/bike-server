@@ -7,7 +7,6 @@
 	xmlns:form="urn:import:com.sencha.gxt.widget.core.client.form"
 	xmlns:toolbar="urn:import:com.sencha.gxt.widget.core.client.toolbar"
 	xmlns:cc="urn:import:org.ccframe.client.components"
-	xmlns:tree="urn:import:com.sencha.gxt.widget.core.client.tree"
 >
 
 	<ui:with type="com.sencha.gxt.data.shared.TreeStore" field="treeStore" />
@@ -36,7 +35,7 @@
 			</toolbar:ToolBar>
 		</container:child>
 		<container:child layoutData="{treeRow}">
-			<tree:Tree ui:field="tree" valueProvider="{valueProvider}" store="{treeStore}" checkable="true" autoExpand="true" borders="true"/>
+			<cc:CcIconTree ui:field="tree" valueProvider="{valueProvider}" store="{treeStore}" checkable="true" autoExpand="true" borders="true"/>
 		</container:child>
 
 	</container:VerticalLayoutContainer>

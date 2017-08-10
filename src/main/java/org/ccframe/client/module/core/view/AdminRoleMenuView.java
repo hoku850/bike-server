@@ -11,6 +11,7 @@ import org.ccframe.client.commons.RestCallback;
 import org.ccframe.client.commons.TreeNodeTree;
 import org.ccframe.client.commons.TreeUtil;
 import org.ccframe.client.commons.ViewUtil;
+import org.ccframe.client.components.CcIconTree;
 import org.ccframe.client.module.core.event.BodyContentEvent;
 import org.ccframe.client.module.core.event.RoleSelectEvent;
 import org.ccframe.subsys.core.domain.entity.Role;
@@ -44,7 +45,7 @@ public class AdminRoleMenuView implements ICcModule{
 	public TreeStore<TreeNodeTree> treeStore = new TreeStore<TreeNodeTree>(TreeUtil.treeNodeTreeKeyProvider);	
 	
 	@UiField
-	public Tree<TreeNodeTree, String> tree;
+	public CcIconTree tree;
 
 	private Role role;
 	

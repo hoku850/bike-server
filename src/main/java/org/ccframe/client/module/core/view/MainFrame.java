@@ -17,6 +17,7 @@ import org.ccframe.client.commons.TreeUtil;
 import org.ccframe.client.commons.ViewUtil;
 import org.ccframe.client.commons.WindowEventCallback;
 import org.ccframe.client.components.CcFlatIconButton;
+import org.ccframe.client.components.CcIconTree;
 import org.ccframe.client.components.CcIconfontBadgeButton;
 import org.ccframe.client.components.CcIconfontMenuItem;
 import org.ccframe.client.module.core.event.BodyContentEvent;
@@ -213,20 +214,7 @@ public class MainFrame implements IsWidget{
 					TreeStore<TreeNodeTree> menuTreeStore = new TreeStore<TreeNodeTree>(TreeUtil.treeNodeTreeKeyProvider);
 
 					//申明一个节点为String的树
-					final Tree<TreeNodeTree, String> tree = new Tree<TreeNodeTree, String>(menuTreeStore, TreeUtil.treeValueProvider){
-						@Override
-						protected SafeHtml getCellContent(TreeNodeTree model) { //重新定义有图标的叶节点输出
-							SafeHtmlBuilder sb = new SafeHtmlBuilder();
-							if(isLeaf(model)){
-								sb.append(SafeHtmlUtils.fromTrustedString("<li class='cc-tree-icon iconfont icon-" + model.getIcon() + "'></li>"));
-							}
-							sb.append(SafeHtmlUtils.fromString(model.getTreeNodeNm()));
-							return sb.toSafeHtml();
-						}
-						protected ImageResource calculateIconStyle(TreeNodeTree model) {
-							return null;
-						}
-					};
+					final CcIconTree tree = new CcIconTree(menuTreeStore, TreeUtil.treeValueProvider);
 					tree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 					tree.getSelectionModel().addSelectionHandler(new SelectionHandler<TreeNodeTree>(){
 						@Override

@@ -31,11 +31,11 @@ public class UsingBikeController{
 		return SpringContextHelper.getBean(CyclingTrajectoryRecordService.class).savePosition(paths);
 	}
 	
-	@RequestMapping(value = ControllerMapping.CLOSE_LOCK)
-	@ResponseBody
-	public String closeLock(String paths) {
-		return SpringContextHelper.getBean(CyclingOrderService.class).closeLock(paths);
-	}
+//	@RequestMapping(value = ControllerMapping.CLOSE_LOCK)
+//	@ResponseBody
+//	public String closeLock(String paths) {
+//		return SpringContextHelper.getBean(CyclingOrderService.class).closeLock(paths);
+//	}
 	
 	@RequestMapping(value = "lunxun")
 	@ResponseBody

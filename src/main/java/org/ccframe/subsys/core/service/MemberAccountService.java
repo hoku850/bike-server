@@ -17,6 +17,7 @@ import org.ccframe.subsys.bike.domain.entity.AgentApp;
 import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
 import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.service.AgentAppSearchService;
+import org.ccframe.subsys.bike.service.AgentAppService;
 import org.ccframe.subsys.bike.service.ChargeOrderSearchService;
 import org.ccframe.subsys.bike.service.ChargeOrderService;
 import org.ccframe.subsys.core.domain.code.AccountTypeCodeEnum;
@@ -262,4 +263,5 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 		
 		return appPageDto;
 	}
+
 }

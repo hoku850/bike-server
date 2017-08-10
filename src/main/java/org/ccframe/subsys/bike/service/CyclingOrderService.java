@@ -230,17 +230,17 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 				String code = cyclingOrder.getCyclingOrderStatCode();
 				if(code.equals(CyclingOrderStatCodeEnum.TO_BE_REPAIRED.toCode())){
 					cyclingOrder.setCyclingOrderStatCode(CyclingOrderStateZhCodeEnum.ORDER_FIXED.toCode());
-					
-					BigDecimal result = new BigDecimal(cyclingOrder.getCyclingContinousSec()).divide(new BigDecimal(60), MathContext.DECIMAL32);
-					Double min = result.setScale(0, BigDecimal.ROUND_HALF_UP).doubleValue();
+
+					Integer sec = cyclingOrder.getCyclingContinousSec();
+					Integer min = sec / 60;
 					//用来保存骑行时长（分钟）
 					cyclingOrder.setBikePlateNumber(min+"");
 					list2.add(cyclingOrder);
 				} else if(code.equals(CyclingOrderStatCodeEnum.PAY_FINISH.toCode())){
 					cyclingOrder.setCyclingOrderStatCode(CyclingOrderStateZhCodeEnum.ORDER_FINISHED.toCode());
 					
-					BigDecimal result = new BigDecimal(cyclingOrder.getCyclingContinousSec()).divide(new BigDecimal(60), MathContext.DECIMAL32);
-					Double min = result.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+					Integer sec = cyclingOrder.getCyclingContinousSec();
+					Integer min = sec / 60;
 					//用来保存骑行时长（分钟）
 					cyclingOrder.setBikePlateNumber(min+"");
 					list2.add(cyclingOrder);
@@ -337,14 +337,21 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		return appPageDto;
 	}
 
-	public Integer countMeter(Integer orderId) {
-		List<CyclingTrajectoryRecord> list = SpringContextHelper.getBean(CyclingTrajectoryRecordSearchService.class).findByCyclingOrderIdOrderByRecordTimeAsc(orderId);
+	public Integer countMeter(CyclingOrder cyclingOrder) {
+		List<CyclingTrajectoryRecord> list = SpringContextHelper.getBean(CyclingTrajectoryRecordSearchService.class).findByCyclingOrderIdOrderByRecordTimeAsc(cyclingOrder.getCyclingOrderId());
 		double totalMeter = 0;
 		if(list!=null && list.size()>0) {
-			for(int i=0; i<list.size()-1; i++) {
+			totalMeter += PositionUtil.getDistanceByLongNLat
+					(cyclingOrder.getStartLocationLng(), cyclingOrder.getStartLocationLat(), list.get(0).getRecordLocationLng(), list.get(0).getRecordLocationLat());
+			int i = 0;
+			for(i=0; i<list.size()-1; i++) {
 				totalMeter += PositionUtil.getDistanceByLongNLat
 						(list.get(i).getRecordLocationLng(), list.get(i).getRecordLocationLat(), list.get(i+1).getRecordLocationLng(), list.get(i+1).getRecordLocationLat());
 			}
+			
+			totalMeter += PositionUtil.getDistanceByLongNLat
+					(cyclingOrder.getEndLocationLng(), cyclingOrder.getEndLocationLat(), list.get(i).getRecordLocationLng(), list.get(i).getRecordLocationLat());
+			
 		}
 		
 		return (int)Math.round(totalMeter);
@@ -353,43 +360,43 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	/**
 	 * @author zjm
 	 */
-	@Transactional
-	public String closeLock(String paths) {
-		MemberUser user = (MemberUser)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-
-		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
-		
-		if(list!=null && list.size()>0) {
-			//更新骑行订单记录
-			CyclingOrder cyclingOrder = list.get(0);
-			
-			String[] splits = PositionUtil.splitPos(paths);
-			cyclingOrder.setEndLocationLng(Double.valueOf(splits[0]));
-			cyclingOrder.setEndLocationLat(Double.valueOf(splits[1]));
-			cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode());
-			
-			long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder.getStartTime(), new Date());
-			long min = sec / 60;
-			System.out.println("已骑行" + min + "分钟");
-			
-			Integer count = (int) (min/30.0) + 1;
-			//Integer count = (int) (31/30.0);
-			BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(cyclingOrder.getBikeTypeId());
-			Double halfHourAmmount = bikeType.getHalfhourAmmount();
-			BigDecimal result = new BigDecimal(halfHourAmmount).multiply(new BigDecimal(count), MathContext.DECIMAL32);
-			Double payMoney = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-			
-			cyclingOrder.setCyclingContinousSec((int)sec);
-			cyclingOrder.setOrderAmmount(payMoney);
-			//更新骑行距离
-			Integer meter = this.countMeter(cyclingOrder.getCyclingOrderId());
-			cyclingOrder.setCyclingDistanceMeter(meter);
-			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
-		}
-			
-		return Global.SUCCESS;
-	}
-	
+//	@Transactional
+//	public String closeLock(String paths) {
+//		MemberUser user = (MemberUser)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+//
+//		List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
+//		
+//		if(list!=null && list.size()>0) {
+//			//更新骑行订单记录
+//			CyclingOrder cyclingOrder = list.get(0);
+//			
+//			String[] splits = PositionUtil.splitPos(paths);
+//			cyclingOrder.setEndLocationLng(Double.valueOf(splits[0]));
+//			cyclingOrder.setEndLocationLat(Double.valueOf(splits[1]));
+//			cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.CYCLING_FINISH.toCode());
+//			
+//			long sec = DateDistanceUtil.getDistanceTimes(cyclingOrder.getStartTime(), new Date());
+//			long min = sec / 60;
+//			System.out.println("已骑行" + min + "分钟");
+//			
+//			Integer count = (int) (min/30.0) + 1;
+//			//Integer count = (int) (31/30.0);
+//			BikeType bikeType = SpringContextHelper.getBean(BikeTypeSearchService.class).getById(cyclingOrder.getBikeTypeId());
+//			Double halfHourAmmount = bikeType.getHalfhourAmmount();
+//			BigDecimal result = new BigDecimal(halfHourAmmount).multiply(new BigDecimal(count), MathContext.DECIMAL32);
+//			Double payMoney = result.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+//			
+//			cyclingOrder.setCyclingContinousSec((int)sec);
+//			cyclingOrder.setOrderAmmount(payMoney);
+//			//更新骑行距离
+//			Integer meter = this.countMeter(cyclingOrder.getCyclingOrderId());
+//			cyclingOrder.setCyclingDistanceMeter(meter);
+//			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
+//		}
+//			
+//		return Global.SUCCESS;
+//	}
+//	
 	
 
 	/**
@@ -569,7 +576,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			cyclingOrder.setCyclingContinousSec((int)sec);
 			cyclingOrder.setOrderAmmount(payMoney);
 			//更新骑行距离
-			Integer totalMeter = this.countMeter(cyclingOrder.getCyclingOrderId());
+			Integer totalMeter = this.countMeter(cyclingOrder);
 			
 			cyclingOrder.setCyclingDistanceMeter(totalMeter);
 			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);

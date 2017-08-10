@@ -36,7 +36,7 @@ public class AgentAppController{
 
 	@RequestMapping(method=RequestMethod.POST)
 	public void saveOrUpdate(@RequestBody AgentApp agentApp){
-		SpringContextHelper.getBean(AgentAppService.class).saveOrUpdateAgentApp(agentApp);
+		SpringContextHelper.getBean(AgentAppService.class).save(agentApp);
 	}
 }
 

@@ -48,7 +48,7 @@ public class UserToRepairRecordService extends BaseService<UserToRepairRecord,ja
 		cyclingOrder.setCyclingContinousSec((int)sec);
 
 		//更新骑行距离
-		Integer meter = SpringContextHelper.getBean(CyclingOrderService.class).countMeter(cyclingOrder.getCyclingOrderId());
+		Integer meter = SpringContextHelper.getBean(CyclingOrderService.class).countMeter(cyclingOrder);
 		cyclingOrder.setCyclingDistanceMeter(meter);
 		
 		cyclingOrder.setOrderAmmount(0.00);

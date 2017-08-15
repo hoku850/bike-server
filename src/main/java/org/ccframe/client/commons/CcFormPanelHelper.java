@@ -21,10 +21,10 @@ public class CcFormPanelHelper extends FormPanelHelper {
 	 * @param container
 	 * @param ignoreFields
 	 */
-	public static void reset(HasWidgets container, Field<?> ... ignoreFields) {
+	public static void reset(HasWidgets container, IsField<?>... ignoreFields) {
 		for (IsField<?> f : getFields(container)) {
 			boolean ignoreFlag = false;
-			for(Field<?> ignoreField: ignoreFields){
+			for(IsField<?> ignoreField: ignoreFields){
 				if(f == ignoreField){
 					ignoreFlag = true;
 					break;

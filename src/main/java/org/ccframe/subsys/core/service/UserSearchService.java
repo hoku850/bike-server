@@ -10,6 +10,7 @@ import org.ccframe.commons.base.BaseSearchService;
 import org.ccframe.commons.base.OffsetBasedPageRequest;
 import org.ccframe.commons.cache.AutoCacheConfig;
 import org.ccframe.commons.cache.CacheEvictBy;
+import org.ccframe.commons.helper.SpringContextHelper;
 import org.ccframe.subsys.core.domain.code.UserStatCodeEnum;
 import org.ccframe.subsys.core.domain.entity.User;
 import org.ccframe.subsys.core.dto.UserListReq;
@@ -26,6 +27,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
+
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 
 @Service
 public class UserSearchService extends BaseSearchService<User, Integer, UserSearchRepository>{
@@ -114,6 +117,9 @@ public class UserSearchService extends BaseSearchService<User, Integer, UserSear
 	 * @author zjm
 	 */
 	public List<User> findByLoginIdAndUserPsw(String phoneNumber, String iMEI) {
-		return this.getRepository().findByLoginIdAndUserPsw(phoneNumber, iMEI);
+		if(phoneNumber!=null && iMEI!=null) {
+			return this.getRepository().findByLoginIdAndUserPsw(phoneNumber, iMEI);
+		}
+		return null;
 	}
 }

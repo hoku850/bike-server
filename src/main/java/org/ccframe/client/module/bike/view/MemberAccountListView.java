@@ -57,6 +57,7 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 	private static MemberAccountListUiBinder uiBinder = GWT.create(MemberAccountListUiBinder.class);
 	
 	private AccountTypeCodeEnum acCodeEnum = AccountTypeCodeEnum.INTEGRAL;
+	private boolean isSelect = true;
 	
 	@UiField
 	public TextField searchField;
@@ -86,6 +87,7 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 			@Override
 			public void onClose(MemberAccountRowDto returnData) {
 				loader.load(); //保存完毕后刷新
+				EventBusUtil.fireEvent(new MemberAccountSelectEvent(returnData));
 			}
 		}));
 	}
@@ -131,6 +133,7 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 			public void onSelection(SelectionEvent<Widget> event) {
 				int index = statusTabPanel.getWidgetIndex(event.getSelectedItem());
 				acCodeEnum = AccountTypeCodeEnum.fromCode(String.valueOf(index));
+				isSelect = true;
 				loader.load();
 			}
 		});
@@ -138,6 +141,7 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 			@Override
 			public void onSelection(SelectionEvent<MemberAccountRowDto> event) {
 				MemberAccountRowDto selectedItem = event.getSelectedItem();
+				isSelect = false;
 				EventBusUtil.fireEvent(new MemberAccountSelectEvent(selectedItem == null ? null : selectedItem));
 			}
 		});
@@ -187,9 +191,10 @@ public class MemberAccountListView extends BasePagingListView<MemberAccountRowDt
 					public void onSuccess(Method method, ClientPage<MemberAccountRowDto> response) {
 						loader.onLoad(response.getList(), response.getTotalLength(), response.getOffset());
 						// 默认选择第一条数据
-						if (response.getList().size() != 0) {
+						if (response.getList().size() != 0 && isSelect) {
 							grid.getSelectionModel().select(0, false);
 							EventBusUtil.fireEvent(new MemberAccountSelectEvent(response.getList().get(0)));
+							isSelect = false;
 						}
 					}
 				});

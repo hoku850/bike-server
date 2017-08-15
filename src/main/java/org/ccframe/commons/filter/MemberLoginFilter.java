@@ -39,7 +39,7 @@ private static String backendLoginUri;
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         
         MemberUser memberUser = (MemberUser)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
-        System.out.println("memberUser: " + memberUser);
+//        System.out.println("memberUser: " + memberUser);
         if(memberUser == null) { 
         		String phoneNumber = httpRequest.getParameter("phoneNumber");
         		String IMEI = httpRequest.getParameter("IMEI");

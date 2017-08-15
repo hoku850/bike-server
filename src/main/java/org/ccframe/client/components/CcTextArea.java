@@ -19,7 +19,7 @@ public class CcTextArea extends TextArea{
 	@Override
 	public void setValue(String value){
 		super.setValue(value);
-		if(this.isRendered()){
+		if(this.isRendered() && maxLength != null){
 			InputElement ie = getCell().getAppearance().getInputElement(getElement()).cast();
 			ie.setMaxLength(maxLength);
 		}

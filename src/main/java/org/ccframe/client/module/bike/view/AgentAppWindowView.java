@@ -42,7 +42,7 @@ public class AgentAppWindowView extends BaseWindowView<Integer, AgentApp> implem
 	CcTextField appNm;
 	
 	@UiField
-	CcTextField isoUrl;
+	CcTextField iosUrl;
 	
 	@UiField
 	CcTextField androidUrl;

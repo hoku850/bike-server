@@ -303,8 +303,10 @@ public class Css3TreeAppearance implements TreeAppearance {
           sb.appendHtmlConstant(jointElement.getString());
       }
 
-      sb.appendHtmlConstant(jointElement == null ? "<img src=\"" + GXT.getBlankImageUrl()
-          + "\" style=\"width: 16px\" class=\"" + style.joint() + "\" />" : "");
+      if(checkable){ //只有勾选树才添加占位节点
+	      sb.appendHtmlConstant(jointElement == null ? "<img src=\"" + GXT.getBlankImageUrl()
+	          + "\" style=\"width: 16px\" class=\"" + style.joint() + "\" />" : "");
+      }
 
       
       // checkable

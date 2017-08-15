@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.ccframe.client.Global;
+import org.ccframe.client.commons.AdminUser;
 import org.ccframe.client.commons.UtilDateTimeClient;
 import org.ccframe.commons.base.BaseService;
 import org.ccframe.commons.helper.SpringContextHelper;
@@ -17,7 +18,6 @@ import org.ccframe.subsys.bike.domain.entity.AgentApp;
 import org.ccframe.subsys.bike.domain.entity.ChargeOrder;
 import org.ccframe.subsys.bike.domain.entity.MemberUser;
 import org.ccframe.subsys.bike.service.AgentAppSearchService;
-import org.ccframe.subsys.bike.service.AgentAppService;
 import org.ccframe.subsys.bike.service.ChargeOrderSearchService;
 import org.ccframe.subsys.bike.service.ChargeOrderService;
 import org.ccframe.subsys.core.domain.code.AccountTypeCodeEnum;
@@ -55,7 +55,7 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 		MemberAccountLog memberAccountLog = new MemberAccountLog();
 		memberAccountLog.setUserId(memberAccountRowDto.getUserId());
 		memberAccountLog.setOrgId(memberAccountRowDto.getOrgId());
-		memberAccountLog.setMemberAccountId(memberAccountRowDto.getUserId());
+		memberAccountLog.setMemberAccountId(memberAccountRowDto.getMemberAccountId());
 		memberAccountLog.setPrevValue(memberAccountRowDto.getAccountValue());
 		if (ChargeOperateCodeEnum.RECHARGE == chargeOperateCodeEnum) {
 			memberAccountLog.setAfterValue(BigDecimalUtil.add(memberAccountRowDto.getAccountValue(), memberAccountRowDto.getChangeValue()).doubleValue());
@@ -66,7 +66,12 @@ public class MemberAccountService extends BaseService<MemberAccount,java.lang.In
 		}
 		memberAccountLog.setSysTime(new Date());
 		memberAccountLog.setReason(memberAccountRowDto.getReason());
-		memberAccountLog.setOperationManId(memberAccountRowDto.getUserId());
+		
+		AdminUser adminUser =  (AdminUser)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_ADMIN);
+		if (adminUser != null) {
+			User user = SpringContextHelper.getBean(UserSearchService.class).getById(adminUser.getUserId());
+			memberAccountLog.setOperationManId(user == null ? null : user.getUserId());
+		}
 		SpringContextHelper.getBean(MemberAccountLogService.class).save(memberAccountLog);
 	}
 

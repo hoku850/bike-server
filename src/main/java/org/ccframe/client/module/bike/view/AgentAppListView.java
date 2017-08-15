@@ -91,7 +91,7 @@ public class AgentAppListView extends BaseCrudListView<AgentAppRowDto>{
 		
 		ValueProvider<AgentAppRowDto, String> orgNm();
 		ValueProvider<AgentAppRowDto, String> appNm();
-		ValueProvider<AgentAppRowDto, String> isoUrl();
+		ValueProvider<AgentAppRowDto, String> iosUrl();
 		ValueProvider<AgentAppRowDto, String> androidUrl();
 	}
 	
@@ -102,8 +102,8 @@ public class AgentAppListView extends BaseCrudListView<AgentAppRowDto>{
 		
 		configList.add(new ColumnConfigEx<AgentAppRowDto, String>(props.orgNm(), 70, "运营商", HasHorizontalAlignment.ALIGN_CENTER, false));
 		configList.add(new ColumnConfigEx<AgentAppRowDto, String>(props.appNm(), 70, "APP名称", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<AgentAppRowDto, String>(props.androidUrl(), 100, "IOS URL", HasHorizontalAlignment.ALIGN_CENTER, false));
-		configList.add(new ColumnConfigEx<AgentAppRowDto, String>(props.isoUrl(), 100, "安卓 URL", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<AgentAppRowDto, String>(props.androidUrl(), 100, "安卓 URL ", HasHorizontalAlignment.ALIGN_CENTER, false));
+		configList.add(new ColumnConfigEx<AgentAppRowDto, String>(props.iosUrl(), 100, "IOS URL", HasHorizontalAlignment.ALIGN_CENTER, false));
 	}
 	
 	@Override

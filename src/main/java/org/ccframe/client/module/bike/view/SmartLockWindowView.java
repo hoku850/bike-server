@@ -148,7 +148,7 @@ public class SmartLockWindowView extends BaseWindowView<Integer, SmartLock> impl
 		
 		CcFormPanelHelper.clearInvalid(vBoxLayoutContainer);
 		if(smartLockId == null){
-			FormPanelHelper.reset(vBoxLayoutContainer);
+			CcFormPanelHelper.reset(vBoxLayoutContainer, bikeTypeId);
 		}else {
 			editFlag = true;
 		}

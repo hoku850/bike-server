@@ -38,7 +38,7 @@
 			<cc:child layoutData="{vBoxLayoutData}">
 				<form:FieldLabel text="IOS URL">
 					<form:widget>
-						<cc:CcTextField ui:field="isoUrl" allowBlank="false" width="200" maxLength="256"/>
+						<cc:CcTextField ui:field="iosUrl" allowBlank="false" width="200" maxLength="256"/>
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>

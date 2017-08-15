@@ -29,7 +29,7 @@ public class AgentApp implements Serializable{
 	public static final String APP_NM = "appNm";
 	public static final String CHARGE_DEPOSIT = "chargeDeposit";
 	public static final String ORG_ID = "orgId";
-	public static final String ISO_URL = "isoUrl";
+	public static final String IOS_URL = "iosUrl";
 	public static final String ANDROID_URL = "androidUrl";
 	public static final String AGENT_ICON_ID = "agentIconId";
 	
@@ -58,8 +58,8 @@ public class AgentApp implements Serializable{
 	
 	//elasticsearch 
 	//@Field(type = FieldType.String, analyzer="ik") //浣跨敤ik鍒嗚瘝鍣ㄨ繘琛屽垎璇�
-	@Column(name = "ISO_URL", nullable = true, length = 256)
-	private java.lang.String isoUrl;
+	@Column(name = "IOS_URL", nullable = true, length = 256)
+	private java.lang.String iosUrl;
 	
 	//elasticsearch 
 	//@Field(type = FieldType.String, analyzer="ik") //浣跨敤ik鍒嗚瘝鍣ㄨ繘琛屽垎璇�
@@ -107,13 +107,17 @@ public class AgentApp implements Serializable{
 	public java.lang.Integer getOrgId() {
 		return this.orgId;
 	}
-	public void setIsoUrl(java.lang.String isoUrl) {
-		this.isoUrl = isoUrl;
-	}
 	
-	public java.lang.String getIsoUrl() {
-		return this.isoUrl;
+	
+	
+	public java.lang.String getIosUrl() {
+		return iosUrl;
 	}
+
+	public void setIosUrl(java.lang.String iosUrl) {
+		this.iosUrl = iosUrl;
+	}
+
 	public void setAndroidUrl(java.lang.String androidUrl) {
 		this.androidUrl = androidUrl;
 	}

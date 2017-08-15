@@ -119,7 +119,9 @@ public class AdminRoleMenuView implements ICcModule{
 	public void handleSaveClick(SelectEvent e){
 		List<Integer> sysMenuResIdList = new ArrayList<Integer>();
 		for(TreeNodeTree treeNodeTree: tree.getCheckedSelection()){
-			sysMenuResIdList.add(treeNodeTree.getSysObjectId());
+			if(treeNodeTree.getSysObjectId() != 0){ //sysObjectId=0表示为菜单树根
+				sysMenuResIdList.add(treeNodeTree.getSysObjectId());
+			}
 		}
 		ClientManager.getAdminRoleClient().saveRoleMenuList(sysMenuResIdList, role.getRoleId(), new RestCallback<Void>(){
 			@Override

@@ -45,10 +45,10 @@ public class MemberAccountLogSearchService extends BaseSearchService<MemberAccou
 			
 			MemberAccountLogRowDto memberAccountLogRowDto = new MemberAccountLogRowDto();
 			BeanUtils.copyProperties(memberAccountLog, memberAccountLogRowDto);
-			// 查询出运营商的信息
-			User user = SpringContextHelper.getBean(UserSearchService.class).getById(memberAccountLog.getUserId());
+			// 查询操作人员
+			User user = SpringContextHelper.getBean(UserSearchService.class).getById(memberAccountLog.getOperationManId());
 			if (user!=null) {
-				memberAccountLogRowDto.setOperationMan(user.getLoginId());
+				memberAccountLogRowDto.setOperationMan(user.getUserNm());
 			}
 			resultList.add(memberAccountLogRowDto);
 		}

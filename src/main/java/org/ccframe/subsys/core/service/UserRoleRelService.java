@@ -20,6 +20,8 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.gwt.aria.client.Role;
+
 @Service
 public class UserRoleRelService extends BaseService<UserRoleRel, Integer, UserRoleRelRepository> {
 
@@ -50,7 +52,10 @@ public class UserRoleRelService extends BaseService<UserRoleRel, Integer, UserRo
 		for(Integer sysMenuResId: deleteList){
 			List<RoleMenuResRel> deleteRoleMenuResRelList = roleMenuResRelService.findByKey(RoleMenuResRel.MENU_RES_ID, sysMenuResId);
 			for(RoleMenuResRel roleMenuResRel: deleteRoleMenuResRelList){
-				roleMenuResRelService.delete(roleMenuResRel);
+//				if(SpringContextHelper.getBean(RoleService.class).getById(roleMenuResRel.getRoleId()).getIfTemplate().equals(BoolCodeEnum.NO.toCode())) {
+				if(roleMenuResRel.getRoleId() == roleId) {
+					roleMenuResRelService.delete(roleMenuResRel);
+				}
 			}
 		}
 		//添加

@@ -310,25 +310,27 @@ public class Css3TreeAppearance implements TreeAppearance {
 
       
       // checkable
-//      if (checkable) {
-//        Element e = null;
-//        switch (checked) {
-//          case CHECKED:
-//            e = getImage(resources.checked());
-//            break;
-//          case UNCHECKED:
-//            e = getImage(resources.unchecked());
-//            break;
-//          case PARTIAL:
-//            e = getImage(resources.partialChecked());
-//            break;
-//        }
-//
-//        e.addClassName(style.check());
-//        sb.appendHtmlConstant(e.getString());
-//      } else {
-        sb.appendHtmlConstant("<span class='" + style.check() + "'></span>");
-//      }
+      if (checkable) {
+        Element e = null;
+        switch (checked) {
+          case CHECKED:
+            e = getImage(resources.checked());
+            break;
+          case UNCHECKED:
+            e = getImage(resources.unchecked());
+            break;
+          case PARTIAL:
+            e = getImage(resources.partialChecked());
+            break;
+        }
+
+        e.addClassName(style.check());
+        sb.appendHtmlConstant(e.getString());
+      } else {
+    	  if(joint != joint.NONE){ //非可展开节点输出功能图标，可展开的就不用，因为自带折叠图标
+    		  sb.appendHtmlConstant("<span class='" + style.check() + "'></span>");
+    	  }
+      }
 
       if (icon != null) {
         Element e = getImage(icon);

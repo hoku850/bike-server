@@ -8,6 +8,7 @@ import org.ccframe.client.Global;
 import org.ccframe.client.commons.TreeNodeTree;
 import org.ccframe.client.commons.TreeRootEnum;
 import org.ccframe.commons.helper.SpringContextHelper;
+import org.ccframe.subsys.core.domain.code.BoolCodeEnum;
 import org.ccframe.subsys.core.domain.entity.Role;
 import org.ccframe.subsys.core.domain.entity.RoleMenuResRel;
 import org.ccframe.subsys.core.domain.entity.TreeNode;
@@ -87,10 +88,16 @@ public class TreeNodeController{
 	@RequestMapping(value = ControllerMapping.TREE_NODE_ORG_MENU_TREE)
 	public TreeNodeTree getOrgMenuTree(Integer orgId){
 		List<Role> roleList = SpringContextHelper.getBean(RoleService.class).findByKey(Role.ORG_ID, orgId);
+		Role templateRole = new Role();
+		for (Role role : roleList) {
+			if(role.getIfTemplate().equals(BoolCodeEnum.YES.toCode())) {
+				templateRole = role;
+			}
+		}
 		if(roleList.isEmpty()){
 			return null;
 		}
-		List<RoleMenuResRel> roleMenuResRelList = SpringContextHelper.getBean(RoleMenuResRelService.class).findByKey(RoleMenuResRel.ROLE_ID, roleList.get(0).getRoleId());
+		List<RoleMenuResRel> roleMenuResRelList = SpringContextHelper.getBean(RoleMenuResRelService.class).findByKey(RoleMenuResRel.ROLE_ID, templateRole.getRoleId());
 		List<Integer> menuResIdList = new ArrayList<Integer>();
 		for(RoleMenuResRel roleMenuResRel: roleMenuResRelList){
 			menuResIdList.add(roleMenuResRel.getMenuResId());

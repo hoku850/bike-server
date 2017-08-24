@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OrgService extends BaseService<Org, Integer, OrgRepository> implements ILabelValueListProvider {
 
-	private static final int TEMP_ORG_ID = 2;
+	private static final int TEMP_ORG_ID = 5;
 	
 	private static final String ADMIN_DEFAULT_NM = "默认管理员";
 	private static final String LOGIN_NM = "admin";

@@ -243,14 +243,13 @@ public class UserService extends BaseService<User, Integer, UserRepository> impl
 	public void updatePassword(Integer userId, String userPsw) {
 		User user = this.getById(((AdminUser)WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_ADMIN)).getUserId());
 
-		if(userId == null){ //判断是否更改自己密码，如果更改自己密码不用判断授权
-			user.setUserPsw(userPsw);
-		}else{ //修改别人密码，必须具备修改密码权限才可操作(用户是admin) TODO:权限判断要细化到功能按钮
+		if(userId != null){ //判断如果无权修改别人密码则禁止修改
 			if(!user.getUserId().equals(Global.ADMIN_USER_ID)){
 				throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"您无权操作此功能！"});
 			}
 			user = getById(userId);
 		}
+		user.setUserPsw(userPsw);
 		update(user);
 	}
 

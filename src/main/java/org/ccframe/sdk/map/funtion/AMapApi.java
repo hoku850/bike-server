@@ -1,19 +1,11 @@
 package org.ccframe.sdk.map.funtion;
 
-import java.util.List;
-
 import org.ccframe.client.Global;
 import org.ccframe.commons.helper.SpringContextHelper;
-import org.ccframe.commons.util.BigDecimalUtil;
 import org.ccframe.sdk.bike.dto.AppPageDto;
-import org.ccframe.sdk.bike.utils.PositionUtil;
 import org.ccframe.sdk.map.domain.AMapData;
-import org.ccframe.subsys.bike.domain.entity.CyclingOrder;
-import org.ccframe.subsys.bike.domain.entity.CyclingTrajectoryRecord;
 import org.ccframe.subsys.bike.domain.entity.UserToRepairRecord;
-import org.ccframe.subsys.bike.service.CyclingOrderSearchService;
 import org.ccframe.subsys.bike.service.CyclingOrderService;
-import org.ccframe.subsys.bike.service.CyclingTrajectoryRecordService;
 import org.ccframe.subsys.bike.service.UserToRepairRecordSearchService;
 
 public class AMapApi {
@@ -44,11 +36,32 @@ public class AMapApi {
 	public static AMapData getAMapDataByCyclingOrderId(Integer id){
 		AMapData aMapData = new AMapData();
 		
-		List<CyclingTrajectoryRecord> recordList = SpringContextHelper.getBean(CyclingTrajectoryRecordService.class).findByKey(CyclingTrajectoryRecord.CYCLING_ORDER_ID, id);
-		
+		AppPageDto detail = SpringContextHelper.getBean(CyclingOrderService.class).getTravelDetail(id);
+		String polylinePath = (detail == null) ? null : detail.getList();
 		//查询骑行记录表是否有该订单，存在该订单
-		if (recordList != null && recordList.size() != 0) {
+		if (polylinePath != null && polylinePath.length() >= 3) {
 			//绘制骑行轨迹
+			aMapData.setLineArr(polylinePath);
+			//设置图标
+			aMapData.setStartPosition(detail.getStartPos());
+			aMapData.setEndPosition(detail.getEndPos());
+			//设置中心点
+			String startPos = detail.getList().substring(1, detail.getList().indexOf(BRACKET_RIGHT)+1);
+			aMapData.setCenterPosition(startPos);
+		}
+		//如果不存在，起点和终点直接连线[注：现改为天安门]
+		else {
+			aMapData.setLineArr(BRACKET_LEFT + BIEJING + Global.COMMA + BIEJING + BRACKET_RIGHT);
+			aMapData.setStartPosition(BIEJING);
+			aMapData.setEndPosition(BIEJING);
+			aMapData.setCenterPosition(BIEJING);
+		}
+		
+		
+//		List<CyclingTrajectoryRecord> recordList = SpringContextHelper.getBean(CyclingTrajectoryRecordService.class).findByKey(CyclingTrajectoryRecord.CYCLING_ORDER_ID, id);
+//		//查询骑行记录表是否有该订单，存在该订单
+//		if (recordList != null && recordList.size() != 0) {
+//			//绘制骑行轨迹
 //			StringBuilder lineArr = new StringBuilder(BRACKET_LEFT);
 //			for (CyclingTrajectoryRecord cyclingTrajectoryRecord : recordList) {
 //				lineArr.append(BRACKET_LEFT);
@@ -61,40 +74,31 @@ public class AMapApi {
 //			lineArr.deleteCharAt(lineArr.length() - 1);
 //			lineArr.append(BRACKET_RIGHT);
 //			aMapData.setLineArr(lineArr.toString());
-			
-			AppPageDto detail = SpringContextHelper.getBean(CyclingOrderService.class).getTravelDetail(id);
-			aMapData.setLineArr(detail.getList());
-			
-			//设置图标
+//			
+//			//设置图标
 //			aMapData.setStartPosition(lngLatFormat(recordList.get(0).getRecordLocationLng(), recordList.get(0).getRecordLocationLat()));
 //			aMapData.setEndPosition(lngLatFormat(recordList.get(recordList.size()-1).getRecordLocationLng(), recordList.get(recordList.size()-1).getRecordLocationLat()));
-			aMapData.setStartPosition(detail.getStartPos());
-			aMapData.setEndPosition(detail.getEndPos());
-			
-			//设置中心的
-			CyclingTrajectoryRecord record = recordList.get(recordList.size() / 2);
-			aMapData.setCenterPosition(lngLatFormat(record.getRecordLocationLng(), record.getRecordLocationLat()));
-		}
-		//如果不存在，起点和终点直接连线[注：现改为天安门]
-		else {
+//
+//			//设置中心的
+//			CyclingTrajectoryRecord record = recordList.get(recordList.size() / 2);
+//			aMapData.setCenterPosition(lngLatFormat(record.getRecordLocationLng(), record.getRecordLocationLat()));
+//		}
+//		//如果不存在，起点和终点直接连线
+//		else {
 //			CyclingOrder cyclingOrder = SpringContextHelper.getBean(CyclingOrderSearchService.class).getById(id);
 //			String startPosition = lngLatFormat(cyclingOrder.getStartLocationLng(), cyclingOrder.getStartLocationLat());
 //			String endPosition = lngLatFormat(cyclingOrder.getEndLocationLng(), cyclingOrder.getEndLocationLat());
-			
+//			
 //			aMapData.setLineArr(BRACKET_LEFT + startPosition + Global.COMMA + endPosition + BRACKET_RIGHT);
 //			aMapData.setStartPosition(startPosition);
 //			aMapData.setEndPosition(endPosition);
-			
-			aMapData.setLineArr(BRACKET_LEFT + BIEJING + Global.COMMA + BIEJING + BRACKET_RIGHT);
-			aMapData.setStartPosition(BIEJING);
-			aMapData.setEndPosition(BIEJING);
-			
-			// 起终点算出中间点
+//			
+//			// 起终点算出中间点
 //			Double lng = BigDecimalUtil.divide(BigDecimalUtil.add(cyclingOrder.getStartLocationLng(), cyclingOrder.getEndLocationLng()), 2);
 //			Double lat = BigDecimalUtil.divide(BigDecimalUtil.add(cyclingOrder.getStartLocationLat(), cyclingOrder.getEndLocationLat()), 2);
 //			aMapData.setCenterPosition(lngLatFormat(lng, lat));
-			aMapData.setCenterPosition(BIEJING);
-		}
+//		}
+		
 		aMapData.setZoom(ZOOM);
 		return aMapData;
 	}

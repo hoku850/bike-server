@@ -23,10 +23,13 @@ public class HeartbeatConnectController implements ISocketController {
 	@Override
 	public Map<DataBlockTypeEnum, Object> execute(Long lockerHardwareCode, Map<DataBlockTypeEnum, Object> requestDataMap) {
 		
+		System.out.println("锁心跳发送的数据：");
 		System.out.println("IMSI码"+requestDataMap.get(DataBlockTypeEnum.IMSI));
 		System.out.println("锁的状态"+Byte.toString((byte)requestDataMap.get(DataBlockTypeEnum.LOCK_STATUS)));
 		System.out.println("锁的电量"+(int)(byte)requestDataMap.get(DataBlockTypeEnum.LOCK_BATTERY));
 		System.out.println("csp信号="+requestDataMap.get(DataBlockTypeEnum.GPS_INFO));
+		System.out.println("经度"+requestDataMap.get(DataBlockTypeEnum.LOCK_LNG));
+		System.out.println("纬度"+requestDataMap.get(DataBlockTypeEnum.LOCK_LAT));
 		
 		SmartLock smartLock = SpringContextHelper.getBean(SmartLockService.class).getByKey(SmartLock.HARDWARE_CODE, lockerHardwareCode);
 		if (smartLock!= null) {

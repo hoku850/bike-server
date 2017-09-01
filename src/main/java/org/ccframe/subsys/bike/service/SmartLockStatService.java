@@ -111,7 +111,7 @@ public class SmartLockStatService extends BaseService<SmartLockStat,java.lang.In
 		Date date = (Date)requestDataMap.get(DataBlockTypeEnum.SYS_TIME);
 		byte lockStatus = (byte)requestDataMap.get(DataBlockTypeEnum.LOCK_STATUS);
 		byte lockError = (byte)requestDataMap.get(DataBlockTypeEnum.LOCK_ERROR);
-		
+		System.out.println("开锁后：");
 		System.out.println("锁的开关=" + Byte.toString(lockIfOpen));
 		System.out.println("用户ID=" + userId);
 		System.out.println("时间=" + date);
@@ -140,8 +140,9 @@ public class SmartLockStatService extends BaseService<SmartLockStat,java.lang.In
 			cyclingOrder.setSmartLockId(smartLock.getSmartLockId());
 			cyclingOrder.setBikePlateNumber(smartLock.getBikePlateNumber());
 			cyclingOrder.setStartTime(nowDate);
-			cyclingOrder.setStartLocationLng(Global.BIEJING_LNG);//天安门经纬度
-			cyclingOrder.setStartLocationLat(Global.BIEJING_LAT);
+			System.out.println("开锁后骑行订单的起点为天安门");
+			cyclingOrder.setStartLocationLng(Global.BEIJING_LNG);//天安门经纬度
+			cyclingOrder.setStartLocationLat(Global.BEIJING_LAT);
 			cyclingOrder.setCyclingOrderStatCode(CyclingOrderStatCodeEnum.ON_THE_WAY.toCode());
 			cyclingOrder.setCyclingContinousSec(0);
 			cyclingOrder.setOrderAmmount(0.00);

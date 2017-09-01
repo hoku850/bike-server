@@ -56,14 +56,16 @@ public class SmartLockChannelUtil {
 	private static Logger logger = LoggerFactory.getLogger(SmartLockChannelUtil.class);
 	
 	synchronized public static void checkAndRegisterChannel(Long lockerHardwareCode, Channel channel){
-		if(chanelMap.get(lockerHardwareCode) == null){
+		if(chanelMap.get(lockerHardwareCode) == null || chanelMap.get(lockerHardwareCode).id() != channel.id()){
 			chanelMap.put(lockerHardwareCode, channel);
-			logger.info("connected smartLockId channel >> {}", lockerHardwareCode);
+			logger.info("connected smartLockId channel >>> {}, channelid = {}", lockerHardwareCode, channel.id());
+			logger.info("chanelMap size >>> {}", chanelMap.size());
 		}
 	}
 
 	synchronized public static void unRegisterChannel(Channel channel){
-		logger.info("remove smartLockId >> {}", chanelMap.inverse().remove(channel));
+		logger.info("remove smartLockId >>> {}", chanelMap.inverse().remove(channel));
+		logger.info("chanelMap size >>> {}", chanelMap.size());
 	}
 	
 	public static boolean isChannelActive(Long lockerHardwareCode){

@@ -88,13 +88,16 @@ public class TreeNodeController{
 	@RequestMapping(value = ControllerMapping.TREE_NODE_ORG_MENU_TREE)
 	public TreeNodeTree getOrgMenuTree(Integer orgId){
 		List<Role> roleList = SpringContextHelper.getBean(RoleService.class).findByKey(Role.ORG_ID, orgId);
-		Role templateRole = new Role();
+		if(roleList.isEmpty()){
+			return null;
+		}
+		Role templateRole = null;
 		for (Role role : roleList) {
 			if(role.getIfTemplate().equals(BoolCodeEnum.YES.toCode())) {
 				templateRole = role;
 			}
 		}
-		if(roleList.isEmpty()){
+		if(templateRole == null){
 			return null;
 		}
 		List<RoleMenuResRel> roleMenuResRelList = SpringContextHelper.getBean(RoleMenuResRelService.class).findByKey(RoleMenuResRel.ROLE_ID, templateRole.getRoleId());

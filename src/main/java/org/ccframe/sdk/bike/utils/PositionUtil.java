@@ -116,8 +116,11 @@ public class PositionUtil {
 			
 			sBuffer.append("[");
 			for(CyclingTrajectoryRecord record : list) {
-				sBuffer.append("[").append(record.getRecordLocationLng()).
-				append(",").append(record.getRecordLocationLat()).append("],");
+				 sBuffer.append("[")
+						.append(record.getRecordLocationLng())
+						.append(",")
+						.append(record.getRecordLocationLat())
+						.append("],");
 			}
 			sBuffer = sBuffer.deleteCharAt(sBuffer.length()-1);
 			sBuffer.append("]");

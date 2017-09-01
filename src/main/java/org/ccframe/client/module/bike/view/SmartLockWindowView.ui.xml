@@ -25,7 +25,7 @@
 			<cc:child layoutData="{vBoxLayoutData}">
 				<form:FieldLabel text="硬件码">
 					<form:widget>
-						<form:LongField ui:field="hardwareCode" width="200"/>
+						<form:LongField ui:field="hardwareCode" width="200" allowBlank="false"/>
 					</form:widget>
 				</form:FieldLabel>
 			</cc:child>

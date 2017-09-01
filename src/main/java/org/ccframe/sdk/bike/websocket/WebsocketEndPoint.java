@@ -33,6 +33,7 @@ public class WebsocketEndPoint extends TextWebSocketHandler {
         User user = (User) session.getAttributes().get("user");
         users.put(user.getUserId(),session);
         System.out.println("用户"+user.getUserId()+"正在用车！");
+        System.out.println("HashMap类型的users:" + users.toString());
         System.out.println("connect to the websocket success......当前数量:"+users.size());
         //这块会实现自己业务，比如，当用户登录后，会把离线消息推送给用户
         //TextMessage returnMessage = new TextMessage("你将收到的离线");
@@ -49,7 +50,7 @@ public class WebsocketEndPoint extends TextWebSocketHandler {
         
         System.out.println("用户"+user.getUserId()+"骑行已结束！");
         users.remove(user.getUserId());
-        System.out.println("剩余在线用户"+users.size());
+        System.out.println("剩余在线用户:"+users.size());
     }
 
     /**
@@ -67,6 +68,7 @@ public class WebsocketEndPoint extends TextWebSocketHandler {
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
         if(session.isOpen()){session.close();}
         //logger.debug("websocket connection closed......");
+        System.out.println("输出handleTransportError"); 
         User user = (User) session.getAttributes().get("user");
         users.remove(user.getUserId());
     }
@@ -87,8 +89,10 @@ public class WebsocketEndPoint extends TextWebSocketHandler {
     		if(userId2.equals(userId)) {
     			try {
     				WebSocketSession webSocketSession = users.get(userId);
+    				System.out.println("webSocketSession为：" + webSocketSession);
                     if (webSocketSession.isOpen()) {
                     	webSocketSession.sendMessage(message);
+                    	System.out.println("websocket发送的信息为：" + message);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

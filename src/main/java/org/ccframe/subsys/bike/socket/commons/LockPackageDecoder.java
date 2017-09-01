@@ -110,7 +110,7 @@ public class LockPackageDecoder extends SimpleChannelInboundHandler<byte[]> {
 			System.out.println("encode      -> " + Hex.encodeHexString(encodeDataBlock));
 			System.out.println("encode map  -> " + DataBlockEncodeUtil.decodeDataBlock(encodeDataBlock));
 			
-			//检查连接，如果没有则放入到channel池
+			//检查连接，如果没有则放入到channel池，如果断开重新建立的channel也放入channel池
 			SmartLockChannelUtil.checkAndRegisterChannel(requestPackage.getHardwareCode(), ctx.channel());
 
 			Map<DataBlockTypeEnum, Object> responseDataMap = null;

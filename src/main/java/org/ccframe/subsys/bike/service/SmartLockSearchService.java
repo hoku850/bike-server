@@ -165,8 +165,8 @@ public class SmartLockSearchService extends BaseSearchService<SmartLock, Integer
 				smartLockStat.setSmartLockId(smartLock.getSmartLockId());
 			}
 			smartLockStat.setOrgId(smartLock.getOrgId());
-			smartLockStat.setLockLng(Global.BIEJING_LNG);//天安门经纬度
-			smartLockStat.setLockLat(Global.BIEJING_LAT);
+			smartLockStat.setLockLng(Global.BEIJING_LNG);//天安门经纬度
+			smartLockStat.setLockLat(Global.BEIJING_LAT);
 			smartLockStat.setLockSwitchStatCode(LockSwitchStatCodeEnum.NO_USE.toCode());
 			smartLockStat.setIfRepairIng(BoolCodeEnum.NO.toCode());
 			SpringContextHelper.getBean(SmartLockStatService.class).save(smartLockStat);

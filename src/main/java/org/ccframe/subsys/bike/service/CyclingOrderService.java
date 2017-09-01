@@ -270,10 +270,11 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		DecimalFormat df = new DecimalFormat("#0.00");  
 		String orderAmmount = df.format(cyclingOrder.getOrderAmmount());
 		
-		String startPos = "["+cyclingOrder.getStartLocationLng()+","
+		/*String startPos = "["+cyclingOrder.getStartLocationLng()+","
 				+cyclingOrder.getStartLocationLat()+"]";
 		String endPos = "["+cyclingOrder.getEndLocationLng()+","
 				+cyclingOrder.getEndLocationLat()+"]";
+		
 		String bikeNumber = cyclingOrder.getBikePlateNumber();
 		
 		StringBuffer polylinePath = PositionUtil.getPolylinePath(cyclingOrder.getCyclingOrderId());
@@ -281,7 +282,19 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		if(polylinePath.length()>=3) {
 			polylinePath = polylinePath.insert(1, startPos+",");
 			polylinePath = polylinePath.insert(polylinePath.length()-1, ","+endPos);
+		}*/
+		
+		String startPos = "[" + Global.BEIJING_LNG + "," + Global.BEIJING_LAT + "]";
+		String endPos = "[" + Global.BEIJING_LNG + "," + Global.BEIJING_LAT + "]";
+		
+		String bikeNumber = cyclingOrder.getBikePlateNumber();
+		
+		StringBuffer polylinePath = PositionUtil.getPolylinePath(cyclingOrder.getCyclingOrderId());
+		if(polylinePath.length()>=3) {
+			startPos = polylinePath.substring(1, polylinePath.indexOf("]")+1);
+			endPos = polylinePath.substring(polylinePath.lastIndexOf("["), polylinePath.length()-1);
 		}
+		
 		AppPageDto appPageDto = new AppPageDto();
 		appPageDto.setList(polylinePath+"");
 		appPageDto.setKm(km+"");
@@ -431,8 +444,17 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 					polylinePath = polylinePath.insert(polylinePath.length()-1, ",["+nowPos+"]");
 					firstPos = polylinePath.substring(1, polylinePath.indexOf("]")+1);
 				} else {
+					//骑行轨迹记录为空
 					polylinePath = new StringBuffer("[["+nowPos+"]]");
 					firstPos = "["+nowPos+"]";
+					//如果手机有开gps定位，设置骑行订单的起点
+					if(nowPos!=null && nowPos.equals("")) {
+						String[] splitStrings = nowPos.split(",");
+	 					cyclingOrder2.setStartLocationLng(Double.valueOf(splitStrings[0]));
+	 					cyclingOrder2.setStartLocationLat(Double.valueOf(splitStrings[1]));
+	 					SpringContextHelper.getBean(CyclingOrderSearchService.class).save(cyclingOrder2);
+					}
+					
 				}
 				
 				appPageDto.setMin(min+"");
@@ -578,6 +600,8 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			//更新骑行距离
 			Integer totalMeter = this.countMeter(cyclingOrder);
 			
+			//测试数据
+			totalMeter = 1000;
 			cyclingOrder.setCyclingDistanceMeter(totalMeter);
 			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 			
@@ -586,6 +610,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			
 			//通知app跳转页面
 			WebsocketEndPoint.sendMessageToUser(cyclingOrder.getUserId(),new TextMessage("success"));
+			System.out.println("已通知用户" + cyclingOrder.getUserId() + "跳转页面");
 		} else {
 			//如果订单已经结束，那么将不再更新订单，但是需要更新锁状态
 			updateSmartLockStat(smartLockId, lng, lat, lockBattery);

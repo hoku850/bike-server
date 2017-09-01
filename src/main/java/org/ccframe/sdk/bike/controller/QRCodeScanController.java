@@ -99,10 +99,11 @@ public class QRCodeScanController {
 			 
 		 }
 		
+		System.out.println("等待开锁");
 		if(memberUser != null && ! SmartLockChannelUtil.tryUnlock(hardwareCode, memberUser)){ //开锁并等待完成
 			throw new BusinessException(ResGlobal.ERRORS_USER_DEFINED, new String[]{"开锁信息未同步成功，如已经开锁请骑行，如未开启请重试或更换一辆单车"});
 		}
-		
+		System.out.println("已经开锁");
 		//扫开了，就是激活了
 		smartLock.setActiveDate(new Date());
 		if(smartLockStatCodeEnum == SmartLockStatCodeEnum.GRANTED){

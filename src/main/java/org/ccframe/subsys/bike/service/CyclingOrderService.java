@@ -270,29 +270,41 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 		DecimalFormat df = new DecimalFormat("#0.00");  
 		String orderAmmount = df.format(cyclingOrder.getOrderAmmount());
 		
-		/*String startPos = "["+cyclingOrder.getStartLocationLng()+","
-				+cyclingOrder.getStartLocationLat()+"]";
-		String endPos = "["+cyclingOrder.getEndLocationLng()+","
-				+cyclingOrder.getEndLocationLat()+"]";
+
 		
 		String bikeNumber = cyclingOrder.getBikePlateNumber();
 		
 		StringBuffer polylinePath = PositionUtil.getPolylinePath(cyclingOrder.getCyclingOrderId());
+		
+		String startPos = "";
+		if(cyclingOrder.getStartLocationLng().equals(Global.BEIJING_LNG) 
+				&& cyclingOrder.getStartLocationLat().equals(Global.BEIJING_LAT)) {
+			//如果起点是北京天安门，则取骑行轨迹表打的第一个点
+			if(polylinePath.length()>=3) {
+				startPos = polylinePath.substring(1, polylinePath.indexOf("]")+1);
+			}
+		} else {
+			startPos = "["+cyclingOrder.getStartLocationLng()+","
+					+cyclingOrder.getStartLocationLat()+"]";
+		}
+		
+		String endPos = "";
+		if(cyclingOrder.getEndLocationLng().equals(Global.BEIJING_LNG) && cyclingOrder.getEndLocationLat().equals(Global.BEIJING_LAT)) {
+			//如果终点是北京天安门，则取骑行轨迹表打的最后一个点
+			if(polylinePath.length()>=3) {
+				endPos = polylinePath.substring(polylinePath.lastIndexOf("["), polylinePath.length()-1);
+			}
+		} else {
+			endPos = "["+cyclingOrder.getEndLocationLng()+","
+					+cyclingOrder.getEndLocationLat()+"]";
+		}
 
 		if(polylinePath.length()>=3) {
+			//如果骑行轨迹表有打点记录
+			//插入起点
 			polylinePath = polylinePath.insert(1, startPos+",");
+			//插入终点
 			polylinePath = polylinePath.insert(polylinePath.length()-1, ","+endPos);
-		}*/
-		
-		String startPos = "[" + Global.BEIJING_LNG + "," + Global.BEIJING_LAT + "]";
-		String endPos = "[" + Global.BEIJING_LNG + "," + Global.BEIJING_LAT + "]";
-		
-		String bikeNumber = cyclingOrder.getBikePlateNumber();
-		
-		StringBuffer polylinePath = PositionUtil.getPolylinePath(cyclingOrder.getCyclingOrderId());
-		if(polylinePath.length()>=3) {
-			startPos = polylinePath.substring(1, polylinePath.indexOf("]")+1);
-			endPos = polylinePath.substring(polylinePath.lastIndexOf("["), polylinePath.length()-1);
 		}
 		
 		AppPageDto appPageDto = new AppPageDto();
@@ -447,12 +459,18 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 					//骑行轨迹记录为空
 					polylinePath = new StringBuffer("[["+nowPos+"]]");
 					firstPos = "["+nowPos+"]";
-					//如果手机有开gps定位，设置骑行订单的起点
+					
 					if(nowPos!=null && nowPos.equals("")) {
+						//如果手机有开gps定位，设置骑行订单的起点
 						String[] splitStrings = nowPos.split(",");
 	 					cyclingOrder2.setStartLocationLng(Double.valueOf(splitStrings[0]));
 	 					cyclingOrder2.setStartLocationLat(Double.valueOf(splitStrings[1]));
 	 					SpringContextHelper.getBean(CyclingOrderSearchService.class).save(cyclingOrder2);
+					} else {
+						//如果手机没有开gps定位，设置骑行订单的起点为北京天安门
+						cyclingOrder2.setStartLocationLng(Global.BEIJING_LNG);//天安门经纬度
+						cyclingOrder2.setStartLocationLat(Global.BEIJING_LAT);
+						SpringContextHelper.getBean(CyclingOrderSearchService.class).save(cyclingOrder2);
 					}
 					
 				}
@@ -601,7 +619,7 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 			Integer totalMeter = this.countMeter(cyclingOrder);
 			
 			//测试数据
-			totalMeter = 1000;
+			//totalMeter = 1000;
 			cyclingOrder.setCyclingDistanceMeter(totalMeter);
 			SpringContextHelper.getBean(CyclingOrderService.class).save(cyclingOrder);
 			
@@ -671,5 +689,42 @@ public class CyclingOrderService extends BaseService<CyclingOrder,java.lang.Inte
 	    }
 		//System.out.println("轮询返回：fail");
 		return "fail";
+	}
+
+	/**
+	 * 设置骑行订单的终点坐标
+	 * @author zjm
+	 */
+	@Transactional
+	public void saveCyclingOrderEndPosition(String endPos) {
+
+			MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore().getServerValue(Global.SESSION_LOGIN_MEMBER_USER);
+
+			List<CyclingOrder> list = SpringContextHelper.getBean(CyclingOrderSearchService.class).findByUserIdAndOrgIdOrderByStartTimeDesc(user.getUserId(), user.getOrgId());
+
+			if(list!=null && list.size()>0) {
+				
+					CyclingOrder cyclingOrder = list.get(0);
+					
+					//如果终点坐标没有设置
+					if(cyclingOrder.getEndLocationLng()==null || cyclingOrder.getEndLocationLat()==null) {
+						if(endPos!=null && !endPos.equals("")) {
+							//手机有开gps
+							String[] splits = endPos.split(",");
+							cyclingOrder.setEndLocationLng(Double.valueOf(splits[0]));
+		 					cyclingOrder.setEndLocationLat(Double.valueOf(splits[1]));
+		 					SpringContextHelper.getBean(CyclingOrderSearchService.class).save(cyclingOrder);
+						} else {
+							//手机没开gps
+							cyclingOrder.setEndLocationLng(Global.BEIJING_LNG);
+		 					cyclingOrder.setEndLocationLat(Global.BEIJING_LAT);
+		 					SpringContextHelper.getBean(CyclingOrderSearchService.class).save(cyclingOrder);
+						
+						}
+					}
+ 					
+			}
+		
+		
 	}
 }

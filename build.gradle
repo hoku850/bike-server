@@ -24,8 +24,8 @@ repositories {
     maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' } //阿里云
     maven { url 'http://svn.higtek.cn:8080/nexus/content/groups/public/'  //自建仓库
         credentials {
-            username 'admin'
-            password 'jimwu@higtek.cn'
+            username 'developer'
+            password 'developer@higtek.cn'
         }
     }
 }
@@ -79,6 +79,13 @@ war {
     exclude 'WEB-INF/classes/**'
     exclude 'WEB-INF/deploy/**'
     exclude 'WEB-INF/eshome/esdata/**'
+
+	manifest {
+    	attributes 'projectName': 'bikeserver'
+    	attributes 'releaseTime': new Date().format("yyyy-MM-dd_HH-mm-ss", TimeZone.getTimeZone("UTC"))
+    	attributes 'buildNumber': System.getenv().BUILD_NUMBER == null ? 'debug' : System.getenv().BUILD_NUMBER?.toInteger()
+    	attributes 'svnVersion': System.getenv().SVN_REVISION == null ? 'debug' : System.getenv().SVN_REVISION?.toInteger()
+    }
 }
 
 //----------------------- 编译JAR依赖配置 ------------------------//
@@ -106,7 +113,7 @@ dependencies {
     api 'com.ning:compress-lzf:1.0.4'
     api 'org.dbunit:dbunit:2.5.3'
     api 'org.dom4j:dom4j:2.0.1'
-    api 'com.alibaba:druid:1.1.1'
+    api 'com.alibaba:druid:1.1.2'
     api 'net.sf.ehcache.internal:ehcache-core:2.10.4'
     api 'org.elasticsearch:elasticsearch:2.4.4' //TODO，插件编译的时候还是244，可以考虑重新编译后升级
     api 'com.alibaba:fastjson:1.2.34'

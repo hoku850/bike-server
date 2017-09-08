@@ -22,7 +22,10 @@ public class OrderPayController {
 
 	@RequestMapping(value = ControllerMapping.GET_PAY_DATA)
 	@ResponseBody
-	public AppPageDto getPayData() {
+	public AppPageDto getPayData(String endPos) {
+		
+		//设置骑行订单的终点坐标
+		SpringContextHelper.getBean(CyclingOrderService.class).saveCyclingOrderEndPosition(endPos);
 
 		MemberUser user = (MemberUser) WebContextHolder.getSessionContextStore()
 				.getServerValue(Global.SESSION_LOGIN_MEMBER_USER);

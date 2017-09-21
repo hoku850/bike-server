@@ -25,7 +25,7 @@ repositories {
     maven { url 'http://svn.higtek.cn:8080/nexus/content/groups/public/'  //自建仓库
         credentials {
             username 'developer'
-            password 'developer@higtek.cn'
+            password '1D2FDFBD7415232C@higtek.cn'
         }
     }
 }
